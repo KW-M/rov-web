@@ -17,7 +17,7 @@ let globalContext = {
 globalContext.gpadCtrl = new GamepadController();
 
 // Show the rov name in the ui:
-setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber);
+setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
 
 // Show the xstate inspector if the debug query string is present
 if (globalContext.debugXstateMode) {
@@ -65,7 +65,7 @@ runSiteInitMachine(globalContext, (eventName) => {
 
     const switchToNextRovPeerId = () => {
         globalContext.rovPeerIdEndNumber++;
-        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber);
+        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
         RovConnectionMachine.send("DO_DISCONNECT");
         RovMediaChannelMachine.send("DO_DISCONNECT");
@@ -73,7 +73,7 @@ runSiteInitMachine(globalContext, (eventName) => {
     }
     const switchToPrevRovPeerId = () => {
         globalContext.rovPeerIdEndNumber = Math.max(0, globalContext.rovPeerIdEndNumber - 1);
-        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber);
+        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
         RovConnectionMachine.send("DO_DISCONNECT");
         RovMediaChannelMachine.send("DO_DISCONNECT");

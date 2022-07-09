@@ -35,7 +35,7 @@ export class MessageHandler {
     }
 
     static handlePasswordChallenge(msg_cid) {
-        showPasswordPrompt("Please enter the piloting password", (password) => {
+        showPasswordPrompt("Please enter the driver password", (password) => {
             if (password) {
                 const msg_data = {
                     "cid": msg_cid,
@@ -69,31 +69,31 @@ export class MessageHandler {
         } else if (msg_status == "done") {
             if (replyContinuityCallback) replyContinuityCallback(msg_data);
             else showToastMessage(MessageHandler.replyContinuityCallbacks[msg_cid].originalMsgData.action + ": OK");
-
         } else if (msg_status == "password-required") {
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
             MessageHandler.handlePasswordChallenge(msg_cid);
-
         } else if (msg_status == "password-invalid") {
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
             showToastMessage("Invalid password");
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
             MessageHandler.handlePasswordChallenge(msg_cid);
-
         } else if (msg_status == "password-accepted") {
             showToastMessage("Password accepted");
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
             const originalMsgData = MessageHandler.replyContinuityCallbacks[msg_cid].original_msg
             console.log("originalMsgData: ", originalMsgData);
             MessageHandler.sendRovMessage(originalMsgData, null);
-
         } else if (replyContinuityCallback) {
             replyContinuityCallback(msg_data);
         }
     }
 
-    static handlePilotChange(newPilotId) {
-        if (MessageHandler.globalContext.thisPeer && newPilotId == MessageHandler.globalContext.thisPeer.id) {
-            showToastMessage("You are now the pilot");
+    static handleDriverChange(newDriverId) {
+        if (MessageHandler.globalContext.thisPeer && newDriverId == MessageHandler.globalContext.thisPeer.id) {
+            showToastMessage("You are now the driver");
             updateRoleDisplay(true);
         } else {
-            showToastMessage("ROV Pilot has changed to " + newPilotId);
+            showToastMessage("ROV Driver has changed to " + newDriverId);
             updateRoleDisplay(false);
         }
     }
@@ -108,8 +108,8 @@ export class MessageHandler {
         } else if (msg_status == "sensor_update") {
             updateDisplayedSensorValues(msg_value);
 
-        } else if (msg_status == "pilot-changed") {
-            MessageHandler.handlePilotChange(msg_value);
+        } else if (msg_status == "driver-changed") {
+            MessageHandler.handleDriverChange(msg_value);
         }
 
     }
@@ -162,10 +162,27 @@ export class RovActions {
         return () => { clearInterval(intervalId) } // return a cleanup function
     }
 
+    static showCommandOutputPopup(title, firstLine, doneLine) {
+        let popup = showScrollableTextPopup(title)
+        popup.addText(firstLine)
+        return (response) => {
+            if (response['status'] == "password-required" || response['status'] == "password-invalid") {
+                // password prompt is handled elsewhere
+                popup.close();
+                console.log("closing Pupusd")
+            } else if (response['status'] == "password-accepted") {
+                popup = showScrollableTextPopup(title);
+            }
+            else if (response['status'] == "error") popup.addText("\nError:\n" + response['val']);
+            else if (response['val']) popup.addText(response['val'])
+            else if (response['status'] == "done") popup.addText(doneLine);
+        }
+    }
+
     // ======= Actions ========
 
     static takeControl() {
-        // attempt to become the designated pilot for this rov, rov will send a password prompt response if not already authorized
+        // attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized
         MessageHandler.sendRovMessage({ "action": "take_control" }, null);
     }
 
@@ -200,34 +217,19 @@ export class RovActions {
 
     static restartRovServices = () => {
         if (confirm("Are you sure you want to restart services? - The ROV will stop responding for about a minute and then you can re-connect.")) {
-            const addTextToPopup = showScrollableTextPopup("Restarting ROV Services...")
-            addTextToPopup("Sending Service Restart Request (Please Wait)...\n")
-            MessageHandler.sendRovMessage({ "action": "restart_rov_services" }, (response) => {
-                if (response['status'] == "error") addTextToPopup("\nError:\n" + response['val']);
-                else if (response['val']) addTextToPopup(response['val'])
-                else if (response['status'] == "done") addTextToPopup("\n\nDone")
-            })
+            let responseHandler = RovActions.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
+            MessageHandler.sendRovMessage({ "action": "restart_rov_services" }, responseHandler)
         }
     }
 
     static getRovStatusReport = () => {
-        const addTextToPopup = showScrollableTextPopup("ROV Status Report...")
-        addTextToPopup("Sending Status Request (Please Wait)...\n")
-        MessageHandler.sendRovMessage({ "action": "rov_status_report" }, (response) => {
-            if (response['status'] == "error") addTextToPopup("\nError:\n" + response['val']);
-            else if (response['val']) addTextToPopup(response['val'])
-            else if (response['status'] == "done") addTextToPopup("\n\nDone")
-        })
+        let responseHandler = RovActions.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
+        MessageHandler.sendRovMessage({ "action": "rov_status_report" }, responseHandler)
     }
 
     static getRovLogs = () => {
-        const addTextToPopup = showScrollableTextPopup("ROV Logs...")
-        addTextToPopup("Sending Logs Request (Please Wait)...\n")
-        MessageHandler.sendRovMessage({ "action": "rov_logs" }, (response) => {
-            if (response['status'] == "error") addTextToPopup("\nError:\n" + response['val']);
-            else if (response['val']) addTextToPopup(response['val'])
-            else if (response['status'] == "done") addTextToPopup("\n\nDone")
-        })
+        let responseHandler = RovActions.showCommandOutputPopup("ROV Logs", "Sending Request (Please Wait)...\n", "\n\nDone.");
+        MessageHandler.sendRovMessage({ "action": "rov_logs" }, responseHandler)
     }
 
     static rePullRovGithubCode = () => {

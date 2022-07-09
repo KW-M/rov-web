@@ -44,8 +44,11 @@ export function hideBackdrop() {
 
 // -----  Toast Notifications -----
 
+let toastDeduplicationCache = {}
 export function showToastMessage(message, durration, callback) {
-    return Toastify({
+    let existingToast = toastDeduplicationCache[message];
+    if (existingToast) existingToast.hideToast();
+    let t = Toastify({
         text: message,
         duration: durration || 5000,
         close: true,
@@ -57,7 +60,10 @@ export function showToastMessage(message, durration, callback) {
         position: "center", // `left`, `center` or `right`
         stopOnFocus: true, // Prevents dismissing of toast on hover
         onClick: callback, // Callback export function when toast is clicked
-    }).showToast();
+    });
+    t.showToast();
+    toastDeduplicationCache[message] = t;
+    return t;
 }
 
 // -----  Toastify Based Dialogs -----
@@ -71,10 +77,9 @@ export function showToastDialog(htmlElements, options, exraClassNames) {
         gravity: "top", // `top` or `bottom`
         position: "center", // `left`, `center` or `right`
         stopOnFocus: true, // Prevents dismissing of toast on hover
-    }, options)).showToast();
-
+    }, options))
+    toast.showToast();
     htmlElements.forEach((e) => {
-        console.log(e)
         toast.toastElement.appendChild(e)
     })
     if (exraClassNames && isArray(exraClassNames)) exraClassNames.forEach((name) => { toast.toastElement.classList.add(name) })
@@ -83,7 +88,14 @@ export function showToastDialog(htmlElements, options, exraClassNames) {
 
 let passwordPromptOpen = false
 export function showPasswordPrompt(message, callback) {
-    console.log("showPasswordPrompt", passwordPromptOpen)
+
+    function closePasswordPrompt(passwordValue) {
+        hideBackdrop()
+        if (toast) toast.hideToast()
+        passwordPromptOpen = false;
+        if (callback) callback(passwordValue)
+    }
+
     if (passwordPromptOpen) return;
     passwordPromptOpen = true;
     let toast = null
@@ -91,19 +103,18 @@ export function showPasswordPrompt(message, callback) {
     const input = document.createElement("input")
     input.type = "password"
     input.placeholder = "Password"
-    const btns = createButtons(["Ok", "Cancel"], (chosenButton) => {
-        hideBackdrop()
-        toast.hideToast()
-        passwordPromptOpen = false;
-        if (callback && chosenButton == "Ok") callback(input.value)
-        else if (callback) callback(null)
+    input.addEventListener("keyup", (e) => {
+        // handle enter key
+        if (e.key === 'Enter' || e.keyCode === 13) closePasswordPrompt(input.value)
     })
-    toast = showToastDialog([title, input].concat(btns), { gravity: "bottom", duration: -1 }, ["password-prompt"])
+    const btns = createButtons(["Ok", "Cancel"], (chosenButton) => {
+        // handle buttons key
+        if (chosenButton == "Ok") closePasswordPrompt(input.value)
+        else closePasswordPrompt(null)
+    })
+    toast = showToastDialog([title, input].concat(btns), { gravity: "bottom", duration: -1, style: { "zIndex": 2147480001 } }, ["password-prompt"])
     showBackdrop(() => {
-        toast.hideToast()
-        hideBackdrop()
-        passwordPromptOpen = false;
-        if (callback) callback(null)
+        closePasswordPrompt(null)
     })
     return toast
 }
@@ -112,23 +123,25 @@ export function showScrollableTextPopup(title, callback) {
     let toast = null
     const titleElm = createTitle(title)
     const content = document.createElement("pre")
-    const closeFunc = () => {
-        toast.hideToast()
-        hideBackdrop()
-        if (callback) callback(null)
-    }
-    const btns = createButtons(["Close"], closeFunc)
-    toast = showToastDialog([titleElm, content].concat(btns), { gravity: "bottom", duration: -1 }, ["scrollable-text-popup"])
-    showBackdrop(closeFunc)
-    return (textLine) => {
-        content.appendChild(document.createTextNode(textLine))
-        // keep scrolling down as new content is added (unless the user has scrolled up / is no longer at the bottom)
-        if (content.scrollTop + content.clientHeight + 100 > content.scrollHeight) {
-            content.scrollTop = content.scrollHeight
+    const popup = {
+        addText: (textLine) => {
+            content.appendChild(document.createTextNode(textLine))
+            // keep scrolling down as new content is added (unless the user has scrolled up / is no longer at the bottom)
+            if (content.scrollTop + content.clientHeight + 100 > content.scrollHeight) {
+                content.scrollTop = content.scrollHeight
+            }
+        },
+        close: () => {
+            toast.hideToast()
+            hideBackdrop()
+            if (callback) callback(null)
         }
     }
+    const btns = createButtons(["Close"], popup.close)
+    toast = showToastDialog([titleElm, content].concat(btns), { gravity: "bottom", duration: -1 }, ["scrollable-text-popup"])
+    showBackdrop(popup.close)
+    return popup
 }
-
 
 export function showChoiceDialog(title, buttons, callback) {
     let toast = null
@@ -148,25 +161,29 @@ export function showChoiceDialog(title, buttons, callback) {
 }
 
 const connectBtn = document.getElementById('connect_btn');
+const connectBtnOptions = document.getElementById('connect_btn_options')
 const disconnectBtn = document.getElementById('disconnect_btn');
 const connectedRovLabel = document.getElementById('connected_rov_label');
 const rovConnectionBar = document.getElementById('rov_connection_bar');
 export function showROVDisconnectedUi() {
-    connectBtn.style.display = 'block';
-    disconnectBtn.style.display = 'none';
-    hideLoadingUi("all")
-    showRovConnectionBar();
+    connectBtnOptions.style.display = 'flex';
+    document.body.classList.remove("rov-connected");
+    hideLoadingUi("all");
+    hideLivestreamUi();
+    hideRovConnectionBar();
 }
 
 export function showROVConnectingUi(rovPeerId) {
-    connectBtn.style.display = 'none';
+    connectBtnOptions.style.display = 'none';
+    document.body.classList.remove("rov-connected");
     showLoadingUi("webrtc-connecting", "Searching for " + rovPeerId);
     hideRovConnectionBar();
 }
 
 export function showROVConnectedUi() {
-    connectBtn.style.display = 'none';
-    disconnectBtn.style.display = 'block';
+    connectBtnOptions.style.display = 'none';
+    // disconnectBtn.style.display = 'block';
+    document.body.classList.add("rov-connected");
     hideLoadingUi("webrtc-connecting")
     hideLoadingUi("webrtc-reconnecting")
     showRovConnectionBar();
@@ -174,8 +191,7 @@ export function showROVConnectedUi() {
 
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
-    disconnectBtn.style.display = 'none';
-    connectedRovLabel.parentElement.parentElement.classList.add('hidden')
+    // disconnectBtn.style.display = 'none';
     showLoadingUi("reloading-site");
 }
 
@@ -187,8 +203,10 @@ export function showRovConnectionBar() {
     rovConnectionBar.classList.remove('hidden')
 }
 
-export function setCurrentRovName(name) {
+export function setCurrentRovName(name, index) {
     connectBtn.innerText = "Connect to " + name;
+    if (index == 0) switchToPrevRovBtn.setAttribute("disabled", true);
+    else switchToPrevRovBtn.removeAttribute("disabled");
     connectedRovLabel.innerText = name
 }
 
@@ -269,11 +287,13 @@ export function setClientPeerIdDisplay(clientPeerId) {
 
 const roleDisplayText = document.getElementById('role_display_text');
 const takeControlButton = document.getElementById('take_control_btn');
-export function updateRoleDisplay(isPilot) {
-    roleDisplayText.innerText = isPilot ? "Pilot" : "Spectator";
-    if (isPilot) {
+export function updateRoleDisplay(isDriver) {
+    // roleDisplayText.innerText = isDriver ? "Driver" : "Spectator";
+    if (isDriver) {
+        document.body.classList.add('rov-driver')
         takeControlButton.classList.add('hidden')
     } else {
+        document.body.classList.remove('rov-driver')
         takeControlButton.classList.remove('hidden')
     }
 }
