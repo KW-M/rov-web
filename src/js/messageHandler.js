@@ -105,7 +105,8 @@ export class MessageHandler {
         if (msg_status == "error") {
             console.error("Rov Error: " + msg_value);
 
-        } else if (msg_status == "sensor_update") {
+        } else if (msg_status == "sensor-update") {
+
             updateDisplayedSensorValues(msg_value);
 
         } else if (msg_status == "driver-changed") {

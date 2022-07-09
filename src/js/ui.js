@@ -311,8 +311,8 @@ export function updateBatteryDisplay(batteryVolts, batteryPercent) {
 var pressureDisplay = document.getElementById('pressure_value');
 var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
-    pressureDisplay.innerText = sensorValues.pressure;
-    tempDisplay.innerText = sensorValues.temp;
+    if (sensorValues.pressure) pressureDisplay.innerText = sensorValues.pressure;
+    if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
 }
 
 
