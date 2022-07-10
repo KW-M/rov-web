@@ -45,7 +45,7 @@ export const startRovMediaChannelMachine = (globalContext) => {
                                 target: "rovNotConnected",
                             },
                             MEDIA_CHANNEL_TIMEOUT: {
-                                actions: "cleanupEventListeners",
+                                actions: ["cleanupEventListeners", "hideLivestreamUi"],
                                 description: "(timeout)",
                                 target: "rovConnectionOpen",
                             },
@@ -70,8 +70,9 @@ export const startRovMediaChannelMachine = (globalContext) => {
                     // "showWaitingForMediaChannelNotice": () => { showLoadingUi("Waiting for ROV livestream...") },
                     // "showMediaChannelConnectedNotice": () => { showToastMessage("ROV Media Channel Connected!") },
                     "showGotVideoStreamNotice": () => { showToastMessage("Got ROV Video Stream!"); hideLoadingUi("awaiting-video-call"); showLivestreamUi(); console.info("Got Video Stream!") },
-                    "hideLivestreamUi": () => { hideLivestreamUi() },
+                    "hideLivestreamUi": () => { hideLivestreamUi(); hideLoadingUi("awaiting-video-call"); },
                     'cleanupEventListeners': () => {
+                        if (globalContext.mediachannelDisconnectCheckIntervalId) clearInterval(globalContext.mediachannelDisconnectCheckIntervalId)
                         globalContext.thisPeer.off('call', eventHandlers["callHandler"]);
                         if (globalContext.mediaChannel) {
                             globalContext.mediaChannel.off('stream', eventHandlers["videoReadyHandler"]);
@@ -88,7 +89,6 @@ export const startRovMediaChannelMachine = (globalContext) => {
                     },
                     "setVideoStream": (_, event) => {
                         const rovVideoStream = event.data
-
                         const videoElem = document.getElementById('video-livestream');
                         videoElem.srcObject = rovVideoStream;  // video.src = URL.createObjectURL(rovVideoStream);
                         videoElem.muted = true
@@ -96,11 +96,15 @@ export const startRovMediaChannelMachine = (globalContext) => {
                         videoElem.controls = false
                         videoElem.play();
                         globalContext.videoStream = rovVideoStream;
-                        console.info("Got Video Streasm!", rovVideoStream)
+                        console.info("Got Video Stream!", rovVideoStream)
+                        // Keep checking if the stream becomes deactive: (every half second (interval 500))
+                        globalContext.mediachannelDisconnectCheckIntervalId = setInterval(() => {
+                            if (!globalContext.videoStream || !globalContext.videoStream.active) sendEventToSelf("MEDIA_CHANNEL_TIMEOUT");
+                        }, 500);
                     },
                     'addMediaChannelEventHandlers': () => {
                         showLoadingUi("awaiting-video-call");
-                        const callHandler = eventHandlers["callHandler"] = generateStateChangeFunction(sendEventToSelf, "MEDIA_CHANNEL_ESTABLISHED", null, (rovMediaConnection) => {
+                        const callHandler = eventHandlers["callHandler"] = (rovMediaConnection) => {
                             // showToastMessage('Got media call from peer: ' + rovMediaConnection.peer)
                             globalContext.mediaChannel = rovMediaConnection;
                             console.log("Got media call: ", rovMediaConnection);
@@ -108,18 +112,13 @@ export const startRovMediaChannelMachine = (globalContext) => {
                             rovMediaConnection.answer(null);
                             rovMediaConnection.on('stream', (a) => { console.log("Got stream: ", a); videoReadyHandler(a) });
 
-                        })
+                        }
                         globalContext.thisPeer.on('call', callHandler);
 
                         globalContext.mediaChannelTimeout = setTimeout(() => {
                             sendEventToSelf({ type: "MEDIA_CHANNEL_TIMEOUT" });
                         }, 16000);
 
-                        // // Keep checking if the datachannel goes offline: (every half second (interval 500) check if the datachannel peer connection state is "disconnected")
-                        // globalContext.datachannelDisconnectCheckIntervalId = setInterval(() => {
-                        //     const connectionState = rovDataConnection.peerConnection ? globalContext.rovDataConnection.peerConnection.iceConnectionState : "disconnected";
-                        //     if (connectionState == "disconnected") sendEventToSelf("ON_DATACHANNEL_DISCONNECTED");
-                        // }, 500);
                     },
                 },
             });

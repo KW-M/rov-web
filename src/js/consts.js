@@ -2,7 +2,7 @@ export const ROV_PEERID_BASE = "go-relay-";
 
 // FOR A PEERJS SERVER RUNNING IN THE CLOUD (Heroku, but could be changed to connect to the peerjs cloud or elsewhere)
 export const peerServerCloudOptions = {
-    host: "0.peerjs.com",//
+    host: "ssrov-peerjs-server.herokuapp.com",// "0.peerjs.com",
     secure: true,
     path: '/',
     port: 443,
@@ -43,9 +43,9 @@ export const LOADING_MESSAGES = {
 
 // export const TOUCHED_BUTTON_EQUIVELANT_VALUE = 0.5;
 export const GAME_CONTROLLER_BUTTON_CONFIG = [
-    { btnName: "button_1", remoteAction: 'lights', helpLabel: "Lights" },
-    { btnName: "button_2", remoteAction: 'record', helpLabel: "Start/Stop Recording" },
-    { btnName: "button_3", remoteAction: 'photo', helpLabel: "Take Phtoto" },
+    { btnName: "button_1", remoteAction: 'lights', helpLabel: "TODO: Lights" },
+    { btnName: "button_2", remoteAction: 'record', helpLabel: "TODO: Start/Stop Recording" },
+    { btnName: "button_3", remoteAction: 'photo', helpLabel: "TODO: Take Phtoto" },
     { btnName: "button_4", remoteAction: null, helpLabel: "Nothing" },
     { btnName: "shoulder_btn_front_left", remoteAction: null, localAction: null, helpLabel: "Nothing" },
     { btnName: "shoulder_btn_front_right", remoteAction: 'claw_open', helpLabel: "TODO: Open Claw", holdAllowed: true, },
@@ -53,12 +53,12 @@ export const GAME_CONTROLLER_BUTTON_CONFIG = [
     { btnName: "shoulder_trigger_back_right", remoteAction: 'claw_close', helpLabel: "TODO: Close Claw", holdAllowed: true, },
     { btnName: "select", remoteAction: null, helpLabel: "Show/Hide Gamepad Help" },
     { btnName: "start", remoteAction: null, helpLabel: "Show/Hide Gamepad Help" },
-    { btnName: "stick_button_left", remoteAction: null, helpLabel: "Lock Vertical Thruster" },
-    { btnName: "stick_button_right", remoteAction: null, helpLabel: "Lock Horizontal" },
-    { btnName: "d_pad_up", remoteAction: 'exposure_plus', helpLabel: "Increase Camera Brightness", holdAllowed: true, },
-    { btnName: "d_pad_down", remoteAction: 'exposure_minus', helpLabel: "Decreases Camera Brightness", holdAllowed: true, },
-    { btnName: "d_pad_left", remoteAction: 'v_quality_plus', helpLabel: "Decrease Video Quality (reduces latency)", holdAllowed: true, },
-    { btnName: "d_pad_right", remoteAction: 'v_quality_minus', helpLabel: "Increase Video Quality (increases latency)", holdAllowed: true, },
+    { btnName: "stick_button_left", remoteAction: null, helpLabel: "TODO: Lock Vertical Thruster" },
+    { btnName: "stick_button_right", remoteAction: null, helpLabel: "TODO: Lock Horizontal" },
+    { btnName: "d_pad_up", remoteAction: 'exposure_plus', helpLabel: "TODO: Increase Camera Brightness", holdAllowed: true, },
+    { btnName: "d_pad_down", remoteAction: 'exposure_minus', helpLabel: "TODO: Decreases Camera Brightness", holdAllowed: true, },
+    { btnName: "d_pad_left", remoteAction: 'v_quality_plus', helpLabel: "TODO: Decrease Video Quality (reduces latency)", holdAllowed: true, },
+    { btnName: "d_pad_right", remoteAction: 'v_quality_minus', helpLabel: "TODO: Increase Video Quality (increases latency)", holdAllowed: true, },
     { btnName: "vendor", remoteAction: null, helpLabel: "Nothing" }, // note that the vendor button is often used by windows / android, so we can't use it.
 ];
 

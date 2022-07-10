@@ -13,6 +13,8 @@ let globalContext = {
     thisPeer: null,
 }
 
+window.globalContext = globalContext;
+
 /* init gamepad support */
 globalContext.gpadCtrl = new GamepadController();
 

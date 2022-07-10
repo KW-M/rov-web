@@ -313,6 +313,10 @@ var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
     if (sensorValues.pressure) pressureDisplay.innerText = sensorValues.pressure;
     if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
+    if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
+    if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
+    //             // Call the function to use the data on the page.
+    //
 }
 
 

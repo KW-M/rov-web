@@ -604,6 +604,11 @@ body.fullscreen-open #video-livestream {
   pointer-events: none;
 }
 
+#gamepad-help-button {
+  position: absolute;
+  bottom: 6px;
+  left: 3px;
+}
 
 body:not(.rov-connected) #gamepad-container,
 body:not(.rov-driver) #gamepad-container {
