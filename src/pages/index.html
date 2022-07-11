@@ -61,18 +61,6 @@
         <hr>
         <img alt="Temperature" src="../images/ui-elements/device_thermostat_FILL0_wght400_GRAD200_opsz24.svg">
         <p><span id="temp_value">--</span> ℃</p>
-        <!-- <section>
-            <img src="../images/ui-elements/insights_black_24dp.svg">
-            <p><span id="ping_value">--</span>ms</p>
-        </section>
-        <section>
-            <img src="../images/ui-elements/insights_black_24dp.svg">
-            <p><span id="ping_value">--</span>ms</p>
-        </section>
-        <section>
-            <img src="../images/ui-elements/insights_black_24dp.svg">
-            <p><span id="ping_value">--</span> ms</p>
-        </section> -->
     </div>
 
     <!-- Fly-out Menus in the Top-Right-Corner of screen  -->
@@ -122,6 +110,10 @@
         </div>
     </div>
 
+    <button id="gamepad-help-button" class="bottom-left-corner full-round-btn" aria-label="Show Controls Help">Controls
+        Help<img src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg" class="button-label-image"
+            id="close-gpad-help-icon"><img src="../images/ui-elements/gamepad_white_24dp.svg" class="button-label-image"
+            id="open-gpad-help-icon"></button>
 
 
     <!-- Label with our current Peer Id  -->
@@ -132,18 +124,21 @@
 
     <div id="gamepad-container">
         <!-- Gamepad Connected/Disconned Feedback -->
-        <p id="gamepad-connect-notice">Connect a gamepad & press any button</p>
-        <p id="too-many-gamepads-notice" style="display: none;">Multiple gamepads connected, only one will be used
-        </p>
-
-        <!-- Gamepad Help Tooltip Stuff -->
-        <div id="gamepad-help-tooltip" class="popper-tooltip" role="tooltip">
-            <span id="gamepad-help-text">Gamepad Help</span>
+        <div id="gamepad-help-notice">
+            <p id="gamepad-connect-notice" style="display: block;">Connect a gamepad & press any button to
+                activate
+            <p id="too-many-gamepads-notice" style="display: none;">Multiple gamepads
+                connected, only one will be used </p>
+            <p>Press, click or drag controls to see what they do.</p>
         </div>
 
-        <!-- <button id="gamepad-help-button" class="full-round-btn" aria-label="Show Controls Help">Controls Help<img
-                src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg" class="button-label-image"></button> -->
 
+
+
+        <!-- Gamepad Help Tooltip Stuff -->
+        <div id="gamepad-help-tooltip" class="hide-when-not-driver popper-tooltip" role="tooltip">
+            <span id="gamepad-help-text">Gamepad Help</span>
+        </div>
         <!-- Gamepad joystick touch start areas -->
         <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area"></div>
         <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area"></div>

@@ -47,7 +47,8 @@ export function hideBackdrop() {
 let toastDeduplicationCache = {}
 export function showToastMessage(message, durration, callback) {
     let existingToast = toastDeduplicationCache[message];
-    if (existingToast) existingToast.hideToast();
+    if (existingToast && existingToast.toastElement.parentElement) return;
+    else if (existingToast) delete toastDeduplicationCache[message];
     let t = Toastify({
         text: message,
         duration: durration || 5000,

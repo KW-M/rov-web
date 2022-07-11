@@ -41,16 +41,17 @@ var gamepadHelpVisible = false;
 export function toggleGamepadHelpScreen() {
     gamepadHelpVisible = !gamepadHelpVisible // toggle it
     if (gamepadHelpVisible) {
-        gamepadContainer.classList.add("help-open")
+        document.body.classList.add("gamepad-help-open")
         this.showHelpTooltip(null);
     } else {
-        gamepadContainer.classList.remove("help-open")
+        document.body.classList.remove("gamepad-help-open")
     }
 
     let count = 0;
     var updateFunc = () => { helpTooltip.update(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
     updateFunc();
 }
+document.querySelector('#gamepad-help-button').addEventListener("click", toggleGamepadHelpScreen);
 
 export function showGamepadStatus(connectedGamepadCount) {
     this.showNoGamepads(connectedGamepadCount == 0);
