@@ -42,7 +42,7 @@ export function toggleGamepadHelpScreen() {
     gamepadHelpVisible = !gamepadHelpVisible // toggle it
     if (gamepadHelpVisible) {
         document.body.classList.add("gamepad-help-open")
-        this.showHelpTooltip(null);
+        // this.showHelpTooltip(null);
     } else {
         document.body.classList.remove("gamepad-help-open")
     }

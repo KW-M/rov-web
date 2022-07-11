@@ -728,6 +728,7 @@ body.gamepad-help-open #gamepad-container {
   bottom: 0;
   /* display: none;/ */
 
+  max-width: 60vw;
   height: 60vh;
   min-height: 9cm;
   max-height: 14cm;
