@@ -312,7 +312,9 @@ export function updateBatteryDisplay(batteryVolts, batteryPercent) {
 var pressureDisplay = document.getElementById('pressure_value');
 var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
-    if (sensorValues.pressure) pressureDisplay.innerText = sensorValues.pressure;
+    if (sensorValues.pressure) {
+        pressureDisplay.innerText = sensorValues.pressure / (1023.6 * 9.8065); // to meters
+    }
     if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
     if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
     if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
