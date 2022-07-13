@@ -24,8 +24,15 @@ body {
 
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 
-  touch-action: none;
+  touch-action: manipulation;
 }
+
+:root {
+  height: 100%;
+
+  touch-action: pan-x pan-y;
+}
+
 
 * {
   -webkit-user-select: none;
@@ -193,23 +200,27 @@ body:not(.rov-connected) nav .dropdown-menu-list {
   display: block;
 }
 
+
+
+
 .sensor-view {
+  /* margin: 0; */
   position: absolute;
   z-index: 6;
   top: 3px;
   left: 3px;
 
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
   justify-content: center;
 
   box-sizing: border-box;
-  width: 60px;
-  padding: 6px 0;
+  width: auto;
+  /* height: 60px; */
+  padding: 0 6px;
 
-  pointer-events: none;
-
-  border: 3px solid #000;
+  border: 3px solid black;
   border-radius: 6px;
 }
 
@@ -218,22 +229,52 @@ body:not(.rov-connected) .sensor-view {
 }
 
 .sensor-view p {
+  display: block;
+  overflow: hidden;
+
   margin: 0;
-  padding: 0 2px;
+  padding-left: 4px;
 
   text-align: center;
+
+  line-height: 1em;
 }
 
 .sensor-view img {
+  width: 28px;
+  height: 28px;
   margin: 0;
-  padding: 0 13px;
 }
 
 .sensor-view hr {
-  width: 100%;
-  margin: 8px 0;
+  align-self: stretch;
+
+  margin: 0 6px;
 
   border-bottom: 2px solid black;
+}
+
+
+@media (max-width: 515px) {
+  body {
+    background: lightblue;
+  }
+
+  .sensor-view {
+    flex-direction: column;
+
+    width: 60px;
+    padding: 6px 0;
+  }
+
+  .sensor-view p {
+    padding: 0 2px;
+  }
+
+  .sensor-view hr {
+    margin: 6px 0;
+  }
+
 }
 
 #client_peer_id_label {
@@ -300,7 +341,7 @@ table.top-left-corner td {
   overflow: hidden;
 
   max-height: 128px;
-  padding: 0 6px;
+  padding: 3px 6px;
 
   transition: max-height 0.4s ease;
   white-space: nowrap;
@@ -308,14 +349,8 @@ table.top-left-corner td {
   border-radius: 12px 12px 0 0;
 }
 
-#rov_connection_bar.hidden {
-  max-height: 0 !important;
-
-  pointer-events: none;
-}
-
 .fullscreen-open #rov_connection_bar {
-  max-height: 16px;
+  max-height: 20px;
 }
 
 .fullscreen-open #rov_connection_bar * {
@@ -440,10 +475,16 @@ table.top-left-corner td {
 }
 
 .fullscreen-btn {
+  position: relative;
+
+  width: 40px;
+  height: 40px;
   margin: 0;
+  margin-left: auto;
 
   border-radius: 100px;
   background-image: url("../images/ui-elements/open_in_full_black_24dp.svg");
+  background-size: 33px;
 }
 
 .fullscreen-btn:hover,
@@ -452,11 +493,11 @@ table.top-left-corner td {
   background-color: #00000032;
   background-image: url("../images/ui-elements/open_in_full_black_24dp.svg");
   background-position: center;
-  background-size: 40px;
+  background-size: 33px;
 }
 
-.fullscreen-btn.fullscreen-open {
-  background-image: url("../images/ui-elements/close_fullscreen_black_24dp.svg");
+.fullscreen-open .fullscreen-btn {
+  background-image: url("../images/ui-elements/close_fullscreen_black_24dp.svg") !important;
 }
 
 .dropdown-menu-list:focus-within,
@@ -514,7 +555,7 @@ button.button-light:not(:hover):not(:focus):not(:active) {
   left: 0;
 
   margin: auto;
-  padding: 34px 68px;
+  padding: 40px 36px 28px;
 }
 
 #livestream_container.hidden {
@@ -524,6 +565,7 @@ button.button-light:not(:hover):not(:focus):not(:active) {
 #video-livestream {
   display: block;
 
+  box-sizing: border-box;
   width: 100%;
   max-height: 100%;
   margin: auto;
@@ -552,17 +594,15 @@ body.fullscreen-open #video-livestream {
 /* ********* Compass Display ********* */
 
 .compass {
-  position: relative;
-  top: 0;
-  left: 50%;
+  position: absolute;
+  top: 4px;
+  right: 77px;
 
   overflow: hidden;
 
-  width: 360px;
-  height: 36px;
-  margin: -26px 0 -2px 0;
-
-  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: 175px;
+  height: 38px;
 
   border: 2px solid #000;
   border-radius: 20px 20px 0 0;
@@ -571,14 +611,18 @@ body.fullscreen-open #video-livestream {
 .compass .bg {
   position: absolute;
   z-index: 0;
-  top: 0px;
+  left: -362px;
 
-  width: 1080px;
-  height: 50px;
+  width: 900px;
+  height: 34px;
 
-  background: url("../images/ui-elements/COMPASS-v4.jpg");
-  background-repeat: no-repeat;
-  background-size: 100%;
+  transform: translateX(0px);
+
+  background: url("../images/ui-elements/COMPASS-v4.png");
+  background-repeat: repeat-x;
+  background-position: center center;
+  background-size: 360px 34px;
+
 }
 
 .compass .line {
@@ -587,8 +631,8 @@ body.fullscreen-open #video-livestream {
   top: -1px;
   left: 50%;
 
-  width: 1px;
-  height: 50px;
+  width: 2px;
+  height: 35px;
 
   background-color: rgb(0, 242, 255);
 }
@@ -606,12 +650,28 @@ body.fullscreen-open #video-livestream {
   pointer-events: none;
 }
 
-#gamepad-help-button {
-  position: absolute;
-  z-index: 28;
-  bottom: 6px;
-  left: 3px;
+body.driving-now #gamepad-container {
+  opacity: 0.1;
 }
+
+body.driving-now #rov_connection_bar {
+  opacity: 0.1;
+}
+
+
+#rov_connection_bar button {
+  /* position: absolute;  */
+  /* z-index: 28; */
+  /* bottom: 3px; */
+  /* left: 50%; */
+  margin: 0;
+  padding: 6px 14px;
+  /* transform: translateX(-50%); */
+
+  white-space: nowrap;
+}
+
+
 
 body:not(.gamepad-help-open) #gamepad-help-button #close-gpad-help-icon {
   display: none;
@@ -631,6 +691,11 @@ body.gamepad-help-open #gamepad-help-notice {
 
 body:not(.rov-connected) .hide-when-not-driver,
 body:not(.rov-driver) .hide-when-not-driver {
+  display: none;
+}
+
+body:not(.rov-connected) .hide-when-not-connected,
+body.rov-driver .hide-when-driver {
   display: none;
 }
 
@@ -725,45 +790,48 @@ body.gamepad-help-open #gamepad-container {
 
 .onscreen-gamepad {
   position: absolute;
-  bottom: 0;
-  /* display: none;/ */
+  bottom: -12px;
 
-  max-width: 60vw;
-  height: 60vh;
-  min-height: 9cm;
+  width: 72%;
+  max-width: 47.5vh;
   max-height: 14cm;
 
-  transition: all 0.4s ease;
   pointer-events: none;
+}
+
+.onscreen-gamepad svg {
+  bottom: 0;
 }
 
 
 #onscreen-gamepad-left {
   left: 0;
 
+  transition: transform .4s, left .4s;
   transform: translateX(-120%);
 }
 
 #onscreen-gamepad-right {
   right: 0;
 
+  transition: transform .4s, right .4s;
   transform: translateX(120%);
 }
 
 body.gamepad-help-open #onscreen-gamepad-left {
-  bottom: 15px;
+  /* bottom: 15px; */
   left: 50% !important;
 
-  transform: translateX(-120%);
+  transform: translateX(-98%) !important;
 
   opacity: 1 !important;
 }
 
 body.gamepad-help-open #onscreen-gamepad-right {
   right: 50% !important;
-  bottom: 15px;
+  /* bottom: 15px; */
 
-  transform: translateX(120%);
+  transform: translateX(98%) !important;
 
   opacity: 1 !important;
 }
@@ -774,14 +842,10 @@ body.gamepad-help-open #gamepad-help-tooltip {
 
 body.rov-driver #gamepad-container:not(.gamepad-connected) #onscreen-gamepad-left {
   transform: translateX(-30%);
-
-  opacity: 0.5;
 }
 
 body.rov-driver #gamepad-container:not(.gamepad-connected) #onscreen-gamepad-right {
   transform: translateX(30%);
-
-  opacity: 0.5;
 }
 
 .gamepad-btn-highlight {

@@ -171,14 +171,12 @@ export function showROVDisconnectedUi() {
     document.body.classList.remove("rov-connected");
     hideLoadingUi("all");
     hideLivestreamUi();
-    hideRovConnectionBar();
 }
 
 export function showROVConnectingUi(rovPeerId) {
     connectBtnOptions.style.display = 'none';
     document.body.classList.remove("rov-connected");
     showLoadingUi("webrtc-connecting", "Searching for " + rovPeerId);
-    hideRovConnectionBar();
 }
 
 export function showROVConnectedUi() {
@@ -187,21 +185,12 @@ export function showROVConnectedUi() {
     document.body.classList.add("rov-connected");
     hideLoadingUi("webrtc-connecting")
     hideLoadingUi("webrtc-reconnecting")
-    showRovConnectionBar();
 }
 
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
     // disconnectBtn.style.display = 'none';
     showLoadingUi("reloading-site");
-}
-
-export function hideRovConnectionBar() {
-    rovConnectionBar.classList.add('hidden')
-}
-
-export function showRovConnectionBar() {
-    rovConnectionBar.classList.remove('hidden')
 }
 
 export function setCurrentRovName(name, index) {
