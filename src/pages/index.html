@@ -17,7 +17,7 @@
     </script>
 </head>
 
-<body class="rov-driver rov-connected driving-now">
+<body class="">
     <noscript>Please enable JavaScript to run this app.</noscript>
 
     <div id="site_loading_indicator" class="lds-circle" style="display: none;">
@@ -33,11 +33,7 @@
     </div>
     <button id='scan_for_ip_btn' style="display: none;">Scan for ROV IP</button>
 
-    <div id="livestream_container">
-        <div class="compass">
-            <div class="line"></div>
-            <div class="bg" id="compassDiscImg"></div>
-        </div>
+    <div id="livestream_container" class="hidden">
         <video id='video-livestream'></video>
     </div>
 
@@ -48,63 +44,82 @@
         </tr>
         <tr>
             <td><b>Pressure:</b></td>
-            <td><span id="pressure_value">--</span> mPa</td>
+            <td><span id="pressure_value">--</span> mBar</td>
         </tr>
         <tr>
             <td><b>Temp:</b></td>
             <td><span id="temp_value">--</span> ℃</td>
         </tr>
     </table> -->
-
-    <div class="top-left-corner light-bg sensor-view">
-        <img alt="Network Ping" src="../images/ui-elements/network_check_FILL1_wght400_GRAD200_opsz24.svg">
-        <p><span id="ping_value">--</span> ms</p>
-        <hr>
-        <img alt="Pressure" src="../images/ui-elements/tire_repair_FILL1_wght400_GRAD200_opsz24.svg">
-        <p><span id="pressure_value">--</span> m</p>
-        <hr>
-        <img alt="Temperature" src="../images/ui-elements/device_thermostat_FILL0_wght400_GRAD200_opsz24.svg">
-        <p><span id="temp_value">--</span> ℃</p>
+    <div id="top-ui-bar" class="hide-when-not-connected">
+        <div>
+            <div class="light-bg sensor-view">
+                <img alt="Network Ping" src="../images/ui-elements/network_check_FILL1_wght400_GRAD200_opsz24.svg">
+                <p><span id="ping_value">--</span> ms</p>
+                <hr>
+                <img alt="Pressure" src="../images/ui-elements/tire_repair_FILL1_wght400_GRAD200_opsz24.svg">
+                <p><span id="pressure_value">--</span> m</p>
+                <hr>
+                <img alt="Temperature" src="../images/ui-elements/device_thermostat_FILL0_wght400_GRAD200_opsz24.svg">
+                <p><span id="temp_value">--</span> ℃</p>
+            </div>
+        </div>
+        <div>
+            <div class="compass">
+                <div class="line"></div>
+                <div class="bg" id="compassDiscImg"></div>
+            </div>
+        </div>
+        <div>
+            <button id="actions-menu-button" class=" icon-btn" aria-label="Show More Actions Menu"
+                onclick="toggleFullscreen(event)"></button>
+        </div>
     </div>
+    <button class="fullscreen-btn icon-btn transparent-btn" aria-label="Toggle Fullscreen"
+        onclick="toggleFullscreen(event)"></button>
 
-    <!-- Fly-out Menus in the Top-Right-Corner of screen  -->
-    <nav aria-label="Main Menu" class="top-right-corner">
-        <button class="fullscreen-btn icon-btn transparent-btn" aria-label="Toggle Fullscreen"
-            onclick="toggleFullscreen(event)"></button>
+    <!-- Fly-out Actions Menu -->
+    <nav aria-label="Main Menu" id="actions-menu-overlay" class="light-bg hidden hide-when-not-connected">
 
-        <!-- <button class="gamepad-menu-btn icon-btn top-btn "></button>
-        <menu role="menu" class="dropdown-menu-list light-bg">
-            <button onclick="toggleGamepadMenu(event)" role="menuitem">Gamepad Menu N/A</button>
-        </menu> -->
+        <button id='disconnect_btn' style="border-radius: 20px 0 0 20px; width: min-content;">Disconnect from
+            ROV</button>
 
-        <button class="power-menu-btn menu-btn icon-btn"></button>
-        <menu role="menu" class="dropdown-menu-list light-bg">
+        <menu role="menu" class="dropdown-menu-list">
+            <li class="power-menu-icon menu-icon"></li>
             <button onclick="RovActions.shutdownRov()" role="menuitem" class="alt-colors">Shutdown ROV</button>
             <button onclick="RovActions.rebootRov()" role="menuitem" class="alt-colors">Reboot ROV</button>
-            <!-- <button id='disconnect_btn' style="display: none;" role="menuitem" class="alt-colors">Disconnect</button> -->
+            <button onclick="RovActions.restartRovServices()" role="menuitem" class="alt-colors">Restart ROV
+                Services</button>
         </menu>
 
-        <button class="debug-menu-btn menu-btn icon-btn"></button>
-        <menu class="dropdown-menu-list light-bg">
+        <menu class="dropdown-menu-list">
+            <li class="debug-menu-icon menu-icon"></li>
             <button onclick="RovActions.getRovStatusReport()" role="menuitem">System Status</button>
             <button onclick="RovActions.getRovLogs()" role="menuitem">ROV Logs</button>
             <button onclick="window.open('./404.html')" role="menuitem">Local Debug Links</button>
-            <button onclick="RovActions.rePullRovGithubCode()" role="menuitem" class="alt-colors">Pull ROV Code from
-                Github</button>
-            <button onclick="RovActions.restartRovServices()" role="menuitem" class="alt-colors">Restart ROV
-                Services</button>
-            <button onclick="RovActions.enableRovWifi()" role="menuitem" class="alt-colors">Enable ROV Wifi</button>
-            <button onclick="RovActions.disableRovWifi()" role="menuitem" class="alt-colors">Disable ROV Wifi</button>
         </menu>
+
+        <menu class="dropdown-menu-list">
+            <li class="settings-menu-icon menu-icon"></li>
+            <button onclick="RovActions.enableRovWifi()" role="menuitem" class="alt-colors">Enable ROV Wifi</button>
+            <button onclick="RovActions.disableRovWifi()" role="menuitem" class="alt-colors">Disable ROV
+                Wifi</button>
+        </menu>
+
     </nav>
 
     <!-- Bottom Bar with the rov selector and driver Role info / toggle -->
     <div id="rov_connection_bar" class="bottom-center light-bg hidden">
+        <div id="rov_label_container">
+            <hr>
+            <span id="connected_rov_label"></span>
+            <hr>
+        </div>
         <!-- <div class="info-bar-section"> -->
-        <button class="full-round-btn hide-when-not-connected" id='disconnect_btn'
+        <!-- <button class="full-round-btn hide-when-not-connected" id='disconnect_btn'
             aria-label="Disconnect from ROV"><span class="btn-hover-label">Disconnect</span><span class="btn-hover-hide"
                 id="connected_rov_label"></span></span><img
-                src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg" class="button-label-image"></button>
+                src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg" class="button-label-image"></button> -->
         <!-- </div> -->
         <!-- <div class="info-bar-section"> -->
         <button id="take_control_btn" onclick="RovActions.takeControl()"
@@ -478,6 +493,6 @@
     </div>
 
     <!-- load scripts at end so the rest of the page is fully loaded beforehand -->
-    <!-- <script type="module" src="../js/main.js"></script> -->
+    <script type="module" src="../js/main.js"></script>
 
 </body>

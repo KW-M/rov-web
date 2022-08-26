@@ -25,15 +25,21 @@ export class GamepadController {
         gamepad.onGamepadButtonChange = this.handleButtonChange.bind(this)
 
         // setup onscreen emulated gamepad interaction events
-        gamepadEmulator.registerOnScreenGamepadButtonEvents(0, this.buttonHighlightElements.map((elm) => elm.id.startsWith("shoulder_trigger") ? null : elm), "touched", "pressed");
+        gamepadEmulator.registerOnScreenGamepadButtonEvents(0, this.buttonHighlightElements.map((elm) => elm.id.startsWith("shoulder_trigger") ? null : elm), "touched", "pressed")
         gamepadEmulator.registerOnScreenGamepadAxisEvents(0, [{
-            xAxisGpadAxis: 0,
-            yAxisGpadAxis: 1,
+            horizontalGpadAction: { type: "axis", index: 0 },
+            verticalGpadAction: { type: "axis", index: 1 },
             elem: document.getElementById("gamepad-joystick-touch-area-left"),
         }, {
-            xAxisGpadAxis: 2,
-            yAxisGpadAxis: 3,
+            horizontalGpadAction: { type: "axis", index: 2 },
+            verticalGpadAction: { type: "axis", index: 3 },
             elem: document.getElementById("gamepad-joystick-touch-area-right"),
+        }, {
+            verticalGpadAction: { type: "button", index: 3 },
+            elem: document.getElementById("shoulder_trigger_back_right_highlight"),
+        }, {
+            verticalGpadAction: { type: "button", index: 3 },
+            elem: document.getElementById("shoulder_trigger_back_left_highlight"),
         }]);
     }
 
@@ -63,20 +69,20 @@ export class GamepadController {
 
         handleGamepadVisualFeedbackButtonEvents(gamepad.buttons);
 
-        if (buttonsChangedMask[6] || buttonsChangedMask[7]) {
-            handleGamepadVisualFeedbackVariableTriggerButtonEvents(gamepad.buttons, [
-                {
-                    buttonIndex: 6,
-                    buttonElement: document.getElementById("shoulder_trigger_left_back"),
-                    axisRange: 26,
-                },
-                {
-                    buttonIndex: 7,
-                    buttonElement: document.getElementById("shoulder_trigger_right_back"),
-                    axisRange: 26,
-                },
-            ]);
-        }
+        // if (buttonsChangedMask[6] || buttonsChangedMask[7]) {
+        //     handleGamepadVisualFeedbackVariableTriggerButtonEvents(gamepad.buttons, [
+        //         {
+        //             buttonIndex: 6,
+        //             buttonElement: document.getElementById("shoulder_trigger_left_back"),
+        //             axisRange: 26,
+        //         },
+        //         {
+        //             buttonIndex: 7,
+        //             buttonElement: document.getElementById("shoulder_trigger_right_back"),
+        //             axisRange: 26,
+        //         },
+        //     ]);
+        // }
 
         if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
             toggleGamepadHelpScreen();
@@ -127,8 +133,8 @@ export class GamepadController {
             rightIndicatorElement: document.getElementById("r_stick_right_direction_highlight"),
             upHelpText: "Up",
             downHelpText: "Down",
-            leftHelpText: "Crabwalk Left",
-            rightHelpText: "Crabwalk Right",
+            leftHelpText: "Strafe Left",
+            rightHelpText: "Strafe Right",
         }]
         handleGamepadVisualFeedbackAxisEvents(axisStates, 0.4);
     }
@@ -195,12 +201,12 @@ export class GamepadController {
 //     // gamepadEmulator.addEmulatedGamepad(0, gamepadEmulator.DEFAULT_BUTTON_COUNT, gamepadEmulator.DEFAULT_AXIS_COUNT)
 //     gamepadEmulator.registerOnScreenGamepadButtonEvents(0, buttonHighlightElements);
 //     gamepadEmulator.registerOnScreenGamepadAxisEvents(0, [{
-//         xAxisGpadAxis: 0,
-//         yAxisGpadAxis: 1,
+//         horizontalGpadAction: 0,
+//         verticalGpadAction: 1,
 //         elem: document.getElementById("gamepad-joystick-touch-area-left"),
 //     }, {
-//         xAxisGpadAxis: 2,
-//         yAxisGpadAxis: 3,
+//         horizontalGpadAction: 2,
+//         verticalGpadAction: 3,
 //         elem: document.getElementById("gamepad-joystick-touch-area-right"),
 //     }]);
 

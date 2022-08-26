@@ -143,8 +143,18 @@ export const gamepadEmulator = {
                     const joystickData = pointerToJoystickMapping[pointerIdKey];
                     var deltaX = Math.max(Math.min((me.clientX - joystickData.startX) / axisTouchRadius, 1), -1)
                     var deltaY = Math.max(Math.min((me.clientY - joystickData.startY) / axisTouchRadius, 1), -1)
-                    self.moveAxis(gpadIndex, joystickData.xAxisGpadAxis, deltaX);
-                    self.moveAxis(gpadIndex, joystickData.yAxisGpadAxis, deltaY);
+                    // horizontal component
+                    if (joystickData.horizontalGpadAction && joystickData.horizontalGpadAction.type == "axis") {
+                        self.moveAxis(gpadIndex, joystickData.horizontalGpadAction.index, deltaX);
+                    } else if (joystickData.horizontalGpadAction && joystickData.horizontalGpadAction.type == "button") {
+                        self.pressButton(gpadIndex, joystickData.horizontalGpadAction.index, deltaX, true);
+                    }
+                    // vertical component
+                    if (joystickData.verticalGpadAction && joystickData.verticalGpadAction.type == "axis") {
+                        self.moveAxis(gpadIndex, joystickData.verticalGpadAction.index, deltaY);
+                    } else if (joystickData.verticalGpadAction && joystickData.verticalGpadAction.type == "button") {
+                        self.pressButton(gpadIndex, joystickData.verticalGpadAction.index, deltaY, true);
+                    }
                 }
             }
         }
@@ -153,8 +163,18 @@ export const gamepadEmulator = {
             for (const pointerIdKey in pointerToJoystickMapping) {
                 if (pointerIdKey == pointerId) {
                     const joystickData = pointerToJoystickMapping[pointerIdKey];
-                    self.moveAxis(gpadIndex, joystickData.xAxisGpadAxis, 0);
-                    self.moveAxis(gpadIndex, joystickData.yAxisGpadAxis, 0);
+                    // horizontal component
+                    if (joystickData.horizontalGpadAction && joystickData.horizontalGpadAction.type == "axis") {
+                        self.moveAxis(gpadIndex, joystickData.horizontalGpadAction.index, 0);
+                    } else if (joystickData.horizontalGpadAction && joystickData.horizontalGpadAction.type == "button") {
+                        self.pressButton(gpadIndex, joystickData.horizontalGpadAction.index, 0, false);
+                    }
+                    // vertical component
+                    if (joystickData.verticalGpadAction && joystickData.verticalGpadAction.type == "axis") {
+                        self.moveAxis(gpadIndex, joystickData.verticalGpadAction.index, 0);
+                    } else if (joystickData.verticalGpadAction && joystickData.verticalGpadAction.type == "button") {
+                        self.pressButton(gpadIndex, joystickData.verticalGpadAction.index, 0, false);
+                    }
                     delete pointerToJoystickMapping[pointerIdKey];
                 }
             }

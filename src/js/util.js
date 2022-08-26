@@ -1,8 +1,50 @@
+import { EMOJI_MAP } from "./consts";
 
 
 export function clamp(number, max, min) {
     return Math.max(Math.min(number, max), min)
 }
+
+export function getDayOfYear(date = new Date()) {
+    const timestamp1 = Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+    );
+    const timestamp2 = Date.UTC(date.getFullYear(), 0, 0);
+    const differenceInMilliseconds = timestamp1 - timestamp2;
+    const differenceInDays = differenceInMilliseconds / 1000 / 60 / 60 / 24;
+    return differenceInDays;
+}
+
+export function emojiOfTheDay() {
+    let dayOfYear = getDayOfYear();
+    console.log(dayOfYear, EMOJI_MAP)
+    return EMOJI_MAP[dayOfYear]
+}
+
+export function hexToEmojiEncoding(hexString, itterCount) {
+    var out = ""
+    var emojiCount = BigInt(EMOJI_MAP.length)
+    hexString = "0x" + hexString
+    console.log(hexString, emojiCount);
+    var value = BigInt(hexString);
+    console.log("BigInt", value);
+    while (itterCount > 0 && value > 0) {
+        console.log("new mod ", BigInt.asUintN(8, value % emojiCount))
+        out += EMOJI_MAP[BigInt.asUintN(8, value % emojiCount)];
+        value = value / emojiCount;
+        itterCount--
+    }
+    return out
+}
+
+export function escapeUnicode(str) {
+    //https://stackoverflow.com/questions/62449035/escape-all-unicode-non-ascii-characters-in-a-string-with-javascript
+    return [...str].map(c => /^[\x00-\x7F]$/.test(c) ? c : c.split("").map(a => "\\u" + a.charCodeAt().toString(16).padStart(4, "0")).join("")).join("");
+}
+
+
 
 
 /* generateStateChangeFunction is a function generator for an xstate machine that will return a function that will run a callback and send the named state transition with the data or event from the calling transition */

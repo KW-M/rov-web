@@ -8,6 +8,7 @@ const gamepadHelpTooltip = document.querySelector('#gamepad-help-tooltip');
 const gamepadHelpTooltipText = document.querySelector('#gamepad-help-text');
 const defaultTooltipTarget = document.querySelector('#select_button');
 var currentPopperTarget = defaultTooltipTarget;
+var touchingButtonsCount = 0;
 
 const helpTooltip = createPopper({
     getBoundingClientRect: () => currentPopperTarget.getBoundingClientRect(),
@@ -135,6 +136,16 @@ export function handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHe
     });
 }
 
+function setButtonTouchCount(addTouch) {
+    touchingButtonsCount += addTouch ? 1 : 0
+    if (touchingButtonsCount <= 0) {
+        touchingButtonsCount = 0
+        document.body.classList.remove("driving-now")
+    } else {
+        document.body.classList.add("driving-now")
+    }
+}
+
 function setGamepadButtonClass(btnIndx, gamepadButtonStates) {
     var gpadButton = gamepadButtonStates[btnIndx];
     var btnElem = gpadButtonHighlightElements[btnIndx];
@@ -154,8 +165,11 @@ function setGamepadButtonClass(btnIndx, gamepadButtonStates) {
 }
 
 export function handleGamepadVisualFeedbackButtonEvents(gamepadButtonStates) {
+    touchingButtonsCount = 0;
     for (var btnIndx = 0; btnIndx < gamepadButtonStates.length; btnIndx++) {
         setGamepadButtonClass(btnIndx, gamepadButtonStates);
+        console.log("btn press", gamepadButtonStates[btnIndx].pressed)
+        setButtonTouchCount(gamepadButtonStates[btnIndx].pressed == true);
     }
 }
 

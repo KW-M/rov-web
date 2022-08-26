@@ -1,16 +1,18 @@
 import { createMachine, interpret } from "xstate";
 import Peer from "peerjs"
-import { v4 as uuidV4 } from "uuid"
+import { v4 as uuidV4, parse as uuidParse } from "uuid"
 // import * as consts from "./consts";
+import * as shortid from "short-unique-id"
 
-import { generateStateChangeFunction } from "./util";
+import { globalContext } from "./globalContext.js"
+import { generateStateChangeFunction, hexToEmojiEncoding, escapeUnicode } from "./util";
 import { showToastMessage, showLoadingUi, setClientPeerIdDisplay, showReloadingWebsiteUi, hideLoadingUi } from "./ui";
 
 const FATAL_PEER_ERROR_TYPES = [
     "network", "unavailable-id", "invalid-id", "invalid-key", "browser-incompatible", "webrtc", "server-error", "ssl-unavailable", "socket-error", "socket-closed"
 ];
 
-export const startThisPeerSetupMachine = (globalContext, sendParentCallback) => {
+export const startThisPeerSetupMachine = (sendParentCallback) => {
     let eventHandlers = {}
 
     const sendEventToSelf = (event) => {
@@ -114,20 +116,20 @@ export const startThisPeerSetupMachine = (globalContext, sendParentCallback) => 
                     // get our saved peer id or make a new one if one isn't saved:
                     var ourPeerId = localStorage.getItem('thisPeerId');
                     if (!ourPeerId) {
-                        ourPeerId = "iROV_Pilot_" + uuidV4().slice(0, 8);
+                        ourPeerId = "iROV-Client-" + hexToEmojiEncoding(uuidV4().substring(10, 20).replaceAll("-", ""), 2);
                         localStorage.setItem('thisPeerId', ourPeerId); // save for future runs
                     }
                     setClientPeerIdDisplay(ourPeerId);
 
                     // setup the peer object and event listeners:
-                    globalContext.thisPeer = new Peer(ourPeerId, globalContext.peerServerConfig);
+                    globalContext.thisPeer = new Peer(escapeUnicode(ourPeerId).replaceAll("\\u", "u") + "b", globalContext.peerServerConfig);
                     eventHandlers['onOpen'] = generateStateChangeFunction(sendEventToSelf, 'ON_OPEN', null, () => {
                         showToastMessage("Connected to Peerjs Server!");
                         // tell the main ui that the thisPeer object is ready to use:
                         sendParentCallback("THIS_PEER_READY");
                     });
                     globalContext.thisPeer.on('open', eventHandlers['onOpen']);
-                    eventHandlers['onError'] = generateStateChangeFunction(sendEventToSelf, 'ON_ERROR', null);
+                    eventHandlers['onError'] = generateStateChangeFunction(sendEventToSelf, 'ON_ERROR', null, (e) => { console.warn("thisPeerError: ", e) });
                     globalContext.thisPeer.on('error', eventHandlers['onError']);
                     eventHandlers['onClose'] = generateStateChangeFunction(sendEventToSelf, 'ON_CLOSE', null, () => { showToastMessage("Peerjs Server Connection Closed!") });
                     globalContext.thisPeer.on('close', eventHandlers['onClose']);

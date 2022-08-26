@@ -1,9 +1,10 @@
 import { createMachine, interpret } from "xstate";
 import { showToastMessage, showLivestreamUi, hideLivestreamUi, showLoadingUi, hideLoadingUi } from "./ui"
 import { generateStateChangeFunction } from "./util";
+import { globalContext } from "./globalContext.js"
 
 // main machine function
-export const startRovMediaChannelMachine = (globalContext) => {
+export const startRovMediaChannelMachine = () => {
 
     let eventHandlers = {}
 

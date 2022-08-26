@@ -1,15 +1,17 @@
 import { createMachine, interpret } from "xstate";
 import { showToastMessage, showROVConnectingUi, showROVConnectedUi, showROVDisconnectedUi } from "./ui"
-import { calculateDesiredMotion, generateStateChangeFunction } from "./util";
-import { MessageHandler, RovActions } from "./messageHandler";
+import { calculateDesiredMotion, emojiOfTheDay, generateStateChangeFunction } from "./util";
+import { MessageHandler } from "./messageHandler";
+import { RovActions } from "./rovActions";
 import { ROV_PEERID_BASE } from "./consts";
+import { globalContext } from "./globalContext.js"
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
 const messageEncoder = new TextEncoder(); // always utf-8
 const messageDecoder = new TextDecoder(); // always utf-8
 
 // main machine function
-export const startRovConnectionMachine = (globalContext, sendParentCallback) => {
+export const startRovConnectionMachine = (sendParentCallback) => {
 
     let eventHandlers = {}
 
@@ -135,7 +137,7 @@ export const startRovConnectionMachine = (globalContext, sendParentCallback) => 
                     'connectToRov': () => {
 
                         // get the rovPeerId string by combining the end number and rov peer id base
-                        const rovPeerId = ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber
+                        const rovPeerId = ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber
 
                         // connect to the rov
                         console.info("connecting to rov peer: " + rovPeerId)
@@ -189,13 +191,6 @@ export const startRovConnectionMachine = (globalContext, sendParentCallback) => 
                         MessageHandler.setSendMessageCallback((message) => {
                             const encodedMessage = messageEncoder.encode(message);
                             rovDataConnection.send(encodedMessage);
-                        });
-
-                        // Handle gamepad events
-                        console.log(globalContext.gpadCtrl);
-                        globalContext.gpadCtrl.setupExternalEventListenerCallbacks((gamepad, buttonsChangedMask) => { }, (gamepad) => {
-                            var { thrustVector, turnRate } = calculateDesiredMotion(gamepad.axes);
-                            RovActions.moveRov(thrustVector, turnRate);
                         });
 
                         // handle reciving messages from rov:

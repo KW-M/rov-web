@@ -166,11 +166,6 @@ button .button-label-image {
   padding: 3px;
 }
 
-body:not(.rov-connected) nav .menu-btn,
-body:not(.rov-connected) nav .dropdown-menu-list {
-  display: none;
-}
-
 .top-center {
   position: absolute;
   z-index: 6;
@@ -201,31 +196,42 @@ body:not(.rov-connected) nav .dropdown-menu-list {
 }
 
 
+#top-ui-bar {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+
+  box-sizing: border-box;
+  height: 40px;
+  padding: 0 40px;
+
+  justify-items: stretch;
+}
+
+#top-ui-bar>div {
+  flex: 1;
+
+  margin: 0 8px;
+}
 
 
 .sensor-view {
-  /* margin: 0; */
-  position: absolute;
   z-index: 6;
-  top: 3px;
-  left: 3px;
 
   display: flex;
   align-items: center;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
 
   box-sizing: border-box;
   width: auto;
+  margin: auto;
   /* height: 60px; */
   padding: 0 6px;
 
   border: 3px solid black;
   border-radius: 6px;
-}
-
-body:not(.rov-connected) .sensor-view {
-  display: none;
 }
 
 .sensor-view p {
@@ -260,10 +266,19 @@ body:not(.rov-connected) .sensor-view {
     background: lightblue;
   }
 
+  #actions-menu-overlay {
+    flex-direction: column;
+  }
+
+  #top-ui-bar {
+    padding-left: 2px;
+  }
+
   .sensor-view {
     flex-direction: column;
 
     width: 60px;
+    margin-left: 0;
     padding: 6px 0;
   }
 
@@ -336,6 +351,7 @@ table.top-left-corner td {
 }
 
 #rov_connection_bar {
+  z-index: 100;
   bottom: 0;
 
   overflow: hidden;
@@ -389,6 +405,29 @@ table.top-left-corner td {
 
   font-weight: normal;
 } */
+
+#rov_label_container {
+  display: flex;
+  align-content: center;
+
+  margin: 3px auto 8px;
+
+  font-weight: bold;
+}
+
+#rov_label_container span {
+  margin: 0 6px;
+}
+
+#rov_label_container hr {
+  display: block;
+  flex: 1;
+
+  height: 2px;
+
+  border: none;
+  border-bottom: 2px solid black;
+}
 
 .button-group-label,
 .button-group-btn {
@@ -462,30 +501,40 @@ table.top-left-corner td {
   /* border-radius: 0 0 10px 10px; */
 }
 
-.power-menu-btn {
+.power-menu-icon {
   background-image: url("../images/ui-elements/settings_power_FILL1_wght400_GRAD200_opsz40.svg") !important;
 }
 
-.gamepad-menu-btn {
+.gamepad-menu-icon {
   background-image: url("../images/ui-elements/gamepad_black_24dp.svg") !important;
 }
 
-.debug-menu-btn {
+.debug-menu-icon {
   background-image: url("../images/ui-elements/fact_check_FILL1_wght400_GRAD200_opsz40.svg") !important;
 }
 
-.fullscreen-btn {
-  position: relative;
+.settings-menu-icon {
+  background-image: url("../images/ui-elements/settings_FILL1_wght600_GRAD0_opsz40.svg") !important;
+}
 
-  width: 40px;
-  height: 40px;
+.fullscreen-btn {
+  position: fixed;
+  top: 3px;
+  top: 2px;
+  right: 3px;
+  right: 1px;
+
+  display: block;
+
+  width: 48px;
+  height: 48px;
   margin: 0;
-  margin-left: auto;
 
   border-radius: 100px;
   background-image: url("../images/ui-elements/open_in_full_black_24dp.svg");
-  background-size: 33px;
+  background-size: 36px;
 }
+
 
 .fullscreen-btn:hover,
 .fullscreen-btn:focus,
@@ -500,36 +549,81 @@ table.top-left-corner td {
   background-image: url("../images/ui-elements/close_fullscreen_black_24dp.svg") !important;
 }
 
-.dropdown-menu-list:focus-within,
-.dropdown-menu-list:hover,
-.icon-btn:hover+.dropdown-menu-list {
-  pointer-events: all;
 
-  opacity: 1;
+
+#actions-menu-button {
+  position: relative;
+
+  width: 67px;
+  height: 34px;
+  margin: 0 auto;
+
+  border-color: black;
+  border-radius: 100px;
+  background-color: #000000c2;
+  background-image: url("../images/ui-elements/more_horiz_FILL1_wght600_GRAD200_opsz24.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 33px;
+}
+
+#actions-menu-button:hover,
+#actions-menu-button:focus,
+#actions-menu-button:active {
+  border-color: white;
+  background-color: #000000c2;
+  background-image: url("../images/ui-elements/more_horiz_FILL1_wght600_GRAD200_opsz24.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 33px;
+}
+
+#actions-menu-overlay {
+  position: fixed;
+  z-index: 1000000;
+  top: 43px;
+  right: 40px;
+
+  display: flex;
+  overflow: auto;
+  flex-direction: row;
+
+  max-width: calc(100vw - 80px);
+  max-height: calc(100vh - 80px);
+  margin: auto;
+
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+#actions-menu-overlay.hidden {
+  display: none;
+}
+
+.menu-icon {
+  min-height: 40px;
+  margin-bottom: 4px;
+
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 38px;
 }
 
 menu.dropdown-menu-list {
-  position: absolute;
-  top: 52px;
-  right: 4px;
+  position: relative;
 
   display: flex;
-  overflow: hidden;
+  overflow: visible;
   flex-direction: column;
 
   min-width: 200px;
-  min-height: 168px;
-  padding: 4px 6px;
-  padding-right: 6px;
-  padding-right: 62px;
+  margin: 0;
+  padding: 12px;
+  /* 0 12px 12px; */
 
   list-style-type: none;
 
-  pointer-events: none;
-
-  opacity: 0;
-  border-radius: 8px;
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
+  border-right: 2px solid #0000003d;
 }
 
 button[role="menuitem"] {
@@ -594,15 +688,15 @@ body.fullscreen-open #video-livestream {
 /* ********* Compass Display ********* */
 
 .compass {
-  position: absolute;
+  position: relative;
   top: 4px;
-  right: 77px;
 
   overflow: hidden;
 
   box-sizing: border-box;
   width: 175px;
   height: 38px;
+  margin: 0 auto;
 
   border: 2px solid #000;
   border-radius: 20px 20px 0 0;
@@ -622,7 +716,6 @@ body.fullscreen-open #video-livestream {
   background-repeat: repeat-x;
   background-position: center center;
   background-size: 360px 34px;
-
 }
 
 .compass .line {
@@ -691,12 +784,12 @@ body.gamepad-help-open #gamepad-help-notice {
 
 body:not(.rov-connected) .hide-when-not-driver,
 body:not(.rov-driver) .hide-when-not-driver {
-  display: none;
+  display: none !important;
 }
 
 body:not(.rov-connected) .hide-when-not-connected,
 body.rov-driver .hide-when-driver {
-  display: none;
+  display: none !important;
 }
 
 #too-many-gamepads-notice,
@@ -837,7 +930,7 @@ body.gamepad-help-open #onscreen-gamepad-right {
 }
 
 body.gamepad-help-open #gamepad-help-tooltip {
-  display: block;
+  display: block !important;
 }
 
 body.rov-driver #gamepad-container:not(.gamepad-connected) #onscreen-gamepad-left {

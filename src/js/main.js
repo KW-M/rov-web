@@ -1,25 +1,16 @@
 import { ROV_PEERID_BASE } from "./consts.js";
 import { inspect } from "@xstate/inspect";
 import { GamepadController } from "./gamepad.js";
-import { getURLQueryStringVariable } from "./util.js";
+import { emojiOfTheDay, getURLQueryStringVariable } from "./util.js";
 import { hideLoadingUi, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, setupSwitchRovBtnClickHandlers, showROVDisconnectedUi, showToastMessage } from "./ui.js";
+import { globalContext } from "./globalContext.js"
 
-let globalContext = {
-    debugXstateMode: !!getURLQueryStringVariable("debug"),
-    peerServerConfig: {},
-    rovIpAddr: "",
-    rovPeerIdEndNumber: parseInt(localStorage.getItem("rovPeerIdEndNumber") || 0),
-    attemptingNewRovPeerId: false,
-    thisPeer: null,
-}
-
-window.globalContext = globalContext;
-
-/* init gamepad support */
-globalContext.gpadCtrl = new GamepadController();
+globalContext.debugXstateMode = !!getURLQueryStringVariable("debug");
+globalContext.rovPeerIdEndNumber = parseInt(localStorage.getItem("rovPeerIdEndNumber") || 0);
+globalContext.gpadCtrl = new GamepadController();/* init gamepad support */
 
 // Show the rov name in the ui:
-setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
+setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
 
 // Show the xstate inspector if the debug query string is present
 if (globalContext.debugXstateMode) {
@@ -33,15 +24,14 @@ import { runSiteInitMachine } from "./siteInit";
 import { startRovConnectionMachine } from "./rovConnectionMachine";
 import { startThisPeerSetupMachine } from "./thisPeerSetupMachine.js";
 import { startRovMediaChannelMachine } from "./rovMediaChannelMachine";
+import { RovActions } from "./rovActions";
 
 
-runSiteInitMachine(globalContext, (eventName) => {
+runSiteInitMachine((eventName) => {
     hideLoadingUi("internet-check");
-    console.log("siteInit: ", eventName);
 
-    const RovMediaChannelMachine = startRovMediaChannelMachine(globalContext);
-
-    const RovConnectionMachine = startRovConnectionMachine(globalContext, (eventName) => {
+    const RovMediaChannelMachine = globalContext.RovMediaChannelMachine = startRovMediaChannelMachine();
+    const RovConnectionMachine = globalContext.RovConnectionMachine = startRovConnectionMachine((eventName) => {
         console.log("rovConnectionMachine: ", eventName);
         if (eventName === "ROV_CONNECTION_FAILED") {
             showToastMessage("ROV Connection Failed");
@@ -51,35 +41,27 @@ runSiteInitMachine(globalContext, (eventName) => {
         }
     })
 
-    const ThisPeerSetupMachine = startThisPeerSetupMachine(globalContext, (eventName) => {
+    const ThisPeerSetupMachine = startThisPeerSetupMachine((eventName) => {
         console.log("ThisPeerSetupMachine: ", eventName);
         RovConnectionMachine.send(eventName); // EventName WILL BE EITHER: "THIS_PEER_DESTROYED", "THIS_PEER_READY";
     });
 
-    setupConnectBtnClickHandler(() => {
-        RovConnectionMachine.send("DO_CONNECT");
-    });
-
-    setupDisconnectBtnClickHandler(() => {
-        RovConnectionMachine.send("DO_DISCONNECT");
-        RovMediaChannelMachine.send("DO_DISCONNECT");
-    });
+    setupConnectBtnClickHandler(RovActions.connectToRov);
+    setupDisconnectBtnClickHandler(RovActions.disconnectFromRov);
 
     const switchToNextRovPeerId = () => {
         globalContext.rovPeerIdEndNumber++;
-        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
+        setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
-        RovConnectionMachine.send("DO_DISCONNECT");
-        RovMediaChannelMachine.send("DO_DISCONNECT");
-        // RovConnectionMachine.send("DO_CONNECT");
+        RovActions.disconnectFromRov();
     }
+
     const switchToPrevRovPeerId = () => {
         globalContext.rovPeerIdEndNumber = Math.max(0, globalContext.rovPeerIdEndNumber - 1);
-        setCurrentRovName(ROV_PEERID_BASE + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
+        setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
-        RovConnectionMachine.send("DO_DISCONNECT");
-        RovMediaChannelMachine.send("DO_DISCONNECT");
-        // RovConnectionMachine.send("DO_CONNECT");
+        RovActions.disconnectFromRov();
     }
+
     setupSwitchRovBtnClickHandlers(switchToPrevRovPeerId, switchToNextRovPeerId);
 })

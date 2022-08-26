@@ -1,5 +1,5 @@
 import Toastify from 'toastify-js'
-import { isArray } from 'xstate/lib/utils';
+import { isArray, keys } from 'xstate/lib/utils';
 import { LOADING_MESSAGES } from './consts';
 
 // -------------------------------------------------------------
@@ -27,19 +27,32 @@ export function createTitle(titleName) {
 // -----  White Backdrop -----
 
 const backdrop = document.getElementById("backdrop")
-let backdropClickCallback = null
-export function showBackdrop(callback) {
+let backdropClickCallbacks = new Map();
+backdrop.onClick = () => { hideBackdrop(null, true); }
+
+export function showBackdrop(callback, modal_id) {
+    callback = callback || null;
+    backdropClickCallbacks.set(modal_id, callback);
     backdrop.classList.remove("hidden")
-    backdropClickCallback = function () {
-        if (callback) callback(null)
-        hideBackdrop()
-    }
-    backdrop.addEventListener("click", backdropClickCallback)
 }
 
-export function hideBackdrop() {
-    backdrop.classList.add("hidden")
-    backdrop.removeEventListener("click", backdropClickCallback)
+export function hideBackdrop(modal_id, run_callback) {
+    if (modal_id && backdropClickCallbacks.has(modal_id)) {
+        // run callback
+        let callback = backdropClickCallbacks.get(modal_id);
+        if (run_callback && callback) callback(null);
+        backdropClickCallbacks.delete(modal_id);
+    } else {
+        let keys = backdropClickCallbacks.keys();
+        let lastKey = keys[keys.length - 1]
+        let callback = backdropClickCallbacks.get(lastKey)
+        if (run_callback && callback) callback(null);
+        backdropClickCallbacks.delete(lastKey);
+    }
+
+    if (backdropClickCallbacks.size == 0) {
+        backdrop.classList.add("hidden")
+    }
 }
 
 // -----  Toast Notifications -----
@@ -91,7 +104,7 @@ let passwordPromptOpen = false
 export function showPasswordPrompt(message, callback) {
 
     function closePasswordPrompt(passwordValue) {
-        hideBackdrop()
+        hideBackdrop(message)
         if (toast) toast.hideToast()
         passwordPromptOpen = false;
         if (callback) callback(passwordValue)
@@ -116,7 +129,7 @@ export function showPasswordPrompt(message, callback) {
     toast = showToastDialog([title, input].concat(btns), { gravity: "bottom", duration: -1, style: { "zIndex": 2147480001 } }, ["password-prompt"])
     showBackdrop(() => {
         closePasswordPrompt(null)
-    })
+    }, message)
     return toast
 }
 
@@ -134,13 +147,13 @@ export function showScrollableTextPopup(title, callback) {
         },
         close: () => {
             toast.hideToast()
-            hideBackdrop()
+            hideBackdrop(title)
             if (callback) callback(null)
         }
     }
     const btns = createButtons(["Close"], popup.close)
     toast = showToastDialog([titleElm, content].concat(btns), { gravity: "bottom", duration: -1 }, ["scrollable-text-popup"])
-    showBackdrop(popup.close)
+    showBackdrop(popup.close, title)
     return popup
 }
 
@@ -148,7 +161,7 @@ export function showChoiceDialog(title, buttons, callback) {
     let toast = null
     const titleElm = createTitle(title)
     const closeFunc = () => {
-        hideBackdrop()
+        hideBackdrop(title)
         toast.hideToast()
     }
     const btns = createButtons([...buttons, "Cancel"], (chosenButton) => {
@@ -157,7 +170,7 @@ export function showChoiceDialog(title, buttons, callback) {
         callback(chosenButton);
     })
     toast = showToastDialog([titleElm].concat(btns), { gravity: "bottom", duration: -1 }, ["choice-popup"]);
-    showBackdrop(closeFunc)
+    showBackdrop(closeFunc, title)
     return toast
 }
 
@@ -302,7 +315,7 @@ var pressureDisplay = document.getElementById('pressure_value');
 var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
     if (sensorValues.pressure) {
-        pressureDisplay.innerText = sensorValues.pressure / (1023.6 * 9.8065); // to meters
+        pressureDisplay.innerText = sensorValues.pressure / 0.001 * (1023.6 * 9.8065); // to meters
     }
     if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
     if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
@@ -310,6 +323,18 @@ export function updateDisplayedSensorValues(sensorValues) {
     //             // Call the function to use the data on the page.
     //
 }
+
+let actionsMenu = document.getElementById("actions-menu-overlay")
+let actionsMenuBtn = document.getElementById("actions-menu-button")
+let actionsMenuHidden = true;
+export function toggleActionsMenu() {
+    actionsMenuHidden = !actionsMenuHidden;
+    if (actionsMenuHidden)
+        actionsMenu.classList.add("hidden")
+    else
+        actionsMenu.classList.remove("hidden")
+}
+actionsMenuBtn.onclick = toggleActionsMenu;
 
 
 /***** COMPASS AND ORIENTATION RELATED UI *******/
