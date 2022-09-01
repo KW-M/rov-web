@@ -326,6 +326,9 @@ table.top-left-corner td {
 
 #connect_btn_options,
 #scan_for_ip_btn {
+  width: 48%;
+  max-width: 280px;
+
   transform: translate(-50%, 20vh) scale(2);
 }
 
@@ -736,9 +739,10 @@ body.fullscreen-open #video-livestream {
   position: absolute;
   z-index: 0;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+
+  width: 100%;
+  height: 100%;
 
   pointer-events: none;
 }

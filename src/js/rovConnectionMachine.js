@@ -1,9 +1,8 @@
 import { createMachine, interpret } from "xstate";
 import { showToastMessage, showROVConnectingUi, showROVConnectedUi, showROVDisconnectedUi } from "./ui"
-import { calculateDesiredMotion, emojiOfTheDay, generateStateChangeFunction } from "./util";
+import { calculateDesiredMotion, emojiOfTheDay, generateStateChangeFunction, getROVName } from "./util";
 import { MessageHandler } from "./messageHandler";
 import { RovActions } from "./rovActions";
-import { ROV_PEERID_BASE } from "./consts";
 import { globalContext } from "./globalContext.js"
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
@@ -137,7 +136,7 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                     'connectToRov': () => {
 
                         // get the rovPeerId string by combining the end number and rov peer id base
-                        const rovPeerId = ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber
+                        const rovPeerId = getROVName(globalContext.rovPeerIdEndNumber);
 
                         // connect to the rov
                         console.info("connecting to rov peer: " + rovPeerId)
@@ -227,7 +226,6 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                             if (connectionState == "disconnected" && datachannelTimeoutCountdown > 0) {
                                 datachannelTimeoutCountdown--;
                                 showToastMessage("Waiting for ROV to Reconnect: " + datachannelTimeoutCountdown, 1000)
-
                             } else if (connectionState == "connected" && lastIceConnectionState != "connected") {
                                 datachannelTimeoutCountdown = 10
                                 showToastMessage("ROV Reconnected!", 2000)

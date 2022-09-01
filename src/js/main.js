@@ -1,7 +1,6 @@
-import { ROV_PEERID_BASE } from "./consts.js";
 import { inspect } from "@xstate/inspect";
 import { GamepadController } from "./gamepad.js";
-import { emojiOfTheDay, getURLQueryStringVariable } from "./util.js";
+import { emojiOfTheDay, getROVName, getURLQueryStringVariable } from "./util.js";
 import { hideLoadingUi, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, setupSwitchRovBtnClickHandlers, showROVDisconnectedUi, showToastMessage } from "./ui.js";
 import { globalContext } from "./globalContext.js"
 
@@ -10,7 +9,7 @@ globalContext.rovPeerIdEndNumber = parseInt(localStorage.getItem("rovPeerIdEndNu
 globalContext.gpadCtrl = new GamepadController();/* init gamepad support */
 
 // Show the rov name in the ui:
-setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
+setCurrentRovName();
 
 // Show the xstate inspector if the debug query string is present
 if (globalContext.debugXstateMode) {
@@ -25,7 +24,6 @@ import { startRovConnectionMachine } from "./rovConnectionMachine";
 import { startThisPeerSetupMachine } from "./thisPeerSetupMachine.js";
 import { startRovMediaChannelMachine } from "./rovMediaChannelMachine";
 import { RovActions } from "./rovActions";
-
 
 runSiteInitMachine((eventName) => {
     hideLoadingUi("internet-check");
@@ -51,15 +49,15 @@ runSiteInitMachine((eventName) => {
 
     const switchToNextRovPeerId = () => {
         globalContext.rovPeerIdEndNumber++;
-        setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
+        setCurrentRovName();
         RovActions.disconnectFromRov();
     }
 
     const switchToPrevRovPeerId = () => {
         globalContext.rovPeerIdEndNumber = Math.max(0, globalContext.rovPeerIdEndNumber - 1);
-        setCurrentRovName(ROV_PEERID_BASE + emojiOfTheDay() + globalContext.rovPeerIdEndNumber, globalContext.rovPeerIdEndNumber);
         localStorage.setItem("rovPeerIdEndNumber", globalContext.rovPeerIdEndNumber);
+        setCurrentRovName();
         RovActions.disconnectFromRov();
     }
 

@@ -5,7 +5,7 @@ import { v4 as uuidV4, parse as uuidParse } from "uuid"
 import * as shortid from "short-unique-id"
 
 import { globalContext } from "./globalContext.js"
-import { generateStateChangeFunction, hexToEmojiEncoding, escapeUnicode } from "./util";
+import { generateStateChangeFunction, getRandomName } from "./util";
 import { showToastMessage, showLoadingUi, setClientPeerIdDisplay, showReloadingWebsiteUi, hideLoadingUi } from "./ui";
 
 const FATAL_PEER_ERROR_TYPES = [
@@ -116,13 +116,13 @@ export const startThisPeerSetupMachine = (sendParentCallback) => {
                     // get our saved peer id or make a new one if one isn't saved:
                     var ourPeerId = localStorage.getItem('thisPeerId');
                     if (!ourPeerId) {
-                        ourPeerId = "iROV-Client-" + hexToEmojiEncoding(uuidV4().substring(10, 20).replaceAll("-", ""), 2);
+                        ourPeerId = getRandomName();
                         localStorage.setItem('thisPeerId', ourPeerId); // save for future runs
                     }
                     setClientPeerIdDisplay(ourPeerId);
 
                     // setup the peer object and event listeners:
-                    globalContext.thisPeer = new Peer(escapeUnicode(ourPeerId).replaceAll("\\u", "u") + "b", globalContext.peerServerConfig);
+                    globalContext.thisPeer = new Peer(ourPeerId, globalContext.peerServerConfig);
                     eventHandlers['onOpen'] = generateStateChangeFunction(sendEventToSelf, 'ON_OPEN', null, () => {
                         showToastMessage("Connected to Peerjs Server!");
                         // tell the main ui that the thisPeer object is ready to use:

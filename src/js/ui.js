@@ -1,6 +1,9 @@
 import Toastify from 'toastify-js'
 import { isArray, keys } from 'xstate/lib/utils';
+import { ROV_PEERID_BASE } from "./consts.js";
 import { LOADING_MESSAGES } from './consts';
+import { globalContext } from './globalContext';
+import { getROVName } from './util';
 
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------
@@ -157,6 +160,7 @@ export function showScrollableTextPopup(title, callback) {
     return popup
 }
 
+
 export function showChoiceDialog(title, buttons, callback) {
     let toast = null
     const titleElm = createTitle(title)
@@ -206,11 +210,14 @@ export function showReloadingWebsiteUi() {
     showLoadingUi("reloading-site");
 }
 
-export function setCurrentRovName(name, index) {
-    connectBtn.innerText = "Connect to " + name;
+export function setCurrentRovName() {
+    let index = globalContext.rovPeerIdEndNumber
+    let name = getROVName(index);
+    let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
+    connectBtn.innerText = "Connect to " + uiName;
     if (index == 0) switchToPrevRovBtn.setAttribute("disabled", true);
     else switchToPrevRovBtn.removeAttribute("disabled");
-    connectedRovLabel.innerText = name
+    connectedRovLabel.innerText = uiName
 }
 
 export function setupConnectBtnClickHandler(callback) {

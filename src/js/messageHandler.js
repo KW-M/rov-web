@@ -2,7 +2,7 @@ import { globalContext } from "./globalContext.js"
 import { showPasswordPrompt, showScrollableTextPopup, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
 import { v4 as uuidV4 } from "uuid"
 
-
+let rovUUID = "";
 let lastTimeRecvdPong = NaN;
 
 export class MessageHandler {
@@ -37,9 +37,9 @@ export class MessageHandler {
         showPasswordPrompt("Please enter the driver password", (password) => {
             if (password) {
                 const msg_data = {
-                    "cid": msg_cid,
                     "action": "password_attempt",
-                    "val": password
+                    "val": password,
+                    "cid": msg_cid,
                 };
                 MessageHandler.sendRovMessage(msg_data, null);
             } else {
@@ -49,42 +49,18 @@ export class MessageHandler {
         })
     }
 
-    static handleReplyMsgRecived(msg_data, msg_cid) {
-        const msg_status = msg_data["status"];
-        const msg_value = msg_data["val"];
-        const replyContinuityCallback = MessageHandler.replyContinuityCallbacks[msg_cid].callback
-
-
-        if (msg_status == "error") {
-            console.warn("Rov Action Error: " + msg_value);
-            showToastMessage(msg_value);
-
-        } else if (msg_status == "pong") {
-            console.log("Ping->Pong received");
-            lastTimeRecvdPong = Date.now();
-            const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msg_value) // since the rpi replies with the ms time we sent in the ping in the pong message
-            updatePingDisplay(networkPingDelay);
-
-        } else if (msg_status == "done") {
-            if (replyContinuityCallback) replyContinuityCallback(msg_data);
-            else showToastMessage(MessageHandler.replyContinuityCallbacks[msg_cid].originalMsgData.action + ": OK");
-        } else if (msg_status == "password-required") {
-            if (replyContinuityCallback) replyContinuityCallback(msg_data);
-            MessageHandler.handlePasswordChallenge(msg_cid);
-        } else if (msg_status == "password-invalid") {
-            if (replyContinuityCallback) replyContinuityCallback(msg_data);
-            showToastMessage("Invalid password");
-            if (replyContinuityCallback) replyContinuityCallback(msg_data);
-            MessageHandler.handlePasswordChallenge(msg_cid);
-        } else if (msg_status == "password-accepted") {
-            showToastMessage("Password accepted");
-            if (replyContinuityCallback) replyContinuityCallback(msg_data);
-            const originalMsgData = MessageHandler.replyContinuityCallbacks[msg_cid].original_msg
-            console.log("originalMsgData: ", originalMsgData);
-            MessageHandler.sendRovMessage(originalMsgData, null);
-        } else if (replyContinuityCallback) {
-            replyContinuityCallback(msg_data);
-        }
+    static handleTokenChallenge(msg_cid, msg_value) {
+        rovUUID = msg_value;
+        const savedToken = localStorage.getItem(rovUUID + "_AuthToken")
+        if (savedToken) {
+            const msg_data = {
+                "action": "authtoken_attempt",
+                "val": savedToken,
+                "cid": msg_cid,
+            };
+            MessageHandler.sendRovMessage(msg_data, null);
+            return true
+        } else return false
     }
 
     static handleDriverChange(newDriverId) {
@@ -97,23 +73,6 @@ export class MessageHandler {
             updateRoleDisplay(false);
             globalContext.isRovDriver = false;
         }
-    }
-
-    static handleBroadcastMsgRecived(msg_data) {
-        const msg_status = msg_data["status"];
-        const msg_value = msg_data["val"];
-
-        if (msg_status == "error") {
-            console.error("Rov Error: " + msg_value);
-
-        } else if (msg_status == "sensor-update") {
-
-            updateDisplayedSensorValues(msg_value);
-
-        } else if (msg_status == "driver-changed") {
-            MessageHandler.handleDriverChange(msg_value);
-        }
-
     }
 
     static handleRecivedMessage(messageString) {
@@ -134,5 +93,60 @@ export class MessageHandler {
         }
     }
 
+    static handleReplyMsgRecived(msg_data, msg_cid) {
+        const msg_status = msg_data["status"];
+        const msg_value = msg_data["val"];
+        const replyContinuityCallback = MessageHandler.replyContinuityCallbacks[msg_cid].callback
+
+
+        if (msg_status == "error") {
+            console.warn("Rov Action Error: " + msg_value);
+            showToastMessage(msg_value);
+        } else if (msg_status == "pong") {
+            console.log("Ping->Pong received");
+            lastTimeRecvdPong = Date.now();
+            const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msg_value) // since the rpi replies with the ms time we sent in the ping in the pong message
+            updatePingDisplay(networkPingDelay);
+        } else if (msg_status == "done") {
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
+            else showToastMessage(MessageHandler.replyContinuityCallbacks[msg_cid].originalMsgData.action + ": OK");
+        } else if (msg_status == "password-required") {
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
+            let tokenAvailable = MessageHandler.handleTokenChallenge(msg_cid, msg_value) // try to use a saved token if we have one instead of a password
+            if (!tokenAvailable) MessageHandler.handlePasswordChallenge(msg_cid);
+        } else if (msg_status == "password-invalid" || msg_status == "authtoken-invalid") {
+            showToastMessage(msg_status == "password-invalid" ? "Invalid password" : "Password required");
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
+            MessageHandler.handlePasswordChallenge(msg_cid);
+        } else if (msg_status == "password-accepted" || msg_status == "authtoken-accepted") {
+            if (msg_status == "password-accepted") {
+                showToastMessage("Password accepted");
+                localStorage.setItem(rovUUID + "_AuthToken", msg_value)
+            }
+            if (replyContinuityCallback) replyContinuityCallback(msg_data);
+            const originalMsgData = MessageHandler.replyContinuityCallbacks[msg_cid].original_msg
+            console.log("originalMsgData: ", originalMsgData);
+            MessageHandler.sendRovMessage(originalMsgData, null);
+        } else if (replyContinuityCallback) {
+            replyContinuityCallback(msg_data);
+        }
+    }
+
+    static handleBroadcastMsgRecived(msg_data) {
+        const msg_status = msg_data["status"];
+        const msg_value = msg_data["val"];
+
+        if (msg_status == "error") {
+            console.error("Rov Error: " + msg_value);
+
+        } else if (msg_status == "sensor-update") {
+
+            updateDisplayedSensorValues(msg_value);
+
+        } else if (msg_status == "driver-changed") {
+            MessageHandler.handleDriverChange(msg_value);
+        }
+
+    }
 
 }
