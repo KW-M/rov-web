@@ -66,7 +66,7 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                         exit: "clearRovConnectionTimeout",
                         on: {
                             ON_DATACHANNEL_OPEN: {
-                                actions: ["addDatachannelEventHandlers",],// "debugReload"
+                                actions: ["addDatachannelEventHandlers"],// "debugReload"],
                                 target: "connected",
                             },
                             THIS_PEER_DESTROYED: {
@@ -195,7 +195,6 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                         // handle reciving messages from rov:
                         const dataMsgRecivedHandler = eventHandlers['onData'] = (encodedMessage) => {
                             const message = messageDecoder.decode(encodedMessage);
-                            console.log("ROV_DATA_CHANNEL_DATA", message)
                             MessageHandler.handleRecivedMessage(message);
                         }; rovDataConnection.on('data', dataMsgRecivedHandler)
 
@@ -242,15 +241,15 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                         clearInterval(globalContext.datachannelReconnectCountdown)
                     },
                     "debugReload": () => {
-                        // var reloadCount = localStorage.getItem("reloadCount") || 0;
-                        // console.log("reloadCount: ", reloadCount, reloadCount == -1);
-                        // if (reloadCount == -1 || reloadCount > 8) {
-                        // setTimeout(() => { localStorage.setItem("reloadCount", 0); window.location.reload() }, 1000);
-                        // } else {
-                        // reloadCount++;
-                        // localStorage.setItem("reloadCount", reloadCount);
-                        setTimeout(() => { window.location.reload() }, 10);
-                        // }
+                        var reloadCount = localStorage.getItem("reloadCount") || 0;
+                        console.log("reloadCount: ", reloadCount, reloadCount == -1);
+                        if (reloadCount == -1 || reloadCount > 8) {
+                            setTimeout(() => { localStorage.setItem("reloadCount", 0); window.location.reload() }, 1000);
+                        } else {
+                            reloadCount++;
+                            localStorage.setItem("reloadCount", reloadCount);
+                            setTimeout(() => { window.location.reload() }, 0);
+                        }
                     },
                 },
             });

@@ -1,5 +1,4 @@
-import { EMOJI_MAP, ROV_PEERID_BASE, MEMORABLE_PEER_ID_OFFSET } from "./consts";
-
+import { EMOJI_MAP } from "./consts";
 
 export function clamp(number, max, min) {
     return Math.max(Math.min(number, max), min)
@@ -7,7 +6,10 @@ export function clamp(number, max, min) {
 
 export function getDayOfYear(date = new Date()) {
     const timestamp1 = Date.UTC(
-        date.getFullYear(), date.getMonth(), date.getDate(),);
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+    );
     const timestamp2 = Date.UTC(date.getFullYear(), 0, 0);
     const differenceInMilliseconds = timestamp1 - timestamp2;
     const differenceInDays = differenceInMilliseconds / 1000 / 60 / 60 / 24;
@@ -40,7 +42,7 @@ const adjectives = ["Ancient", "Dawn", "Small", "Broken", "Red", "Cold", "Wild",
 const nouns = ["Pond", "Snow", "Glade", "Hill", "Voice", "River", "Sun", "Dawn", "Forest", "Frog", "Grass", "Shadow", "Dust", "Water", "Meadow", "Moon", "Thunder", "Sun", "Wildflower", "Snowflake", "Silence", "Haze", "Shape", "Pine", "Waterfall", "Sound", "Wood", "Tree", "Night", "Flower", "Dream", "Cherry", "Resonance", "Firefly", "Bush", "Star", "Darkness", "Lake", "Frost", "Paper", "Surf", "Fog", "Brook", "Mountain", "Field", "Bird", "Leaf", "Sea", "Water", "Sky", "Smoke", "Sunset", "Glitter", "Dew", "Butterfly", "Wind", "Fire", "Rain", "Morning", "Feather", "Cloud", "Breeze", "Violet", "Wave"];
 
 
-function getUniqueName(num, offset) {
+export function getUniqueName(num, offset) {
     // https://james.darpinian.com/blog/integer-math-in-javascript
     let adjectivesLen = adjectives.length >>> 0
     let nounsLen = nouns.length >>> 0
@@ -75,10 +77,6 @@ console.log("Zero and LT Max UINT32 value")
 console.log(getUniqueName(maxUINT32Less, maxUINT32Less))
 */
 
-export function getROVName(rovPeerIdEndNumber) {
-    return ROV_PEERID_BASE + getUniqueName(rovPeerIdEndNumber, 37)
-}
-
 export function getRandomName() {
     // from: https://gist.github.com/nwjlyons/61b6c5680c53d7da8baf7245aac7a970
     var adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -93,17 +91,6 @@ export function generateStateChangeFunction(sendStateChange, stateTransition, da
         sendStateChange({ type: stateTransition, data: (data || evt) });
     }
     return func;
-}
-
-export function calculateDesiredMotion(axes) {
-    var turn = axes[0].toFixed(3);
-    var forward = -1 * axes[1].toFixed(3);
-    var strafe = axes[2].toFixed(3);
-    var vertical = -1 * axes[3].toFixed(3);
-    return {
-        thrustVector: [strafe, forward, vertical], // vector in the form [x,y,z]
-        turnRate: turn,
-    }
 }
 
 /*
@@ -141,7 +128,9 @@ export function isInternetAvailable(urlToCheck) {
     })
 }
 
+// @ts-ignore
 window.closeFullscreen = () => {
+    // @ts-ignore
     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
     if (fullscreenElement) {
         const removeFullscreenUi = () => {
@@ -149,11 +138,17 @@ window.closeFullscreen = () => {
         };
         if (document.exitFullscreen) {
             document.exitFullscreen().then(removeFullscreenUi);
+            // @ts-ignore
         } else if (document.msExitFullscreen) {
+            // @ts-ignore
             document.msExitFullscreen().then(removeFullscreenUi);
+            // @ts-ignore
         } else if (document.mozCancelFullScreen) {
+            // @ts-ignore
             document.mozCancelFullScreen().then(removeFullscreenUi);
+            // @ts-ignore
         } else if (document.webkitExitFullscreen) {
+            // @ts-ignore
             document.webkitExitFullscreen().then(removeFullscreenUi);
         }
     }
@@ -161,9 +156,11 @@ window.closeFullscreen = () => {
 
 /* When the toggleFullscreen() export function is executed, open the passed element in fullscreen.
 Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+// @ts-ignore
 window.toggleFullscreen = (e, elem) => {
     elem = elem || document.documentElement;
     if (e && e.initialTarget) e.initialTarget.classList.toggle('fullscreen-open');
+    // @ts-ignore
     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
     const addFullscreenUi = () => {
@@ -180,6 +177,7 @@ window.toggleFullscreen = (e, elem) => {
             } else if (elem.mozRequestFullScreen) {
                 elem.mozRequestFullScreen().then(addFullscreenUi);
             } else if (elem.webkitRequestFullscreen) {
+                // @ts-ignore
                 elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT).then(addFullscreenUi);
             }
         }
@@ -203,19 +201,24 @@ window.toggleFullscreen = (e, elem) => {
         } else if (elem.mozRequestFullScreen) {
             elem.mozRequestFullScreen().then(addFullscreenUi);
         } else if (elem.webkitRequestFullscreen) {
+            // @ts-ignore
             elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT).then(addFullscreenUi);
         }
     }
 }
 
+// @ts-ignore
 export function toggleFullscreen(event, elem) {
     elem = elem || document.documentElement;
+    // @ts-ignore
     var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
     if (!fullscreenElement || elem !== fullscreenElement) {
         const requestFullscreenFunc = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
         console.log(requestFullscreenFunc)
+        // @ts-ignore
         requestFullscreenFunc(Element.ALLOW_KEYBOARD_INPUT)
     } else {
+        // @ts-ignore
         const exitFullscreenFunc = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
         exitFullscreenFunc().then(() => {
             fullscreenElement.classList.remove('fullscreen-open');
@@ -234,48 +237,6 @@ export function download(url, filename) {
 }
 
 
-
-
-function scanForRovIp() {
-    // make the list of possible rov IPs
-    var currentIpComboArrayIndex = 0;
-    // const ipCombos = ["raspberrypi.local:9000"];
-    // for (var octet = 0; octet < 255; octet++) {
-    //     ipCombos.push(`192.168.${octet}.88:9000`);
-    // }
-
-    const ipCombos = [];
-    for (var octet = 0; octet < 6; octet++) {
-        ipCombos.push(`10.0.0.${octet}:80`);
-    }
-
-    return new Promise((resolve, reject) => {
-        let foundIp = false;
-        let interval = setInterval(() => {
-            let currentlyTestingIp = ipCombos[currentIpComboArrayIndex];
-            console.log(`Testing IP ${currentIpComboArrayIndex}/${ipCombos.length}: ${currentlyTestingIp} ...`)
-            try {
-                var s = new WebSocket("wss://" + currentlyTestingIp)
-                if (s) {
-                    s.addEventListener("error", console.warn)
-                    s.addEventListener("open", (o) => console.log("open", o))
-                }
-                else console.log("WebSocket is undefined");
-            } catch (e) {
-                console.log(currentlyTestingIp, e)
-            }
-            if (foundIp) {
-                clearInterval(interval);
-                alert("ROV IP FOUND: " + currentlyTestingIp);
-                resolve(currentlyTestingIp);
-            } else if (currentIpComboArrayIndex == ipCombos.length - 1) {
-                clearInterval(interval);
-                reject("Ip Not Found");
-            }
-            currentIpComboArrayIndex++;
-        }, 200);
-    })
-}
 //scanForRovIp().then(console.log, console.warn);
 
 // function findRovLocalIp() {
@@ -304,7 +265,9 @@ function scanForRovIp() {
 
 //     // open the popup window
 //     testPopup = window.open(
-//         "", //         "ROV IP FINDER", //         "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=6,height=3,left=0,top=0"
+//         "",
+//         "ROV IP FINDER",
+//         "scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=6,height=3,left=0,top=0"
 //     );
 //     window.focus();
 
@@ -352,7 +315,8 @@ function scanForRovIp() {
 
 // // function findRovLocalIp() {
 // //   // window.addEventListener(
-// //   //   "message", // //   //   (msg) => {
+// //   //   "message",
+// //   //   (msg) => {
 // //   //     if (typeof msg.data == typeof "string") {
 // //   //       var parts = msg.data.split(": ");
 // //   //       if (parts[0] == "ROV_IP") {
@@ -363,14 +327,16 @@ function scanForRovIp() {
 // //   //         resolve();
 // //   //       }
 // //   //     }
-// //   //   }, // //   //   false
+// //   //   },
+// //   //   false
 // //   // );
 // //   return new Promise((resolve, reject) => {
 // //     var popupWindows = [];
 // //     for (var i = 0; i < 2; i++) {
 // //       const popup = window.open(
 // //         ``, //http://${ipCombos[i]}/ipResponder
-// //         "ROV IP FINDER " + i, // //         `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=6,height=3,left=${
+// //         "ROV IP FINDER " + i,
+// //         `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=6,height=3,left=${
 // //           (i * 200) % window.screen.width
 // //         },top=${Math.floor((i * 200) / window.screen.width) * 300}`
 // //       );
@@ -480,23 +446,23 @@ function scanForRovIp() {
 // }
 
 
-var media = document.getElementById('video-livestream');
+// var media = document.getElementById('video-livestream');
 
-// Playing event
-var isStalled = function (e) { console.log(e, "Playback Stalled"); };
+// // Playing event
+// var isStalled = function (e) { console.log(e, "Playback Stalled"); };
 
-var isWaiting = function (e) { console.log(e, "Waiting for content"); };
+// var isWaiting = function (e) { console.log(e, "Waiting for content"); };
 
-var isPlaying = function (e) { console.log(e, "Playing event triggered"); };
+// var isPlaying = function (e) { console.log(e, "Playing event triggered"); };
 
-// Pause event
-var onPause = function (e) { console.log(e, "Pause event triggered"); };
+// // Pause event
+// var onPause = function (e) { console.log(e, "Pause event triggered"); };
 
-// Volume changed event
-var onVolumechange = function (e) { console.log(e, "Volumechange event triggered"); };
+// // Volume changed event
+// var onVolumechange = function (e) { console.log(e, "Volumechange event triggered"); };
 
-media.addEventListener("playing", isPlaying, false);
-media.addEventListener("stalled", isStalled, false);
-media.addEventListener("waiting", isWaiting, false);
-media.addEventListener("pause", onPause, false);
-media.addEventListener("volumechange", onVolumechange, false);
+// media.addEventListener("playing", isPlaying, false);
+// media.addEventListener("stalled", isStalled, false);
+// media.addEventListener("waiting", isWaiting, false);
+// media.addEventListener("pause", onPause, false);
+// media.addEventListener("volumechange", onVolumechange, false);

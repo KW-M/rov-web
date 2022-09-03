@@ -7,6 +7,7 @@ export const peerServerCloudOptions = {
     secure: true,
     path: '/',
     port: 443,
+    debug: 3
 }
 
 // export const peerServerCloudOptions = {
