@@ -3,7 +3,7 @@ import { isArray, keys } from 'xstate/lib/utils';
 import { ROV_PEERID_BASE } from "./consts.js";
 import { LOADING_MESSAGES } from './consts';
 import { globalContext } from './globalContext';
-import { getROVName } from './util';
+import { getROVName } from './rovUtil';
 
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------

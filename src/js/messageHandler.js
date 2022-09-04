@@ -13,9 +13,9 @@ export class MessageHandler {
 
     // sendMessageCallback: Function that will send the message to the rov peer.
     // This callback should be set in the constructor below.
-    static sendMessageCallback = () => { };
-    static setSendMessageCallback = (callback) => {
-        MessageHandler.sendMessageCallback = callback;
+    static sendMessageFunction = () => { };
+    static setSendMessageFunction = (callback) => {
+        MessageHandler.sendMessageFunction = callback;
     }
 
     // sendRovMessage: Send a message to the rov peer and setup reply callbacks based on a message cid if reply(ies) are expected.
@@ -25,12 +25,14 @@ export class MessageHandler {
         if (!cid) {
             cid = msgObject["cid"] = uuidV4().substring(0, 8); // generate a random cid if none is provided
         }
-        if (!MessageHandler.replyContinuityCallbacks[cid]) MessageHandler.replyContinuityCallbacks[cid] = { original_msg: msgObject };
-        if (replyCallback) MessageHandler.replyContinuityCallbacks[cid].callback = replyCallback;
+        if (!MessageHandler.replyContinuityCallbacks[cid]) MessageHandler.replyContinuityCallbacks[cid] = {
+            original_msg: msgObject,
+            callback: replyCallback || null
+        };
 
         // send the message to the rov
         const messageString = JSON.stringify(msgObject);
-        if (MessageHandler.sendMessageCallback) MessageHandler.sendMessageCallback(messageString);
+        if (MessageHandler.sendMessageFunction) MessageHandler.sendMessageFunction(messageString);
     }
 
     static handlePasswordChallenge(msg_cid) {

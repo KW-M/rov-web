@@ -1,6 +1,6 @@
 
 import { getUniqueName } from "./util.js"
-import { ROV_PEERID_BASE } from "./consts";
+import { ROV_PEERID_BASE, MEMORABLE_PEER_ID_OFFSET } from "./consts";
 
 
 export function getROVName(rovPeerIdEndNumber) {

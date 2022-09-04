@@ -24,7 +24,7 @@ export class RovActions {
 
     static startPingMessageSenderLoop() {
         const intervalId = setInterval(() => {
-            // MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() });
+            MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() });
         }, 2000)
         return () => { clearInterval(intervalId) } // return a cleanup function
     }

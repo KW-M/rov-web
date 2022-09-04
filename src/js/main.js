@@ -1,6 +1,6 @@
 import { inspect } from "@xstate/inspect";
 import { GamepadController } from "./gamepad.js";
-import { emojiOfTheDay, getROVName, getURLQueryStringVariable } from "./util.js";
+import { getURLQueryStringVariable } from "./util.js";
 import { hideLoadingUi, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, setupSwitchRovBtnClickHandlers, showROVDisconnectedUi, showToastMessage } from "./ui.js";
 import { globalContext } from "./globalContext.js"
 

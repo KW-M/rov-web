@@ -1,6 +1,7 @@
 import { createMachine, interpret } from "xstate";
 import { showToastMessage, showROVConnectingUi, showROVConnectedUi, showROVDisconnectedUi } from "./ui"
-import { calculateDesiredMotion, emojiOfTheDay, generateStateChangeFunction, getROVName } from "./util";
+import { generateStateChangeFunction } from "./util";
+import { getROVName } from "./rovUtil";
 import { MessageHandler } from "./messageHandler";
 import { RovActions } from "./rovActions";
 import { globalContext } from "./globalContext.js"
@@ -163,7 +164,7 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                         }, 8000); // 8 seconds
                     },
                     'cleanupEventListeners': () => {
-                        MessageHandler.setSendMessageCallback(null);
+                        MessageHandler.setSendMessageFunction(null);
                         globalContext.gpadCtrl.clearExternalEventListenerCallbacks();
                         clearInterval(globalContext.datachannelDisconnectCheckIntervalId);
                         clearInterval(globalContext.datachannelReconnectCountdown);
@@ -187,7 +188,7 @@ export const startRovConnectionMachine = (sendParentCallback) => {
 
                         // Handle sending messages to rov:
                         MessageHandler.globalContext = globalContext;
-                        MessageHandler.setSendMessageCallback((message) => {
+                        MessageHandler.setSendMessageFunction((message) => {
                             const encodedMessage = messageEncoder.encode(message);
                             rovDataConnection.send(encodedMessage);
                         });
