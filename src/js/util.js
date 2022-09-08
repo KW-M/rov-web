@@ -30,8 +30,8 @@ export function hexToEmojiEncoding(hexString, itterCount) {
     var value = BigInt(hexString);
     console.log("BigInt", value);
     while (itterCount > 0 && value > 0) {
-        console.log("new mod ", BigInt.asUintN(8, value % emojiCount))
-        out += EMOJI_MAP[BigInt.asUintN(8, value % emojiCount)];
+        console.log("new mod ", Number(value % emojiCount))
+        out += EMOJI_MAP[Number(value % emojiCount)];
         value = value / emojiCount;
         itterCount--
     }
@@ -109,6 +109,51 @@ export function getURLQueryStringVariable(variable) {
     }
     // console.log('Query variable %s not found', variable);
 }
+
+export class Queue {
+    //https://www.geeksforgeeks.org/implementation-queue-javascript/
+
+    constructor() {
+        // Array is used to implement a Queue
+        this.items = [];
+    }
+
+
+    push(element) {
+        // adding element to the queue
+        this.items.push(element);
+    }
+
+    pop() {
+        // removing element from the queue
+        // returns underflow when called
+        // on empty queue
+        if (this.isEmpty())
+            return undefined;
+        return this.items.shift();
+    }
+
+    peak() {
+        // returns the Front element of
+        // the queue without removing it.
+        if (this.isEmpty())
+            return undefined;
+        return this.items[0];
+    }
+
+    isEmpty() {
+        // return true if the queue is empty.
+        return this.items.length == 0;
+    }
+
+    printQueue() {
+        var str = "";
+        for (var i = 0; i < this.items.length; i++)
+            str += this.items[i] + " ";
+        return str;
+    }
+}
+
 
 export function isInternetAvailable(urlToCheck) {
     return new Promise((resolve) => {

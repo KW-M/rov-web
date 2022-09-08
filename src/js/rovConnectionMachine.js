@@ -193,6 +193,12 @@ export const startRovConnectionMachine = (sendParentCallback) => {
                             rovDataConnection.send(encodedMessage);
                         });
 
+                        // Handle gamepad events
+                        globalContext.gpadCtrl.setupExternalEventListenerCallbacks((gamepad, buttonsChangedMask) => { }, (gamepad) => {
+                            var { thrustVector, turnRate } = calculateDesiredMotion(gamepad.axes);
+                            RovActions.moveRov(thrustVector, turnRate);
+                        });
+
                         // handle reciving messages from rov:
                         const dataMsgRecivedHandler = eventHandlers['onData'] = (encodedMessage) => {
                             const message = messageDecoder.decode(encodedMessage);
