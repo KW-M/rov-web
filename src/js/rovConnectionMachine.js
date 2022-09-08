@@ -1,7 +1,7 @@
 import { createMachine, interpret } from "xstate";
 import { showToastMessage, showROVConnectingUi, showROVConnectedUi, showROVDisconnectedUi } from "./ui"
 import { generateStateChangeFunction } from "./util";
-import { getROVName } from "./rovUtil";
+import { calculateDesiredMotion, getROVName } from "./rovUtil";
 import { MessageHandler } from "./messageHandler";
 import { RovActions } from "./rovActions";
 import { globalContext } from "./globalContext.js"
