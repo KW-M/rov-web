@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "npm i --package-lock-only",
     "start": "parcel serve ./src/pages/index.html",
-    "build": "parcel build ./src/pages/** --public-url ./"
+    "build": "parcel build ./src/pages/**  --public-url ./; cp -r ./public/new-site ./dist",
+    "pkg-lock": "npm install --package-lock-only"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,11 @@
   },
   "devDependencies": {
     "eslint": "^8.12.0",
-    "parcel": "^2.4.1"
+    "parcel": "^2.4.1",
+    "parcel-plugin-static-files-copy": "^2.6.0"
+  },
+  "staticFiles": {
+    "staticPath": "public",
+    "watcherGlob": "**/**"
   }
 }
