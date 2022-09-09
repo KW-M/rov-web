@@ -1,10 +1,10 @@
 
-import { getDailyName } from "./util.js"
-import { ROV_PEERID_BASE } from "./consts";
+import { getUniqueName } from "./util.js"
+import { ROV_PEERID_BASE, MEMORABLE_PEER_ID_OFFSET } from "./consts";
 
 
 export function getROVName(rovPeerIdEndNumber) {
-    return ROV_PEERID_BASE + getDailyName(rovPeerIdEndNumber)
+    return ROV_PEERID_BASE + getUniqueName(rovPeerIdEndNumber, MEMORABLE_PEER_ID_OFFSET)
 }
 
 export function calculateDesiredMotion(axes) {

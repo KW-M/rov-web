@@ -1,7 +1,7 @@
 
 // import { startGamepadEventLoop, getGamepadsStandardized, gamepadApiSupported, onGamepadAxisValueChange, onGamepadButtonValueChange, onGamepadConnect, onGamepadDisconnect } from "./gamepad_mmk"
 import { gamepadEmulator } from "./gamepadEmulator"
-import { getButtonHighlightElements, handleGamepadVisualFeedbackAxisEvents, handleGamepadVisualFeedbackButtonEvents, handleGamepadVisualFeedbackVariableTriggerButtonEvents, showGamepadStatus, showHelpTooltip, showNotSupported as showGamepadNotSupported, toggleGamepadHelpScreen } from "./gamepad-ui"
+import { gamepadHelpVisible, getButtonHighlightElements, handleGamepadVisualFeedbackAxisEvents, handleGamepadVisualFeedbackButtonEvents, handleGamepadVisualFeedbackVariableTriggerButtonEvents, showGamepadStatus, showHelpTooltip, showNotSupported as showGamepadNotSupported, toggleGamepadHelpScreen } from "./gamepad-ui"
 import { GamepadInterface } from "./libraries/gamepadInterface";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
 
@@ -25,7 +25,7 @@ export class GamepadController {
         gamepad.onGamepadButtonChange = this.handleButtonChange.bind(this)
 
         // setup onscreen emulated gamepad interaction events
-        gamepadEmulator.registerOnScreenGamepadButtonEvents(0, this.buttonHighlightElements.map((elm) => elm.id.startsWith("shoulder_trigger") ? null : elm), "touched", "pressed")
+        gamepadEmulator.registerOnScreenGamepadButtonEvents(0, this.buttonHighlightElements.map((elm) => elm.id.startsWith("shoulder_trigger") ? null : elm))
         gamepadEmulator.registerOnScreenGamepadAxisEvents(0, [{
             horizontalGpadAction: { type: "axis", index: 0 },
             verticalGpadAction: { type: "axis", index: 1 },
@@ -47,7 +47,7 @@ export class GamepadController {
         // const gamepads = getGamepadsStandardized()
         const gamepads = navigator.getGamepads();
         var connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
-        if (connectedGamepadCount != 0 && gamepads[0].emulated) connectedGamepadCount -= 1;
+        if (connectedGamepadCount != 0 && gamepads[0]["emulated"]) connectedGamepadCount -= 1;
         showGamepadStatus(connectedGamepadCount);
         if (connectedGamepadCount > 1) console.log("WARNING: More than one gamepad connected!", gamepads);
     }
@@ -65,7 +65,7 @@ export class GamepadController {
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
 
-        if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
+        if (this.onButtonChange && !gamepadHelpVisible) this.onButtonChange(gamepad, buttonsChangedMask);
 
         handleGamepadVisualFeedbackButtonEvents(gamepad.buttons);
 
@@ -106,7 +106,7 @@ export class GamepadController {
         // console.log("handleAxisChange", gpadIndex, gamepad, axiesChangedMask)
         if (gpadIndex != 0 || !gamepad || !gamepad.axes) return;
 
-        if (this.onAxisChange) this.onAxisChange(gamepad);
+        if (this.onAxisChange && !gamepadHelpVisible) this.onAxisChange(gamepad);
 
         const axisStates = [{
             axisRange: 14,

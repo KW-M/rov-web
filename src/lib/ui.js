@@ -1,181 +1,69 @@
-import Toastify from 'toastify-js'
+import { toast } from '@zerodevx/svelte-toast';
 import { isArray, keys } from 'xstate/lib/utils';
-import { ROV_PEERID_BASE } from "../consts.js";
-import { LOADING_MESSAGES } from '../consts';
-import { globalContext } from '../globalContext';
-import { getROVName } from '../util';
+import { ROV_PEERID_BASE, LOADING_MESSAGES } from './consts';
+import { ClassInstances, rovPeerIdEndNumber } from './globalContext';
+import { getROVName } from './rovUtil';
+import { get } from 'svelte/store';
 
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------
 // -------------------------------------------------------------
 
-// ----- Simple Element Generators -----
-
-export function createButtons(btnNames, callback) {
-    return btnNames.map((btnName) => {
-        const btn = document.createElement("button")
-        btn.innerHTML = btnName;
-        btn.dataset.name = btnName;
-        btn.addEventListener("click", () => callback(btnName));
-        return btn
-    })
-}
-
-export function createTitle(titleName) {
-    const msg = document.createElement("h4")
-    msg.innerText = titleName
-    return msg
-}
-
-// -----  White Backdrop -----
-
-const backdrop = document.getElementById("backdrop")
-let backdropClickCallbacks = new Map();
-backdrop.onClick = () => { hideBackdrop(null, true); }
-
-export function showBackdrop(callback, modal_id) {
-    callback = callback || null;
-    backdropClickCallbacks.set(modal_id, callback);
-    backdrop.classList.remove("hidden")
-}
-
-export function hideBackdrop(modal_id, run_callback) {
-    if (modal_id && backdropClickCallbacks.has(modal_id)) {
-        // run callback
-        let callback = backdropClickCallbacks.get(modal_id);
-        if (run_callback && callback) callback(null);
-        backdropClickCallbacks.delete(modal_id);
-    } else {
-        let keys = backdropClickCallbacks.keys();
-        let lastKey = keys[keys.length - 1]
-        let callback = backdropClickCallbacks.get(lastKey)
-        if (run_callback && callback) callback(null);
-        backdropClickCallbacks.delete(lastKey);
-    }
-
-    if (backdropClickCallbacks.size == 0) {
-        backdrop.classList.add("hidden")
-    }
-}
 
 // -----  Toast Notifications -----
 
 let toastDeduplicationCache = {}
 export function showToastMessage(message, durration, callback) {
     let existingToast = toastDeduplicationCache[message];
-    if (existingToast && existingToast.toastElement.parentElement) return;
-    else if (existingToast) delete toastDeduplicationCache[message];
-    let t = Toastify({
-        text: message,
+    if (existingToast) return;
+    let toastId = toast.push({
+        msg: message,
         duration: durration || 5000,
-        close: true,
-        // className: "dialog-toast",
-        style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)",
-        },
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        onClick: callback, // Callback export function when toast is clicked
     });
-    t.showToast();
-    toastDeduplicationCache[message] = t;
-    return t;
+    toastDeduplicationCache[message] = toastId;
+    toast.subscribe((toastArray) => {
+        let ourToast = toastArray.find((toast) => { return toast.msg === message })
+        console.log("ourToast", ourToast);
+        if (!ourToast) {
+            delete toastDeduplicationCache[message];
+            callback && callback();
+        }
+    });
+    return toastId
 }
 
-// -----  Toastify Based Dialogs -----
+// -----  Dialogs -----
 
-export function showToastDialog(htmlElements, options, exraClassNames) {
-    const toast = Toastify(Object.assign({
-        text: " ",
-        duration: 15000,
-        close: false,
-        className: "dialog-toast",
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-    }, options))
-    toast.showToast();
-    htmlElements.forEach((e) => {
-        toast.toastElement.appendChild(e)
+export function showConfirmationMsg(msg, callback) {
+    ClassInstances.openDialog("alert", { title: msg }, (ok) => {
+        if (callback && ok == true) callback(ok);
     })
-    if (exraClassNames && isArray(exraClassNames)) exraClassNames.forEach((name) => { toast.toastElement.classList.add(name) })
-    return toast;
 }
 
 let passwordPromptOpen = false
 export function showPasswordPrompt(message, callback) {
-
-    function closePasswordPrompt(passwordValue) {
-        hideBackdrop(message)
-        if (toast) toast.hideToast()
-        passwordPromptOpen = false;
-        if (callback) callback(passwordValue)
-    }
-
     if (passwordPromptOpen) return;
     passwordPromptOpen = true;
-    let toast = null
-    const title = createTitle(message)
-    const input = document.createElement("input")
-    input.type = "password"
-    input.placeholder = "Password"
-    input.addEventListener("keyup", (e) => {
-        // handle enter key
-        if (e.key === 'Enter' || e.keyCode === 13) closePasswordPrompt(input.value)
+
+    ClassInstances.openDialog("password", {}, (password) => {
+        if (password != null && callback) callback(password);
     })
-    const btns = createButtons(["Ok", "Cancel"], (chosenButton) => {
-        // handle buttons key
-        if (chosenButton == "Ok") closePasswordPrompt(input.value)
-        else closePasswordPrompt(null)
-    })
-    toast = showToastDialog([title, input].concat(btns), { gravity: "bottom", duration: -1, style: { "zIndex": 2147480001 } }, ["password-prompt"])
-    showBackdrop(() => {
-        closePasswordPrompt(null)
-    }, message)
-    return toast
 }
 
 export function showScrollableTextPopup(title, callback) {
-    let toast = null
-    const titleElm = createTitle(title)
-    const content = document.createElement("pre")
-    const popup = {
-        addText: (textLine) => {
-            content.appendChild(document.createTextNode(textLine))
-            // keep scrolling down as new content is added (unless the user has scrolled up / is no longer at the bottom)
-            if (content.scrollTop + content.clientHeight + 100 > content.scrollHeight) {
-                content.scrollTop = content.scrollHeight
-            }
-        },
-        close: () => {
-            toast.hideToast()
-            hideBackdrop(title)
-            if (callback) callback(null)
-        }
-    }
-    const btns = createButtons(["Close"], popup.close)
-    toast = showToastDialog([titleElm, content].concat(btns), { gravity: "bottom", duration: -1 }, ["scrollable-text-popup"])
-    showBackdrop(popup.close, title)
-    return popup
-}
-
-
-export function showChoiceDialog(title, buttons, callback) {
-    let toast = null
-    const titleElm = createTitle(title)
-    const closeFunc = () => {
-        hideBackdrop(title)
-        toast.hideToast()
-    }
-    const btns = createButtons([...buttons, "Cancel"], (chosenButton) => {
-        console.log("here")
-        closeFunc()
-        callback(chosenButton);
+    let modifyExtraData = ClassInstances.openDialog("scrollText", { title: title, messageLines: [] }, () => {
+        if (callback) callback(null)
     })
-    toast = showToastDialog([titleElm].concat(btns), { gravity: "bottom", duration: -1 }, ["choice-popup"]);
-    showBackdrop(closeFunc, title)
-    return toast
+
+    let addTextToPopup = (textLine) => {
+        modifyExtraData((extraData) => {
+            return {
+                ...extraData,
+                messageLines: [...extraData.messageLines, textLine],
+            };
+        });
+    }
+    return addTextToPopup
 }
 
 const connectBtn = document.getElementById('connect_btn');
@@ -186,11 +74,12 @@ const rovConnectionBar = document.getElementById('rov_connection_bar');
 export function showROVDisconnectedUi() {
     connectBtnOptions.style.display = 'flex';
     document.body.classList.remove("rov-connected");
-    hideLoadingUi("all");
+    // hideLoadingUi("all");
     hideLivestreamUi();
 }
 
 export function showROVConnectingUi(rovPeerId) {
+    console.log("showROVConnectingUi", connectBtnOptions);
     connectBtnOptions.style.display = 'none';
     document.body.classList.remove("rov-connected");
     showLoadingUi("webrtc-connecting", "Searching for " + rovPeerId);
@@ -199,6 +88,7 @@ export function showROVConnectingUi(rovPeerId) {
 export function showROVConnectedUi() {
     connectBtnOptions.style.display = 'none';
     // disconnectBtn.style.display = 'block';
+    updateRoleDisplay(false)
     document.body.classList.add("rov-connected");
     hideLoadingUi("webrtc-connecting")
     hideLoadingUi("webrtc-reconnecting")
@@ -211,11 +101,11 @@ export function showReloadingWebsiteUi() {
 }
 
 export function setCurrentRovName() {
-    let index = globalContext.rovPeerIdEndNumber
+    let index = get(rovPeerIdEndNumber);
     let name = getROVName(index);
     let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
     connectBtn.innerText = "Connect to " + uiName;
-    if (index == 0) switchToPrevRovBtn.setAttribute("disabled", true);
+    if (index == 0) switchToPrevRovBtn.setAttribute("disabled", "true");
     else switchToPrevRovBtn.removeAttribute("disabled");
     connectedRovLabel.innerText = uiName
 }
@@ -274,10 +164,12 @@ export function hideLoadingUi(loadingMsgId) {
     if (loadingMsgId == "all" || loadingStackIds.length == 0) {
         loadingIndicator.style.display = 'none';
         loadingStack = {};
-        console.log("here", loadingMsgId)
+        console.log("Done Loading:", loadingMsgId)
     } else {
+        console.log("Loading:", loadingMsgId)
         const msg = loadingStack[loadingStackIds[loadingStackIds.length - 1]]
         loadingIndicatorText.innerHTML = msg || LOADING_MESSAGES["default"];
+        loadingIndicator.style.display = 'block';
     }
 }
 
@@ -322,13 +214,11 @@ var pressureDisplay = document.getElementById('pressure_value');
 var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
     if (sensorValues.pressure) {
-        pressureDisplay.innerText = sensorValues.pressure / 0.001 * (1023.6 * 9.8065); // to meters
+        pressureDisplay.innerText = String(sensorValues.pressure / 0.001 * (1023.6 * 9.8065)); // to meters
     }
     if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
     if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
     if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
-    //             // Call the function to use the data on the page.
-    //
 }
 
 let actionsMenu = document.getElementById("actions-menu-overlay")

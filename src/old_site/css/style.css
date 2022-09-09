@@ -1,4 +1,4 @@
-/* @import "~/node_modules/toastify-js/src/toastify.css"; */
+@import "toastify-js/src/toastify.css";
 
 /*
 z-index map:
@@ -42,7 +42,7 @@ body {
 }
 
 /* ************** Generic Buttons ************** */
-
+/*
 button {
   position: relative;
   z-index: 2;
@@ -119,7 +119,7 @@ button:active,
 button.alt-colors:active {
   border: 3px solid rgb(0, 153, 255);
   background: black
-}
+} */
 
 button .button-label-image {
   height: 24px;
@@ -292,16 +292,16 @@ button .button-label-image {
 
 }
 
-#client_peer_id_label {
+.our-peer-label {
   z-index: 100;
 
   padding: 2px 12px;
 
   pointer-events: none;
 
-  color: rgb(149, 22, 181);
+  color: rgb(255, 255, 255);
 
-  font-size: small;
+  font-size: medium;
   font-style: italic;
 }
 
@@ -332,9 +332,14 @@ table.top-left-corner td {
   transform: translate(-50%, 20vh) scale(2);
 }
 
+#connect_btn {
+  width: 11rem;
+
+}
+
 #site_loading_indicator {
   padding: 10px 30px 10px 20px;
-
+  z-index: 100;
   transform: translate(-50%, 20vh);
 
   border-radius: 11px;
@@ -488,7 +493,7 @@ table.top-left-corner td {
 
 .transparent-btn {
   border: none;
-  background-color: transparent;
+  background-color: transparent !important;
   box-shadow: none;
 }
 
@@ -568,6 +573,7 @@ table.top-left-corner td {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 33px;
+  z-index: 100;
 }
 
 #actions-menu-button:hover,
@@ -583,7 +589,7 @@ table.top-left-corner td {
 
 #actions-menu-overlay {
   position: fixed;
-  z-index: 1000000;
+  z-index: 599;
   top: 43px;
   right: 40px;
 
@@ -669,7 +675,7 @@ button.button-light:not(:hover):not(:focus):not(:active) {
 
   border: 3px solid black;
   border-radius: 12px;
-  background: black;
+  background: rgba(0, 0, 0, 0.55);
   /* max-width: min-content; */
 
   aspect-ratio: 16 / 9;

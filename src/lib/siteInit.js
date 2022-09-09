@@ -3,7 +3,8 @@ import { isInternetAvailable } from "./util"
 import { showToastMessage, showScanIpBtn, hideScanIpButton, showLoadingUi, hideLoadingUi } from "./ui";
 
 import * as consts from "./consts";
-// import { runRovConnectionMachine } from "./rovConnStateMachine";
+import { debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
+import { get } from "svelte/store";
 
 export const runSiteInitMachine = (sendParentCallback) => {
   const siteInitMachine =
@@ -80,13 +81,13 @@ export const runSiteInitMachine = (sendParentCallback) => {
     }, {
       actions: {
         setCloudPeerServerConfig: () => {
-          globalContext.peerServerConfig = consts.peerServerCloudOptions;
+          peerServerConfig.set(consts.peerServerCloudOptions);
         },
         setLocalPeerServerConfig: () => {
-          globalContext.peerServerConfig = consts.peerServerLocalOptions;
+          peerServerConfig.set(consts.peerServerLocalOptions);
         },
         setRovIpAddr: (_, event) => {
-          globalContext.rovIpAddr = event.data;
+          rovIpAddr.set(event.data);
         },
         showIpScanButton: () => {
           showToastMessage("Click scan to find the ROV locally.");
@@ -104,7 +105,7 @@ export const runSiteInitMachine = (sendParentCallback) => {
           showLoadingUi("ip-scan");
         },
         redirectBrowserToRovIp: (_, event) => {
-          window.location = "http://" + event.data
+          window.location.href = `http://${event.data}`;
         },
         siteReady: () => { sendParentCallback("SITE_READY") },
       },
@@ -122,7 +123,7 @@ export const runSiteInitMachine = (sendParentCallback) => {
                 // indicating this page was served directly from the rov (presumably)
                 const urlHostParts = window.location.host.split(".");
                 if (
-                  (urlHostParts.length == 4 && !isNaN(urlHostParts[3])) ||
+                  (urlHostParts.length == 4 && !isNaN(Number(urlHostParts[3]))) ||
                   (urlHostParts.length == 2 && urlHostParts[1] == "local")
                 ) {
                   // in which case we are viewing this site at the rov's ip (presumably)
@@ -171,6 +172,6 @@ export const runSiteInitMachine = (sendParentCallback) => {
     });
 
 
-  const runningMachine = interpret(siteInitMachine, { devTools: globalContext.debugXstateMode }).start();
+  const runningMachine = interpret(siteInitMachine, { devTools: get(debugXstateMode) }).start();
   return runningMachine;
 }

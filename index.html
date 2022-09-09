@@ -60,29 +60,30 @@
 
 </head>
 
-<body>
+<body class="" data-theme="winter">
   <noscript>
     <h1>Oops! Javascript required here! Please enable it to run this app.</h1>
   </noscript>
   <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
 
-  <!-- -------------------------------------------------- -->
+  <!-- -----------d--------------------------------------- -->
 
   <div id="site_loading_indicator" class="lds-circle" style="display: none;">
     <div></div>
     <span id="site_loading_text">Loading...</span>
   </div>
-  <div id="connect_btn_options" style="display: none;">
-    <button id="switch_to_prev_rov_btn" class="button-group-btn left-end" aria-label="Switch to Previous ROV"> ❮
+
+  <div id="connect_btn_options" style="display: none;" class="btn-group">
+    <button id="switch_to_prev_rov_btn" class="btn btn-ghost" aria-label="Switch to Previous ROV"> ❮
     </button>
-    <button id='connect_btn'>Connect to ROV</button>
-    <button id="switch_to_next_rov_btn" class="button-group-btn right-end" aria-label="Switch to Next ROV"> ❯
+    <button id='connect_btn' class="btn btn-active">Connect to ROV</button>
+    <button id="switch_to_next_rov_btn" class="btn btn-ghost" aria-label="Switch to Next ROV"> ❯
     </button>
   </div>
-  <button id='scan_for_ip_btn' style="display: none;">Scan for ROV IP</button>
+  <button id='scan_for_ip_btn' style="display: none;" class="btn">Scan for ROV IP</button>
 
   <div id="livestream_container" class="hidden">
+    <!-- svelte-ignore a11y-media-has-caption -->
     <video id='video-livestream'></video>
   </div>
 
@@ -106,63 +107,70 @@
       </div>
     </div>
     <div>
-      <button id="actions-menu-button" class=" icon-btn" aria-label="Show More Actions Menu"
-        onclick="toggleFullscreen(event)"></button>
+      <button id="actions-menu-button" class="icon-btn" aria-label="Show More Actions Menu"></button>
     </div>
   </div>
-  <button class="fullscreen-btn icon-btn transparent-btn" aria-label="Toggle Fullscreen"
+  <button class="btn btn-circle fullscreen-btn icon-btn transparent-btn" aria-label="Toggle Fullscreen"
     onclick="toggleFullscreen(event)"></button>
 
   <!-- Fly-out Actions Menu -->
   <nav aria-label="Main Menu" id="actions-menu-overlay" class="light-bg hidden hide-when-not-connected">
 
-    <button id='disconnect_btn' style="border-radius: 20px 0 0 20px; width: min-content;">Disconnect from
-      ROV</button>
+    <!-- <button id='disconnect_btn' class="btn btn-primary btn-block"
+      style="border-radius: 20px 0 0 20px; width: min-content;">Disconnect
+      from
+      ROV</button> -->
 
-    <menu role="menu" class="dropdown-menu-list">
+    <menu class="dropdown-menu-list">
       <li class="power-menu-icon menu-icon"></li>
-      <button onclick="RovActions.shutdownRov()" role="menuitem" class="alt-colors">Shutdown ROV</button>
-      <button onclick="RovActions.rebootRov()" role="menuitem" class="alt-colors">Reboot ROV</button>
-      <button onclick="RovActions.restartRovServices()" role="menuitem" class="alt-colors">Restart ROV
+      <button onclick="RovActions.shutdownRov()" role="menuitem" class="btn btn-accent btn-wide">Shutdown ROV</button>
+      <button onclick="RovActions.rebootRov()" role="menuitem" class="btn btn-accent btn-wide">Reboot ROV</button>
+      <button onclick="RovActions.restartRovServices()" role="menuitem" class="btn btn-accent btn-wide">Restart ROV
         Services</button>
     </menu>
 
     <menu class="dropdown-menu-list">
       <li class="debug-menu-icon menu-icon"></li>
-      <button onclick="RovActions.getRovStatusReport()" role="menuitem">System Status</button>
-      <button onclick="RovActions.getRovLogs()" role="menuitem">ROV Logs</button>
-      <button onclick="window.open('./404.html')" role="menuitem">Local Debug Links</button>
+      <button onclick="RovActions.getRovStatusReport()" role="menuitem" class="btn btn-accent btn-wide">System
+        Status</button>
+      <button onclick="RovActions.getRovLogs()" role="menuitem" class="btn btn-accent btn-wide">ROV Logs</button>
+      <button onclick="window.open('./404.html')" role="menuitem" class="btn btn-accent btn-wide">Local Debug
+        Links</button>
     </menu>
 
     <menu class="dropdown-menu-list">
       <li class="settings-menu-icon menu-icon"></li>
-      <button onclick="RovActions.enableRovWifi()" role="menuitem" class="alt-colors">Enable ROV Wifi</button>
-      <button onclick="RovActions.disableRovWifi()" role="menuitem" class="alt-colors">Disable ROV
+      <button onclick="RovActions.enableRovWifi()" role="menuitem" class="btn btn-accent btn-wide">Enable ROV
+        Wifi</button>
+      <button onclick="RovActions.disableRovWifi()" role="menuitem" class="btn btn-accent btn-wide">Disable ROV
         Wifi</button>
     </menu>
 
   </nav>
 
   <!-- Bottom Bar with the rov selector and driver Role info / toggle -->
-  <div id="rov_connection_bar" class="bottom-center light-bg hidden">
+  <div id="rov_connection_bar" class="bottom-center light-bg">
     <div id="rov_label_container">
       <hr>
       <span id="connected_rov_label"></span>
+      <button id='disconnect_btn'
+        class="btn btn-sm btn-secondary btn-circle align-baseline hide-when-not-connected">×</button>
       <hr>
     </div>
     <!-- <div class="info-bar-section"> -->
-    <!-- <button class="full-round-btn hide-when-not-connected" id='disconnect_btn'
-          aria-label="Disconnect from ROV"><span class="btn-hover-label">Disconnect</span><span class="btn-hover-hide"
-              id="connected_rov_label"></span></span><img
-              src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg" class="button-label-image"></button> -->
+    <!-- <button class="btn full-round-btn hide-when-not-connected" id='disconnect_btn' aria-label="Disconnect from ROV"><span
+        class="btn-hover-label">Disconnect</span><span class="btn-hover-hide"
+        id="connected_rov_label"></span></span><img src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg"
+        class="button-label-image"></button> -->
     <!-- </div> -->
     <!-- <div class="info-bar-section"> -->
     <button id="take_control_btn" onclick="RovActions.takeControl()"
-      class="alt-colors full-round-btn hide-when-driver hide-when-not-connected" aria-label="Take Control of ROV">Drive
+      class="btn btn-accent btn-wide full-round-btn hide-when-driver hide-when-not-connected"
+      aria-label="Take Control of ROV">Drive
       ROV ❯</button>
     <!-- </div> -->
     <!-- <div class="info-bar-section"> -->
-    <button id="gamepad-help-button" class="bottom-left-corner full-round-btn"
+    <button id="gamepad-help-button" class="btn btn-wide bottom-left-corner full-round-btn"
       aria-label="Show Controls Help">Controls<img src="../images/ui-elements/close_FILL1_wght400_GRAD200_opsz40.svg"
         class="button-label-image" id="close-gpad-help-icon"><img src="../images/ui-elements/gamepad_white_24dp.svg"
         class="button-label-image" id="open-gpad-help-icon"></button>
@@ -174,7 +182,10 @@
 
 
   <!-- Label with our current Peer Id  -->
-  <div id="client_peer_id_label" class="bottom-right-corner" aria-label=""></div>
+
+  <div class="bottom-right-corner our-peer-label" aria-label=""><span>You are: </span><b class="text-white"
+      id="client_peer_id_label"></b>
+  </div>
 
   <!-- White Backdrop to go behind Modal Dialogs & Gamepad Help Screen -->
   <div id="backdrop" class="hidden" aria-hidden></div>
@@ -507,6 +518,10 @@
       </g>
     </svg>
   </div>
+
+  <!-- -------------------------------------------------- -->
+
+  <script type="module" src="/src/main.js"></script>
 
 </body>
 

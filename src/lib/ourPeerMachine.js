@@ -4,7 +4,7 @@ import { createMachine, interpret } from "xstate";
 import { peerServerCloudOptions } from "./consts";
 import Peer from "peerjs";
 import { get } from "svelte/store";
-import { debugXstateMode } from "./globalContext";
+import { debugXstateMode, ourPeerId } from "./globalContext";
 
 let showToastMessage = (msg) => {
     console.info("Toast: " + msg)
@@ -22,6 +22,8 @@ export class OurPeerMachine {
     onStateChangeCallback = (state) => { }
 
     xstateMachineLayout = createMachine({
+        predictableActionArguments: true,
+        preserveActionOrder: true,
         "id": "DataConnection",
         "initial": "Connecting",
         "states": {
@@ -83,10 +85,11 @@ export class OurPeerMachine {
         this.runningMachine.start();
 
         // get our peerid
-        this.ourPeerId = localStorage.getItem('thisPeerId');
+        this.ourPeerId = get(ourPeerId);
         if (!this.ourPeerId) {
             this.ourPeerId = getRandomName();
-            localStorage.setItem('thisPeerId', this.ourPeerId); // save for future runs
+            localStorage.setItem('ourPeerId', this.ourPeerId); // save for future runs
+            ourPeerId.set(this.ourPeerId);
         }
 
         // setup our peer

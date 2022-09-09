@@ -1,16 +1,16 @@
+// @ts-ignore
 import { generateStateChangeFunction } from "./util";
 import { createMachine, interpret } from "xstate";
 import { get } from "svelte/store";
 import { debugXstateMode } from "./globalContext";
+import { showToastMessage } from "./ui";
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
+// @ts-ignore
 const messageEncoder = new TextEncoder(); // always utf-8
+// @ts-ignore
 const messageDecoder = new TextDecoder(); // always utf-8
 
-// debug
-let showToastMessage = (msg) => {
-    console.info("Toast: " + msg)
-}
 
 export class MediaConnectionMachine {
     eventHandlers = {};
@@ -19,10 +19,13 @@ export class MediaConnectionMachine {
     runningMachine = null;
     mediaChannel = null;
     mainTrack = null;
+    // @ts-ignore
     onStateChangeCallback = (state) => { };
     lastRecivedFrameTime = 0;
 
     xstateMachineLayout = createMachine({
+        predictableActionArguments: true,
+        preserveActionOrder: true,
         "id": "DataConnection",
         "initial": "Connecting",
         "states": {
@@ -73,17 +76,20 @@ export class MediaConnectionMachine {
     })
 
 
-    constructor(currentPeer, rovPeerId, onStateChangeCallback, onMessageRecivedCallback) {
+    constructor(currentPeer, rovPeerId, onStateChangeCallback) {
         this.currentState = this.xstateMachineLayout.config.initial;
         this.onStateChangeCallback = onStateChangeCallback;
-        this.onMessageRecivedCallback = onMessageRecivedCallback;
         this.currentPeer = currentPeer;
         this.rovPeerId = rovPeerId;
     }
 
     start() {
         this.runningMachine = interpret(this.xstateMachineLayout, { devTools: get(debugXstateMode) })
-        this.runningMachine.onTransition((e) => { this.currentState = e.value; this.onStateChangeCallback(this.currentState) })
+        this.runningMachine.onTransition((e) => {
+            if (this.currentState == e.value) return;
+            this.currentState = e.value;
+            this.onStateChangeCallback(this.currentState)
+        })
         this.runningMachine.start();
 
         // connect to the rov
@@ -91,14 +97,58 @@ export class MediaConnectionMachine {
 
         // setup the connection event listeners:
         this.eventHandlers['onCall'] = (mediaChannel) => {
-            this.eventHandlers['onStream'] = (stream) => {
-                this.mainTrack = stream;
+            console.info("Rov peer called us, answering call")
+            mediaChannel.answer();
 
-                stream.onmute((e) => { //https://stackoverflow.com/questions/69537765/how-to-detect-a-frozen-video-stream-in-webrtc
-                    console.info("Stream Muted: " + e)
-                })
-                console.log("MediaChannel got Stream: ", stream)
+            this.eventHandlers['onStream'] = (rovVideoStream) => {
                 this.sendEventToMachine('ON_CONNECTED');
+                this.mainTrack = rovVideoStream.getVideoTracks()[0];
+                let videoElem = document.getElementById("video-livestream")
+
+                console.log("MediaChannel got Stream: ", rovVideoStream, this.mainTrack, videoElem)
+
+
+                // this.mainTrack.onmute = (e) => { //https://stackoverflow.com/questions/69537765/how-to-detect-a-frozen-video-stream-in-webrtc
+                //     console.info("Track Muted: " + e)
+                // }
+
+                // this.mainTrack.onunmute = (e) => { //https://stackoverflow.com/questions/69537765/how-to-detect-a-frozen-video-stream-in-webrtc
+                //     console.info("Track UnMuted: " + e)
+                // }
+
+                // setInterval(() => {
+                //     if (!rovVideoStream) return;
+                //     rovVideoStream.getVideoTracks().forEach(videoTrack => {
+                //         if (videoTrack.readyState != "live" || this.mainTrack.muted) {
+                //             console.log("VFrozen video stream detected!");
+                //         }
+                //     });
+                // }, 300);
+
+                // setInterval(() => {
+                //     console.info("MediaChannel: ", mediaChannel)
+                // }, 1000);
+
+
+                this.eventHandlers['onStreamMute'] = () => {
+                    showToastMessage("Frozen video stream detected!", 1000);
+                };
+                this.mainTrack.addEventListener("mute", this.eventHandlers['onStreamMute']);
+
+                // @ts-ignore
+                videoElem.srcObject = rovVideoStream;  // video.src = URL.createObjectURL(rovVideoStream);
+                // @ts-ignore
+                videoElem.muted = true
+                // @ts-ignore
+                videoElem.autoplay = true
+                // @ts-ignore
+                videoElem.controls = false
+                // @ts-ignore
+                videoElem.play();
+
+
+
+
             };
             mediaChannel.on('stream', this.eventHandlers['onStream']);
 
@@ -133,6 +183,8 @@ export class MediaConnectionMachine {
     onConnected() {
         clearInterval(this.disconnectPollInterval)
         clearTimeout(this.connectionTimeout)
+        this.currentPeer.off('call', this.eventHandlers['onCall']);
+
         this.connectionTimeout = undefined;
         this.disconnectPollInterval = setInterval(() => {
             let connected = true;/// (Date.now() - this.lastRecivedFrameTime) < 500;
@@ -161,11 +213,10 @@ export class MediaConnectionMachine {
             this.mediaChannel.off('close', this.eventHandlers['onClose']);
             this.mediaChannel.close();
         }
-        // if (this.mainTrack) {
-        //     this.mainTrack.removeEventListener("onmute", this.eventHandlers['onStreamMute']);
-        //     this.mainTrack.removeEventListener("ended")
-        //     this.mainTrack.ended = true;
-        // }
+        if (this.mainTrack) {
+            this.mainTrack.removeEventListener("mute", this.eventHandlers['onStreamMute']);
+            this.mainTrack.ended = true;
+        }
         this.eventHandlers = null;
     }
 

@@ -1,7 +1,28 @@
-// import { showPasswordPrompt, showScrollableTextPopup, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
+import { showPasswordPrompt, showScrollableTextPopup, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
 import { v4 as uuidV4 } from "uuid"
+import { ClassInstances, isRovDriver } from "./globalContext";
 
 let lastTimeRecvdPong = NaN;
+
+// function showPasswordPrompt(d, e) {
+//     console.log("showPasswordPrompt: " + d);
+// }
+
+// function showToastMessage(d, e) {
+//     console.log("showToast: " + d);
+// }
+
+// function updateDisplayedSensorValues(d) {
+//     console.log("updateDisplayedSensorValues: " + d);
+// }
+
+// function updatePingDisplay(d) {
+//     console.log("updatePingDisplay: " + d);
+// }
+
+// function updateRoleDisplay(d) {
+//     console.log("updateRoleDisplay: " + d);
+// }
 
 export class MessageHandler {
 
@@ -11,7 +32,7 @@ export class MessageHandler {
 
     // sendMessageCallback: Function that will send the message to the rov peer.
     // This callback should be set in the constructor below.
-    static sendMessageCallback = () => { };
+    static sendMessageCallback = (msg) => { };
     static setSendMessageCallback = (callback) => {
         MessageHandler.sendMessageCallback = callback;
     }
@@ -86,14 +107,15 @@ export class MessageHandler {
     }
 
     static handleDriverChange(newDriverId) {
-        if (globalContext.thisPeer && newDriverId == globalContext.thisPeer.id) {
+        let thisPeerId = ClassInstances.connManager.getThisPeerId();
+        if (newDriverId == thisPeerId) {
             showToastMessage("You are now the driver");
             updateRoleDisplay(true);
-            globalContext.isRovDriver = true;
+            isRovDriver.set(true);
         } else {
             showToastMessage("ROV Driver is now " + newDriverId);
             updateRoleDisplay(false);
-            globalContext.isRovDriver = false;
+            isRovDriver.set(false);
         }
     }
 
@@ -115,7 +137,7 @@ export class MessageHandler {
     }
 
     static handleRecivedMessage(messageString) {
-        console.log("Recived message: " + messageString);
+        console.info("Msg recived: " + messageString);
         const msg_data = JSON.parse(messageString);
         const msg_cid = msg_data["cid"];
 

@@ -38,7 +38,7 @@ export function showNoGamepads(show) {
     gamepadConnectNotice.style.display = show ? "block" : "none";
 }
 
-var gamepadHelpVisible = false;
+export var gamepadHelpVisible = false;
 export function toggleGamepadHelpScreen() {
     gamepadHelpVisible = !gamepadHelpVisible // toggle it
     if (gamepadHelpVisible) {

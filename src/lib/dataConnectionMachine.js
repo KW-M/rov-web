@@ -16,6 +16,7 @@ export class DataConnectionMachine {
     eventHandlers = {};
     currentPeer = null;
     rovPeerId = null;
+    currentState = null
     connectionTimeout;    /** @type NodeJS.Timeout */
     runningMachine = null;
     lastRecivedMessageTime = 0;
@@ -23,6 +24,8 @@ export class DataConnectionMachine {
     onMessageRecivedCallback = (msg) => { };
 
     xstateMachineLayout = createMachine({
+        predictableActionArguments: true,
+        preserveActionOrder: true,
         "id": "DataConnection",
         "initial": "Connecting",
         "states": {
@@ -74,19 +77,24 @@ export class DataConnectionMachine {
 
 
     constructor(currentPeer, rovPeerId, onStateChangeCallback, onMessageRecivedCallback) {
-        this.currentState = this.xstateMachineLayout.config.initial;
+        this.currentState = null //this.xstateMachineLayout.config.initial;
         this.onStateChangeCallback = onStateChangeCallback;
         this.onMessageRecivedCallback = onMessageRecivedCallback;
         this.currentPeer = currentPeer;
         this.rovPeerId = rovPeerId;
+        console.log("DataConnectionMachine created")
     }
 
     start() {
         this.runningMachine = interpret(this.xstateMachineLayout, { devTools: get(debugXstateMode) })
-        this.runningMachine.onTransition((e) => { this.currentState = e.value; this.onStateChangeCallback(this.currentState) })
+        this.runningMachine.onTransition((e) => {
+            if (this.currentState == e.value) return;
+            this.currentState = e.value;
+            this.onStateChangeCallback(this.currentState)
+        })
         this.runningMachine.start();
 
-        this.dataConnection = this.currentPeer.peer.connect(this.rovPeerId, {
+        this.dataConnection = this.currentPeer.connect(this.rovPeerId, {
             reliable: true,
             serialization: 'none',
         });
@@ -105,7 +113,7 @@ export class DataConnectionMachine {
         this.dataConnection.on('close', this.eventHandlers['onClose']);
 
         this.eventHandlers['onPeerError'] = (err) => { if (err.type == "peer-unavailable") { this.sendEventToMachine("ON_DESTROY") } };
-        this.currentPeer.peer.on('error', this.eventHandlers['onPeerError']);
+        this.currentPeer.on('error', this.eventHandlers['onPeerError']);
 
         this.eventHandlers['onData'] = (encodedMessage) => {
             this.lastRecivedMessageTime = Date.now();
@@ -135,7 +143,7 @@ export class DataConnectionMachine {
         this.connectionTimeout = undefined;
 
         this.disconnectPollInterval = setInterval(() => {
-            let connected = (Date.now() - this.lastRecivedMessageTime) < 1000;
+            let connected = (Date.now() - this.lastRecivedMessageTime) < 1500;
             if (connected && this.connectionTimeout != undefined) {
                 clearTimeout(this.connectionTimeout)
                 this.connectionTimeout = undefined;
@@ -163,12 +171,16 @@ export class DataConnectionMachine {
         this.runningMachine.stop()
         this.currentState = "Destroyed"
         this.onStateChangeCallback(this.currentState)
-        if (!this.dataConnection) return;
-        this.dataConnection.off('open', this.eventHandlers['onOpen']);
-        this.dataConnection.off('error', this.eventHandlers['onError']);
-        this.dataConnection.off('close', this.eventHandlers['onClose']);
-        this.dataConnection.off('data', this.eventHandlers['onData']);
-        this.dataConnection.close();
+        if (this.currentPeer) {
+            this.currentPeer.off('error', this.eventHandlers['onPeerError']);
+        }
+        if (this.dataConnection) {
+            this.dataConnection.off('open', this.eventHandlers['onOpen']);
+            this.dataConnection.off('error', this.eventHandlers['onError']);
+            this.dataConnection.off('close', this.eventHandlers['onClose']);
+            this.dataConnection.off('data', this.eventHandlers['onData']);
+            this.dataConnection.close();
+        }
         this.eventHandlers = null;
     }
 
