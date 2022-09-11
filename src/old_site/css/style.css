@@ -1,12 +1,9 @@
-@import "toastify-js/src/toastify.css";
-
 /*
 z-index map:
 
 - all buttons: 2 (default)
 - loading indicator & large central buttons: 4
 - layout edge / corner areas: 6 (defualt)
-- toastify notifications & dialogs: 3000000
  */
 
 html,
@@ -367,7 +364,7 @@ table.top-left-corner td {
   max-height: 128px;
   padding: 3px 6px;
 
-  transition: max-height 0.4s ease;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
   white-space: nowrap;
 
   border-radius: 12px 12px 0 0;
@@ -749,6 +746,8 @@ body.fullscreen-open #video-livestream {
 
   width: 100%;
   height: 100%;
+
+  transition: opacity 0.5s ease-in-out;
 
   pointer-events: none;
 }

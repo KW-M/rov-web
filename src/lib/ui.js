@@ -1,5 +1,4 @@
 import { toast } from '@zerodevx/svelte-toast';
-import { isArray, keys } from 'xstate/lib/utils';
 import { ROV_PEERID_BASE, LOADING_MESSAGES } from './consts';
 import { ClassInstances, rovPeerIdEndNumber } from './globalContext';
 import { getROVName } from './rovUtil';

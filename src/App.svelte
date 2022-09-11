@@ -36,10 +36,10 @@
 
   let ignoreInitalPeerState = true;
   peerServerConnState.subscribe((serverConnState) => {
-    // if (ignoreInitalPeerState) {
-    //   ignoreInitalPeerState = false;
-    //   return;
-    // }
+    if (ignoreInitalPeerState) {
+      ignoreInitalPeerState = false;
+      return;
+    }
     console.log("peerServerConnState: ", serverConnState);
     if (serverConnState == ConnectionState.connecting) {
       showLoadingUi("server-connecting");
@@ -48,6 +48,7 @@
     } else if (serverConnState == ConnectionState.disconnected) {
       hideLoadingUi("server-connecting");
       hideLoadingUi("server-reconnecting");
+      showROVDisconnectedUi();
     } else if (serverConnState == ConnectionState.connected) {
       hideLoadingUi("server-connecting");
       hideLoadingUi("server-reconnecting");
@@ -108,26 +109,6 @@
     }
   });
 
-  const switchToNextRovPeerId = () => {
-    rovPeerIdEndNumber.update((n) => {
-      n++;
-      localStorage.setItem("rovPeerIdEndNumber", n.toString());
-      return n;
-    });
-    setCurrentRovName();
-    RovActions.disconnectFromRov();
-  };
-
-  const switchToPrevRovPeerId = () => {
-    rovPeerIdEndNumber.update((n) => {
-      n--;
-      localStorage.setItem("rovPeerIdEndNumber", n.toString());
-      return n;
-    });
-    setCurrentRovName();
-    RovActions.disconnectFromRov();
-  };
-
   onMount(() => {
     runSiteInitMachine((eventName) => {
       hideLoadingUi("internet-check");
@@ -136,6 +117,8 @@
       let connMngr = (ClassInstances.connManager = new ConnectionManager(MessageHandler.handleRecivedMessage));
       msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
       connMngr.start();
+
+      msgHandler.startPingLoop();
 
       setCurrentRovName();
       setupConnectBtnClickHandler(RovActions.connectToRov);

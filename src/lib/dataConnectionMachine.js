@@ -94,6 +94,7 @@ export class DataConnectionMachine {
         })
         this.runningMachine.start();
 
+        if (this.currentPeer == null) return this.cleanup();
         this.dataConnection = this.currentPeer.connect(this.rovPeerId, {
             reliable: true,
             serialization: 'none',
@@ -134,7 +135,7 @@ export class DataConnectionMachine {
         // setup a timeout in case the connection takes too long
         this.connectionTimeout = setTimeout(() => {
             this.sendEventToMachine('ON_DESTROY');
-        }, 8000); // 8 seconds
+        }, 12000); // 12 seconds
     }
 
     onConnected() {
@@ -172,6 +173,7 @@ export class DataConnectionMachine {
         this.runningMachine.stop()
         this.currentState = "Destroyed"
         this.onStateChangeCallback(this.currentState)
+        if (!this.eventHandlers) return;
         if (this.currentPeer) {
             this.currentPeer.off('error', this.eventHandlers['onPeerError']);
         }

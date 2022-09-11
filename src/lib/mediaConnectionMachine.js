@@ -206,7 +206,10 @@ export class MediaConnectionMachine {
         this.runningMachine.stop()
         this.currentState = "Destroyed"
         this.onStateChangeCallback(this.currentState)
-        this.currentPeer.off('call', this.eventHandlers['onCall']);
+        if (!this.eventHandlers) return;
+        if (this.currentPeer) {
+            this.currentPeer.off('call', this.eventHandlers['onCall']);
+        }
         if (this.mediaChannel) {
             this.mediaChannel.off('stream', this.eventHandlers['onStream']);
             this.mediaChannel.off('error', this.eventHandlers['onError']);

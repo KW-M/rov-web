@@ -6,6 +6,7 @@ import { ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNu
 import { MediaConnectionMachine } from "./mediaConnectionMachine"
 import { OurPeerMachine } from "./ourPeerMachine"
 import { getROVName } from "./rovUtil"
+import { showToastMessage } from "./ui"
 import { Queue } from "./util"
 
 class RovConnection {
@@ -271,7 +272,7 @@ export class ConnectionManager {
                 this.ourPeerMachines.splice(i, 1);
                 if (this.reconnectFailureCount >= 3) {
                     this.reconnectFailureCount = 0;
-                    console.log("Our Peer Too Many Failures, exiting...")
+                    showToastMessage("Our Peer has Too Many Failures, try reloading the page...")
                 } else if (this.ourPeerMachines.length === 0) {
                     this.start() // start over with one peer
                 }

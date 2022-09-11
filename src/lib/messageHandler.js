@@ -4,26 +4,6 @@ import { ClassInstances, isRovDriver } from "./globalContext";
 
 let lastTimeRecvdPong = NaN;
 
-// function showPasswordPrompt(d, e) {
-//     console.log("showPasswordPrompt: " + d);
-// }
-
-// function showToastMessage(d, e) {
-//     console.log("showToast: " + d);
-// }
-
-// function updateDisplayedSensorValues(d) {
-//     console.log("updateDisplayedSensorValues: " + d);
-// }
-
-// function updatePingDisplay(d) {
-//     console.log("updatePingDisplay: " + d);
-// }
-
-// function updateRoleDisplay(d) {
-//     console.log("updateRoleDisplay: " + d);
-// }
-
 export class MessageHandler {
 
     // replyContinuityCallbacks: keep track of functions to run when we get a reply to a message we sent with some "cid" aka continuityId
@@ -32,7 +12,7 @@ export class MessageHandler {
 
     // sendMessageCallback: Function that will send the message to the rov peer.
     // This callback should be set in the constructor below.
-    static sendMessageCallback = (msg) => { };
+    static sendMessageCallback = null;
     static setSendMessageCallback = (callback) => {
         MessageHandler.sendMessageCallback = callback;
     }
@@ -152,6 +132,13 @@ export class MessageHandler {
             MessageHandler.handleBroadcastMsgRecived(msg_data);
 
         }
+    }
+
+
+    static startPingLoop() {
+        let pingLoop = setInterval(() => {
+            MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() }, null);
+        }, 1000)
     }
 
 

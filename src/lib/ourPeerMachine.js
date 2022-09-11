@@ -5,10 +5,7 @@ import { peerServerCloudOptions } from "./consts";
 import Peer from "peerjs";
 import { get } from "svelte/store";
 import { debugXstateMode, ourPeerId } from "./globalContext";
-
-let showToastMessage = (msg) => {
-    console.info("Toast: " + msg)
-}
+import { showToastMessage } from "./ui";
 
 
 
@@ -93,7 +90,12 @@ export class OurPeerMachine {
         }
 
         // setup our peer
-        this.peer = new Peer(this.ourPeerId, peerServerCloudOptions)
+        let token = localStorage.getItem('peerToken');
+        let peerOptions = token ? { ...peerServerCloudOptions, token } : peerServerCloudOptions;
+        this.peer = new Peer(this.ourPeerId, peerOptions)
+        console.log("Our PeerToken:", this.peer.options.token);
+        if (!token && this.peer.options.token) localStorage.setItem('peerToken', this.peer.options.token);
+
 
         // setup the connection event listeners:
         this.eventHandlers['onOpen'] = () => { this.sendEventToMachine('ON_CONNECTED'); showToastMessage("OurPeer Open!"); };
@@ -103,7 +105,8 @@ export class OurPeerMachine {
             if (err.type == "peer-unavailable") return; // ignore because this error will be handled by the dataConnectionMachine
             else if (err.type == "unavailable-id") {
                 showToastMessage("peer id " + this.ourPeerId + " already taken")
-                localStorage.removeItem('thisPeerId')
+                this.ourPeerId = getRandomName();
+                ourPeerId.set(this.ourPeerId);
             } else if (err.type == "webrtc" && err.message.indexOf("No remoteDescription") == -1) {
                 showToastMessage("Webrtc Error: " + err.message)
             } else {
