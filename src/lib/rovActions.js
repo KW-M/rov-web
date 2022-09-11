@@ -1,7 +1,7 @@
 import { RovApiAction } from "./consts";
-import { ClassInstances } from "./globalContext";
+import { ClassInstances, rovPeerIdEndNumber } from "./globalContext";
 import { MessageHandler } from "./messageHandler.js"
-import { showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
+import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
 
 export class RovActions {
 
@@ -52,6 +52,26 @@ export class RovActions {
 
     static disconnectFromRov() {
         ClassInstances.connManager && ClassInstances.connManager.disconnectFromCurrentRov();
+    }
+
+    static switchToNextRovPeerId() {
+        rovPeerIdEndNumber.update((n) => {
+            n++;
+            localStorage.setItem("rovPeerIdEndNumber", n.toString());
+            return n;
+        });
+        setCurrentRovName();
+        RovActions.disconnectFromRov();
+    }
+
+    static switchToPrevRovPeerId() {
+        rovPeerIdEndNumber.update((n) => {
+            n = Math.max(n - 1, 0);
+            localStorage.setItem("rovPeerIdEndNumber", n.toString());
+            return n;
+        });
+        setCurrentRovName();
+        RovActions.disconnectFromRov();
     }
 
     static takeControl() {

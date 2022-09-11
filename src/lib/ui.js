@@ -23,7 +23,6 @@ export function showToastMessage(message, durration, callback) {
     toastDeduplicationCache[message] = toastId;
     toast.subscribe((toastArray) => {
         let ourToast = toastArray.find((toast) => { return toast.msg === message })
-        console.log("ourToast", ourToast);
         if (!ourToast) {
             delete toastDeduplicationCache[message];
             callback && callback();
@@ -105,8 +104,8 @@ export function setCurrentRovName() {
     let name = getROVName(index);
     let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
     connectBtn.innerText = "Connect to " + uiName;
-    if (index == 0) switchToPrevRovBtn.setAttribute("disabled", "true");
-    else switchToPrevRovBtn.removeAttribute("disabled");
+    // if (index == 0) switchToPrevRovBtn.setAttribute("disabled", "true");
+    // else switchToPrevRovBtn.removeAttribute("disabled");
     connectedRovLabel.innerText = uiName
 }
 
@@ -121,18 +120,6 @@ export function setupDisconnectBtnClickHandler(callback) {
     disconnectBtn.addEventListener('click', callback);
     return () => { // cleanup function
         disconnectBtn.removeEventListener('click', callback);
-    }
-}
-
-
-const switchToPrevRovBtn = document.getElementById('switch_to_prev_rov_btn');
-const switchToNextRovBtn = document.getElementById('switch_to_next_rov_btn');
-export function setupSwitchRovBtnClickHandlers(prevRovCallback, nextRovCallback) {
-    switchToPrevRovBtn.addEventListener('click', prevRovCallback);
-    switchToNextRovBtn.addEventListener('click', nextRovCallback);
-    return () => { // cleanup function
-        switchToPrevRovBtn.removeEventListener('click', prevRovCallback);
-        switchToNextRovBtn.removeEventListener('click', nextRovCallback);
     }
 }
 

@@ -143,7 +143,8 @@ export class DataConnectionMachine {
         this.connectionTimeout = undefined;
 
         this.disconnectPollInterval = setInterval(() => {
-            let connected = (Date.now() - this.lastRecivedMessageTime) < 1500;
+            console.info("last msg since: " + (Date.now() - this.lastRecivedMessageTime))
+            let connected = (Date.now() - this.lastRecivedMessageTime) < 3000;
             if (connected && this.connectionTimeout != undefined) {
                 clearTimeout(this.connectionTimeout)
                 this.connectionTimeout = undefined;

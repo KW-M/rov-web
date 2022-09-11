@@ -802,35 +802,6 @@ body.rov-driver .hide-when-driver {
   display: none !important;
 }
 
-#too-many-gamepads-notice,
-#gamepad-connect-notice {
-  margin: 0 auto;
-
-  border-bottom: 2px solid black;
-}
-
-#gamepad-help-notice {
-  position: absolute;
-  z-index: 9;
-  top: 8px;
-  left: 50%;
-
-  display: none;
-
-  max-width: 536px;
-  margin: 12px auto;
-
-  transform: translateX(-50%);
-  text-align: center;
-
-  color: #000000a1;
-
-  font-family: sans-serif;
-  font-size: 26px;
-  font-weight: bold;
-  line-height: 1.2em;
-}
-
 /*
 #gamepad-help-text {
   position: absolute;
@@ -877,16 +848,45 @@ body.gamepad-help-open #backdrop {
   display: block;
 }
 
-body.gamepad-help-open #gamepad-connect-notice {
-  display: none;
-}
-
 body.gamepad-help-open #gamepad-help-text {
   display: block;
 }
 
 body.gamepad-help-open #gamepad-container {
   z-index: 25;
+}
+
+.gamepad-notice {
+  display: block;
+  position: fixed;
+  text-align: center;
+  font-family: sans-serif;
+  font-weight: bold;
+  line-height: 1.2em;
+  width: 100%;
+  max-width: 300px;
+  padding: 7px;
+  top: 0;
+  background: #ffef00;
+  border: none;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.gamepad-notice.right {
+  right: 0;
+  left: auto;
+}
+
+.gamepad-notice.left {
+  left: 0;
+  right: auto;
+}
+
+.gamepad-notice.center {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
 /* ********* Onscreen Gamepad Related ********* */
@@ -898,6 +898,7 @@ body.gamepad-help-open #gamepad-container {
   width: 72%;
   max-width: 47.5vh;
   max-height: 14cm;
+  transition: opacity 0.5s ease-in-out;
 
   pointer-events: none;
 }

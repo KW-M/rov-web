@@ -13,7 +13,7 @@
   import { MessageHandler } from "./lib/messageHandler";
 
   import { runSiteInitMachine } from "./lib/siteInit";
-  import { hideLivestreamUi, hideLoadingUi, setClientPeerIdDisplay, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, setupSwitchRovBtnClickHandlers, showLivestreamUi, showLoadingUi, showROVConnectedUi, showROVConnectingUi, showROVDisconnectedUi, showToastMessage } from "./lib/ui";
+  import { hideLivestreamUi, hideLoadingUi, setClientPeerIdDisplay, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, showLivestreamUi, showLoadingUi, showROVConnectedUi, showROVConnectingUi, showROVDisconnectedUi, showToastMessage } from "./lib/ui";
   import { RovActions } from "./lib/rovActions";
   import { ConnectionState } from "./lib/consts";
   import { calculateDesiredMotion } from "./lib/rovUtil";
@@ -106,36 +106,38 @@
     }
   });
 
+  const switchToNextRovPeerId = () => {
+    rovPeerIdEndNumber.update((n) => {
+      n++;
+      localStorage.setItem("rovPeerIdEndNumber", n.toString());
+      return n;
+    });
+    setCurrentRovName();
+    RovActions.disconnectFromRov();
+  };
+
+  const switchToPrevRovPeerId = () => {
+    rovPeerIdEndNumber.update((n) => {
+      n--;
+      localStorage.setItem("rovPeerIdEndNumber", n.toString());
+      return n;
+    });
+    setCurrentRovName();
+    RovActions.disconnectFromRov();
+  };
+
   onMount(() => {
     runSiteInitMachine((eventName) => {
       hideLoadingUi("internet-check");
-      console.log(MessageHandler.handleRecivedMessage);
+
       let msgHandler = (ClassInstances.msgHandler = MessageHandler);
       let connMngr = (ClassInstances.connManager = new ConnectionManager(MessageHandler.handleRecivedMessage));
-      MessageHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
+      msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
       connMngr.start();
+
       setCurrentRovName();
       setupConnectBtnClickHandler(RovActions.connectToRov);
       setupDisconnectBtnClickHandler(RovActions.disconnectFromRov);
-      const switchToNextRovPeerId = () => {
-        rovPeerIdEndNumber.update((n) => {
-          n++;
-          localStorage.setItem("rovPeerIdEndNumber", n.toString());
-          return n;
-        });
-        setCurrentRovName();
-        RovActions.disconnectFromRov();
-      };
-      const switchToPrevRovPeerId = () => {
-        rovPeerIdEndNumber.update((n) => {
-          n--;
-          localStorage.setItem("rovPeerIdEndNumber", n.toString());
-          return n;
-        });
-        setCurrentRovName();
-        RovActions.disconnectFromRov();
-      };
-      setupSwitchRovBtnClickHandlers(switchToPrevRovPeerId, switchToNextRovPeerId);
     });
   });
 

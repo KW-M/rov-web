@@ -228,7 +228,6 @@ export class ConnectionManager {
     onMessageRecivedCallback = (msg) => { console.info("msg recived:" + msg) }
 
     constructor(onMessageRecivedCallback) {
-        console.debug("ConnectionManager constructor", onMessageRecivedCallback)
         this.onMessageRecivedCallback = onMessageRecivedCallback;
     }
 
@@ -315,10 +314,16 @@ export class ConnectionManager {
         }
     }
 
+    messageRecived(msg, rovId) {
+        if (rovId === this.currentTargetRovId) {
+            this.onMessageRecivedCallback(msg)
+        }
+    }
+
     connectToRov(rovPeerId) {
         if (!this.ROVs[rovPeerId]) {
             console.log("new Rov: ", rovPeerId, this.rovConnStateChange.bind(this))
-            this.ROVs[rovPeerId] = new RovConnection(rovPeerId, this.ourPeerMachines[0], this.onMessageRecivedCallback.bind(this), this.rovConnStateChange.bind(this))
+            this.ROVs[rovPeerId] = new RovConnection(rovPeerId, this.ourPeerMachines[0], this.messageRecived.bind(this), this.rovConnStateChange.bind(this))
         }
         this.ROVs[rovPeerId].start();
     }
@@ -348,5 +353,15 @@ export class ConnectionManager {
 
     sendMessageToCurrentRov(msg) {
         this.sendMessageToRov(msg, this.currentTargetRovId)
+    }
+
+    cleanup() {
+        for (const rovId in this.ROVs) {
+            this.disconnectFromRov(rovId)
+        }
+        for (const peerMachine of this.ourPeerMachines) {
+            peerMachine.cleanup()
+        }
+        this.ourPeerMachines = []
     }
 }
