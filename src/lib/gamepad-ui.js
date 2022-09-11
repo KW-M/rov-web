@@ -9,6 +9,8 @@ const gamepadHelpTooltipText = document.querySelector('#gamepad-help-text');
 const defaultTooltipTarget = document.querySelector('#select_button');
 var currentPopperTarget = defaultTooltipTarget;
 var touchingButtonsCount = 0;
+var someAxiesNotCentered = false;
+var someButtonsPressed = false;
 
 const helpTooltip = createPopper({
     getBoundingClientRect: () => currentPopperTarget.getBoundingClientRect(),
@@ -132,20 +134,28 @@ export function handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHe
                     axisMap.rightIndicatorElement.style.opacity = 0;
                 }
             }
-        } else if (Math.abs(xValue) + Math.abs(yValue) < 0.1) {
-            setButtonTouchCount(true);
         }
     });
+
+    let movedAxiesCount = axiesMaping.reduce((acc, axisMap) => {
+        return acc + Math.abs(axisMap.xValue) + Math.abs(axisMap.yValue) > 0.05 ? 1 : 0;
+    }, 0);
+
+
+    if (!gamepadHelpVisible && movedAxiesCount > 0 && someAxiesNotCentered == false) {
+        someAxiesNotCentered = true;
+        setGamepadVisability();
+    } else if (someAxiesNotCentered == true && movedAxiesCount == 0) {
+        someAxiesNotCentered = false;
+        setGamepadVisability();
+    }
 }
 
-function setButtonTouchCount(addTouch) {
-    touchingButtonsCount += addTouch ? 1 : 0
-    if (gamepadHelpVisible) return;
-    if (touchingButtonsCount <= 0) {
-        touchingButtonsCount = 0
-        document.body.classList.remove("driving-now")
-    } else {
+function setGamepadVisability() {
+    if (!gamepadHelpVisible && (someAxiesNotCentered || someButtonsPressed)) {
         document.body.classList.add("driving-now")
+    } else {
+        document.body.classList.remove("driving-now")
     }
 }
 
@@ -168,11 +178,18 @@ function setGamepadButtonClass(btnIndx, gamepadButtonStates) {
 }
 
 export function handleGamepadVisualFeedbackButtonEvents(gamepadButtonStates) {
-    touchingButtonsCount = 0;
+    let pressedBtnCount = 0;
     for (var btnIndx = 0; btnIndx < gamepadButtonStates.length; btnIndx++) {
         setGamepadButtonClass(btnIndx, gamepadButtonStates);
-        // if (!gamepadHelpVisible)
-        //     setButtonTouchCount(gamepadButtonStates[btnIndx].pressed == true);
+        pressedBtnCount += gamepadButtonStates[btnIndx].pressed ? 1 : 0;
+    }
+
+    if (!gamepadHelpVisible && pressedBtnCount > 0 && someButtonsPressed == false) {
+        someButtonsPressed = true;
+        setGamepadVisability();
+    } else if (someButtonsPressed == true) {
+        someButtonsPressed = false;
+        setGamepadVisability();
     }
 }
 
