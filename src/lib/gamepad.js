@@ -38,13 +38,12 @@ export class GamepadController {
             verticalGpadAction: { type: "button", index: 3 },
             elem: document.getElementById("shoulder_trigger_back_right_highlight"),
         }, {
-            verticalGpadAction: { type: "button", index: 3 },
+            verticalGpadAction: { type: "button", index: 4 },
             elem: document.getElementById("shoulder_trigger_back_left_highlight"),
         }]);
     }
 
     gamepadConnectDisconnectHandler() {
-        // const gamepads = getGamepadsStandardized()
         const gamepads = navigator.getGamepads();
         var connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
         if (connectedGamepadCount != 0 && gamepads[0]["emulated"]) connectedGamepadCount -= 1;
@@ -139,110 +138,3 @@ export class GamepadController {
         handleGamepadVisualFeedbackAxisEvents(axisStates, 0.4);
     }
 }
-
-
-
-// const DEFAULT_GAMEPAD_HELP_MSG = "Press any button on your controller or onscreen."
-// const DEFUALT_BUTTON_ORDER = [
-//     "A",
-//     "B",
-//     "X",
-//     "Y",
-//     "L1",
-//     "R1",
-//     "L2",
-//     "R2",
-//     "select",
-//     "start",
-//     "stick_button_left",
-//     "stick_button_right",
-//     "dpadUp",
-//     "dpadDown",
-//     "dpadLeft",
-//     "dpadRight"
-// ]
-
-
-// // Gamepad help section
-
-// var gamepadHelpVisible = false;
-// const gamepadHelpText = document.getElementById("gamepad-help-text")
-// function setupGamepadHelp() {
-//     var gamepadContainer = document.getElementById("gamepad-container")
-//     var gamepadHelpToggleButton = document.getElementById("gamepad-help-button")
-//     gamepadHelpToggleButton.onclick = () => {
-//         if (gamepadHelpVisible == false) {
-//             gamepadContainer.classList.add("help-open")
-//             gamepadHelpToggleButton.innerText = "Close Help"
-//             gamepadHelpText.innerText = 'Press or click any button to see help'
-//         } else {
-//             gamepadContainer.classList.remove("help-open")
-//             gamepadHelpToggleButton.innerText = "Gamepad Help"
-//         }
-//         gamepadHelpVisible = !gamepadHelpVisible // toggle it
-//     }
-// }
-
-// export function initGamepadSupport(gamepadUi, gamepadEmulator, gamepadUpdatedCallback) {
-
-//     // As of 2012, it seems impossible to detect Gamepad API support
-//     // in Firefox, hence we need to hardcode it in gamepadSupportAvailable.
-//     navigator.getGamepads = navigator.getGamepads || navigator.webkitGamepads || navigator.webkitGetGamepads
-//     var gamepadSupportAvailable = !!navigator.getGamepads || (navigator.userAgent.indexOf('Firefox/') != -1);
-//     if (!gamepadSupportAvailable) {
-//         // It doesn't seem Gamepad API is available ' show a message telling
-//         // the visitor about it.
-//         showNotSupported();
-//         return false;
-//     }
-
-
-//     gamepadEmulator.monkeyPatchGetGamepads()
-//     // gamepadEmulator.addEmulatedGamepad(0, gamepadEmulator.DEFAULT_BUTTON_COUNT, gamepadEmulator.DEFAULT_AXIS_COUNT)
-//     gamepadEmulator.registerOnScreenGamepadButtonEvents(0, buttonHighlightElements);
-//     gamepadEmulator.registerOnScreenGamepadAxisEvents(0, [{
-//         horizontalGpadAction: 0,
-//         verticalGpadAction: 1,
-//         elem: document.getElementById("gamepad-joystick-touch-area-left"),
-//     }, {
-//         horizontalGpadAction: 2,
-//         verticalGpadAction: 3,
-//         elem: document.getElementById("gamepad-joystick-touch-area-right"),
-//     }]);
-
-//     setupGamepadHelp();
-
-//     // otherwise gamepad support is available. so initilize the joymap library
-//     var lastGamepadCount = 0;
-//     var lastGamepadId = "";
-
-//     // do stuff immediately after each Gamepad Poll (should/will be called about 60 times per second)
-//     function gamepadUpdate() {
-//         // check if a gamepad was just connected or disconnected:
-//         const gamepads = gpadMap.getGamepads()
-//         const gamepadCount = gamepads.length;
-//         if (gamepadCount != lastGamepadCount || (gamepads[0] && gamepads[0].id != lastGamepadId)) {
-//             if (gamepadCount == 0) {
-//                 showNoGamepads();
-//                 lastGamepadCount = 0;
-//                 lastGamepadId = "";
-//                 return;
-//             } else if (gamepadCount >= 1) {
-//                 if (joyMod) gpadMap.removeModule(joyMod);
-//                 console.log(joyMod)
-//                 joyMod = joymap.createQueryModule({ threshold: 0.2, clampThreshold: true });
-//                 gpadMap.addModule(joyMod);
-//                 console.log(joyMod)
-
-//                 showGamepadsConnected(gamepads);
-//                 console.log(joyMod.getAllButtons(), joyMod.getAllSticks(), joyMod.getAllMappers())
-//             }
-//             lastGamepadCount = gamepadCount;
-//             lastGamepadId = gamepads[0].id;
-//         }
-
-
-//         gamepadUpdatedCallback(joyMod.getAllButtons(), joyMod.getAllSticks(), joyMod.getAllMappers())
-//     }
-// }
-// }

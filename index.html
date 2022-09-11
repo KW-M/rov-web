@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name="description" content="A pwa starter template for svelte" />
-  <!-- <title>Rov Web SV</title> -->
+  <title>Rov Web SV</title>
 
   <!-- ------- -->
   <!-- VISUALS -->
@@ -30,7 +30,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="svelte pwa starter" />
-
 
   <!-- --------- -->
   <!-- META TAGS -->
@@ -60,7 +59,7 @@
 
 </head>
 
-<body class="" data-theme="winter">
+<body class="rov-driver" data-theme="winter">
   <noscript>
     <h1>Oops! Javascript required here! Please enable it to run this app.</h1>
   </noscript>
@@ -74,10 +73,12 @@
   </div>
 
   <div id="connect_btn_options" style="display: none;" class="btn-group">
-    <button id="switch_to_prev_rov_btn" class="btn btn-ghost" aria-label="Switch to Previous ROV"> ❮
+    <button id="switch_to_prev_rov_btn" class="btn btn-ghost" onclick="RovActions.switchToPrevRovPeerId()"
+      aria-label="Switch to Previous ROV"> ❮
     </button>
     <button id='connect_btn' class="btn btn-active">Connect to ROV</button>
-    <button id="switch_to_next_rov_btn" class="btn btn-ghost" aria-label="Switch to Next ROV"> ❯
+    <button id="switch_to_next_rov_btn" class="btn btn-ghost" onclick="RovActions.switchToNextRovPeerId()"
+      aria-label="Switch to Next ROV"> ❯
     </button>
   </div>
   <button id='scan_for_ip_btn' style="display: none;" class="btn">Scan for ROV IP</button>
@@ -152,7 +153,13 @@
   <div id="rov_connection_bar" class="bottom-center light-bg">
     <div id="rov_label_container">
       <hr>
+      <button class="btn btn-ghost btn-sm" onclick="RovActions.switchToPrevRovPeerId()"
+        aria-label="Switch to Previous ROV"> ❮
+      </button>
       <span id="connected_rov_label"></span>
+      <button class="btn btn-ghost btn-sm" onclick="RovActions.switchToNextRovPeerId()" aria-label="Switch to Next ROV">
+        ❯
+      </button>
       <button id='disconnect_btn'
         class="btn btn-sm btn-secondary btn-circle align-baseline hide-when-not-connected">×</button>
       <hr>
@@ -193,11 +200,13 @@
   <div id="gamepad-container">
     <!-- Gamepad Connected/Disconned Feedback -->
     <div id="gamepad-help-notice">
-      <p id="gamepad-connect-notice" style="display: block;">Connect a gamepad & press any button to
+      <p id="gamepad-connect-notice" class="gamepad-notice left text-lg">Connect a gamepad & press any button to
         activate</p>
-      <p id="too-many-gamepads-notice" style="display: none;">Multiple gamepads
+
+      <p id="too-many-gamepads-notice" style="display: none;" class="gamepad-notice center text-lg">Multiple gamepads
         connected, only one will be used </p>
-      <p>Press, click or drag controls to see what they do.</p>
+      <p class="gamepad-notice right text-lg">Press, click or drag controls to see what they do.</p>
+
     </div>
 
 

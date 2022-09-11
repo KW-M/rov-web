@@ -43,7 +43,7 @@ export function toggleGamepadHelpScreen() {
     gamepadHelpVisible = !gamepadHelpVisible // toggle it
     if (gamepadHelpVisible) {
         document.body.classList.add("gamepad-help-open")
-        // this.showHelpTooltip(null);
+        document.body.classList.remove("driving-now")
     } else {
         document.body.classList.remove("gamepad-help-open")
     }
@@ -55,14 +55,14 @@ export function toggleGamepadHelpScreen() {
 document.querySelector('#gamepad-help-button').addEventListener("click", toggleGamepadHelpScreen);
 
 export function showGamepadStatus(connectedGamepadCount) {
-    this.showNoGamepads(connectedGamepadCount == 0);
-    this.showGamepadConnected(connectedGamepadCount == 0);
-    this.showExtraniousGamepadsConnected(connectedGamepadCount > 1);
+    // showNoGamepads(connectedGamepadCount == 0);
+    // showGamepadConnected(connectedGamepadCount != 0);
+    // showExtraniousGamepadsConnected(connectedGamepadCount > 1);
 }
 
 export function showNotSupported() {
     alert('Gamepad interface not supported, please use a more modern browser.');
-    this.showGamepadConnected(true);
+    // showGamepadConnected(true);
 }
 
 export function showHelpTooltip(btnElem, btnHelpText) {
@@ -132,12 +132,15 @@ export function handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHe
                     axisMap.rightIndicatorElement.style.opacity = 0;
                 }
             }
+        } else if (Math.abs(xValue) + Math.abs(yValue) < 0.1) {
+            setButtonTouchCount(true);
         }
     });
 }
 
 function setButtonTouchCount(addTouch) {
     touchingButtonsCount += addTouch ? 1 : 0
+    if (gamepadHelpVisible) return;
     if (touchingButtonsCount <= 0) {
         touchingButtonsCount = 0
         document.body.classList.remove("driving-now")
@@ -168,8 +171,8 @@ export function handleGamepadVisualFeedbackButtonEvents(gamepadButtonStates) {
     touchingButtonsCount = 0;
     for (var btnIndx = 0; btnIndx < gamepadButtonStates.length; btnIndx++) {
         setGamepadButtonClass(btnIndx, gamepadButtonStates);
-        console.log("btn press", gamepadButtonStates[btnIndx].pressed)
-        setButtonTouchCount(gamepadButtonStates[btnIndx].pressed == true);
+        // if (!gamepadHelpVisible)
+        //     setButtonTouchCount(gamepadButtonStates[btnIndx].pressed == true);
     }
 }
 

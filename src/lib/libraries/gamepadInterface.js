@@ -13,7 +13,7 @@ export class GamepadInterface {
         this.gamepadAxisChangeCallback = null;
         this.extraGamepadMappings = [];
 
-        navigator.gamepadInputEmulation = "gamepad"; // Microsoft edge fix
+        navigator["gamepadInputEmulation"] = "gamepad"; // Microsoft edge fix
         window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
         navigator.getGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads || navigator.msGetGamepads;
 
@@ -86,8 +86,8 @@ export class GamepadInterface {
 
         let i, aAxisChangedFlag;
         for (i = 0; i < axisState.length; i++) {
-            let axisValue = axisState[i];
-            let lastAxisValue = lastAxisState[i];
+            let axisValue = axisState[i] || 0;
+            let lastAxisValue = lastAxisState[i] || 0;
             if (axisValue != lastAxisValue) {
                 axiesChangeMask[i] = true;
                 aAxisChangedFlag = true;
@@ -98,6 +98,7 @@ export class GamepadInterface {
 
         // send out event if one or more axes changed
         if (aAxisChangedFlag && this.gamepadAxisChangeCallback) {
+            console.log("axis change", axiesChangeMask);
             this.gamepadAxisChangeCallback(gamepadIndex, gamepad, axiesChangeMask);
         }
     }
@@ -105,15 +106,15 @@ export class GamepadInterface {
     checkForButtonChanges(gamepadIndex, gamepad) {
         let btnState = gamepad.buttons;
         const lastGamepadState = this.lastStateOfGamepads[gamepadIndex];
-        let lastBtnState = lastGamepadState.buttons;
+        let lastBtnsState = lastGamepadState.buttons;
 
         let buttonChangesMask = [];
 
         let bi, aButtonChangedFlag = false;
         for (bi = 0; bi < btnState.length; bi++) {
 
-            let button = btnState[bi];
-            let lastButtonState = lastBtnState[bi];
+            let button = btnState[bi] || { pressed: false, value: 0, touched: false };
+            let lastButtonState = lastBtnsState[bi] || { pressed: false, value: 0, touched: false };
             let buttonConfig = this.buttonConfig[bi] || {};
 
             let btnChangeMask = {}
@@ -150,6 +151,7 @@ export class GamepadInterface {
 
         // send out event if one or more buttons changed
         if (aButtonChangedFlag && this.gamepadButtonChangeCallback) {
+            console.log("button change", buttonChangesMask);
             this.gamepadButtonChangeCallback(gamepadIndex, gamepad, buttonChangesMask);
         }
     }
