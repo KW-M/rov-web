@@ -157,6 +157,7 @@ class RovConnection {
     }
 
     mcStateChange() {
+        if (this.dataConnections.length == 0) return;
         let [connectedCount, states] = this.stateChangeHandler(
             "mediaConnections",
             () => { return new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this)) },

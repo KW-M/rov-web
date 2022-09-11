@@ -98,7 +98,6 @@ export class GamepadInterface {
 
         // send out event if one or more axes changed
         if (aAxisChangedFlag && this.gamepadAxisChangeCallback) {
-            console.log("axis change", axiesChangeMask);
             this.gamepadAxisChangeCallback(gamepadIndex, gamepad, axiesChangeMask);
         }
     }
@@ -151,7 +150,6 @@ export class GamepadInterface {
 
         // send out event if one or more buttons changed
         if (aButtonChangedFlag && this.gamepadButtonChangeCallback) {
-            console.log("button change", buttonChangesMask);
             this.gamepadButtonChangeCallback(gamepadIndex, gamepad, buttonChangesMask);
         }
     }

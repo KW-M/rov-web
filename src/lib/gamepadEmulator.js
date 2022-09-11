@@ -28,13 +28,11 @@ export const gamepadEmulator = {
         // create the new gamepad object
         var gpad = {
             connected: true,
-            displayId: "Emulated Gamepad " + gpadIndex,
-            id: "Emulated Gamepad " + gpadIndex + " (Xinput STANDARD GAMEPAD)",
-            mapping: "standard",
             timestamp: Math.floor(Date.now() / 1000),
-            index: gpadIndex || this.emulatedGamepads.length,
             buttons: new Array(buttonCount).fill({ pressed: false, value: 0, touched: false }, 0, buttonCount),
             axes: new Array(axisCount).fill(0, 0, axisCount),
+            id: "Emulated Gamepad " + gpadIndex + " (Xinput STANDARD GAMEPAD)",
+            mapping: "standard",
         };
 
         // Add the new gamepad object to the list of emulated gamepads
@@ -43,10 +41,9 @@ export const gamepadEmulator = {
 
         // Trigger the (system) gamepad connected event on the window object
         const event = new Event("gamepadconnected");
-        event["gamepad"] = gpad;
+        event.gamepad = gpad;
         // setTimeout(() => window.dispatchEvent(event), 0);
-        window.dispatchEvent(event);
-        console.log("added gamepad", gpad);
+        // window.dispatchEvent(event);
         return gpad
     },
 
@@ -57,12 +54,11 @@ export const gamepadEmulator = {
         var gpad = this.emulatedGamepads[gpadIndex];
         if (gpad) {
             this.emulatedGamepads.splice(gpadIndex, 1);
-            let gpads = navigator.getGamepads()
-            if (!gpads[gpadIndex]) {
+            if (!window.getGamepads()[gpadIndex]) {
+                const event = new Event("gamepaddisconnected");
                 gpad.connected = false;
                 gpad.timestamp = Math.floor(Date.now() / 1000);
-                const event = new Event("gamepaddisconnected");
-                event["gamepad"] = gpad;
+                event.gamepad = gpad;
                 window.dispatchEvent(event);
             }
         }
@@ -85,6 +81,9 @@ export const gamepadEmulator = {
             value: value || 0,
             touched: isPressed || touched || false
         };
+
+        // console.log("pressButton", gpadIndex, buttonIndex, value, touched);
+        // console.log(navigator.getGamepads()[gpadIndex].buttons[buttonIndex]);
     },
 
     /* emulates moving an axis on the gamepad at the given axis index
@@ -201,141 +200,75 @@ export const gamepadEmulator = {
         })
     },
 
-    cloneGamepad: function (original) {
-        // from @maulingmonkey's gamepad library
-        if (!original)
-            return original;
-
-        var axesCount = original.axes ? original.axes.length : 0;
-        var buttonsCount = original.buttons ? original.buttons.length : 0;
-        var clone = {
-            id: original.id || undefined,
-            displayId: original.displayId || undefined,
-            mapping: original.mapping || undefined,
-            index: original.index || undefined,
-            timestamp: original.timestamp || undefined,
-            connected: original.connected || undefined,
-            axes: new Array(axesCount),
-            buttons: new Array(buttonsCount)
-        };
-        for (var i = 0; i < axesCount; ++i) {
-            clone.axes[i] = Number(original.axes[i]);
-        }
-        for (var i = 0; i < buttonsCount; ++i) {
-            var _a = original.buttons[i], pressed = _a.pressed, value = _a.value, touched = _a.touched;
-            touched = touched || false;
-            clone.buttons[i] = { pressed: pressed, value: value, touched: touched };
-        }
-        return clone;
-    },
-
     /* overwrite the browser gamepad api getGamepads() to return the emulated gamepad data for gamepad indexes corresponding to emulated gamepads
      so long as the same index don't have a real gamepad connected  */
     monkeyPatchGetGamepads: function () {
-        console.log("new monkey patching getGamepads");
-        // @ts-ignore
-        let getNativeGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads || navigator.msGetGamepads;
+        var getNativeGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads || navigator.msGetGamepads;
         if (getNativeGamepads) getNativeGamepads = getNativeGamepads.bind(navigator);
-        let self = this;
+        var self = this;
         navigator.getGamepads = function () {
-            let nativeGamepadsObjArray = getNativeGamepads != undefined ? getNativeGamepads() : [];
-            let nativeGpads = nativeGamepadsObjArray.map((gpad) => {
-                let clone = self.cloneGamepad(gpad);
-                if (clone) clone.real = true;
-                return clone;
-            });
-            let emulatedGpads = self.emulatedGamepads;
-            for (let i = 0; i < emulatedGpads.length; i++) {
-                let n_gpad = nativeGpads[i];
-                let e_gpad = emulatedGpads[i];
+            var nativeGamepads = getNativeGamepads != undefined ? getNativeGamepads() : [];
+            nativeGamepads = Array.from(nativeGamepads)
+            // console.log("nativeGamepads:", nativeGamepads)
+            for (var i = 0; i < self.emulatedGamepads.length; i++) {
+                var n_gpad = nativeGamepads[i];
+                var e_gpad = self.emulatedGamepads[i];
                 if (e_gpad && n_gpad) {
-                    // if both an emulated gamepad and a real one is available for this index, combine their inputs
-                    // add a property on the gamepad to indicate that it is emulated
-                    n_gpad.emulated = true; // gamepad.real will already be true;
-
-                    // merge button presses:
-                    let btnCount = Math.max(n_gpad.buttons.length, e_gpad.buttons.length);
-                    for (let btnIdx = 0; btnIdx < btnCount; btnIdx++) {
-                        const e_btn = e_gpad.buttons[btnIdx] || { touched: false, pressed: false, value: 0 };
-                        const n_btn = n_gpad.buttons[btnIdx] || { touched: false, pressed: false, value: 0 };
-                        nativeGpads[i].buttons[btnIdx] = {
+                    // if both an emulated gamepad and a real one is available for this index,
+                    n_gpad.emulated = true; // should have some kind of mixed indication value here
+                    for (let btnIdx = 0; btnIdx < e_gpad.buttons.length; btnIdx++) {
+                        const e_btn = e_gpad.buttons[btnIdx];
+                        const n_btn = n_gpad.buttons[btnIdx];
+                        if (!e_btn || !n_gpad.buttons[btnIdx]) continue;
+                        // nativeGamepads[i].buttons[btnIdx].touched = e_btn.touched || n_btn.touched || false;
+                        // nativeGamepads[i].buttons[btnIdx].pressed = e_btn.pressed || n_btn.pressed || false;
+                        // nativeGamepads[i].buttons[btnIdx].value = Math.max(e_btn.value, n_btn.value) || 0;
+                        nativeGamepads[i].buttons[btnIdx] = {
                             touched: e_btn.touched || n_btn.touched || false,
                             pressed: e_btn.pressed || n_btn.pressed || false,
                             value: Math.max(e_btn.value, n_btn.value) || 0,
                         }
+
+                    }
+                    for (let axisIndex = 0; axisIndex < e_gpad.axes.length; axisIndex++) {
+                        const e_axis = e_gpad.axes[axisIndex];
+                        const n_axis = n_gpad.axes[axisIndex];
+                        nativeGamepads[i].axes[axisIndex] = Math.max(e_axis, n_axis) || 0;
                     }
 
-                    // merge axis values:
-                    let axisCount = Math.max(e_gpad.axes.length, n_gpad.axes.length);
-                    for (let axisIndex = 0; axisIndex < axisCount; axisIndex++) {
-                        const e_axis = e_gpad.axes[axisIndex] || 0;
-                        const n_axis = n_gpad.axes[axisIndex] || 0;
-                        nativeGpads[i].axes[axisIndex] = Math.abs(e_axis || 0) > Math.abs(n_axis || 0) ? (e_axis || 0) : (n_axis || 0);
-                    }
+                    // console.log("mixedGamepad:", nativeGamepads[i])
                 } else if (e_gpad) {
                     // if only the emulated gamepad is available, use it
-                    // add a property on the gamepad to indicate that it is emulated
-                    e_gpad.emulated = true; // gamepad.real will be undefined;
+                    e_gpad.emulated = true;
                     e_gpad.timestamp = Math.floor(Date.now() / 1000);
-                    nativeGpads[i] = self.cloneGamepad(e_gpad);
+                    nativeGamepads[i] = self.cloneGamepad(e_gpad);
                 }
             }
-            return nativeGpads;
+            return nativeGamepads;
         }
     },
+
+    cloneGamepad: function (original) {
+        if (!original) return original;
+        let clone = {
+            id: original.id,
+            displayId: original.displayId,
+            mapping: original.mapping,
+            index: original.index,
+            emulated: original.emulated,
+            timestamp: original.timestamp,
+            connected: original.connected,
+            axes: new Array(original.axes.length),
+            buttons: new Array(original.buttons.length),
+        };
+        for (let i = 0; i < original.axes.length; ++i) {
+            clone.axes[i] = original.axes[i];
+        }
+        for (let i = 0; i < original.buttons.length; ++i) {
+            let { pressed, value, touched } = original.buttons[i];
+            touched = touched || false;
+            clone.buttons[i] = { pressed, value, touched };
+        }
+        return clone;
+    }
 };
-
-/*
-    monkeyPatchGetGamepads: function () {
-        console.log("new monkey patching getGamepads");
-        // @ts-ignore
-        let getNativeGamepads = navigator.getGamepads || navigator.webkitGetGamepads || navigator.mozGetGamepads || navigator.msGetGamepads;
-        if (getNativeGamepads) getNativeGamepads = getNativeGamepads.bind(navigator);
-        let self = this;
-        navigator.getGamepads = function () {
-            let nativeGamepadsObjArray = getNativeGamepads != undefined ? getNativeGamepads() : [];
-            let nativeGpads = nativeGamepadsObjArray.map((gpad) => {
-                let clone = self.cloneGamepad(gpad);
-                clone.real = true;
-                return clone;
-            });
-            let emulatedGpads = self.emulatedGamepads;
-            for (let i = 0; i < emulatedGpads.length; i++) {
-                let n_gpad = nativeGpads[i];
-                let e_gpad = emulatedGpads[i];
-                if (e_gpad && n_gpad) {
-                    // if both an emulated gamepad and a real one is available for this index, combine their inputs
-                    // add a property on the gamepad to indicate that it is emulated
-                    n_gpad.emulated = true; // gamepad.real will already be true;
-
-                    // merge button presses:
-                    let btnCount = Math.max(n_gpad.buttons.length, e_gpad.buttons.length);
-                    for (let btnIdx = 0; btnIdx < btnCount; btnIdx++) {
-                        const e_btn = e_gpad.buttons[btnIdx] || { touched: false, pressed: false, value: 0 };
-                        const n_btn = n_gpad.buttons[btnIdx] || { touched: false, pressed: false, value: 0 };
-                        nativeGpads[i].buttons[btnIdx] = {
-                            touched: e_btn.touched || n_btn.touched || false,
-                            pressed: e_btn.pressed || n_btn.pressed || false,
-                            value: Math.max(e_btn.value, n_btn.value) || 0,
-                        }
-                    }
-
-                    // merge axis values:
-                    let axisCount = Math.max(e_gpad.axes.length, n_gpad.axes.length);
-                    for (let axisIndex = 0; axisIndex < axisCount; axisIndex++) {
-                        const e_axis = e_gpad.axes[axisIndex] || 0;
-                        const n_axis = n_gpad.axes[axisIndex] || 0;
-                        nativeGpads[i].axes[axisIndex] = Math.max(e_axis, n_axis) || 0;
-                    }
-                } else if (e_gpad) {
-                    // if only the emulated gamepad is available, use it
-                    // add a property on the gamepad to indicate that it is emulated
-                    e_gpad.emulated = true; // gamepad.real will be undefined;
-                    e_gpad.timestamp = Math.floor(Date.now() / 1000);
-                    nativeGpads[i] = e_gpad;
-                }
-            }
-            return nativeGpads;
-        }
-    },
-*/

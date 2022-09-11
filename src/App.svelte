@@ -93,6 +93,8 @@
       showLoadingUi("webrtc-connecting");
     } else if (dcState == ConnectionState.disconnected) {
       showROVDisconnectedUi();
+      hideLoadingUi("webrtc-reconnecting");
+      hideLoadingUi("webrtc-connecting");
     } else if (dcState == ConnectionState.connected) {
       showROVConnectedUi();
       showToastMessage("Connected to ROV!", 1000);
