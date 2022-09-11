@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build --base=/rov-web/",
-    "preview": "vite preview",
+    "dev": "vite --host",
+    "build": "vite build --base=./",
+    "preview": "vite preview --host --base=/rov-web/",
     "preinstall": "if [ ! -f  \"package-lock.json\" ]; then npm install --package-lock-only; fi;"
   },
   "devDependencies": {
