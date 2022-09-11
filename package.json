@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base=./",
-    "preview": "vite preview --host --base=/rov-web/",
-    "preinstall": "if [ ! -f  \"package-lock.json\" ]; then npm install --package-lock-only; fi;"
+    "preview": "vite preview --host --base=/rov-web/"
   },
   "devDependencies": {
     "@rgossiaux/svelte-headlessui": "^1.0.2",
