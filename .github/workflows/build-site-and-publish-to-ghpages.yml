@@ -14,11 +14,13 @@ jobs:
         - name: Checkout 🛎️
           uses: actions/checkout@v3
 
-        - name: Install and Build 🔧 # This project is built using npm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v2.2.2
+
+        - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
           run: |
-            npm install --package-lock-only
-            npm ci
-            npm run build
+            pnpm install
+            pnpm run build
 
         - name: Deploy 🚀
           uses: JamesIves/github-pages-deploy-action@v4.3.4
