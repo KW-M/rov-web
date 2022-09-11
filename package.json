@@ -5,31 +5,30 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=./",
+    "build": "vite build --base=/rov-web/",
     "preview": "vite preview",
-    "pkg-lock": "npm install --package-lock-only"
+    "preinstall": "if [ ! -f  \"package-lock.json\" ]; then npm install --package-lock-only; fi;"
   },
   "devDependencies": {
     "@rgossiaux/svelte-headlessui": "^1.0.2",
     "@rgossiaux/svelte-heroicons": "^0.1.2",
-    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@sveltejs/vite-plugin-svelte": "^1.0.5",
     "@xstate/fsm": "^2.0.0",
     "@xstate/inspect": "^0.7.0",
     "@zerodevx/svelte-toast": "^0.7.2",
     "autoprefixer": "^10.4.8",
     "peerjs": "^1.4.7",
     "postcss": "^8.4.16",
-    "svelte": "^3.49.0",
+    "svelte": "^3.50.1",
     "svelte-preprocess": "^4.10.7",
     "tailwindcss": "^3.1.8",
-    "vite": "^3.0.7",
+    "vite": "^3.1.0",
     "ws": "^8.0.0",
-    "xstate": "^4.32.0"
+    "xstate": "^4.33.6"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
-    "daisyui": "^2.24.0",
-    "toastify-js": "^1.12.0",
+    "daisyui": "^2.27.0",
     "uuid": "^9.0.0"
   }
 }
