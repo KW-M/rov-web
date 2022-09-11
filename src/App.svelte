@@ -4,7 +4,7 @@
   import { inspect } from "@xstate/inspect";
   import { SvelteToast, toast } from "@zerodevx/svelte-toast";
 
-  import DialogSpawner from "./lib/DialogSpawner.svelte";
+  import DialogSpawner from "./lib/components/DialogSpawner.svelte";
 
   import { ClassInstances, debugXstateMode, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber, rovVideoStreamConnState } from "./lib/globalContext";
   import { getURLQueryStringVariable } from "./lib/util";
