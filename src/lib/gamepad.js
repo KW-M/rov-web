@@ -4,11 +4,13 @@ import { gamepadEmulator } from "./gamepadEmulator"
 import { gamepadHelpVisible, getButtonHighlightElements, handleGamepadVisualFeedbackAxisEvents, handleGamepadVisualFeedbackButtonEvents, handleGamepadVisualFeedbackVariableTriggerButtonEvents, showGamepadStatus, showHelpTooltip, showNotSupported as showGamepadNotSupported, toggleGamepadHelpScreen } from "./gamepad-ui"
 import { GamepadInterface } from "./libraries/gamepadInterface";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
+import { throttle, throttleTrailing } from "./util";
 
 export class GamepadController {
-    constructor() {
+    constructor(throttleDelay = 250) {
         this.touchedGpadButtonCount = 0
         this.buttonHighlightElements = getButtonHighlightElements();
+        this.throttleDelay = throttleDelay;
 
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
         // the emulator will either use the real gamepad api if a gamepad is plugged in or it will inject the onscreen gamepad as if it were comming from the gamepad api.
@@ -52,8 +54,8 @@ export class GamepadController {
     }
 
     setupExternalEventListenerCallbacks(onButtonChange, onAxisChange) {
-        this.onButtonChange = onButtonChange;
-        this.onAxisChange = onAxisChange;
+        this.onButtonChange = throttleTrailing(onButtonChange, this.throttleDelay);
+        this.onAxisChange = throttleTrailing(onAxisChange, this.throttleDelay);
     }
 
     clearExternalEventListenerCallbacks() {

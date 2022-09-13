@@ -110,6 +110,33 @@ export function getURLQueryStringVariable(variable) {
     // console.log('Query variable %s not found', variable);
 }
 
+// https://stackoverflow.com/questions/27078285/simple-throttle-in-javascript
+export function throttle(callback, limit) {
+    var waiting = false;                      // Initially, we're not waiting
+    return function () {                      // We return a throttled function
+        if (!waiting) {                       // If we're not waiting
+            callback.apply(this, arguments);  // Execute users function
+            waiting = true;                   // Prevent future invocations
+            setTimeout(function () {          // After a period of time
+                waiting = false;              // And allow future invocations
+            }, limit);
+        }
+    }
+}
+
+
+export function throttleTrailing(callback, delay) {
+    var timeoutHandler = null;
+    return function () {
+        if (timeoutHandler == null) {
+            timeoutHandler = setTimeout(function () {
+                callback.apply(this, arguments);  // Execute users function
+                timeoutHandler = null;
+            }, delay);
+        }
+    }
+}
+
 export class Queue {
     //https://www.geeksforgeeks.org/implementation-queue-javascript/
 

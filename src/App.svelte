@@ -34,6 +34,31 @@
     });
   }
 
+  let setupGamepadEvents = (throttle) => {
+    console.log("gamepad throttle delay: " + throttle);
+    ClassInstances.gpadCtrl.throttleDelay = throttle;
+    ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
+    ClassInstances.gpadCtrl.setupExternalEventListenerCallbacks(
+      (gamepad, buttonsChangedMask) => {
+        if (gamepad.buttons[0].pressed) {
+          let delay = ClassInstances.gpadCtrl.throttleDelay + 2;
+          setupGamepadEvents(delay);
+        } else if (gamepad.buttons[1].pressed) {
+          let delay = ClassInstances.gpadCtrl.throttleDelay - 2;
+          setupGamepadEvents(delay);
+        } else if (gamepad.buttons[2].pressed) {
+          setupGamepadEvents(0);
+        } else if (gamepad.buttons[3].pressed) {
+          setupGamepadEvents(100);
+        }
+      },
+      (gamepad) => {
+        var { thrustVector, turnRate } = calculateDesiredMotion(gamepad.axes);
+        RovActions.moveRov(thrustVector, turnRate);
+      }
+    );
+  };
+
   let ignoreInitalPeerState = true;
   peerServerConnState.subscribe((serverConnState) => {
     if (ignoreInitalPeerState) {
@@ -99,13 +124,7 @@
     } else if (dcState == ConnectionState.connected) {
       showROVConnectedUi();
       showToastMessage("Connected to ROV!", 1000);
-      ClassInstances.gpadCtrl.setupExternalEventListenerCallbacks(
-        (gamepad, buttonsChangedMask) => {},
-        (gamepad) => {
-          var { thrustVector, turnRate } = calculateDesiredMotion(gamepad.axes);
-          RovActions.moveRov(thrustVector, turnRate);
-        }
-      );
+      setupGamepadEvents(0);
     }
   });
 
