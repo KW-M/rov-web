@@ -117,7 +117,6 @@ export class DataConnectionMachine {
         this.currentPeer.on('error', this.eventHandlers['onPeerError']);
 
         this.eventHandlers['onData'] = (encodedMessage) => {
-            this.lastRecivedMessageTime = Date.now();
             this.sendEventToMachine("ON_CONNECTED");
             const message = messageDecoder.decode(encodedMessage);
             this.onMessageRecivedCallback(message)
@@ -142,7 +141,7 @@ export class DataConnectionMachine {
         clearInterval(this.disconnectPollInterval)
         clearTimeout(this.connectionTimeout)
         this.connectionTimeout = undefined;
-
+        this.lastRecivedMessageTime = Date.now();
         this.disconnectPollInterval = setInterval(() => {
             console.info("last msg since: " + (Date.now() - this.lastRecivedMessageTime))
             let connected = (Date.now() - this.lastRecivedMessageTime) < 3000;
@@ -150,10 +149,12 @@ export class DataConnectionMachine {
                 clearTimeout(this.connectionTimeout)
                 this.connectionTimeout = undefined;
             } else if (!connected && this.connectionTimeout == undefined) {
-                this.sendEventToMachine('ON_DISCONNECTED');
                 this.connectionTimeout = setTimeout(() => {
-                    this.sendEventToMachine('ON_DESTROY');
-                }, 8000); // 8 seconds
+                    this.sendEventToMachine('ON_DISCONNECTED');
+                    this.connectionTimeout = setTimeout(() => {
+                        this.sendEventToMachine('ON_DESTROY');
+                    }, 8000); // 8 seconds
+                }, 1200); // 1.2 seconds (must be greater than the interval so it doesn't trigger after reconnection)
             }
         }, 1000)
     }
@@ -165,6 +166,10 @@ export class DataConnectionMachine {
         } else {
             return false
         }
+    }
+
+    setLastRecivedMessageTime() {
+        this.lastRecivedMessageTime = Date.now();
     }
 
     cleanup() {

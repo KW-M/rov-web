@@ -4,7 +4,7 @@ import { gamepadEmulator } from "./gamepadEmulator"
 import { gamepadHelpVisible, getButtonHighlightElements, handleGamepadVisualFeedbackAxisEvents, handleGamepadVisualFeedbackButtonEvents, handleGamepadVisualFeedbackVariableTriggerButtonEvents, showGamepadStatus, showHelpTooltip, showNotSupported as showGamepadNotSupported, toggleGamepadHelpScreen } from "./gamepad-ui"
 import { GamepadInterface } from "./libraries/gamepadInterface";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
-import { throttle, throttleTrailing } from "./util";
+import { throttle } from "./util";
 
 export class GamepadController {
     constructor(throttleDelay = 250) {
@@ -37,10 +37,10 @@ export class GamepadController {
             verticalGpadAction: { type: "axis", index: 3 },
             elem: document.getElementById("gamepad-joystick-touch-area-right"),
         }, {
-            verticalGpadAction: { type: "button", index: 3 },
+            verticalGpadAction: { type: "button", index: 7 },
             elem: document.getElementById("shoulder_trigger_back_right_highlight"),
         }, {
-            verticalGpadAction: { type: "button", index: 4 },
+            verticalGpadAction: { type: "button", index: 6 },
             elem: document.getElementById("shoulder_trigger_back_left_highlight"),
         }]);
     }
@@ -54,8 +54,8 @@ export class GamepadController {
     }
 
     setupExternalEventListenerCallbacks(onButtonChange, onAxisChange) {
-        this.onButtonChange = throttleTrailing(onButtonChange, this.throttleDelay);
-        this.onAxisChange = throttleTrailing(onAxisChange, this.throttleDelay);
+        this.onButtonChange = throttle(onButtonChange, this.throttleDelay, { trailing: true, leading: true });
+        this.onAxisChange = throttle(onAxisChange, this.throttleDelay, { trailing: true, leading: true });
     }
 
     clearExternalEventListenerCallbacks() {

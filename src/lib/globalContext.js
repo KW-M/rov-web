@@ -12,6 +12,12 @@ export let connManager = null;
 
 export const debugXstateMode = writable(false);
 export const stressTest = writable(false);
+export const fullscreenOpen = writable(false);
+
+document.addEventListener('fullscreenchange', (e) => {
+    console.log('fullscreenchange', e);
+    fullscreenOpen.set(document.fullscreenElement !== null);
+});
 
 export const peerServerConfig = writable({});
 export const rovIpAddr = writable("raspberrypi.local");

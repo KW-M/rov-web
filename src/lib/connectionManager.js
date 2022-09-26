@@ -13,6 +13,7 @@ class RovConnection {
     rovPeerId = null
     ourPeerMachine = null
     trusted = false
+    done = false
 
     dataConnections = []
     mediaConnections = []
@@ -27,7 +28,10 @@ class RovConnection {
     constructor(rovPeerId, thisPeer, onMesssageRecivedCallback, onOverallStateChangeCallback) {
         this.rovPeerId = rovPeerId;
         this.ourPeerMachine = thisPeer
-        this.onMesssageRecivedCallback = (msg) => { onMesssageRecivedCallback(msg, this.rovPeerId) };
+        this.onMesssageRecivedCallback = (msg) => {
+            this.dataConnections.forEach((dc) => { dc.setLastRecivedMessageTime() })
+            onMesssageRecivedCallback(msg, this.rovPeerId)
+        };
         this.onOverallStateChange = () => { console.log("onOverallStateChangeCallback", onOverallStateChangeCallback); onOverallStateChangeCallback(this.overallDCState, this.overallMCState, this.rovPeerId) };
         console.log("Rov constructor", rovPeerId, onOverallStateChangeCallback)
     }
@@ -48,39 +52,47 @@ class RovConnection {
         }
     }
 
+    sendMsgDirectlyToRov(msgObj) {
+        for (let i = 0; i < this.dataConnections.length; i++) {
+            const dcIndex = (this.connectedDataConnIndex + i) % this.dataConnections.length
+            const dc = this.dataConnections[dcIndex];
+            let success = dc.sendMessage(msgObj.msg)
+            if (success) {
+                console.debug(`Msg sent to rov: ${this.rovPeerId}`, msgObj.msg, msgObj.onSendCallback)
+                if (msgObj.onSendCallback) msgObj.onSendCallback(msgObj.msg);
+                this.msgQueue.pop();  // remove the message from the queue
+                this.connectedDataConnIndex = dcIndex;
+                return true
+            } else {
+                console.info(`Failed to send \"{}\" to rov: {}`, msgObj.msg, this.rovPeerId)
+            }
+        }
+        return false
+    }
+
     /* sends all messages in the messageQueue for this rov */
     emptyMsgQueue() {
-        console.info("emptying msg queue for rov: ", this.rovPeerId)
         if (this.overallDCState != ConnectionState.connected) return;
         queueLoop: while (!this.msgQueue.isEmpty()) {
             let msgObj = this.msgQueue.peak(); // get the next message in the queue
             // loop through all dataConnections, starting with this.connectedDataConnIndex and try to send the message
-            for (let i = 0; i < this.dataConnections.length; i++) {
-                const dcIndex = (this.connectedDataConnIndex + i) % this.dataConnections.length
-                const dc = this.dataConnections[dcIndex];
-                let success = dc.sendMessage(msgObj.msg)
-                if (success) {
-                    console.info(`Msg sent to rov: ${this.rovPeerId}`, msgObj.msg)
-                    if (msgObj.onSendCallback) msgObj.onSendCallback(msgObj.msg);
-                    this.msgQueue.pop();  // remove the message from the queue
-                    this.connectedDataConnIndex = dcIndex;
-                    continue queueLoop;
-                } else {
-                    console.info(`Failed to send \"{}\" to rov: {}`, msgObj.msg, this.rovPeerId)
-                }
-            }
-            break queueLoop;
+            // will return false if it fails to send the message
+            if (!this.sendMsgDirectlyToRov(msgObj)) break queueLoop;
         }
     }
 
 
-    sendMessage(msg, onSendCallback) {
-        if (typeof (msg) !== "string") {
-            msg = JSON.stringify(msg)
+    sendMessage(msg, onSendCallback, skipQueue = false) {
+        if (typeof (msg) !== "string") msg = JSON.stringify(msg);
+        let msgObj = { msg: msg, onSendCallback: onSendCallback }
+
+        if (skipQueue) {
+            this.sendMsgDirectlyToRov(msgObj)
+        } else {
+            console.debug(`Adding msg to queue:`, msg)
+            this.msgQueue.push(msgObj);
+            setTimeout(this.emptyMsgQueue.bind(this), 0);
         }
-        console.info(`Adding msg to queue:`, msg)
-        this.msgQueue.push({ msg: msg, onSendCallback: onSendCallback });
-        this.emptyMsgQueue();
     }
 
     stateChangeHandler(connListName, newConnectionFunc, startConnectionFunc) {
@@ -127,6 +139,7 @@ class RovConnection {
     }
 
     dcStateChange() {
+        if (this.done || this.dataConnections.length == 0) return;
         let [connectedCount, states] = this.stateChangeHandler(
             "dataConnections",
             () => { return new DataConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.dcStateChange.bind(this), this.onMesssageRecivedCallback.bind(this)) },
@@ -158,7 +171,7 @@ class RovConnection {
     }
 
     mcStateChange() {
-        if (this.dataConnections.length == 0) return;
+        if (this.done || this.dataConnections.length == 0) return;
         let [connectedCount, states] = this.stateChangeHandler(
             "mediaConnections",
             () => { return new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this)) },
@@ -202,6 +215,8 @@ class RovConnection {
 
     cleanup() {
         console.info("Cleaning up RovConnection: ", this.rovPeerId)
+        this.done = true;
+
         this.dataConnections.forEach((dc) => {
             dc.cleanup();
         })
@@ -227,7 +242,7 @@ export class ConnectionManager {
     ourPeerMachines = []
     overallPeerServerState = ConnectionState.disconnected;
     reconnectFailureCount = 0;
-    onMessageRecivedCallback = (msg) => { console.info("msg recived:" + msg) }
+    onMessageRecivedCallback = (msg) => { console.debug("msg recived:" + msg) }
 
     constructor(onMessageRecivedCallback) {
         this.onMessageRecivedCallback = onMessageRecivedCallback;
@@ -340,7 +355,10 @@ export class ConnectionManager {
             rovDataChannelConnState.set(ConnectionState.disconnected);
             rovVideoStreamConnState.set(ConnectionState.disconnected);
         }
-        if (this.ROVs[rovPeerId] === undefined) return;
+        if (this.ROVs[rovPeerId] === undefined) {
+            console.warn("Tried to disconnect from a rov that is not connected: ", rovPeerId)
+            return;
+        }
         this.ROVs[rovPeerId].cleanup();
         delete this.ROVs[rovPeerId];
     }
@@ -349,12 +367,12 @@ export class ConnectionManager {
         this.disconnectFromRov(this.currentTargetRovId);
     }
 
-    sendMessageToRov(msg, rovPeerId) {
-        this.ROVs[rovPeerId].sendMessage(msg)
+    sendMessageToRov(msg, rovPeerId, skipQueue = false) {
+        this.ROVs[rovPeerId].sendMessage(msg, null, skipQueue);
     }
 
-    sendMessageToCurrentRov(msg) {
-        this.sendMessageToRov(msg, this.currentTargetRovId)
+    sendMessageToCurrentRov(msg, skipQueue = false) {
+        this.sendMessageToRov(msg, this.currentTargetRovId, skipQueue)
     }
 
     cleanup() {

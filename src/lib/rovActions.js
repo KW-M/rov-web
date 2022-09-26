@@ -2,6 +2,7 @@ import { RovApiAction } from "./consts";
 import { ClassInstances, rovPeerIdEndNumber } from "./globalContext";
 import { MessageHandler } from "./messageHandler.js"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
+import { arraysEqual } from "./util";
 
 export class RovActions {
 
@@ -23,9 +24,9 @@ export class RovActions {
         })
     }
 
-    static startPingMessageSenderLoop() {
+    static startPingLoop() {
         const intervalId = setInterval(() => {
-            // MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() });
+            MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() }, null, true);
         }, 2000)
         return () => { clearInterval(intervalId) } // return a cleanup function
     }
@@ -79,8 +80,12 @@ export class RovActions {
         MessageHandler.sendRovMessage({ "action": RovApiAction.take_control }, null);
     }
 
+    static lastMove = { thrustVector: [0, 0, 0], turnRate: 0 }
     static moveRov(thrustVector, turnRate) {
-        MessageHandler.sendRovMessage({ "action": RovApiAction.move, "val": { thrustVector: thrustVector, turnRate: turnRate } }, null);
+        console.info("moveRovEq", arraysEqual(thrustVector, RovActions.lastMove.thrustVector), turnRate == RovActions.lastMove.turnRate)
+        if (arraysEqual(thrustVector, RovActions.lastMove.thrustVector) && turnRate == RovActions.lastMove.turnRate) return;
+        RovActions.lastMove = { thrustVector, turnRate }
+        MessageHandler.sendRovMessage({ "action": RovApiAction.move, "val": { thrustVector: thrustVector, turnRate: turnRate } }, null, true);
     }
 
     static toggleLights() {

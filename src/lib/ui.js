@@ -217,7 +217,7 @@ export function toggleActionsMenu() {
     else
         actionsMenu.classList.remove("hidden")
 }
-actionsMenuBtn.onclick = toggleActionsMenu;
+// actionsMenuBtn.onclick = toggleActionsMenu;
 
 
 /***** COMPASS AND ORIENTATION RELATED UI *******/

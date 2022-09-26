@@ -1,7 +1,16 @@
 import { EMOJI_MAP } from "./consts";
+import { fullscreenOpen } from "./globalContext";
 
 export function clamp(number, max, min) {
     return Math.max(Math.min(number, max), min)
+}
+
+export function arraysEqual(a1, a2) {
+    var i = a1.length;
+    while (i--) {
+        if (a1[i] !== a2[i]) return false;
+    }
+    return true
 }
 
 export function getDayOfYear(date = new Date()) {
@@ -111,7 +120,7 @@ export function getURLQueryStringVariable(variable) {
 }
 
 // https://stackoverflow.com/questions/27078285/simple-throttle-in-javascript
-export function throttle(callback, limit) {
+export function basicThrottle(callback, limit) {
     var waiting = false;                      // Initially, we're not waiting
     return function () {                      // We return a throttled function
         if (!waiting) {                       // If we're not waiting
@@ -125,17 +134,44 @@ export function throttle(callback, limit) {
 }
 
 
-export function throttleTrailing(callback, delay) {
-    var timeoutHandler = null;
+// underscore.js Returns a function, that, when invoked, will only be triggered at most once
+// during a given window of time. Normally, the throttled function will run
+// as much as it can, without ever going more than once per `wait` duration;
+// but if you'd like to disable the execution on the leading edge, pass
+// `{leading: false}`. To disable execution on the trailing edge, ditto.
+export function throttle(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function () {
+        previous = options.leading === false ? 0 : Date.now();
+        timeout = null;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+    };
     return function () {
-        if (timeoutHandler == null) {
-            timeoutHandler = setTimeout(function () {
-                callback.apply(this, arguments);  // Execute users function
-                timeoutHandler = null;
-            }, delay);
+        var now = Date.now();
+        if (!previous && options.leading === false) previous = now;
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0 || remaining > wait) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
+        } else if (!timeout && options.trailing !== false) {
+            timeout = setTimeout(later, remaining);
         }
-    }
-}
+        return result;
+    };
+};
+
+
 
 export class Queue {
     //https://www.geeksforgeeks.org/implementation-queue-javascript/
@@ -282,19 +318,20 @@ window.toggleFullscreen = (e, elem) => {
 // @ts-ignore
 export function toggleFullscreen(event, elem) {
     elem = elem || document.documentElement;
+    console.log("toggleFullscreen", elem);
     // @ts-ignore
     var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    console.log(fullscreenElement, elem);
+
     if (!fullscreenElement || elem !== fullscreenElement) {
-        const requestFullscreenFunc = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
-        console.log(requestFullscreenFunc)
+        const requestFullscreenFunc = ((e) => elem.requestFullscreen(e)) || ((e) => elem.webkitRequestFullscreen(e)) || ((e) => elem.mozRequestFullScreen(e)) || ((e) => elem.msRequestFullscreen(e))
+        console.log("requestFullscreenFunc", requestFullscreenFunc);
         // @ts-ignore
         requestFullscreenFunc(Element.ALLOW_KEYBOARD_INPUT)
     } else {
         // @ts-ignore
-        const exitFullscreenFunc = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen || document.msExitFullscreen;
-        exitFullscreenFunc().then(() => {
-            fullscreenElement.classList.remove('fullscreen-open');
-        });
+        const exitFullscreenFunc = ((e) => document.exitFullscreen(e)) || ((e) => document.webkitExitFullscreen(e)) || ((e) => document.mozCancelFullScreen(e)) || ((e) => document.msExitFullscreen(e))
+        exitFullscreenFunc()
     }
 }
 

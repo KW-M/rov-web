@@ -4,27 +4,33 @@
   import { inspect } from "@xstate/inspect";
   import { SvelteToast, toast } from "@zerodevx/svelte-toast";
 
+  import gamepadLeftSvg from "./assets/onscreen-gamepad-left.svg?raw";
+  import gamepadRightSvg from "./assets/onscreen-gamepad-right.svg?raw";
+
   import DialogSpawner from "./lib/components/DialogSpawner.svelte";
+  import RovSelector from "./lib/components/RovSelector.svelte";
+  import TopBar from "./lib/components/TopBar.svelte";
+  import SvgEmbed from "./lib/components/SvgEmbed.svelte";
 
-  import { ClassInstances, debugXstateMode, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber, rovVideoStreamConnState } from "./lib/globalContext";
-  import { getURLQueryStringVariable } from "./lib/util";
-  import { ConnectionManager } from "./lib/connectionManager";
-  import { GamepadController } from "./lib/gamepad";
-  import { MessageHandler } from "./lib/messageHandler";
+  // import { ClassInstances, debugXstateMode, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber, rovVideoStreamConnState } from "./lib/globalContext";
+  // import { getURLQueryStringVariable } from "./lib/util";
+  // import { ConnectionManager } from "./lib/connectionManager";
+  // import { GamepadController } from "./lib/gamepad";
+  // import { MessageHandler } from "./lib/messageHandler";
 
-  import { runSiteInitMachine } from "./lib/siteInit";
-  import { hideLivestreamUi, hideLoadingUi, setClientPeerIdDisplay, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, showLivestreamUi, showLoadingUi, showROVConnectedUi, showROVConnectingUi, showROVDisconnectedUi, showToastMessage } from "./lib/ui";
-  import { RovActions } from "./lib/rovActions";
-  import { ConnectionState } from "./lib/consts";
-  import { calculateDesiredMotion } from "./lib/rovUtil";
+  // import { runSiteInitMachine } from "./lib/siteInit";
+  // import { hideLivestreamUi, hideLoadingUi, setClientPeerIdDisplay, setCurrentRovName, setupConnectBtnClickHandler, setupDisconnectBtnClickHandler, showLivestreamUi, showLoadingUi, showROVConnectedUi, showROVConnectingUi, showROVDisconnectedUi, showToastMessage } from "./lib/ui";
+  // import { RovActions } from "./lib/rovActions";
+  // import { ConnectionState } from "./lib/consts";
+  // import { calculateDesiredMotion } from "./lib/rovUtil";
 
+  /*
   debugXstateMode.set(!!getURLQueryStringVariable("debug"));
   rovPeerIdEndNumber.set(parseInt(localStorage.getItem("rovPeerIdEndNumber") || "0"));
-  ClassInstances.gpadCtrl = new GamepadController(); /* init gamepad support */
+  ClassInstances.gpadCtrl = new GamepadController(); // init gamepad support
   ourPeerId.set(localStorage.getItem("ourPeerId") || null);
   ourPeerId.subscribe((newVal) => {
     localStorage.setItem("ourPeerId", newVal);
-    setClientPeerIdDisplay(newVal);
   });
 
   console.log(ClassInstances.gpadCtrl);
@@ -35,20 +41,20 @@
   }
 
   let setupGamepadEvents = (throttle) => {
-    console.log("gamepad throttle delay: " + throttle);
+    console.info("gamepad throttle delay: " + throttle);
     ClassInstances.gpadCtrl.throttleDelay = throttle;
     ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
     ClassInstances.gpadCtrl.setupExternalEventListenerCallbacks(
       (gamepad, buttonsChangedMask) => {
-        if (gamepad.buttons[0].pressed) {
-          let delay = ClassInstances.gpadCtrl.throttleDelay + 2;
+        if (gamepad.buttons[12].pressed) {
+          let delay = ClassInstances.gpadCtrl.throttleDelay + 1;
           setupGamepadEvents(delay);
-        } else if (gamepad.buttons[1].pressed) {
-          let delay = ClassInstances.gpadCtrl.throttleDelay - 2;
+        } else if (gamepad.buttons[13].pressed) {
+          let delay = Math.max(ClassInstances.gpadCtrl.throttleDelay - 1, 1);
           setupGamepadEvents(delay);
-        } else if (gamepad.buttons[2].pressed) {
-          setupGamepadEvents(0);
-        } else if (gamepad.buttons[3].pressed) {
+        } else if (gamepad.buttons[14].pressed) {
+          setupGamepadEvents(10);
+        } else if (gamepad.buttons[15].pressed) {
           setupGamepadEvents(100);
         }
       },
@@ -108,7 +114,7 @@
       ignoreInitalDataState = false;
       return;
     }
-    console.log("rovDataChannelConnState: ", dcState, ClassInstances.gpadCtrl);
+    console.log("rovDataChannelConnState: ", dcState);
 
     ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
     if (dcState == ConnectionState.connecting) {
@@ -124,34 +130,63 @@
     } else if (dcState == ConnectionState.connected) {
       showROVConnectedUi();
       showToastMessage("Connected to ROV!", 1000);
-      setupGamepadEvents(0);
+      setupGamepadEvents(250);
     }
   });
 
   onMount(() => {
-    runSiteInitMachine((eventName) => {
-      hideLoadingUi("internet-check");
-
-      let msgHandler = (ClassInstances.msgHandler = MessageHandler);
-      let connMngr = (ClassInstances.connManager = new ConnectionManager(MessageHandler.handleRecivedMessage));
-      msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
-      connMngr.start();
-
-      msgHandler.startPingLoop();
-
-      setCurrentRovName();
-      setupConnectBtnClickHandler(RovActions.connectToRov);
-      setupDisconnectBtnClickHandler(RovActions.disconnectFromRov);
-    });
+    // runSiteInitMachine((eventName) => {
+    //   hideLoadingUi("internet-check");
+    //   let msgHandler = (ClassInstances.msgHandler = MessageHandler);
+    //   let connMngr = (ClassInstances.connManager = new ConnectionManager(MessageHandler.handleRecivedMessage));
+    //   msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
+    //   connMngr.start();
+    //   RovActions.startPingLoop();
+    //   setCurrentRovName();
+    //   setupConnectBtnClickHandler(RovActions.connectToRov);
+    //   setupDisconnectBtnClickHandler(RovActions.disconnectFromRov);
+    // });
   });
 
   onDestroy(() => {
     console.log("cleaning up");
     ClassInstances.connManager && ClassInstances.connManager.cleanup();
   });
+  */
 </script>
 
 <main>
   <DialogSpawner />
   <SvelteToast options={{ reversed: true, intro: { y: 192 }, pausable: true, classes: ["toast-msg"] }} />
+
+  <TopBar />
+  <RovSelector />
+
+  <div id="livestream_container">
+    <!-- svelte-ignore a11y-media-has-caption -->
+    <video id="video-livestream" />
+  </div>
+
+  <div id="gamepad-container">
+    <!-- Gamepads on either side of Screen -->
+    <SvgEmbed svgText={gamepadLeftSvg} id="onscreen-gamepad-left" class="onscreen-gamepad" width="100%" height="100%" viewBox="0 0 120 232" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;" />
+    <SvgEmbed svgText={gamepadRightSvg} id="onscreen-gamepad-right" class="onscreen-gamepad" width="100%" height="100%" viewBox="172 0 120 232" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;" />
+
+    <!-- Gamepad Info -->
+    <!-- <div id="gamepad-help-notice">
+      <p id="gamepad-connect-notice" class="gamepad-notice left text-lg">Connect a gamepad & press any button to activate</p>
+
+      <p id="too-many-gamepads-notice" style="display: none;" class="gamepad-notice center text-lg">Multiple gamepads connected, only one will be used</p>
+      <p class="gamepad-notice right text-lg">Press, click or drag controls to see what they do.</p>
+    </div> -->
+
+    <!-- Gamepad Help Tooltip Stuff -->
+    <div id="gamepad-help-tooltip" class="hide-when-not-driver popper-tooltip" role="tooltip">
+      <span id="gamepad-help-text">Gamepad Help</span>
+    </div>
+
+    <!-- Gamepad joystick touch start areas -->
+    <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area" />
+    <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
+  </div>
 </main>

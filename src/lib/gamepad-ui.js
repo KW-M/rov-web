@@ -54,7 +54,7 @@ export function toggleGamepadHelpScreen() {
     var updateFunc = () => { helpTooltip.update(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
     updateFunc();
 }
-document.querySelector('#gamepad-help-button').addEventListener("click", toggleGamepadHelpScreen);
+// document.querySelector('#gamepad-help-button').addEventListener("click", toggleGamepadHelpScreen);
 
 export function showGamepadStatus(connectedGamepadCount) {
     // showNoGamepads(connectedGamepadCount == 0);

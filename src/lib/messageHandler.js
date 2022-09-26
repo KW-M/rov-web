@@ -18,7 +18,7 @@ export class MessageHandler {
     }
 
     // sendRovMessage: Send a message to the rov peer and setup reply callbacks based on a message cid if reply(ies) are expected.
-    static sendRovMessage = (msgObject, replyCallback) => {
+    static sendRovMessage = (msgObject, replyCallback, skipQueue = false) => {
         // setup the reply callback
         let cid = msgObject["cid"]
         if (!cid) {
@@ -29,7 +29,7 @@ export class MessageHandler {
 
         // send the message to the rov
         const messageString = JSON.stringify(msgObject);
-        if (MessageHandler.sendMessageCallback) MessageHandler.sendMessageCallback(messageString);
+        if (MessageHandler.sendMessageCallback) MessageHandler.sendMessageCallback(messageString, skipQueue);
     }
 
     static handlePasswordChallenge(msg_cid) {
@@ -117,7 +117,6 @@ export class MessageHandler {
     }
 
     static handleRecivedMessage(messageString) {
-        console.info("Msg recived: " + messageString);
         const msg_data = JSON.parse(messageString);
         const msg_cid = msg_data["cid"];
 
@@ -133,13 +132,5 @@ export class MessageHandler {
 
         }
     }
-
-
-    static startPingLoop() {
-        let pingLoop = setInterval(() => {
-            MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() }, null);
-        }, 1000)
-    }
-
 
 }
