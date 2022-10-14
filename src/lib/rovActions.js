@@ -1,6 +1,6 @@
 import { RovApiAction } from "./consts";
 import { ClassInstances, rovPeerIdEndNumber } from "./globalContext";
-import { MessageHandler } from "./messageHandler.js"
+import { MessageHandler } from "./messageHandler"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
 import { arraysEqual } from "./util";
 

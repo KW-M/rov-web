@@ -1,4 +1,5 @@
 <script>
+  /// NO LONGER USED!
   import { onMount } from "svelte";
 
   export let svgText = "";

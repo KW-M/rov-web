@@ -1,7 +1,7 @@
 <script>
   import AlertDialog from "./AlertDialog.svelte";
   import PasswordDialog from "./PasswordDialog.svelte";
-  import { ClassInstances } from "../globalContext";
+  import { ClassInstances } from "../lib/globalContext";
   import ScrollingTextDialog from "./ScrollingTextDialog.svelte";
 
   let dialogStack = [];

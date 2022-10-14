@@ -3,8 +3,13 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte()],
-  // chokidarWatchOptions: {
-  //   usePolling: true
-  // }
+  // resolve: {
+  //   alias: [
+  //     {
+  //       find: /^(.*)\.js$/,
+  //       replacement: '$1',
+  //     }
+  //   ]
+  // },
+  plugins: [svelte()]
 })

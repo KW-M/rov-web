@@ -258,7 +258,7 @@ button .button-label-image {
 }
 
 
-@media (max-width: 515px) {
+/* @media (max-width: 515px) {
   body {
     background: lightblue;
   }
@@ -287,7 +287,7 @@ button .button-label-image {
     margin: 6px 0;
   }
 
-}
+} */
 
 .our-peer-label {
   z-index: 100;
@@ -645,52 +645,6 @@ button.button-light:not(:hover):not(:focus):not(:active) {
   /* box-shadow: none; */
 }
 
-/******* Video Stream + Fullscreen Layout *********/
-
-#livestream_container {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  margin: auto;
-  padding: 40px 36px 28px;
-}
-
-#livestream_container.hidden {
-  display: none;
-}
-
-#video-livestream {
-  display: block;
-
-  box-sizing: border-box;
-  width: 100%;
-  max-height: 100%;
-  margin: auto;
-
-  border: 3px solid black;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.55);
-  /* max-width: min-content; */
-
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-}
-
-body.fullscreen-open #livestream_container {
-  width: 100%;
-  height: 100%;
-  padding-right: 4px;
-  padding-left: 4px;
-}
-
-body.fullscreen-open #video-livestream {
-  width: 100%;
-  height: 100%;
-}
-
 /* ********* Gamepad Help ********* */
 
 #gamepad-container {
@@ -841,126 +795,6 @@ body.gamepad-help-open #gamepad-container {
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-}
-
-/* ********* Onscreen Gamepad Related ********* */
-
-.onscreen-gamepad {
-  position: absolute;
-  bottom: -12px;
-
-  width: 72%;
-  max-width: 47.5vh;
-  max-height: 14cm;
-  transition: opacity 0.5s ease-in-out;
-
-  pointer-events: none;
-}
-
-.onscreen-gamepad svg {
-  bottom: 0;
-}
-
-
-#onscreen-gamepad-left {
-  left: 0;
-
-  transition: transform .4s, left .4s;
-  transform: translateX(-120%);
-}
-
-#onscreen-gamepad-right {
-  right: 0;
-
-  transition: transform .4s, right .4s;
-  transform: translateX(120%);
-}
-
-body.gamepad-help-open #onscreen-gamepad-left {
-  /* bottom: 15px; */
-  left: 50% !important;
-
-  transform: translateX(-98%) !important;
-
-  opacity: 1 !important;
-}
-
-body.gamepad-help-open #onscreen-gamepad-right {
-  right: 50% !important;
-  /* bottom: 15px; */
-
-  transform: translateX(98%) !important;
-
-  opacity: 1 !important;
-}
-
-body.gamepad-help-open #gamepad-help-tooltip {
-  display: block !important;
-}
-
-body.rov-driver #gamepad-container:not(.gamepad-connected) #onscreen-gamepad-left {
-  transform: translateX(-30%);
-}
-
-body.rov-driver #gamepad-container:not(.gamepad-connected) #onscreen-gamepad-right {
-  transform: translateX(30%);
-}
-
-.gamepad-btn-highlight {
-  visibility: hidden;
-
-  cursor: pointer;
-  pointer-events: all;
-}
-
-.gamepad-btn-highlight.touched {
-  visibility: visible;
-
-  opacity: 0.5;
-}
-
-.gamepad-btn-highlight.pressed {
-  visibility: visible;
-
-  opacity: 1 !important;
-}
-
-.gamepad-arrow-highlight {
-  /* visibility: hidden; */
-  pointer-events: none;
-
-  opacity: 0;
-}
-
-.gamepad-arrow-highlight.touched {
-  visibility: visible;
-}
-
-.gamepad-arrow-highlight.axis-moved {
-  visibility: visible;
-
-  opacity: 0.5 !important;
-}
-
-.gamepad-joystick-touch-area {
-  position: fixed;
-  bottom: 0;
-
-  width: 50%;
-  height: 10cm;
-
-  pointer-events: all;
-  /* background-color: #0c61d860; */
-
-  touch-action: none;
-}
-
-.gamepad-joystick-touch-area#gamepad-joystick-touch-area-left {
-  left: 0;
-}
-
-.gamepad-joystick-touch-area#gamepad-joystick-touch-area-right {
-  right: 0;
 }
 
 /* ***** Loading "spinning circle" indicator *** */

@@ -1,5 +1,5 @@
 
-import { getUniqueName } from "./util.js"
+import { getUniqueName } from "./util"
 import { ROV_PEERID_BASE, MEMORABLE_PEER_ID_OFFSET } from "./consts";
 
 

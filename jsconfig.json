@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    //  "NodeNext",
     "moduleResolution": "Node",
     "target": "ESNext",
     "module": "ESNext",
@@ -34,6 +35,7 @@
     "src/**/*.d.ts",
     "src/**/*.js",
     "src/**/*.svelte",
-    "src/lib/consts.ts"
+    "src/lib/ui.ts",
+    "src/lib/ui.ts"
   ]
 }

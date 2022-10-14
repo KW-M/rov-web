@@ -1,51 +1,56 @@
 <script>
-  import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@rgossiaux/svelte-headlessui";
+  // import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@rgossiaux/svelte-headlessui";
   import { Icon } from "@steeze-ui/svelte-icon";
   import { ChevronRight } from "@steeze-ui/heroicons";
   import { ChevronLeft } from "@steeze-ui/heroicons";
   import { fade } from "svelte/transition";
-  import { ourPeerId, rovPeerIdEndNumber } from "../globalContext";
-  import { RovActions } from "../rovActions";
-  import { getROVName } from "../rovUtil";
+  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState } from "../lib/globalContext";
+  import { RovActions } from "../lib/rovActions";
+  import { getROVName } from "../lib/rovUtil";
+  import { ConnectionState } from "../lib/consts";
 
-  export let rovDisconnected = true;
+  $: collapsedMode = $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
   export let selectedRov = "";
   let rovDisplayName = "";
   $: selectedRov = getROVName($rovPeerIdEndNumber);
   $: rovDisplayName = "ROV " + $rovPeerIdEndNumber + selectedRov.replace("ROV-", " | ");
 
   export const nextRov = () => {
+    RovActions.disconnectFromRov();
     $rovPeerIdEndNumber = $rovPeerIdEndNumber + 1;
+    if (collapsedMode) RovActions.connectToRov();
     // RovActions.switchToNextRovPeerId();
   };
 
   export const prevRov = () => {
+    RovActions.disconnectFromRov();
     $rovPeerIdEndNumber = Math.max($rovPeerIdEndNumber - 1, 0);
+    if (collapsedMode) RovActions.connectToRov();
     // RovActions.switchToPrevRovPeerId();
   };
 
   let hovering = false;
 </script>
 
-<div id="rov_chooser" class={`fixed left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-hidden z-50  ${rovDisconnected ? "disconnected" : " "} `}>
-  {#if !rovDisconnected}
+<div id="rov_chooser" class={`fixed left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-hidden z-50  ${!collapsedMode ? "disconnected" : " "} `}>
+  {#if collapsedMode}
     <!-- client_peer_id_label -->
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourPeerId}</span></p>
   {/if}
-  <div class={`bg-base-100 m-0 p-2 pb-1 whitespace-nowrap text-center rounded-xl  ${rovDisconnected ? "" : "rounded-b-none"}`}>
-    {#if rovDisconnected}
+  <div class={`bg-base-100 m-0 p-2 pb-1 whitespace-nowrap text-center rounded-xl  ${!collapsedMode ? "" : "rounded-b-none"}`}>
+    {#if !collapsedMode}
       <h2 class="text-center p-2 pt-0 font-bold ">{rovDisplayName}</h2>
     {/if}
     <button class="btn btn-sm btn-ghost btn-secondary" on:click={prevRov} aria-label="Switch to Previous ROV">
       <!-- ❮ -->
       <Icon theme="solid" src={ChevronLeft} class="w-6 h-6" />
     </button>
-    {#if rovDisconnected}
+    {#if !collapsedMode}
       <button
         in:fade
         class={`btn btn-sm btn-primary align-top`}
         on:click={() => {
-          rovDisconnected = !rovDisconnected;
+          RovActions.connectToRov();
         }}>Connect</button
       >
     {:else}
@@ -59,13 +64,13 @@
           hovering = false;
         }}
         on:click={() => {
-          rovDisconnected = !rovDisconnected;
+          RovActions.disconnectFromRov();
           hovering = false;
         }}
       >
         <!-- × -->
         <span class="swap-off">{rovDisplayName}</span>
-        <span class="swap-on whitespace-nowrap inline">{rovDisconnected ? "Connect" : "Disconnect"}</span>
+        <span class="swap-on whitespace-nowrap inline">{!collapsedMode ? "Connect" : "Disconnect"}</span>
         <!-- <XIcon class="inline-block align-middle w-6 h-6" /> -->
 
         <!-- pl-2 border-l-2 border-solid border-white  -->

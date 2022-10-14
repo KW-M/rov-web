@@ -1,6 +1,6 @@
 import { toast } from '@zerodevx/svelte-toast';
 import { ROV_PEERID_BASE, LOADING_MESSAGES } from './consts';
-import { ClassInstances, rovPeerIdEndNumber } from './globalContext';
+import { ClassInstances, DIALOG_TYPE, rovPeerIdEndNumber } from './globalContext';
 import { getROVName } from './rovUtil';
 import { get } from 'svelte/store';
 
@@ -33,8 +33,8 @@ export function showToastMessage(message, durration, callback) {
 // -----  Dialogs -----
 
 export function showConfirmationMsg(msg, callback) {
-    ClassInstances.openDialog("alert", { title: msg }, (ok) => {
-        if (callback && ok == true) callback(ok);
+    ClassInstances.openDialog(DIALOG_TYPE.Alert, { title: msg }, (ok) => {
+        if (callback && (ok as Boolean) == true) callback(ok);
     })
 }
 
@@ -43,13 +43,13 @@ export function showPasswordPrompt(message, callback) {
     if (passwordPromptOpen) return;
     passwordPromptOpen = true;
 
-    ClassInstances.openDialog("password", {}, (password) => {
+    ClassInstances.openDialog(DIALOG_TYPE.Password, {}, (password) => {
         if (password != null && callback) callback(password);
     })
 }
 
 export function showScrollableTextPopup(title, callback) {
-    let modifyExtraData = ClassInstances.openDialog("scrollText", { title: title, messageLines: [] }, () => {
+    let modifyExtraData = ClassInstances.openDialog(DIALOG_TYPE.ScrollingText, { title: title, messageLines: [] }, (_) => {
         if (callback) callback(null)
     })
 
@@ -70,21 +70,21 @@ const disconnectBtn = document.getElementById('disconnect_btn');
 const connectedRovLabel = document.getElementById('connected_rov_label');
 const rovConnectionBar = document.getElementById('rov_connection_bar');
 export function showROVDisconnectedUi() {
-    connectBtnOptions.style.display = 'flex';
+    // connectBtnOptions.style.display = 'flex';
     document.body.classList.remove("rov-connected");
-    // hideLoadingUi("all");
-    hideLivestreamUi();
+    hideLoadingUi("all");
+    // hideLivestreamUi();
 }
 
 export function showROVConnectingUi(rovPeerId) {
     console.log("showROVConnectingUi", connectBtnOptions);
-    connectBtnOptions.style.display = 'none';
+    // connectBtnOptions.style.display = 'none';
     document.body.classList.remove("rov-connected");
     showLoadingUi("webrtc-connecting", "Searching for " + rovPeerId);
 }
 
 export function showROVConnectedUi() {
-    connectBtnOptions.style.display = 'none';
+    // connectBtnOptions.style.display = 'none';
     // disconnectBtn.style.display = 'block';
     updateRoleDisplay(false)
     document.body.classList.add("rov-connected");
@@ -95,7 +95,7 @@ export function showROVConnectedUi() {
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
     // disconnectBtn.style.display = 'none';
-    showLoadingUi("reloading-site");
+    showLoadingUi("reloading-site", null);
 }
 
 export function setCurrentRovName() {

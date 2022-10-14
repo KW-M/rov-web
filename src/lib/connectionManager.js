@@ -275,7 +275,7 @@ export class ConnectionManager {
                     this.ourPeerMachines[i].cleanup();
                     this.ourPeerMachines.splice(i, 1)
                 } else {
-                    this.connectToCurrentTargetRov();
+                    // this.connectToCurrentTargetRov();
                 }
                 this.reconnectFailureCount = 0;
             } else if (stateName == ConnectionState.reconnecting && states.length <= 1) {

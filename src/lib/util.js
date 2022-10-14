@@ -1,6 +1,18 @@
 import { EMOJI_MAP } from "./consts";
 import { fullscreenOpen } from "./globalContext";
 
+/**
+ * @param {(KeyboardEvent)=>void} callback
+ * @returns {(KeyboardEvent)=>void} return a function that should be passed as a keyboard event listener, and will call the callback if the key is enter or space.
+ */
+export function selectKeypressFactory(callback) {
+    return (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            callback(e);
+        }
+    }
+}
+
 export function clamp(number, max, min) {
     return Math.max(Math.min(number, max), min)
 }
