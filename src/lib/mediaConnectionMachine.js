@@ -2,7 +2,7 @@
 import { generateStateChangeFunction } from "./util";
 import { createMachine, interpret } from "xstate";
 import { get } from "svelte/store";
-import { debugXstateMode } from "./globalContext";
+import { debugXstateMode, rovMainVideoTrack } from "./globalContext";
 import { showToastMessage } from "./ui";
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
@@ -103,9 +103,9 @@ export class MediaConnectionMachine {
             this.eventHandlers['onStream'] = (rovVideoStream) => {
                 this.sendEventToMachine('ON_CONNECTED');
                 this.mainTrack = rovVideoStream.getVideoTracks()[0];
-                let videoElem = document.getElementById("video-livestream")
+                // let videoElem = document.getElementById("video-livestream")
 
-                console.log("MediaChannel got Stream: ", rovVideoStream, this.mainTrack, videoElem)
+                console.log("MediaChannel got Stream: ", rovVideoStream, this.mainTrack)
 
 
                 // this.mainTrack.onmute = (e) => { //https://stackoverflow.com/questions/69537765/how-to-detect-a-frozen-video-stream-in-webrtc
@@ -135,19 +135,7 @@ export class MediaConnectionMachine {
                 };
                 this.mainTrack.addEventListener("mute", this.eventHandlers['onStreamMute']);
 
-                // @ts-ignore
-                videoElem.srcObject = rovVideoStream;  // video.src = URL.createObjectURL(rovVideoStream);
-                // @ts-ignore
-                videoElem.muted = true
-                // @ts-ignore
-                videoElem.autoplay = true
-                // @ts-ignore
-                videoElem.controls = false
-                // @ts-ignore
-                videoElem.play();
-
-
-
+                rovMainVideoTrack.set(this.mainTrack);
 
             };
             mediaChannel.on('stream', this.eventHandlers['onStream']);

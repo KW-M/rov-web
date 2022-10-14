@@ -20,6 +20,7 @@
   import { ConnectionState } from "./lib/consts";
   import { calculateDesiredMotion } from "./lib/rovUtil";
   import { GamepadController } from "./lib/gamepad";
+  import VideoPlayer from "./components/VideoPlayer.svelte";
 
   debugXstateMode.set(!!getURLQueryStringVariable("debug"));
   rovPeerIdEndNumber.set(parseInt(localStorage.getItem("rovPeerIdEndNumber") || "0"));
@@ -131,6 +132,7 @@
 
   <TopBar />
   <RovSelector />
+  <VideoPlayer />
   <OnscreenGamepads />
 </main>
 

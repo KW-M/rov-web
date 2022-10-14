@@ -10,7 +10,7 @@
   let menuOpen = false;
 </script>
 
-<div class="px-1 fixed w-full block">
+<div class="px-1 fixed w-full block z-50">
   <div class="navbar rounded-t-none shadow-xl rounded-box h-9 p-0 min-h-0 lg:rounded-t-none bg-base-100  m-auto max-w-xl">
     <div class="pr-3 justify-start flex-shrink">
       <!-- <div class="dropdown"> -->

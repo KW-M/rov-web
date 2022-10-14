@@ -179,30 +179,30 @@ export function updateRoleDisplay(isDriver) {
     // roleDisplayText.innerText = isDriver ? "Driver" : "Spectator";
     if (isDriver) {
         document.body.classList.add('rov-driver')
-        takeControlButton.classList.add('hidden')
+        // takeControlButton.classList.add('hidden')
     } else {
         document.body.classList.remove('rov-driver')
-        takeControlButton.classList.remove('hidden')
+        // takeControlButton.classList.remove('hidden')
     }
 }
 
 var pingDisplay = document.getElementById('ping_value');
 export function updatePingDisplay(pingTimeMs) {
-    pingDisplay.innerText = pingTimeMs;
+    // pingDisplay.innerText = pingTimeMs;
 }
 
 var battDisplay = document.getElementById('battery_value');
 export function updateBatteryDisplay(batteryVolts, batteryPercent) {
-    battDisplay.innerText = batteryVolts + 'V (' + batteryPercent + '%)';
+    // battDisplay.innerText = batteryVolts + 'V (' + batteryPercent + '%)';
 }
 
 var pressureDisplay = document.getElementById('pressure_value');
 var tempDisplay = document.getElementById('temp_value');
 export function updateDisplayedSensorValues(sensorValues) {
-    if (sensorValues.pressure) {
-        pressureDisplay.innerText = String(sensorValues.pressure / 0.001 * (1023.6 * 9.8065)); // to meters
-    }
-    if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
+    // if (sensorValues.pressure) {
+    //     pressureDisplay.innerText = String(sensorValues.pressure / 0.001 * (1023.6 * 9.8065)); // to meters
+    // }
+    // if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
     if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
     if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
 }

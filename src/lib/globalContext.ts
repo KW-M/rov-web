@@ -44,10 +44,12 @@ document.addEventListener('fullscreenchange', (e) => {
 export const peerServerConfig = writable({});
 export const rovIpAddr = writable("raspberrypi.local");
 
+
 export const rovPeerIdEndNumber = writable(0);
 export const attemptingNewRovPeerId = writable(false);
 export const isRovDriver = writable(false);
 export const ourPeerId = writable("No Peer Id");
+export const rovMainVideoTrack: Writable<MediaStreamTrack | null> = writable(null);
 
 // export const thisPeer: Writable<Peer | null> = writable(null);
 // export const gpad: Writable<null> = writable(null);

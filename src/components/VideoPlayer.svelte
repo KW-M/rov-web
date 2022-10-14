@@ -1,27 +1,48 @@
 <script>
   import { ConnectionState } from "../lib/consts";
-  import { fullscreenOpen, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
+  import { fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
   import { hideLoadingUi, showLoadingUi } from "../lib/ui";
-  $: ($rovVideoStreamConnState) => {
-    const videoState = $rovVideoStreamConnState;
-    if (videoState == ConnectionState.connecting) {
+  let videoElement = null;
+  let trackId = null;
+
+  $: {
+    if ($rovVideoStreamConnState == ConnectionState.connecting) {
       showLoadingUi("awaiting-video-call");
-    } else if (videoState == ConnectionState.reconnecting) {
+    } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
       showLoadingUi("awaiting-video-call");
-    } else if (videoState == ConnectionState.disconnected) {
+    } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
       hideLoadingUi("awaiting-video-call");
-    } else if (videoState == ConnectionState.connected) {
+    } else if ($rovVideoStreamConnState == ConnectionState.connected) {
       hideLoadingUi("awaiting-video-call");
     }
-  };
+  }
+
+  $: if ($rovMainVideoTrack && $rovMainVideoTrack.id != trackId) {
+    setTimeout(() => {
+      console.debug("Setting video track");
+      trackId = $rovMainVideoTrack.id;
+      if (videoElement) {
+        // @ts-ignore
+        videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
+        // @ts-ignore
+        videoElement.muted = true;
+        // @ts-ignore
+        videoElement.autoplay = true;
+        // @ts-ignore
+        videoElement.controls = false;
+        // @ts-ignore
+        videoElement.play();
+      }
+    }, 0);
+  }
 </script>
 
-{#if $rovVideoStreamConnState === ConnectionState.connected}
+{#if $rovDataChannelConnState === ConnectionState.connected}
   <div id="livestream_container" class={$fullscreenOpen ? "full" : ""}>
-    {#if $rovVideoStream}
-      <!-- svelte-ignore a11y-media-has-caption -->
-      <video id="video_livestream" poster="https://sveltejs.github.io/assets/caminandes-llamigos.jpg" />
-    {/if}
+    <!-- {#if $rovMainVideoTrack} -->
+    <!-- svelte-ignore a11y-media-has-caption -->
+    <video id="video_livestream" poster="https://sveltejs.github.io/assets/caminandes-llamigos.jpg" bind:this={videoElement} />
+    <!-- {/if} -->
   </div>
 {/if}
 

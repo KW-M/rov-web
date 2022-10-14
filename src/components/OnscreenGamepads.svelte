@@ -171,7 +171,7 @@
     height: 10cm;
 
     z-index: 0;
-    background-color: #0c61d860;
+    /* background-color: #0c61d860; */
     pointer-events: all;
   }
 

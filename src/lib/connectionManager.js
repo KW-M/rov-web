@@ -48,7 +48,7 @@ class RovConnection {
             let mc = new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this))
             this.mediaConnections = [mc]
             mc.start();
-            this.sendMessage({ action: RovApiAction.begin_video_stream })
+            // this.sendMessage({ action: RovApiAction.begin_video_stream })
         }
     }
 
@@ -175,7 +175,10 @@ class RovConnection {
         let [connectedCount, states] = this.stateChangeHandler(
             "mediaConnections",
             () => { return new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this)) },
-            (mc) => { mc.start(); this.sendMessage({ action: RovApiAction.begin_video_stream }) }
+            (mc) => {
+                mc.start();
+                // this.sendMessage({ action: RovApiAction.begin_video_stream })
+            }
         )
 
         if (connectedCount == -1) return;
@@ -210,7 +213,7 @@ class RovConnection {
         let mc = new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this))
         this.mediaConnections = [...this.mediaConnections, mc] /// --- change
         mc.start()
-        this.sendMessage({ action: RovApiAction.begin_video_stream })
+        // this.sendMessage({ action: RovApiAction.begin_video_stream })
     }
 
     cleanup() {
