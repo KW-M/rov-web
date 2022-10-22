@@ -15,7 +15,12 @@
   });
 </script>
 
-<div id="gamepad-container" bind:this={GPAD_DISPLAY_CONTAINER} class={collapsedMode ? "" : "hidden"}>
+<!-- hidden -->
+<div id="gamepad-container" bind:this={GPAD_DISPLAY_CONTAINER} class={collapsedMode ? "" : ""}>
+  <!-- Gamepad joystick touch start areas -->
+  <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area" />
+  <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
+
   <!-- SPLIT gamepad left -->
   <div class="hidden gpad-display gpad-display-left">
     {@html GamepadLeftSvg}
@@ -38,10 +43,6 @@
   <!-- <div id="gamepad-help-tooltip" class="hide-when-not-driver popper-tooltip" role="tooltip">
     <span id="gamepad-help-text">Gamepad Help</span>
   </div> -->
-
-  <!-- Gamepad joystick touch start areas -->
-  <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area" />
-  <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
 </div>
 
 <style>
@@ -84,9 +85,9 @@
     transition: transform 0.4s, left 0.4s;
     transform: translateX(-50%);
   }
-
+  /*
   :global(body.gamepad-help-open #display-gamepad-left) {
-    /* bottom: 15px; */
+    bottom: 15px;
     left: 50% !important;
 
     transform: translateX(-98%) !important;
@@ -96,7 +97,7 @@
 
   :global(body.gamepad-help-open #display-gamepad-right) {
     right: 50% !important;
-    /* bottom: 15px; */
+    bottom: 15px;
 
     transform: translateX(98%) !important;
 
@@ -115,6 +116,7 @@
     transform: translateX(42%);
   }
 
+*/
   :global(.gpad-btn-highlight) {
     visibility: hidden;
 
@@ -122,13 +124,13 @@
     pointer-events: all;
   }
 
-  :global(#stick_button_right_highlight) {
+  /* :global(#stick_button_right_highlight) {
     visibility: hidden;
   }
 
   :global(#stick_button_right_highlight\.gpad-btn-highlight) {
     opacity: 0.5;
-  }
+  } */
 
   :global(.gpad-btn-highlight.touched) {
     visibility: visible;
@@ -159,12 +161,8 @@
     opacity: 0.5 !important;
   }
 
-  :global(#stick_button_right_touch_target, #stick_button_left_touch_target) {
-    pointer-events: none;
-  }
-
   .gamepad-joystick-touch-area {
-    position: fixed;
+    position: absolute;
     bottom: 0;
 
     width: 50%;

@@ -1,5 +1,5 @@
 import { toast } from '@zerodevx/svelte-toast';
-import { ROV_PEERID_BASE, LOADING_MESSAGES } from './consts';
+import { ROV_PEERID_BASE, LOADING_MESSAGE } from './consts';
 import { ClassInstances, DIALOG_TYPE, rovPeerIdEndNumber } from './globalContext';
 import { getROVName } from './rovUtil';
 import { get } from 'svelte/store';
@@ -7,7 +7,6 @@ import { get } from 'svelte/store';
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------
 // -------------------------------------------------------------
-
 
 // -----  Toast Notifications -----
 
@@ -72,7 +71,7 @@ const rovConnectionBar = document.getElementById('rov_connection_bar');
 export function showROVDisconnectedUi() {
     // connectBtnOptions.style.display = 'flex';
     document.body.classList.remove("rov-connected");
-    hideLoadingUi("all");
+    ClassInstances.hideLoadingUi("all");
     // hideLivestreamUi();
 }
 
@@ -80,7 +79,6 @@ export function showROVConnectingUi(rovPeerId) {
     console.log("showROVConnectingUi", connectBtnOptions);
     // connectBtnOptions.style.display = 'none';
     document.body.classList.remove("rov-connected");
-    showLoadingUi("webrtc-connecting", "Searching for " + rovPeerId);
 }
 
 export function showROVConnectedUi() {
@@ -88,14 +86,14 @@ export function showROVConnectedUi() {
     // disconnectBtn.style.display = 'block';
     updateRoleDisplay(false)
     document.body.classList.add("rov-connected");
-    hideLoadingUi("webrtc-connecting")
-    hideLoadingUi("webrtc-reconnecting")
+    ClassInstances.hideLoadingUi("webrtc-connecting")
+    ClassInstances.hideLoadingUi("webrtc-reconnecting")
 }
 
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
     // disconnectBtn.style.display = 'none';
-    showLoadingUi("reloading-site", null);
+    ClassInstances.showLoadingUi("reloading-site", null);
 }
 
 export function setCurrentRovName() {
@@ -120,52 +118,6 @@ export function setupDisconnectBtnClickHandler(callback) {
     return () => { // cleanup function
         disconnectBtn.removeEventListener('click', callback);
     }
-}
-
-export function showScanIpBtn() {
-    document.getElementById("scan_for_ip_btn").style.display = "block";
-}
-
-export function hideScanIpButton() {
-    document.getElementById("scan_for_ip_btn").style.display = "none";
-}
-
-const loadingIndicator = document.getElementById("site_loading_indicator")
-const loadingIndicatorText = document.getElementById("site_loading_text")
-let loadingStack = {};
-export function showLoadingUi(loadingMsgId, loadingMessage) {
-    const message = loadingStack[loadingMsgId] = loadingMessage || LOADING_MESSAGES[loadingMsgId] || LOADING_MESSAGES["default"];
-    loadingIndicator.style.display = 'block';
-    loadingIndicatorText.innerHTML = message;
-
-}
-
-export function hideLoadingUi(loadingMsgId) {
-
-    // remove the loading message from the stack
-    delete loadingStack[loadingMsgId]
-
-    // if there are no more messages in the stack, hide the loading indicator, otherwise show the top message
-    const loadingStackIds = Object.keys(loadingStack);
-    if (loadingMsgId == "all" || loadingStackIds.length == 0) {
-        loadingIndicator.style.display = 'none';
-        loadingStack = {};
-        console.log("Done Loading:", loadingMsgId)
-    } else {
-        console.log("Loading:", loadingMsgId)
-        const msg = loadingStack[loadingStackIds[loadingStackIds.length - 1]]
-        loadingIndicatorText.innerHTML = msg || LOADING_MESSAGES["default"];
-        loadingIndicator.style.display = 'block';
-    }
-}
-
-const livestreamContainer = document.getElementById("livestream_container")
-export function showLivestreamUi() {
-    livestreamContainer.style.display = 'block';
-}
-
-export function hideLivestreamUi() {
-    livestreamContainer.style.display = 'none';
 }
 
 const clientPeerIdLabel = document.getElementById("client_peer_id_label")

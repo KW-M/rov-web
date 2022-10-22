@@ -24,11 +24,17 @@ export class RovActions {
         })
     }
 
+    static pingLoopIntervalId = null;
     static startPingLoop() {
-        const intervalId = setInterval(() => {
+        if (RovActions.pingLoopIntervalId) return;
+        RovActions.pingLoopIntervalId = setInterval(() => {
             MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() }, null, true);
         }, 2000)
-        return () => { clearInterval(intervalId) } // return a cleanup function
+    }
+
+    static stopPingLoop() {
+        clearInterval(RovActions.pingLoopIntervalId)
+        RovActions.pingLoopIntervalId = null;
     }
 
     static showCommandOutputPopup(title, firstLine, doneLine) {

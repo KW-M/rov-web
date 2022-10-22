@@ -11,5 +11,10 @@ export default defineConfig({
   //     }
   //   ]
   // },
+  server: {
+    hmr: {
+      protocol: 'ws',
+    }
+  },
   plugins: [svelte()]
 })

@@ -1,78 +1,96 @@
 <script>
-  import { ConnectionState } from "../lib/consts";
-  import { fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
-  import { hideLoadingUi, showLoadingUi } from "../lib/ui";
+  import { ConnectionState, LOADING_MESSAGE } from "../lib/consts";
+  import { appReady, ClassInstances, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
   let videoElement = null;
   let trackId = null;
 
-  $: {
+  $: if ($appReady === true) {
     if ($rovVideoStreamConnState == ConnectionState.connecting) {
-      showLoadingUi("awaiting-video-call");
+      ClassInstances.showLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
-      showLoadingUi("awaiting-video-call");
+      ClassInstances.showLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
-      hideLoadingUi("awaiting-video-call");
+      ClassInstances.hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     } else if ($rovVideoStreamConnState == ConnectionState.connected) {
-      hideLoadingUi("awaiting-video-call");
+      ClassInstances.hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     }
-  }
 
-  $: if ($rovMainVideoTrack && $rovMainVideoTrack.id != trackId) {
-    setTimeout(() => {
-      console.debug("Setting video track");
-      trackId = $rovMainVideoTrack.id;
-      if (videoElement) {
-        // @ts-ignore
-        videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
-        // @ts-ignore
-        videoElement.muted = true;
-        // @ts-ignore
-        videoElement.autoplay = true;
-        // @ts-ignore
-        videoElement.controls = false;
-        // @ts-ignore
-        videoElement.play();
-      }
-    }, 0);
+    // $: if ($rovVideoStreamConnState == ConnectionState.connecting) {
+    //   ClassInstances.showLoadingUi(LOADING_MESSAGE.videoConnecting);
+    // } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
+    //   ClassInstances.showLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    // } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
+    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
+    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    // } else if ($rovVideoStreamConnState == ConnectionState.connected) {
+    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
+    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    // }
+
+    if ($rovMainVideoTrack && $rovMainVideoTrack.id != trackId) {
+      setTimeout(() => {
+        console.debug("Setting video track");
+        trackId = $rovMainVideoTrack.id;
+        if (videoElement) {
+          // @ts-ignore
+          videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
+          // @ts-ignore
+          videoElement.muted = true;
+          // @ts-ignore
+          videoElement.autoplay = true;
+          // @ts-ignore
+          videoElement.controls = false;
+          // @ts-ignore
+          videoElement.play();
+        }
+      }, 0);
+    }
   }
 </script>
 
-{#if $rovDataChannelConnState === ConnectionState.connected}
+{#if true}
+  <!-- $rovVideoStreamConnState === ConnectionState.connected} -->
   <div id="livestream_container" class={$fullscreenOpen ? "full" : ""}>
     <!-- {#if $rovMainVideoTrack} -->
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video id="video_livestream" poster="https://sveltejs.github.io/assets/caminandes-llamigos.jpg" bind:this={videoElement} />
+    <video id="video_livestream" tabindex="-1" poster="https://i.ytimg.com/vi/r5EJCJbZ3qQ/maxresdefault.jpg" bind:this={videoElement} />
     <!-- {/if} -->
   </div>
 {/if}
 
 <style>
   #livestream_container {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    /* position: relative; */
+    /* flex: 1 1 100%; */
+    position: absolute;
+    box-sizing: border-box;
+    overflow: hidden;
 
-    margin: auto;
-    padding: 40px 36px 28px;
+    width: 100%;
+    height: 100%;
+
+    transform: translateZ(0);
+    /* padding-bottom: calc(var(--aspect-ratio, 0.5625) * 100%); 16:9 */
   }
 
   #video_livestream {
     display: block;
-
+    position: absolute;
     box-sizing: border-box;
-    width: 100%;
+    margin: 0;
+    /* border: 3px solid black; */
+    align-self: center;
+    /* border-radius: 12px; */
+    /* background: rgba(0, 0, 0, 0.55); */
+    height: min-content;
+    padding: 0;
     max-height: 100%;
-    margin: auto;
-
-    border: 3px solid black;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.55);
-    /* max-width: min-content; */
-
-    aspect-ratio: 16 / 9;
-    object-fit: contain;
+    width: 100%;
+    padding: 20px;
+    /* padding-top: 36px; */
+    /* padding: 40px 36px 28px; */
+    /* aspect-ratio: 16 / 9; */
+    /* object-fit: contain; */
   }
 
   #livestream_container.full {

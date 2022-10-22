@@ -16,7 +16,7 @@
 </script>
 
 <!--  sm:modal-middle -->
-<Dialog class="inset-0 fixed modal modal-bottom modal-open" open={isFullyOpen} on:close={onClose} static>
+<Dialog class="inset-0 absolute modal modal-bottom modal-open" open={isFullyOpen} on:close={onClose} static>
   <div
     transition:fade={{
       duration: 300,
@@ -56,7 +56,7 @@
       <DialogOverlay />
     </TransitionChild>
 
-    <div class="fixed inset-0 overflow-y-auto">
+    <div class="absolute inset-0 overflow-y-auto">
       <div class="flex min-h-full items-center justify-center p-4 text-center">
         <TransitionChild enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
           <div class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">

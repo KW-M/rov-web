@@ -6,37 +6,7 @@ z-index map:
 - layout edge / corner areas: 6 (defualt)
  */
 
-html,
-body {
-  overflow: hidden;
 
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-
-  user-select: none;
-
-  background: linear-gradient(#00effb, #1537a6);
-
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
-  touch-action: manipulation;
-}
-
-:root {
-  height: 100%;
-
-  touch-action: pan-x pan-y;
-}
-
-
-* {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
 
 /* ************** Generic Buttons ************** */
 /*
@@ -144,7 +114,7 @@ button .button-label-image {
 }
 
 .top-left-corner {
-  position: fixed;
+  position: absolute;
   z-index: 6;
   top: 0;
   left: 0;
@@ -184,7 +154,7 @@ button .button-label-image {
 }
 
 .bottom-right-corner {
-  position: fixed;
+  position: absolute;
   z-index: 6;
   right: 0;
   bottom: 0;
@@ -332,27 +302,6 @@ table.top-left-corner td {
 #connect_btn {
   width: 11rem;
 
-}
-
-#site_loading_indicator {
-  padding: 10px 30px 10px 20px;
-  z-index: 100;
-  transform: translate(-50%, 20vh);
-
-  border-radius: 11px;
-  background: #000000b5;
-}
-
-#site_loading_indicator #site_loading_text {
-  display: inline-block;
-
-  vertical-align: top;
-
-  color: white;
-
-  font-size: larger;
-  font-weight: bold;
-  line-height: 80px;
 }
 
 #rov_connection_bar {
@@ -523,7 +472,7 @@ table.top-left-corner td {
 }
 
 .fullscreen-btn {
-  position: fixed;
+  position: absolute;
   top: 3px;
   top: 2px;
   right: 3px;
@@ -585,7 +534,7 @@ table.top-left-corner td {
 }
 
 #actions-menu-overlay {
-  position: fixed;
+  position: absolute;
   z-index: 599;
   top: 43px;
   right: 40px;
@@ -732,7 +681,7 @@ body.rov-driver .hide-when-driver {
 } */
 
 #backdrop {
-  position: fixed;
+  position: absolute;
   z-index: 20;
   top: 0;
   right: 0;
@@ -766,7 +715,7 @@ body.gamepad-help-open #gamepad-container {
 
 .gamepad-notice {
   display: block;
-  position: fixed;
+  position: absolute;
   text-align: center;
   font-family: sans-serif;
   font-weight: bold;
@@ -795,48 +744,6 @@ body.gamepad-help-open #gamepad-container {
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-}
-
-/* ***** Loading "spinning circle" indicator *** */
-
-.lds-circle {
-  display: inline-block;
-
-  transform: translateZ(1px);
-}
-
-.lds-circle>div {
-  display: inline-block;
-
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-
-  animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-
-  border-radius: 50%;
-  background: #fff;
-}
-
-@keyframes lds-circle {
-
-  0%,
-  100% {
-    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
-  }
-
-  0% {
-    transform: rotateY(0deg);
-  }
-
-  50% {
-    transform: rotateY(1800deg);
-    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
-  }
-
-  100% {
-    transform: rotateY(3600deg);
-  }
 }
 
 /* ***** Toastify Notification and Dialog Style Customizations ***** */
@@ -912,115 +819,4 @@ body.gamepad-help-open #gamepad-container {
   padding-right: 12px;
 
   user-select: all;
-}
-
-/* ***** Popper Tooltip Customizations ***** */
-
-#gamepad-help-tooltip {
-  user-select: n;
-  transition: all 0.1s ease;
-  pointer-events: none;
-}
-
-.popper-tooltip {
-  z-index: 1000;
-
-  display: inline-block;
-
-  padding: 5px 10px;
-
-  color: #000000;
-  border: solid 3px black;
-  border-radius: 8px;
-  background: #fff;
-
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.popper-tooltip::after {
-  position: absolute;
-
-  display: block;
-
-  width: 0;
-  height: 0;
-
-  content: '';
-
-  border-top: 13px solid rgb(255, 255, 255);
-  border-right: 13px solid transparent;
-  border-left: 13px solid transparent;
-}
-
-.popper-tooltip::before {
-  position: absolute;
-
-  display: block;
-
-  width: 0;
-  height: 0;
-
-  content: '';
-
-  border-top: 16px solid rgb(0, 0, 0);
-  border-right: 16px solid transparent;
-  border-left: 16px solid transparent;
-}
-
-.popper-tooltip[data-popper-placement^='top']::after,
-.popper-tooltip[data-popper-placement^='top']::before {
-  bottom: -19px;
-  left: 50%;
-
-  transform: translateX(-7px) rotate(0);
-}
-
-.popper-tooltip[data-popper-placement^='bottom']::after {
-  top: -19px;
-  left: 50%;
-
-  transform: translateX(-7px) rotate(180deg);
-}
-
-.popper-tooltip[data-popper-placement^='left']::after {
-  top: 50%;
-  right: -19px;
-
-  transform: translateY(-7px) rotate(270deg);
-}
-
-.popper-tooltip[data-popper-placement^='right']::after {
-  top: 50%;
-  left: -19px;
-
-  transform: translateY(-7px) rotate(90deg);
-}
-
-.popper-tooltip[data-popper-placement^='top']::before {
-  bottom: -24px;
-  left: 50%;
-
-  transform: translateX(-8.5px) rotate(0);
-}
-
-.popper-tooltip[data-popper-placement^='bottom']::before {
-  top: -24px;
-  left: 50%;
-
-  transform: translateX(-8.5px) rotate(180deg);
-}
-
-.popper-tooltip[data-popper-placement^='left']::before {
-  top: 50%;
-  right: -24px;
-
-  transform: translateY(-8.5px) rotate(270deg);
-}
-
-.popper-tooltip[data-popper-placement^='right']::before {
-  top: 50%;
-  left: -24px;
-
-  transform: translateY(-8.5px) rotate(90deg);
 }

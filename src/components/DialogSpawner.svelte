@@ -1,7 +1,7 @@
 <script>
   import AlertDialog from "./AlertDialog.svelte";
   import PasswordDialog from "./PasswordDialog.svelte";
-  import { ClassInstances } from "../lib/globalContext";
+  import { ClassInstances, DIALOG_TYPE } from "../lib/globalContext";
   import ScrollingTextDialog from "./ScrollingTextDialog.svelte";
 
   let dialogStack = [];
@@ -56,10 +56,10 @@
 
 <!-- <button class="btn" on:click={() => openDialog("alert", (e) => console.log("alert closed", e))}>Open Alert Dialog</button>
 <button class="btn" on:click={() => openDialog("password", (e) => console.log("password closed", e))}>Open Password Dialog</button> -->
-{#if topDialog.dialogType == "password"}
+{#if topDialog.dialogType == DIALOG_TYPE.Password}
   <PasswordDialog bind:isOpen={topDialog.isOpen} on:close={closeTopDialog} />
-{:else if topDialog.dialogType == "alert"}
+{:else if topDialog.dialogType == DIALOG_TYPE.Alert}
   <AlertDialog bind:isOpen={topDialog.isOpen} bind:extraData={topDialog.extraData} on:close={closeTopDialog} />
-{:else if topDialog.dialogType == "scrollText"}
+{:else if topDialog.dialogType == DIALOG_TYPE.ScrollingText}
   <ScrollingTextDialog bind:isOpen={topDialog.isOpen} bind:extraData={topDialog.extraData} on:close={closeTopDialog} />
 {/if}

@@ -9,31 +9,15 @@ import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
 import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug } from "virtual-gamepad-lib";
 import { ClassInstances } from "./globalContext";
+import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
+
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
 const LEFT_Y_AXIS_INDEX = 1;
 const RIGHT_X_AXIS_INDEX = 2;
 const RIGHT_Y_AXIS_INDEX = 3;
-const BUTTON_ID_NAMES = [
-    "button_1",
-    "button_2",
-    "button_3",
-    "button_4",
-    "shoulder_button_front_left",
-    "shoulder_button_front_right",
-    "shoulder_trigger_back_left",
-    "shoulder_trigger_back_right",
-    "select_button",
-    "start_button",
-    "stick_button_left",
-    "stick_button_right",
-    "d_pad_up",
-    "d_pad_down",
-    "d_pad_left",
-    "d_pad_right",
-    /* "vendor" */ // generally not available to browsers because it is used by OS vendors (eg: Xbox Game Bar, Steam HUD).
-];
+const gpadHelpTooltips = [];
 
 export class GamepadController {
     constructor(throttleDelay = 250) {
@@ -67,7 +51,7 @@ export class GamepadController {
         this.setupGamepadDisplay(EMULATED_GPAD_INDEX, GPAD_DISPLAY_CONTAINER); // setup the display buttons to react to the events FROM the gamepad api directly
         this.setupEmulatedGamepadInput(EMULATED_GPAD_INDEX, GPAD_DISPLAY_CONTAINER); // setup event listeners on the buttons/joysticks to send button/axis updates TO the emulated gamepad.
         this.addEmulatedGamepadKeyboardBindings(EMULATED_GPAD_INDEX);
-
+        this.addHelpTooltips();
     }
 
     setupGamepadEvents(throttle) {
@@ -93,6 +77,7 @@ export class GamepadController {
                 RovActions.moveRov(thrustVector, turnRate);
             }
         );
+
     };
 
     gamepadConnectDisconnectHandler() {
@@ -124,14 +109,13 @@ export class GamepadController {
         let noGamepadButtonTouched = true;
         for (let i = 0; i < buttonsChangedMask.length; i++) {
             if (buttonsChangedMask[i] && buttonsChangedMask[i].touchDown) {
-                // this.gpadUi.showHelpTooltip(this.buttonHighlightElements[i], GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel);
-                noGamepadButtonTouched = false;
-            } else if (gamepad.buttons[i] && gamepad.buttons[i].touched) {
+                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].showTooltipTimeout();
                 noGamepadButtonTouched = false;
             }
+            else if (buttonsChangedMask[i] && buttonsChangedMask[i].touchUp) {
+                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].hideTooltip();
+            }
         }
-
-        // if (noGamepadButtonTouched) this.gpadUi.showHelpTooltip(null, "Gamepad Help");
     }
 
     handleAxisChange(gpadIndex, gamepad) {
@@ -184,7 +168,7 @@ export class GamepadController {
 
         /* ----- SETUP BUTTON DISPLAY ----- */
         /** @type { (import("virtual-gamepad-lib").GamepadDisplayButton | import("virtual-gamepad-lib").GamepadDisplayVariableButton)[] }*/
-        const buttons = BUTTON_ID_NAMES.map((name, i) => {
+        const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
             console.log(name);
             if (name.includes("trigger")) {
                 // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
@@ -251,7 +235,7 @@ export class GamepadController {
     setupEmulatedGamepadInput(gpadIndex, display_gpad) {
         /* ----- SETUP BUTTON INPUTS ----- */
         /** @type { (import("virtual-gamepad-lib").ButtonConfig | import("virtual-gamepad-lib").VariableButtonConfig)[] }*/
-        const emulatorButtonConfigs = BUTTON_ID_NAMES.map((name, i) => {
+        const emulatorButtonConfigs = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
             if (name.includes("trigger")) {
                 // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
                 return {
@@ -306,6 +290,32 @@ export class GamepadController {
                     [gamepadDirection.right]: true,
                 },
             },
+            {
+                tapTarget: display_gpad.querySelector("#stick_button_left_touch_target"),
+                dragDistance: 30,
+                xAxisIndex: 0,
+                yAxisIndex: 1,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
+            {
+                tapTarget: display_gpad.querySelector("#stick_button_right_touch_target"),
+                dragDistance: 30,
+                xAxisIndex: 2,
+                yAxisIndex: 3,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
         ];
         this.gpadEmulator.AddDisplayJoystickEventListeners(gpadIndex, emulatorStickConfigs);
     }
@@ -343,5 +353,12 @@ export class GamepadController {
         }
         window.onkeydown = (e) => handleKeyEvent(true, e);
         window.onkeyup = (e) => handleKeyEvent(false, e);
+    }
+
+    addHelpTooltips() {
+        ONSCREEN_GPAD_BUTTON_LABELS.forEach((name, i) => {
+            const elem = document.getElementById(name + "_touch_target");
+            if (elem) gpadHelpTooltips[i] = ClassInstances.addTooltip(elem, { label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement }, false);
+        })
     }
 }

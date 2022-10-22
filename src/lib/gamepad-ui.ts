@@ -158,7 +158,7 @@ export class GamepadUi {
         // }, this.gamepadHelpTooltip, {
         //     modifiers: [flip],
         //     placement: 'right',
-        //     strategy: 'fixed',
+        //     strategy: 'absolute',
         // });
     }
 

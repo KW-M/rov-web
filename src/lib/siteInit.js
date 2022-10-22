@@ -1,9 +1,9 @@
 import { createMachine, interpret } from "xstate";
 import { isInternetAvailable } from "./util"
-import { showToastMessage, showScanIpBtn, hideScanIpButton, showLoadingUi, hideLoadingUi } from "./ui";
+import { showToastMessage } from "./ui";
 
-import * as consts from "./consts";
-import { debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
+import { LOADING_MESSAGE, peerServerCloudOptions, peerServerLocalOptions } from "./consts";
+import { ClassInstances, debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
 import { get } from "svelte/store";
 
 export const runSiteInitMachine = (sendParentCallback) => {
@@ -79,10 +79,10 @@ export const runSiteInitMachine = (sendParentCallback) => {
     }, {
       actions: {
         setCloudPeerServerConfig: () => {
-          peerServerConfig.set(consts.peerServerCloudOptions);
+          peerServerConfig.set(peerServerCloudOptions);
         },
         setLocalPeerServerConfig: () => {
-          peerServerConfig.set(consts.peerServerLocalOptions);
+          peerServerConfig.set(peerServerLocalOptions);
         },
         setRovIpAddr: (_, event) => {
           rovIpAddr.set(event.data);
@@ -90,17 +90,17 @@ export const runSiteInitMachine = (sendParentCallback) => {
         showIpScanButton: () => {
           showToastMessage("Click scan to find the ROV locally.");
           showToastMessage("No internet connection.");
-          showScanIpBtn();
+          // showScanIpBtn();
         },
         hideIpScanButton: () => {
-          hideScanIpButton();
+          // hideScanIpButton();
         },
         hideLoadingUi: () => {
-          hideLoadingUi("ip-scan");
-          hideLoadingUi("internet-check");
+          ClassInstances.hideLoadingUi(LOADING_MESSAGE.ipScan);
+          ClassInstances.hideLoadingUi(LOADING_MESSAGE.internetCheck);
         },
         showIpScanningUi: () => {
-          showLoadingUi("ip-scan");
+          ClassInstances.showLoadingUi(LOADING_MESSAGE.ipScan);
         },
         redirectBrowserToRovIp: (_, event) => {
           window.location.href = `http://${event.data}`;
@@ -108,9 +108,9 @@ export const runSiteInitMachine = (sendParentCallback) => {
         siteReady: () => { sendParentCallback("SITE_READY") },
 
         checkInternetAvailable: () => {
-          showLoadingUi("internet-check")
+          ClassInstances.showLoadingUi(LOADING_MESSAGE.internetCheck)
 
-          const config = consts.peerServerCloudOptions;
+          const config = peerServerCloudOptions;
           isInternetAvailable((config.secure ? "https://" : "http://") + config.host + ":" + config.port).then((internetOnline) => {
             if (internetOnline) {
               sendEventToMachine("INTERNET_AVAILABLE");
@@ -133,7 +133,7 @@ export const runSiteInitMachine = (sendParentCallback) => {
           })
         },
         setupWaitForUserScanButtonPress: () => {
-          showScanIpBtn();
+          // showScanIpBtn();
 
           const onBtnClick = () => {
             sendEventToMachine("SCAN_BUTTON_CLICKED");
@@ -149,9 +149,9 @@ export const runSiteInitMachine = (sendParentCallback) => {
           };
         },
         scanForRovIP: () => {
-          showLoadingUi("ip-scan")
+          ClassInstances.showLoadingUi(LOADING_MESSAGE.ipScan)
           // setTimeout(() => {
-          // hideLoadingUi()
+          // ClassInstances.hideLoadingUi()
           //   sendEventToMachine({
           //     type: "ROV_IP_FOUND",
           //     data: "UHhh the ip address man!",
