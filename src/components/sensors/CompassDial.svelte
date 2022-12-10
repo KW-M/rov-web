@@ -1,11 +1,18 @@
-<script>
-  export let angle = 0;
+<script context="module" lang="ts">
+  let angle = 0;
+
+  export const SetCompassAngle = (angle) => {
+    angle = angle;
+  };
+</script>
+
+<!-- <script>
   let anim = () => {
     angle = (angle + 1) % 360;
     requestAnimationFrame(anim);
   };
   requestAnimationFrame(anim);
-</script>
+</script> -->
 
 <div class="compass bg-base-100">
   <div class="line" />

@@ -1,7 +1,7 @@
 <script>
   import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@rgossiaux/svelte-headlessui";
   import { Icon } from "@steeze-ui/svelte-icon";
-  // import {} from "@steeze-ui/heroicons";
+  import { ChevronRight } from "@steeze-ui/heroicons";
 
   const MAX_ROVS = 5;
   const rovNames = [];
@@ -36,11 +36,12 @@
       <!-- Use the `selected` state to conditionally style the selected option -->
 
       <ListboxOption value={rovName} disabled={false} let:selected>
+        <!-- svelte-ignore a11y-missing-attribute -->
         <a class:bg-primary={selected}>
           {rovName.name}
           <div class="flex-1 h-1 " />
           <!-- {#if !selected} -->
-          <Icon theme="solid" src={ChevronRightIcon} class="w-6 h-6" />
+          <Icon theme="solid" src={ChevronRight} class="w-6 h-6" />
           <!-- {/if} -->
         </a>
       </ListboxOption>
@@ -49,7 +50,9 @@
 </Listbox>
 {#if !rovConnected}
   <button class="btn btn-square btn-primary btn-lg mt-2 align-top"
-    ><ChevronRightIcon
+    ><Icon
+      theme="solid"
+      src={ChevronRight}
       class="w-6 h-6"
       on:click={() => {
         rovConnected = true;

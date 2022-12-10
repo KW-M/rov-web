@@ -1,7 +1,5 @@
-<script>
-  // import { Resource, TOOL_TYPE, ViewportManager } from "SDK/Entry";
-  // console.log(ViewportManager, TOOL_TYPE, Resource);
-  import fragmentShader from "./AHRS_Sphere.glsl?raw";
+<script lang="ts">
+  import fragmentShader from "./shaders/AHRS_Sphere.glsl?raw";
   import * as twgl from "twgl.js";
   import { onMount } from "svelte";
   let canvas;
@@ -62,10 +60,9 @@ void main() {
     width: 100px;
     height: 100px;
     position: absolute;
-    bottom: 0;
+    /* top: -11px; */
+    top: 0;
     left: 50%;
-    /* top: -11px;
-   left: 50%; */
     transform: translateX(-50%);
   }
 

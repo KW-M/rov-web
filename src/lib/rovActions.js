@@ -1,5 +1,5 @@
 import { RovApiAction } from "./consts";
-import { ClassInstances, rovPeerIdEndNumber } from "./globalContext";
+import { connectionManager, rovPeerIdEndNumber } from "./globalContext";
 import { MessageHandler } from "./messageHandler"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
 import { arraysEqual } from "./util";
@@ -28,7 +28,7 @@ export class RovActions {
     static startPingLoop() {
         if (RovActions.pingLoopIntervalId) return;
         RovActions.pingLoopIntervalId = setInterval(() => {
-            MessageHandler.sendRovMessage({ "action": "ping", "val": Date.now() }, null, true);
+            MessageHandler.sendRovMessage({ "action": RovApiAction.ping, "val": Date.now() }, null, true);
         }, 2000)
     }
 
@@ -54,11 +54,13 @@ export class RovActions {
     // ======= Actions ========
 
     static connectToRov() {
-        ClassInstances.connManager && ClassInstances.connManager.connectToCurrentTargetRov();
+        const connMangr = connectionManager.get();
+        connMangr && connMangr.connectToCurrentTargetRov();
     }
 
     static disconnectFromRov() {
-        ClassInstances.connManager && ClassInstances.connManager.disconnectFromCurrentRov();
+        const connMangr = connectionManager.get();
+        connMangr && connMangr.disconnectFromCurrentRov();
     }
 
     static switchToNextRovPeerId() {

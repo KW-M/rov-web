@@ -1,6 +1,6 @@
 import { showPasswordPrompt, showScrollableTextPopup, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
 import { v4 as uuidV4 } from "uuid"
-import { ClassInstances, isRovDriver } from "./globalContext";
+import { connectionManager, isRovDriver } from "./globalContext";
 
 let lastTimeRecvdPong = NaN;
 
@@ -53,13 +53,13 @@ export class MessageHandler {
         const msg_value = msg_data["val"];
         const replyContinuityCallback = MessageHandler.replyContinuityCallbacks[msg_cid].callback
 
+        console.debug(msg_status + " msg rcvd: " + msg_value, msg_data);
 
         if (msg_status == "error") {
             console.warn("Rov Action Error: " + msg_value);
             showToastMessage(msg_value);
 
         } else if (msg_status == "pong") {
-            console.log("Ping->Pong received");
             lastTimeRecvdPong = Date.now();
             const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msg_value) // since the rpi replies with the ms time we sent in the ping in the pong message
             updatePingDisplay(networkPingDelay);
@@ -87,7 +87,7 @@ export class MessageHandler {
     }
 
     static handleDriverChange(newDriverId) {
-        let thisPeerId = ClassInstances.connManager.getThisPeerId();
+        let thisPeerId = connectionManager.get().getThisPeerId();
         if (newDriverId == thisPeerId) {
             showToastMessage("You are now the driver");
             updateRoleDisplay(true);
@@ -105,11 +105,8 @@ export class MessageHandler {
 
         if (msg_status == "error") {
             console.error("Rov Error: " + msg_value);
-
         } else if (msg_status == "sensor-update") {
-
             updateDisplayedSensorValues(msg_value);
-
         } else if (msg_status == "driver-changed") {
             MessageHandler.handleDriverChange(msg_value);
         }

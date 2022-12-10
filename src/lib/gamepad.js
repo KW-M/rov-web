@@ -8,8 +8,9 @@ import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
 import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug } from "virtual-gamepad-lib";
-import { ClassInstances } from "./globalContext";
+import { addTooltip } from "../components/HelpTooltips.svelte";
 import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
+import { showToastMessage } from "./ui";
 
 
 // CONSTS
@@ -55,7 +56,7 @@ export class GamepadController {
     }
 
     setupGamepadEvents(throttle) {
-        console.info("gamepad throttle delay: " + throttle);
+        showToastMessage("gamepad throttle delay: " + throttle);
         this.throttleDelay = throttle;
         this.clearExternalEventListenerCallbacks();
         this.setupExternalEventListenerCallbacks(
@@ -100,8 +101,8 @@ export class GamepadController {
 
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
-        // if (this.onButtonChange && !this.gpadUi.gamepadHelpVisible) this.onButtonChange(gamepad, buttonsChangedMask);
-
+        if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
+        console.warn("handleButtonChange", this.onButtonChange, buttonsChangedMask);
         if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
             this.gpadUi.toggleGamepadHelpScreen();
         }
@@ -122,8 +123,7 @@ export class GamepadController {
 
         // console.log("handleAxisChange", gpadIndex, gamepad, axiesChangedMask)
         if (gpadIndex != 0 || !gamepad || !gamepad.axes) return;
-
-        // if (this.onAxisChange && !this.gpadUi.gamepadHelpVisible) this.onAxisChange(gamepad);
+        if (this.onAxisChange) this.onAxisChange(gamepad);
 
         const axisStates = [{
             axisRange: 14,
@@ -355,10 +355,21 @@ export class GamepadController {
         window.onkeyup = (e) => handleKeyEvent(false, e);
     }
 
+    testGamepadJoysticks() {
+        // fake gamepad joystick movements for testing:
+        setInterval(() => {
+            const EMULATED_GPAD_INDEX = 0;
+            this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, 0, Math.random() * 2 - 1);
+            this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, 1, Math.random() * 2 - 1);
+            this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, 2, Math.random() * 2 - 1);
+            this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, 3, Math.random() * 2 - 1);
+        }, 10)
+    }
+
     addHelpTooltips() {
         ONSCREEN_GPAD_BUTTON_LABELS.forEach((name, i) => {
             const elem = document.getElementById(name + "_touch_target");
-            if (elem) gpadHelpTooltips[i] = ClassInstances.addTooltip(elem, { label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement }, false);
+            if (elem) gpadHelpTooltips[i] = addTooltip(elem, { label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement }, false);
         })
     }
 }

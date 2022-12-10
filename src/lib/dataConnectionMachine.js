@@ -86,7 +86,7 @@ export class DataConnectionMachine {
     }
 
     start() {
-        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: get(debugXstateMode) })
+        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugXstateMode.get() })
         this.runningMachine.onTransition((e) => {
             if (this.currentState == e.value) return;
             this.currentState = e.value;

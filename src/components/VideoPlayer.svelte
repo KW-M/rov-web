@@ -1,60 +1,54 @@
-<script>
+<script lang="ts">
   import { ConnectionState, LOADING_MESSAGE } from "../lib/consts";
-  import { appReady, ClassInstances, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
+  import videoPlaceholderUrl from "../assets/video-placeholder.jpg";
+  import { appReady, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
   let videoElement = null;
   let trackId = null;
+  import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
 
   $: if ($appReady === true) {
     if ($rovVideoStreamConnState == ConnectionState.connecting) {
-      ClassInstances.showLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
+      showLoadingUi(LOADING_MESSAGE.awaitingVideoCall, null);
     } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
-      ClassInstances.showLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
+      showLoadingUi(LOADING_MESSAGE.awaitingVideoCall, null);
     } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
+      hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     } else if ($rovVideoStreamConnState == ConnectionState.connected) {
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
+      hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
     }
 
     // $: if ($rovVideoStreamConnState == ConnectionState.connecting) {
-    //   ClassInstances.showLoadingUi(LOADING_MESSAGE.videoConnecting);
+    //   loading.showLoadingUi(LOADING_MESSAGE.videoConnecting);
     // } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
-    //   ClassInstances.showLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    //   loading.showLoadingUi(LOADING_MESSAGE.videoReconnecting);
     // } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
-    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
-    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    //   loading.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
+    //   loading.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
     // } else if ($rovVideoStreamConnState == ConnectionState.connected) {
-    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
-    //   ClassInstances.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
+    //   loading.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
+    //   loading.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
     // }
+  }
 
-    if ($rovMainVideoTrack && $rovMainVideoTrack.id != trackId) {
+  $: if ($rovVideoStream) {
+    // trackId = $rovMainVideoTrack.id;
+    console.log("VideoPlayer: trackId", trackId, videoElement);
+    if (videoElement) {
+      videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
       setTimeout(() => {
-        console.debug("Setting video track");
-        trackId = $rovMainVideoTrack.id;
-        if (videoElement) {
-          // @ts-ignore
-          videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
-          // @ts-ignore
-          videoElement.muted = true;
-          // @ts-ignore
-          videoElement.autoplay = true;
-          // @ts-ignore
-          videoElement.controls = false;
-          // @ts-ignore
+        videoElement.play().catch((err) => {
+          let ok = confirm("Start Livestream?");
           videoElement.play();
-        }
-      }, 0);
+        });
+      }, 150); // for some reason firefox complains if you play too soon.
     }
   }
 </script>
 
-{#if true}
-  <!-- $rovVideoStreamConnState === ConnectionState.connected} -->
+{#if $rovVideoStream}
   <div id="livestream_container" class={$fullscreenOpen ? "full" : ""}>
-    <!-- {#if $rovMainVideoTrack} -->
     <!-- svelte-ignore a11y-media-has-caption -->
-    <video id="video_livestream" tabindex="-1" poster="https://i.ytimg.com/vi/r5EJCJbZ3qQ/maxresdefault.jpg" bind:this={videoElement} />
-    <!-- {/if} -->
+    <video id="video_livestream" muted controls={false} tabindex="-1" poster={videoPlaceholderUrl} bind:this={videoElement} />
   </div>
 {/if}
 

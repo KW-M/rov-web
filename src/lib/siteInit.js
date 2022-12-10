@@ -3,7 +3,8 @@ import { isInternetAvailable } from "./util"
 import { showToastMessage } from "./ui";
 
 import { LOADING_MESSAGE, peerServerCloudOptions, peerServerLocalOptions } from "./consts";
-import { ClassInstances, debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
+import { debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
+import { showLoadingUi, hideLoadingUi } from "../components/LoadingIndicator.svelte";
 import { get } from "svelte/store";
 
 export const runSiteInitMachine = (sendParentCallback) => {
@@ -96,11 +97,11 @@ export const runSiteInitMachine = (sendParentCallback) => {
           // hideScanIpButton();
         },
         hideLoadingUi: () => {
-          ClassInstances.hideLoadingUi(LOADING_MESSAGE.ipScan);
-          ClassInstances.hideLoadingUi(LOADING_MESSAGE.internetCheck);
+          hideLoadingUi(LOADING_MESSAGE.ipScan);
+          hideLoadingUi(LOADING_MESSAGE.internetCheck);
         },
         showIpScanningUi: () => {
-          ClassInstances.showLoadingUi(LOADING_MESSAGE.ipScan);
+          showLoadingUi(LOADING_MESSAGE.ipScan);
         },
         redirectBrowserToRovIp: (_, event) => {
           window.location.href = `http://${event.data}`;
@@ -108,7 +109,7 @@ export const runSiteInitMachine = (sendParentCallback) => {
         siteReady: () => { sendParentCallback("SITE_READY") },
 
         checkInternetAvailable: () => {
-          ClassInstances.showLoadingUi(LOADING_MESSAGE.internetCheck)
+          showLoadingUi(LOADING_MESSAGE.internetCheck)
 
           const config = peerServerCloudOptions;
           isInternetAvailable((config.secure ? "https://" : "http://") + config.host + ":" + config.port).then((internetOnline) => {
@@ -149,9 +150,9 @@ export const runSiteInitMachine = (sendParentCallback) => {
           };
         },
         scanForRovIP: () => {
-          ClassInstances.showLoadingUi(LOADING_MESSAGE.ipScan)
+          showLoadingUi(LOADING_MESSAGE.ipScan)
           // setTimeout(() => {
-          // ClassInstances.hideLoadingUi()
+          // hideLoadingUi()
           //   sendEventToMachine({
           //     type: "ROV_IP_FOUND",
           //     data: "UHhh the ip address man!",
@@ -163,6 +164,6 @@ export const runSiteInitMachine = (sendParentCallback) => {
     });
 
 
-  const runningMachine = interpret(siteInitMachine, { devTools: get(debugXstateMode) }).start();
+  const runningMachine = interpret(siteInitMachine, { devTools: debugXstateMode.get() }).start();
   return runningMachine;
 }

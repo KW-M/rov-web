@@ -1,7 +1,6 @@
 <script>
   import { ConnectionState } from "../lib/consts";
-  import { onMount } from "svelte";
-  import { ClassInstances, peerServerConnState, rovDataChannelConnState } from "../lib/globalContext";
+  import { appReady, gamepadController, peerServerConnState, rovDataChannelConnState } from "../lib/globalContext";
   import GamepadLeftSvg from "../assets/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/optimized/display-gamepad-right.svg?raw";
 
@@ -9,8 +8,10 @@
   let GPAD_DISPLAY_CONTAINER;
   $: collapsedMode = $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
-  onMount(() => {
-    const gpadCtrl = ClassInstances.gpadCtrl;
+  const unSub = appReady.subscribe((ready) => {
+    if (!ready) return;
+    unSub();
+    const gpadCtrl = gamepadController.get();
     if (gpadCtrl) gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
   });
 </script>

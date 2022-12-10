@@ -3,7 +3,7 @@
   import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./lib/consts";
-  import { appReady, ClassInstances, debugXstateMode, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
+  import { appReady, connectionManager, debugXstateMode, gamepadController, messageHandler, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
 
   import { ConnectionManager } from "./lib/connectionManager";
   import { MessageHandler } from "./lib/messageHandler";
@@ -15,17 +15,18 @@
   import { getROVName } from "./lib/rovUtil";
 
   import { SvelteToast } from "@zerodevx/svelte-toast";
-  import DialogSpawner from "./components/DialogSpawner.svelte";
+  import DialogSpawner from "./components/dialogs/DialogSpawner.svelte";
   import RovSelector from "./components/RovSelector.svelte";
   import TopBar from "./components/TopBar.svelte";
   import OnscreenGamepads from "./components/OnscreenGamepads.svelte";
-  import LoadingIndicator from "./components/LoadingIndicator.svelte";
+  import LoadingIndicator, { showLoadingUi, hideLoadingUi } from "./components/LoadingIndicator.svelte";
   import VideoPlayer from "./components/VideoPlayer.svelte";
-  import SensorDisplay from "./components/SensorDisplay.svelte";
-  import HelpTooltips from "./components/HelpTooltips.svelte";
-  import AhrsViz from "./components/AHRSViz.svelte";
+  import SensorDisplay from "./components/sensors/SensorDisplay.svelte";
+  import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
+  import AhrsViz from "./components/sensors/AHRSViz.svelte";
 
-  ClassInstances.gpadCtrl = new GamepadController(100);
+  let gpadCtrl = new GamepadController(100);
+  gamepadController.set(gpadCtrl);
   const debugModeActive = getURLQueryStringVariable("debug") != undefined;
   if (debugModeActive) {
     inspect({ iframe: false });
@@ -39,44 +40,51 @@
 
   $: if ($appReady === true) {
     if ($rovDataChannelConnState == ConnectionState.connecting) {
-      ClassInstances.showLoadingUi(LOADING_MESSAGE.webrtcConnecting, "Searching for " + getROVName($rovPeerIdEndNumber));
-      ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
+      showLoadingUi(LOADING_MESSAGE.webrtcConnecting, "Searching for " + getROVName($rovPeerIdEndNumber));
+      gpadCtrl.clearExternalEventListenerCallbacks();
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.reconnecting) {
-      ClassInstances.showLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
-      ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
+      showLoadingUi(LOADING_MESSAGE.webrtcReconnecting, null);
+      gpadCtrl.clearExternalEventListenerCallbacks();
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.disconnected) {
-      ClassInstances.gpadCtrl.clearExternalEventListenerCallbacks();
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
+      gpadCtrl.clearExternalEventListenerCallbacks();
+      hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
+      hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.connected) {
       showToastMessage("Connected to ROV!", 1000);
-      // setupGamepadEvents(250);
+      gpadCtrl.setupGamepadEvents(250);
+      hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
+      hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
       RovActions.startPingLoop();
     }
 
     // as svelte reactive statement:
     if ($peerServerConnState == ConnectionState.connecting) {
-      ClassInstances.showLoadingUi(LOADING_MESSAGE.serverConnecting);
+      showLoadingUi(LOADING_MESSAGE.serverConnecting, null);
     } else if ($peerServerConnState == ConnectionState.reconnecting) {
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
+      hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
     } else if ($peerServerConnState == ConnectionState.disconnected || $peerServerConnState == ConnectionState.connected) {
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.serverConnecting);
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
+      hideLoadingUi(LOADING_MESSAGE.serverConnecting);
+      hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
     }
   }
 
   onMount(() => {
+    console.log("App mounted0");
+    // const loading = loadingIndicator.get();
     appReady.set(true);
-    ClassInstances.showLoadingUi(LOADING_MESSAGE.internetCheck);
+    showLoadingUi(LOADING_MESSAGE.internetCheck, null);
     runSiteInitMachine(() => {
-      ClassInstances.hideLoadingUi(LOADING_MESSAGE.internetCheck);
-      let msgHandler = (ClassInstances.msgHandler = MessageHandler);
-      let connMngr = (ClassInstances.connManager = new ConnectionManager(MessageHandler.handleRecivedMessage));
+      hideLoadingUi(LOADING_MESSAGE.internetCheck);
+      let msgHandler = MessageHandler;
+      messageHandler.set(msgHandler);
+      let connMngr = new ConnectionManager(MessageHandler.handleRecivedMessage);
+      connectionManager.set(connMngr);
       msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
       connMngr.start();
+      connMngr.connectToCurrentTargetRov();
     });
   });
 
@@ -84,29 +92,29 @@
     console.log("cleaning up");
     RovActions.stopPingLoop();
     RovActions.disconnectFromRov();
-    ClassInstances.connManager && ClassInstances.connManager.cleanup();
-    ClassInstances.gpadCtrl.gpadEmulator.cleanup();
+    connectionManager.get() && connectionManager.get().cleanup();
+    gpadCtrl.gpadEmulator.cleanup();
   });
 </script>
 
 <main>
+  <!-- UI Spawners -->
+  <SvelteToast options={{ reversed: true, intro: { y: 192 }, pausable: true, classes: ["toast-msg"] }} />
+  <HelpTooltips />
+  <DialogSpawner />
+  <LoadingIndicator />
+
+  <VideoPlayer />
+
   <!-- UI Layout -->
   <VideoPlayer />
   <OnscreenGamepads />
   <SensorDisplay />
 
-  <!-- UI Spawners -->
-  <DialogSpawner />
-  <LoadingIndicator />
-
-  <!-- UI Layout -->
-
   <AhrsViz />
   <TopBar />
   <RovSelector />
   <!-- UI Layout -->
-  <SvelteToast options={{ reversed: true, intro: { y: 192 }, pausable: true, classes: ["toast-msg"] }} />
-  <HelpTooltips />
 </main>
 
 <style>

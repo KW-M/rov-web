@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { DialogTitle } from "@rgossiaux/svelte-headlessui";
   import Dialog from "./Dialog.svelte";
+  import type { dialogExtraDataType } from "../../lib/globalContext";
   const dispatch = createEventDispatcher();
 
   export let isOpen = true;
-  export let extraData = {
+  export let extraData: dialogExtraDataType = {
     title: "Title",
     messageLines: [],
   };

@@ -12,7 +12,8 @@ import { showToastMessage } from "./ui";
 export class OurPeerMachine {
 
     eventHandlers = {};
-    connectionTimeout;    /** @type NodeJS.Timeout */
+    /** @type NodeJS.Timeout */
+    connectionTimeout;
     runningMachine = null;
     peer = null;
     ourPeerId = null
@@ -77,12 +78,12 @@ export class OurPeerMachine {
     }
 
     start() {
-        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: get(debugXstateMode) })
+        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugXstateMode.get() })
         this.runningMachine.onTransition((e) => { this.currentState = e.value; this.onStateChangeCallback(this.currentState) })
         this.runningMachine.start();
 
         // get our peerid
-        this.ourPeerId = get(ourPeerId);
+        this.ourPeerId = ourPeerId.get();
         if (!this.ourPeerId) {
             this.ourPeerId = getRandomName();
             localStorage.setItem('ourPeerId', this.ourPeerId); // save for future runs

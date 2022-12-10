@@ -1,0 +1,266 @@
+syntax = "proto3";
+package rov_action_api;
+
+enum RovActionTypes {
+    ping = 0;
+    password_attempt = 1;
+    authtoken_attempt = 2;
+    take_control = 3;
+    move = 4;
+    begin_video_stream = 5;
+    take_photo = 6;
+    start_video_rec = 7;
+    stop_video_rec = 8;
+    toogle_lights = 9;
+    shutdown_rov = 10;
+    reboot_rov = 11;
+    enable_wifi = 12;
+    disable_wifi = 13;
+    rov_status_report = 14;
+    restart_rov_services = 15;
+    rov_logs = 16;
+}
+
+message PingAction {
+    // The time the ping was sent
+    int64 Time = 1;
+}
+
+message PasswordAttemptAction {
+    // The password to attempt
+    string Password = 1;
+}
+
+message AuthTokenAttemptAction {
+    // The token to attempt
+    string Token = 1;
+}
+
+message TakeControlAction {
+    // No data needed
+}
+
+message MoveAction {
+    // How to move the rov (X is left/right, Y is forward/backward, Z is up/down, Yaw is rotation))
+    float VelocityX = 1;
+    float VelocityY = 2;
+    float VelocityZ = 3;
+    float AngularVelocityYaw = 4;
+}
+
+message BeginVideoStreamAction {
+    // No data needed
+}
+
+message TakePhotoAction {
+    // No data needed
+}
+
+message StartVideoRecAction {
+    // No data needed
+}
+
+message StopVideoRecAction {
+    // No data needed
+}
+
+message ToogleLightsAction {
+    // No data needed
+}
+
+message ShutdownRovAction {
+    // No data needed
+}
+
+message RebootRovAction {
+    // No data needed
+}
+
+message EnableWifiAction {
+    // No data needed
+}
+
+message DisableWifiAction {
+    // No data needed
+}
+
+message RovStatusReportAction {
+    // No data needed
+}
+
+message RestartRovServicesAction {
+    // No data needed
+}
+
+message RovLogsAction {
+    // No data needed
+}
+
+message RovAction {
+    // The type of action to perform see (RovActionTypes).
+    RovActionTypes Type = 1;
+    // Action exchange id (used to match up action requests and responses)
+    int32 RovExchangeId = 2;
+    // The body / content of the action
+    oneof Body {
+        // ping
+        PingAction Ping = 3;
+        // password_attempt
+        PasswordAttemptAction PasswordAttempt = 4;
+        // authtoken_attempt
+        AuthTokenAttemptAction AuthTokenAttempt = 5;
+        // take_control
+        TakeControlAction TakeControl = 6;
+        // move
+        MoveAction Move = 7;
+        // begin_video_stream
+        BeginVideoStreamAction BeginVideoStream = 8;
+        // take_photo
+        TakePhotoAction TakePhoto = 9;
+        // start_video_rec
+        StartVideoRecAction StartVideoRec = 10;
+        // stop_video_rec
+        StopVideoRecAction StopVideoRec = 11;
+        // toogle_lights
+        ToogleLightsAction ToogleLights = 12;
+        // shutdown_rov
+        ShutdownRovAction ShutdownRov = 13;
+        // reboot_rov
+        RebootRovAction RebootRov = 14;
+        // enable_wifi
+        EnableWifiAction EnableWifi = 15;
+        // disable_wifi
+        DisableWifiAction DisableWifi = 16;
+        // rov_status_report
+        RovStatusReportAction RovStatusReport = 17;
+        // restart_rov_services
+        RestartRovServicesAction RestartRovServices = 18;
+        // rov_logs
+        RovLogsAction RovLogs = 19;
+    }
+}
+
+
+enum RovResponseTypes {
+    done = 0;
+    error = 1;
+    pong = 2;
+    sensor_updates = 3;
+    password_required = 4;
+    password_accepted = 5;
+    password_invalid = 6;
+    token_accepted = 7;
+    token_invalid = 8; // Not implemented
+    driver_changed = 9;
+    client_connected = 10; // Not implemented
+    client_disconnected = 11; // Not implemented
+}
+
+enum RovSensorTypes {
+    depth_meters = 0;
+    water_temp_celsius = 1;
+    pressure_mbar = 2;
+    yaw_degrees = 3;
+    pitch_degrees = 4;
+    roll_degrees = 5;
+    x_acceleration_m_s2 = 6; // Not implemented
+    y_acceleration_m_s2 = 7; // Not implemented
+    z_acceleration_m_s2 = 8; // Not implemented
+    battery_voltage = 9; // Not implemented
+    battery_current = 10; // Not implemented
+}
+
+message DoneResponse {
+    // No data needed
+}
+
+message ErrorResponse {
+    // The error message
+    string Message = 1;
+}
+
+message PongResponse {
+    // The time the ping was sent
+    int64 Time = 1;
+}
+
+message SensorUpdate {
+    // The sensor name
+    string SensorType = 1;
+    // The sensor value
+    string Value = 2;
+}
+
+message SensorUpdatesResponse {
+    // The sensor updates
+    repeated SensorUpdate SensorUpdates = 1;
+}
+
+message PasswordRequiredResponse {
+    // No data needed
+}
+
+message PasswordAcceptedResponse {
+    // No data needed
+}
+
+message PasswordInvalidResponse {
+    // No data needed
+}
+
+message TokenAcceptedResponse {
+    // No data needed
+}
+
+message TokenInvalidResponse {
+    // No data needed
+}
+
+message DriverChangedResponse {
+    // The new driver's peer id
+    string DriverPeerId = 1;
+}
+
+message ClientConnectedResponse {
+    // The new client's peer id
+    string ClientPeerId = 1;
+}
+
+message ClientDisconnectedResponse {
+    // The disconnected client's peer id
+    string ClientPeerId = 1;
+}
+
+message RovResponse {
+	// The type of response message recived see (RovResponseTypes).
+    RovResponseTypes Type = 1;
+    // Response exchange id (used to match up action requests and responses)
+    int32 RovExchangeId = 2;
+    // The body / content of the response
+	oneof Body {
+        // done
+        DoneResponse Done = 3;
+        // error
+        ErrorResponse Error = 4;
+        // pong
+        PongResponse Pong = 5;
+        // sensor_updates
+        SensorUpdatesResponse SensorUpdates = 6;
+        // password_required
+        PasswordRequiredResponse PasswordRequired = 7;
+        // password_accepted
+        PasswordAcceptedResponse PasswordAccepted = 8;
+        // password_invalid
+        PasswordInvalidResponse PasswordInvalid = 9;
+        // token_accepted
+        TokenAcceptedResponse TokenAccepted = 10;
+        // token_invalid
+        TokenInvalidResponse TokenInvalid = 11;
+        // driver_changed
+        DriverChangedResponse DriverChanged = 12;
+        // client_connected
+        ClientConnectedResponse ClientConnected = 13;
+        // client_disconnected
+        ClientDisconnectedResponse ClientDisconnected = 14;
+    }
+}

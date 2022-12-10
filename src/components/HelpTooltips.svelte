@@ -1,74 +1,23 @@
-<script>
-  import { ClassInstances } from "../lib/globalContext";
+<script context="module" lang="ts">
+  import nStore from "../lib/libraries/nStore";
+  import type { nStoreT } from "../lib/libraries/nStore";
   import { createPopperActions } from "svelte-popperjs";
-  import { LOADING_MESSAGE } from "../lib/consts";
-  import { onMount } from "svelte";
-  import { placements } from "@popperjs/core";
+  import type { ContentAction } from "svelte-popperjs";
   import { fade } from "svelte/transition";
 
-  /** @typedef {{ label: string, visible: boolean, popperContent:import("svelte-popperjs").ContentAction<Partial<import("@popperjs/core").Modifier<any, any>>> }} savedTooltipData
-   * @type {savedTooltipData[]} */
-  let tooltips = [];
-
-  const forceUpdate = () => (tooltips = tooltips); /* force svelte update by assign operator */
+  type savedTooltipData = {
+    label: string;
+    visible: boolean;
+    popperContent: ContentAction<Partial<import("@popperjs/core").Modifier<any, any>>>;
+  };
+  let tooltips: nStoreT<savedTooltipData[]> = nStore([]);
 
   /** hide the loading indicator with the given message
    * @typedef {{ label: string, placement: import("@popperjs/core").Placement, timeout: number }} tooltipConfig
    * @param { HTMLElement | SVGElement } node
    * @param { tooltipConfig } config
-   * @returns {{tooltip: savedTooltipData, forceUpdateFunc: ()=>void }} */
-  const newTooltip = (node, config) => {
-    const [popperRef, popperContent] = createPopperActions({
-      placement: config.placement || "top", // placement
-      strategy: "absolute", // strategy
-      modifiers: [
-        {
-          name: "offset",
-          options: {
-            offset: [0, 10],
-          },
-        },
-      ],
-    });
-    popperRef(node);
-    const tooltip = {
-      label: config.label,
-      visible: false,
-      popperContent,
-    };
-    tooltips.push(tooltip);
-    let timeout = null;
-
-    const showTooltip = () => {
-      tooltip.visible = true;
-      forceUpdate();
-    };
-
-    return {
-      tooltip,
-      showTooltip: showTooltip,
-      showTooltipTimeout: () => {
-        timeout = setTimeout(showTooltip, config.timeout != undefined ? config.timeout : 750);
-      },
-      hideTooltip: () => {
-        clearTimeout(timeout);
-        tooltip.visible = false;
-        node.blur();
-        forceUpdate();
-      },
-      destroyTooltip: () => {
-        clearTimeout(timeout);
-        tooltips = tooltips.filter((t) => t != tooltip);
-        forceUpdate();
-      },
-    };
-  };
-
-  /** hide the loading indicator with the given message
-   * @param { HTMLElement | SVGElement } node
-   * @param { tooltipConfig } config
    * @param { boolean } addEvents  */
-  const addTooltip = (node, config, addEvents = true) => {
+  export const addTooltip = (node, config, addEvents = true) => {
     const { tooltip, showTooltip, showTooltipTimeout, hideTooltip, destroyTooltip } = newTooltip(node, config);
     if (addEvents) {
       node.addEventListener("pointerenter", showTooltipTimeout);
@@ -95,10 +44,65 @@
       },
     };
   };
-  ClassInstances.addTooltip = addTooltip;
+
+  /** hide the loading indicator with the given message
+   * @param { HTMLElement | SVGElement } node
+   * @param { tooltipConfig } config
+   * @returns {{tooltip: savedTooltipData, showTooltip: ()=>void, showTooltipTimeout:()=>void, hideTooltip:()=>void, destroyTooltip:()=>void }} */
+  const newTooltip = (node, config) => {
+    const [popperRef, popperContent] = createPopperActions({
+      placement: config.placement || "top", // placement
+      strategy: "absolute", // strategy
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 10],
+          },
+        },
+      ],
+    });
+    popperRef(node);
+    const tooltip = {
+      label: config.label,
+      visible: false,
+      popperContent,
+    };
+    tooltips.update((tooltip_list) => {
+      tooltip_list.push(tooltip);
+      return tooltip_list;
+    });
+
+    let timeout = null;
+
+    const showTooltip = () => {
+      tooltip.visible = true;
+      tooltips.update((tooltip_list) => tooltip_list);
+    };
+
+    return {
+      tooltip,
+      showTooltip: showTooltip,
+      showTooltipTimeout: () => {
+        timeout = setTimeout(showTooltip, config.timeout != undefined ? config.timeout : 750);
+      },
+      hideTooltip: () => {
+        clearTimeout(timeout);
+        tooltip.visible = false;
+        node.blur();
+        tooltips.update((tooltips) => tooltips);
+      },
+      destroyTooltip: () => {
+        clearTimeout(timeout);
+        tooltips.update((tooltip_list) => {
+          return tooltip_list.filter((t) => t != tooltip);
+        });
+      },
+    };
+  };
 </script>
 
-{#each tooltips as tooltip}
+{#each $tooltips as tooltip}
   {#if tooltip.visible}
     <div class="popper-tooltip help-tooltip" use:tooltip.popperContent transition:fade={{ duration: 300 }}>
       {tooltip.label}

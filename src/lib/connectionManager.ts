@@ -14,7 +14,7 @@ import { RovConnection } from "./rovConnection"
 export class ConnectionManager {
 
     ROVs: { [rovId: string]: RovConnection } = {};
-    currentTargetRovId: string = getROVName(get(rovPeerIdEndNumber));
+    currentTargetRovId: string = getROVName(rovPeerIdEndNumber.get());
     ourPeerMachines: OurPeerMachine[] = []
     overallPeerServerState: ConnectionState = ConnectionState.disconnected;
     reconnectFailureCount: number = 0;
@@ -32,7 +32,7 @@ export class ConnectionManager {
     }
 
     getThisPeerId() {
-        return get(ourPeerId)
+        return ourPeerId.get()
     }
 
     peerConnStateChange() {
@@ -53,28 +53,30 @@ export class ConnectionManager {
                     // this.connectToCurrentTargetRov();
                 }
                 this.reconnectFailureCount = 0;
-            } else if (stateName == ConnectionState.reconnecting && states.length <= 1) {
-                newPeer = new OurPeerMachine(this.peerConnStateChange.bind(this))
-                this.ourPeerMachines = [...this.ourPeerMachines, newPeer];
-            } else if (stateName == "Destroyed") {
-                this.reconnectFailureCount++;
-                // let oldPeer = this.ourPeer[i];
-                this.ourPeerMachines.splice(i, 1);
-                if (this.reconnectFailureCount >= 3) {
-                    this.reconnectFailureCount = 0;
-                    showToastMessage("Our Peer has Too Many Failures, try reloading the page...")
-                } else if (this.ourPeerMachines.length === 0) {
-                    this.start() // start over with one peer
-                }
             }
 
-            if (newPeer) {
-                newPeer.start()
-                for (const rovId in this.ROVs) {
-                    const switchOutThisPeer = this.ROVs[rovId].switchOutThisPeer;
-                    if (switchOutThisPeer) switchOutThisPeer(newPeer)
-                }
-            }
+            // else if (stateName == ConnectionState.reconnecting && states.length <= 1) {
+            //     newPeer = new OurPeerMachine(this.peerConnStateChange.bind(this))
+            //     this.ourPeerMachines = [...this.ourPeerMachines, newPeer];
+            // } else if (stateName == "Destroyed") {
+            //     this.reconnectFailureCount++;
+            //     // let oldPeer = this.ourPeer[i];
+            //     this.ourPeerMachines.splice(i, 1);
+            //     if (this.reconnectFailureCount >= 3) {
+            //         this.reconnectFailureCount = 0;
+            //         showToastMessage("Our Peer has Too Many Failures, try reloading the page...")
+            //     } else if (this.ourPeerMachines.length === 0) {
+            //         this.start() // start over with one peer
+            //     }
+            // }
+
+            // if (newPeer) {
+            //     newPeer.start()
+            //     for (const rovId in this.ROVs) {
+            //         const switchOutThisPeer = this.ROVs[rovId].switchOutThisPeer;
+            //         if (switchOutThisPeer) switchOutThisPeer(newPeer)
+            //     }
+            // }
         }
 
         if (connectedCount == -1) return;
@@ -121,7 +123,7 @@ export class ConnectionManager {
     }
 
     connectToCurrentTargetRov() {
-        this.currentTargetRovId = getROVName(get(rovPeerIdEndNumber));
+        this.currentTargetRovId = getROVName(rovPeerIdEndNumber.get());
         this.connectToRov(this.currentTargetRovId);
     }
 

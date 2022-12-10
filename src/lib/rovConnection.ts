@@ -1,5 +1,3 @@
-
-import { get } from "svelte/store"
 import { ConnectionState, ConnectionTransitions, RovApiAction } from "./consts"
 import { DataConnectionMachine } from "./dataConnectionMachine"
 import { ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber, rovVideoStreamConnState } from "./globalContext"
@@ -37,12 +35,6 @@ export class RovConnection {
     }
 
     start() {
-        if (this.dataConnections.length == 0) {
-            let dc = new DataConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.dcStateChange.bind(this), this.onMesssageRecivedCallback)
-            this.dataConnections = [dc];
-            dc.start();
-        }
-
         if (this.mediaConnections.length == 0) {
             // setup media connection machine/s
             let mc = new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this))
@@ -50,6 +42,14 @@ export class RovConnection {
             mc.start();
             // this.sendMessage({ action: RovApiAction.begin_video_stream })
         }
+
+        if (this.dataConnections.length == 0) {
+            let dc = new DataConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.dcStateChange.bind(this), this.onMesssageRecivedCallback)
+            this.dataConnections = [dc];
+            dc.start();
+        }
+
+
     }
 
     sendMsgDirectlyToRov(msgObj) {
@@ -110,7 +110,9 @@ export class RovConnection {
                     this[connListName].splice(i, 1)
                 }
                 this.reconnectFailureCount = 0;
-            } else if (stateName == ConnectionState.reconnecting && states.length <= 1) {
+            }
+
+            else if (stateName == ConnectionState.reconnecting && states.length <= 1) {
                 let conn = newConnectionFunc();
                 this[connListName].push(conn);
                 startConnectionFunc(conn);
@@ -174,7 +176,7 @@ export class RovConnection {
             () => { return new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this)) },
             (mc) => {
                 mc.start();
-                this.sendMessage({ action: RovApiAction.begin_video_stream })
+                // this.sendMessage({ action: RovApiAction.begin_video_stream })
             }
         )
 
@@ -201,16 +203,18 @@ export class RovConnection {
     switchOutThisPeer(thisPeer) {
         this.ourPeerMachine = thisPeer
 
+        // setup media connection machine/s
+        let mc = new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this))
+        this.mediaConnections = [...this.mediaConnections, mc] /// --- change
+        mc.start()
+        // this.sendMessage({ action: RovApiAction.begin_video_stream })
+
         // setup data connection machine/s
         let dc = new DataConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.dcStateChange.bind(this), this.onMesssageRecivedCallback)
         this.dataConnections = [...this.dataConnections, dc];
         dc.start()
 
-        // setup media connection machine/s
-        let mc = new MediaConnectionMachine(this.ourPeerMachine.peer, this.rovPeerId, this.mcStateChange.bind(this))
-        this.mediaConnections = [...this.mediaConnections, mc] /// --- change
-        mc.start()
-        this.sendMessage({ action: RovApiAction.begin_video_stream })
+
     }
 
     cleanup() {

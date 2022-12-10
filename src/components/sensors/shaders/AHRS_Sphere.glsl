@@ -65,7 +65,7 @@ void main() {
         float longLine = (1.0 - pow(smoothstep(0.0, 0.4, abs(fract(atan(dir.x, dir.z) / (15.0 * deg)) - 0.5) * 2.0), 10.0));
 
 
-        c += (latLine + longLine * 0.3) * vec3(dir.y / 2.0,  dir.y / 2.0 + 0.5, dir.y / 2.0 + 1.0) *(dir.y / 2.0 + 0.7);
+        c += (max(latLine,longLine) * 0.8) * vec3(dir.y / 2.0,  dir.y / 2.0 + 0.5, dir.y / 2.0 + 1.0) *(dir.y / 2.0 + 0.7);
                 // c += latLine * vec3(1.0 - abs(dir.y),  dir.y - 0.5, -dir.y + 0.5) *(dir.y / 2.0 + 0.5);
                 // c += longLine *  vec3(dir.y / 2.0 + 0.5,  dir.y / 2.0 + 0.5, dir.y / 2.0 + 0.5) / 2.0;
 

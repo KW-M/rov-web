@@ -1,15 +1,15 @@
 import { toast } from '@zerodevx/svelte-toast';
-import { ROV_PEERID_BASE, LOADING_MESSAGE } from './consts';
-import { ClassInstances, DIALOG_TYPE, rovPeerIdEndNumber } from './globalContext';
+import { ROV_PEERID_BASE } from './consts';
+import { DIALOG_TYPE, rovPeerIdEndNumber } from './globalContext';
+import { hideLoadingUi, showLoadingUi } from '../components/LoadingIndicator.svelte';
 import { getROVName } from './rovUtil';
-import { get } from 'svelte/store';
+import { openDialog } from '../components/dialogs/DialogSpawner.svelte';
 
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------
 // -------------------------------------------------------------
 
 // -----  Toast Notifications -----
-
 let toastDeduplicationCache = {}
 export function showToastMessage(message, durration, callback) {
     let existingToast = toastDeduplicationCache[message];
@@ -30,10 +30,9 @@ export function showToastMessage(message, durration, callback) {
 }
 
 // -----  Dialogs -----
-
 export function showConfirmationMsg(msg, callback) {
-    ClassInstances.openDialog(DIALOG_TYPE.Alert, { title: msg }, (ok) => {
-        if (callback && (ok as Boolean) == true) callback(ok);
+    openDialog(DIALOG_TYPE.Alert, { title: msg }, (ok) => {
+        if (callback && (ok as boolean)) callback(ok);
     })
 }
 
@@ -42,13 +41,13 @@ export function showPasswordPrompt(message, callback) {
     if (passwordPromptOpen) return;
     passwordPromptOpen = true;
 
-    ClassInstances.openDialog(DIALOG_TYPE.Password, {}, (password) => {
+    openDialog(DIALOG_TYPE.Password, {}, (password) => {
         if (password != null && callback) callback(password);
     })
 }
 
 export function showScrollableTextPopup(title, callback) {
-    let modifyExtraData = ClassInstances.openDialog(DIALOG_TYPE.ScrollingText, { title: title, messageLines: [] }, (_) => {
+    let modifyExtraData = openDialog(DIALOG_TYPE.ScrollingText, { title: title, messageLines: [] }, (_) => {
         if (callback) callback(null)
     })
 
@@ -71,7 +70,7 @@ const rovConnectionBar = document.getElementById('rov_connection_bar');
 export function showROVDisconnectedUi() {
     // connectBtnOptions.style.display = 'flex';
     document.body.classList.remove("rov-connected");
-    ClassInstances.hideLoadingUi("all");
+    hideLoadingUi("all");
     // hideLivestreamUi();
 }
 
@@ -86,18 +85,18 @@ export function showROVConnectedUi() {
     // disconnectBtn.style.display = 'block';
     updateRoleDisplay(false)
     document.body.classList.add("rov-connected");
-    ClassInstances.hideLoadingUi("webrtc-connecting")
-    ClassInstances.hideLoadingUi("webrtc-reconnecting")
+    hideLoadingUi("webrtc-connecting")
+    hideLoadingUi("webrtc-reconnecting")
 }
 
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
     // disconnectBtn.style.display = 'none';
-    ClassInstances.showLoadingUi("reloading-site", null);
+    showLoadingUi("reloading-site", null);
 }
 
 export function setCurrentRovName() {
-    let index = get(rovPeerIdEndNumber);
+    let index = rovPeerIdEndNumber.get();
     let name = getROVName(index);
     let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
     connectBtn.innerText = "Connect to " + uiName;

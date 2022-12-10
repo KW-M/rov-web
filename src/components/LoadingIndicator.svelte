@@ -1,23 +1,24 @@
-<script>
-  import { ClassInstances } from "../lib/globalContext";
+<script context="module" lang="ts">
   import { LOADING_MESSAGE } from "../lib/consts";
+  import nStore from "../lib/libraries/nStore";
+  import type { nStoreT } from "../lib/libraries/nStore";
 
+  let currentMsg: nStoreT<string> = nStore(null);
   let loadingStack = {};
-  let currentMsg = {};
 
   /** show the loading indicator with the given message
    * @param msgId {LOADING_MESSAGE}
-   * @param customLoadingMessage  {string} */
-  const showLoadingUi = (msgId, customLoadingMessage) => {
+   * @param customLoadingMessage  {string?} */
+  export const showLoadingUi = (msgId, customLoadingMessage) => {
     const message = customLoadingMessage || msgId || LOADING_MESSAGE.default;
-    currentMsg = message;
+    currentMsg.set(message);
     console.debug("showLoadingUi", message);
     loadingStack[msgId] = message;
   };
 
   /** hide the loading indicator with the given message
    * @param msgId {LOADING_MESSAGE} */
-  const hideLoadingUi = (msgId) => {
+  export const hideLoadingUi = (msgId) => {
     if (msgId === LOADING_MESSAGE.clearAll) {
       loadingStack = {};
     } else {
@@ -27,21 +28,18 @@
     // Update the ui with the top loading message
     const loadingStackMsgIds = Object.keys(loadingStack);
     if (loadingStackMsgIds.length === 0) {
-      currentMsg = null;
+      currentMsg.set(null);
     } else {
-      currentMsg = loadingStack[loadingStackMsgIds[loadingStackMsgIds.length - 1]];
+      currentMsg.set(loadingStack[loadingStackMsgIds[loadingStackMsgIds.length - 1]]);
       console.debug("hideLoadingUi Nonempty stack", msgId, currentMsg);
     }
   };
-
-  ClassInstances.showLoadingUi = showLoadingUi;
-  ClassInstances.hideLoadingUi = hideLoadingUi;
 </script>
 
-{#if currentMsg != null}
+{#if $currentMsg != null}
   <div id="site_loading_indicator" class="lds-circle">
     <div />
-    <span id="site_loading_text">{currentMsg}</span>
+    <span id="site_loading_text">{$currentMsg}</span>
   </div>
 {/if}
 

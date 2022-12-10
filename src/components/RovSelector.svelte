@@ -4,10 +4,11 @@
   import { ChevronRight } from "@steeze-ui/heroicons";
   import { ChevronLeft } from "@steeze-ui/heroicons";
   import { fade } from "svelte/transition";
-  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState, ClassInstances } from "../lib/globalContext";
+  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState, isRovDriver } from "../lib/globalContext";
   import { RovActions } from "../lib/rovActions";
   import { getROVName } from "../lib/rovUtil";
   import { ConnectionState } from "../lib/consts";
+  import { addTooltip } from "./HelpTooltips.svelte";
 
   $: collapsedMode = $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
   export let selectedRov = "";
@@ -41,7 +42,7 @@
     {#if !collapsedMode}
       <h2 class="text-center p-2 pt-0 font-bold ">{rovDisplayName}</h2>
     {/if}
-    <button class="btn btn-sm btn-ghost btn-secondary" on:click={prevRov} aria-label="Switch to Previous ROV" use:ClassInstances.addTooltip={{ label: "Switch to Previous ROV", placement: "bottom" }}>
+    <button class="btn btn-sm btn-ghost btn-secondary" on:click={prevRov} aria-label="Switch to Previous ROV" use:addTooltip={{ label: "Switch to Previous ROV", placement: "bottom" }}>
       <!-- ❮ -->
       <Icon theme="solid" src={ChevronLeft} class="w-6 h-6 pointer-events-none" />
     </button>
@@ -76,10 +77,20 @@
         <!-- pl-2 border-l-2 border-solid border-white  -->
       </button>
     {/if}
-    <button class="btn btn-sm btn-ghost  btn-secondary" on:click={nextRov} aria-label="Switch to Next ROV" use:ClassInstances.addTooltip={{ label: "Switch to Next ROV", placement: "bottom" }}>
+    <button class="btn btn-sm btn-ghost  btn-secondary" on:click={nextRov} aria-label="Switch to Next ROV" use:addTooltip={{ label: "Switch to Next ROV", placement: "bottom" }}>
       <!-- ❯ -->
       <Icon theme="solid" src={ChevronRight} class="w-6 h-6 pointer-events-none" />
     </button>
+    {#if !$isRovDriver}
+      <button
+        class={`btn btn-sm btn-warning align-top`}
+        on:click={() => {
+          RovActions.takeControl();
+        }}
+      >
+        <span>Drive ROV</span>
+      </button>
+    {/if}
   </div>
 </div>
 
