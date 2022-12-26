@@ -102,7 +102,6 @@ export class GamepadController {
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
         if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
-        console.warn("handleButtonChange", this.onButtonChange, buttonsChangedMask);
         if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
             this.gpadUi.toggleGamepadHelpScreen();
         }
@@ -169,7 +168,6 @@ export class GamepadController {
         /* ----- SETUP BUTTON DISPLAY ----- */
         /** @type { (import("virtual-gamepad-lib").GamepadDisplayButton | import("virtual-gamepad-lib").GamepadDisplayVariableButton)[] }*/
         const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
-            console.log(name);
             if (name.includes("trigger")) {
                 // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
                 return {

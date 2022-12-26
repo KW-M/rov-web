@@ -1,6 +1,34 @@
 import { EMOJI_MAP } from "./consts";
 import { fullscreenOpen } from "./globalContext";
 
+declare global {
+    interface Element {
+        ALLOW_KEYBOARD_INPUT: Number;
+    }
+
+    interface HTMLElement {
+        webkitRequestFullscreen?(): Promise<void>;
+        webkitRequestFullScreen?(): Promise<void>;
+        mozRequestFullScreen?(): Promise<void>;
+        msRequestFullscreen?(): Promise<void>;
+        webkitEnterFullscreen?(): Promise<void>;
+    }
+
+    interface Document {
+        requestFullscreen(): Promise<void>;
+        webkitRequestFullscreen?(): Promise<void>;
+        mozRequestFullScreen?(): Promise<void>;
+        msRequestFullscreen?(): Promise<void>;
+        webkitExitFullscreen?(): Promise<void>;
+        mozCancelFullScreen?(): Promise<void>;
+        msExitFullscreen?(): Promise<void>;
+        msFullscreenElement?: Element;
+        mozFullScreenElement?: Element;
+        webkitFullscreenElement?: Element;
+        fullscreenElement?: Element;
+    }
+}
+
 /**
  * @param {(KeyboardEvent)=>void} callback
  * @returns {(KeyboardEvent)=>void} return a function that should be passed as a keyboard event listener, and will call the callback if the key is enter or space.
@@ -186,13 +214,13 @@ export function throttle(func, wait, options) {
 
 
 export class Queue {
-    //https://www.geeksforgeeks.org/implementation-queue-javascript/
+    // Source: https://www.geeksforgeeks.org/implementation-queue-javascript/
 
+    items = [];
     constructor() {
         // Array is used to implement a Queue
         this.items = [];
     }
-
 
     push(element) {
         // adding element to the queue
@@ -274,76 +302,16 @@ window.closeFullscreen = () => {
     }
 }
 
-/* When the toggleFullscreen() export function is executed, open the passed element in fullscreen.
-Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
-// @ts-ignore
-window.toggleFullscreen = (e, elem) => {
+/* Open the passed element in fullscreen. Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+export function toggleFullscreen(e: Event, elem: HTMLElement) {
     elem = elem || document.documentElement;
-    if (e && e.initialTarget) e.initialTarget.classList.toggle('fullscreen-open');
-    // @ts-ignore
-    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-
-    const addFullscreenUi = () => {
-        elem.classList.add('fullscreen-open');
-    };
-
-    const removeFullscreenUi = () => {
-        fullscreenElement.classList.remove('fullscreen-open');
-        if (elem !== fullscreenElement) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().then(addFullscreenUi);
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen().then(addFullscreenUi);
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen().then(addFullscreenUi);
-            } else if (elem.webkitRequestFullscreen) {
-                // @ts-ignore
-                elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT).then(addFullscreenUi);
-            }
-        }
-    };
-
-    if (fullscreenElement) {
-        if (document.exitFullscreen) {
-            document.exitFullscreen().then(removeFullscreenUi);
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen().then(removeFullscreenUi);
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen().then(removeFullscreenUi);
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen().then(removeFullscreenUi);
-        }
-    } else {
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen().then(addFullscreenUi);
-        } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen().then(addFullscreenUi);
-        } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen().then(addFullscreenUi);
-        } else if (elem.webkitRequestFullscreen) {
-            // @ts-ignore
-            elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT).then(addFullscreenUi);
-        }
-    }
-}
-
-// @ts-ignore
-export function toggleFullscreen(event, elem) {
-    elem = elem || document.documentElement;
-    console.log("toggleFullscreen", elem);
-    // @ts-ignore
     var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-    console.log(fullscreenElement, elem);
-
     if (!fullscreenElement || elem !== fullscreenElement) {
-        const requestFullscreenFunc = ((e) => elem.requestFullscreen(e)) || ((e) => elem.webkitRequestFullscreen(e)) || ((e) => elem.mozRequestFullScreen(e)) || ((e) => elem.msRequestFullscreen(e))
-        console.log("requestFullscreenFunc", requestFullscreenFunc);
-        // @ts-ignore
-        requestFullscreenFunc(Element.ALLOW_KEYBOARD_INPUT)
+        const requestFullscreenFunc = elem.requestFullscreen || elem.webkitEnterFullscreen || elem.webkitRequestFullscreen || elem.webkitRequestFullScreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+        requestFullscreenFunc.apply(elem);
     } else {
-        // @ts-ignore
-        const exitFullscreenFunc = ((e) => document.exitFullscreen(e)) || ((e) => document.webkitExitFullscreen(e)) || ((e) => document.mozCancelFullScreen(e)) || ((e) => document.msExitFullscreen(e))
-        exitFullscreenFunc()
+        const exitFullscreenFunc = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen
+        exitFullscreenFunc.apply(document);
     }
 }
 

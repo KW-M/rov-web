@@ -2,9 +2,12 @@
   import { ConnectionState, LOADING_MESSAGE } from "../lib/consts";
   import videoPlaceholderUrl from "../assets/video-placeholder.jpg";
   import { appReady, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
-  let videoElement = null;
+  let videoContainerElement = null;
   let trackId = null;
   import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
+  import { onDestroy } from "svelte";
+  import { showToastMessage } from "../lib/ui";
+  let currentVideoStream = null;
 
   $: if ($appReady === true) {
     if ($rovVideoStreamConnState == ConnectionState.connecting) {
@@ -30,28 +33,57 @@
     // }
   }
 
-  $: if ($rovVideoStream) {
-    // trackId = $rovMainVideoTrack.id;
-    console.log("VideoPlayer: trackId", trackId, videoElement);
-    if (videoElement) {
-      videoElement.srcObject = $rovVideoStream; // video.src = URL.createObjectURL(rovVideoStream);
-      setTimeout(() => {
-        videoElement.play().catch((err) => {
-          let ok = confirm("Start Livestream?");
-          videoElement.play();
+  const setVideo = (stream) => {
+    if (!stream || stream == currentVideoStream) return;
+    currentVideoStream = stream;
+    // const vidContainerElem = document.getElementById("livestream_container") as HTMLDivElement;
+    const vidElem = document.createElement("video");
+    vidElem.id = "video_livestream";
+    vidElem.muted = true;
+    vidElem.autoplay = true;
+    vidElem.controls = false;
+    vidElem.srcObject = stream;
+    // vidElem.setAttribute("poster", videoPlaceholderUrl);
+    vidElem.setAttribute("tabindex", "-1");
+    videoContainerElement.innerHTML = "";
+    videoContainerElement.appendChild(vidElem);
+    vidElem.onclick = () => {
+      vidElem.play();
+    };
+    setTimeout(() => {
+      vidElem.play().catch((err) => {
+        showToastMessage("Click video to play.", 5000, () => {
+          vidElem.play();
         });
-      }, 150); // for some reason firefox complains if you play too soon.
+      });
+    }, 150); // for some reason firefox complains if you play too soon.
+  };
+
+  const unsub = rovVideoStream.subscribe((stream: MediaStream) => {
+    if (!stream || stream == currentVideoStream) return;
+    stream.onaddtrack = function (event) {
+      console.log("Got remote track from relay", event.track);
+      setVideo(new MediaStream([event.track]));
+    };
+    setVideo(stream);
+  });
+
+  onDestroy(() => {
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.srcObject = null;
     }
-  }
+    unsub();
+  });
 </script>
 
-{#if $rovVideoStream}
-  <div id="livestream_container" class={$fullscreenOpen ? "full" : ""}>
-    <!-- svelte-ignore a11y-media-has-caption -->
-    <video id="video_livestream" muted controls={false} tabindex="-1" poster={videoPlaceholderUrl} bind:this={videoElement} />
-  </div>
-{/if}
+<!-- {#if currentVideoStream} -->
+<div id="livestream_container" class={$fullscreenOpen ? "full" : ""} bind:this={videoContainerElement}>
+  <!-- svelte-ignore a11y-media-has-caption -->
+  <!-- <video id="video_livestream" muted tabindex="-1" poster={videoPlaceholderUrl} bind:this={videoElement} /> -->
+</div>
 
+<!-- {/if} -->
 <style>
   #livestream_container {
     /* position: relative; */
@@ -67,7 +99,7 @@
     /* padding-bottom: calc(var(--aspect-ratio, 0.5625) * 100%); 16:9 */
   }
 
-  #video_livestream {
+  :global(#video_livestream) {
     display: block;
     position: absolute;
     box-sizing: border-box;
@@ -94,7 +126,7 @@
     padding-left: 4px;
   }
 
-  #livestream_container.full #video_livestream {
+  :global(#livestream_container.full #video_livestream) {
     width: 100%;
     height: 100%;
   }

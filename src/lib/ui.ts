@@ -11,12 +11,12 @@ import { openDialog } from '../components/dialogs/DialogSpawner.svelte';
 
 // -----  Toast Notifications -----
 let toastDeduplicationCache = {}
-export function showToastMessage(message, durration, callback) {
+export function showToastMessage(message: string, durration: number = 2000, callback: () => void = null) {
     let existingToast = toastDeduplicationCache[message];
     if (existingToast) return;
     let toastId = toast.push({
         msg: message,
-        duration: durration || 5000,
+        duration: durration,
     });
     toastDeduplicationCache[message] = toastId;
     toast.subscribe((toastArray) => {

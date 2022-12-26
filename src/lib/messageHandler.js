@@ -1,4 +1,4 @@
-import { showPasswordPrompt, showScrollableTextPopup, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
+import { showPasswordPrompt, showToastMessage, updateDisplayedSensorValues, updatePingDisplay, updateRoleDisplay } from "./ui";
 import { v4 as uuidV4 } from "uuid"
 import { connectionManager, isRovDriver } from "./globalContext";
 
@@ -87,6 +87,7 @@ export class MessageHandler {
     }
 
     static handleDriverChange(newDriverId) {
+
         let thisPeerId = connectionManager.get().getThisPeerId();
         if (newDriverId == thisPeerId) {
             showToastMessage("You are now the driver");
@@ -100,8 +101,10 @@ export class MessageHandler {
     }
 
     static handleBroadcastMsgRecived(msg_data) {
+
         const msg_status = msg_data["status"];
         const msg_value = msg_data["val"];
+        console.debug(msg_status + " msg rcvd: " + msg_value, msg_data);
 
         if (msg_status == "error") {
             console.error("Rov Error: " + msg_value);

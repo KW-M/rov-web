@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RovActions } from "../lib/rovActions";
+  import { RovActions } from "../lib/rovActions_old";
 
   import { Icon } from "@steeze-ui/svelte-icon";
   import { AdjustmentsHorizontal, Wrench, Power, ArrowDownOnSquareStack, ArrowsPointingOut, ArrowsPointingIn, Cog6Tooth, QuestionMarkCircle } from "@steeze-ui/heroicons";
@@ -64,7 +64,7 @@
     </div>
   {/if}
 </div>
-<button class="btn btn-square bg-base-100 pointer-events-auto absolute -right-1 -top-1 rounded-none rounded-bl-2xl" on:click={(e) => toggleFullscreen(e.target, null)} use:addTooltip={{ label: "Toggle Fullscreen", placement: "right" }}>
+<button class="btn btn-square bg-base-100 pointer-events-auto absolute -right-1 -top-1 rounded-none rounded-bl-2xl" on:click={(e) => toggleFullscreen(e, null)} use:addTooltip={{ label: "Toggle Fullscreen", placement: "right" }}>
   <Icon theme="solid" src={$fullscreenOpen ? ArrowsPointingIn : ArrowsPointingOut} class="w-6 h-6 pointer-events-none" />
 </button>
 

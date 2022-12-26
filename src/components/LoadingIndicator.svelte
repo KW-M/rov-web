@@ -31,7 +31,7 @@
       currentMsg.set(null);
     } else {
       currentMsg.set(loadingStack[loadingStackMsgIds[loadingStackMsgIds.length - 1]]);
-      console.debug("hideLoadingUi Nonempty stack", msgId, currentMsg);
+      console.debug("hideLoadingUi Nonempty stack", msgId);
     }
   };
 </script>

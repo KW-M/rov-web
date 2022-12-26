@@ -8,7 +8,7 @@
   import { ConnectionManager } from "./lib/connectionManager";
   import { MessageHandler } from "./lib/messageHandler";
   import { GamepadController } from "./lib/gamepad";
-  import { RovActions } from "./lib/rovActions";
+  import { RovActions } from "./lib/rovActions_old";
   import { runSiteInitMachine } from "./lib/siteInit";
   import { showToastMessage } from "./lib/ui";
   import { getURLQueryStringVariable } from "./lib/util";
@@ -84,7 +84,7 @@
       connectionManager.set(connMngr);
       msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
       connMngr.start();
-      connMngr.connectToCurrentTargetRov();
+      // connMngr.connectToCurrentTargetRov(); /// DON"T DO THIS HERE
     });
   });
 

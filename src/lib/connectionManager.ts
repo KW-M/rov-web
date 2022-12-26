@@ -50,7 +50,7 @@ export class ConnectionManager {
                     this.ourPeerMachines[i].cleanup();
                     this.ourPeerMachines.splice(i, 1)
                 } else {
-                    // this.connectToCurrentTargetRov();
+                    this.connectToCurrentTargetRov();
                 }
                 this.reconnectFailureCount = 0;
             }
@@ -109,6 +109,7 @@ export class ConnectionManager {
     }
 
     messageRecived(msg, rovId) {
+        console.debug("msg recived:" + msg, rovId, this.currentTargetRovId)
         if (rovId === this.currentTargetRovId) {
             this.onMessageRecivedCallback(msg)
         }
@@ -136,7 +137,7 @@ export class ConnectionManager {
             console.warn("Tried to disconnect from a rov that is not connected: ", rovPeerId)
             return;
         }
-        this.ROVs[rovPeerId].cleanup();
+        this.ROVs[rovPeerId].close();
         delete this.ROVs[rovPeerId];
     }
 

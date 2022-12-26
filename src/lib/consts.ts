@@ -27,12 +27,16 @@ export enum ConnectionState {
     disconnected = "Disconnected",
 }
 
+
 export enum ConnectionTransitions {
     ON_CONNECTED = "ON_CONNECTED",
     ON_DISCONNECTED = "ON_DISCONNECTED",
     ON_DESTROY = "ON_DESTROY",
 }
 
+export type EventHandlerStore = {
+    [key: string]: (e?: any) => void;
+}
 
 /** ----- rov api ----------- */
 

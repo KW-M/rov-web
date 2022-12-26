@@ -1,25 +1,25 @@
 syntax = "proto3";
 package rov_action_api;
 
-enum RovActionTypes {
-    ping = 0;
-    password_attempt = 1;
-    authtoken_attempt = 2;
-    take_control = 3;
-    move = 4;
-    begin_video_stream = 5;
-    take_photo = 6;
-    start_video_rec = 7;
-    stop_video_rec = 8;
-    toogle_lights = 9;
-    shutdown_rov = 10;
-    reboot_rov = 11;
-    enable_wifi = 12;
-    disable_wifi = 13;
-    rov_status_report = 14;
-    restart_rov_services = 15;
-    rov_logs = 16;
-}
+// enum RovActionTypes {
+//     ping = 0;
+//     password_attempt = 1;
+//     authtoken_attempt = 2;
+//     take_control = 3;
+//     move = 4;
+//     begin_video_stream = 5;
+//     take_photo = 6;
+//     start_video_rec = 7;
+//     stop_video_rec = 8;
+//     toogle_lights = 9;
+//     shutdown_rov = 10;
+//     reboot_rov = 11;
+//     enable_wifi = 12;
+//     disable_wifi = 13;
+//     rov_status_report = 14;
+//     restart_rov_services = 15;
+//     rov_logs = 16;
+// }
 
 message PingAction {
     // The time the ping was sent
@@ -98,7 +98,8 @@ message RovLogsAction {
 
 message RovAction {
     // The type of action to perform see (RovActionTypes).
-    RovActionTypes Type = 1;
+    // RovActionTypes Type = 1;
+
     // Action exchange id (used to match up action requests and responses)
     int32 RovExchangeId = 2;
     // The body / content of the action
@@ -141,20 +142,21 @@ message RovAction {
 }
 
 
-enum RovResponseTypes {
-    done = 0;
-    error = 1;
-    pong = 2;
-    sensor_updates = 3;
-    password_required = 4;
-    password_accepted = 5;
-    password_invalid = 6;
-    token_accepted = 7;
-    token_invalid = 8; // Not implemented
-    driver_changed = 9;
-    client_connected = 10; // Not implemented
-    client_disconnected = 11; // Not implemented
-}
+// enum RovResponseTypes {
+
+//     done = 0;
+//     error = 1;
+//     pong = 2;
+//     sensor_updates = 3;
+//     password_required = 4;
+//     password_accepted = 5;
+//     password_invalid = 6;
+//     token_accepted = 7;
+//     token_invalid = 8; // Not implemented
+//     driver_changed = 9;
+//     client_connected = 10; // Not implemented
+//     client_disconnected = 11; // Not implemented
+// }
 
 enum RovSensorTypes {
     depth_meters = 0;
@@ -170,12 +172,17 @@ enum RovSensorTypes {
     battery_current = 10; // Not implemented
 }
 
+
 message DoneResponse {
     // No data needed
 }
 
 message ErrorResponse {
     // The error message
+    string Message = 1;
+}
+
+message ContinuedOutputResponse {
     string Message = 1;
 }
 
@@ -197,11 +204,13 @@ message SensorUpdatesResponse {
 }
 
 message PasswordRequiredResponse {
-    // No data needed
+    // the id of the rov that is requesting a password (to be used to match tokens to rov's when using token based auth)
+    string RovId = 1;
 }
 
 message PasswordAcceptedResponse {
-    // No data needed
+    // Authtoken to use for future requests in place of the password
+    string AuthToken = 1;
 }
 
 message PasswordInvalidResponse {
@@ -232,35 +241,38 @@ message ClientDisconnectedResponse {
 }
 
 message RovResponse {
-	// The type of response message recived see (RovResponseTypes).
-    RovResponseTypes Type = 1;
+	// // The type of response message recived see (RovResponseTypes).
+    // RovResponseTypes Type = 1;
+
     // Response exchange id (used to match up action requests and responses)
     int32 RovExchangeId = 2;
     // The body / content of the response
 	oneof Body {
-        // done
+        // done (action was completed successfully)
         DoneResponse Done = 3;
-        // error
+        // error (action failed)
         ErrorResponse Error = 4;
-        // pong
+        // pong (response to a ping action)
         PongResponse Pong = 5;
-        // sensor_updates
-        SensorUpdatesResponse SensorUpdates = 6;
-        // password_required
-        PasswordRequiredResponse PasswordRequired = 7;
-        // password_accepted
-        PasswordAcceptedResponse PasswordAccepted = 8;
-        // password_invalid
-        PasswordInvalidResponse PasswordInvalid = 9;
-        // token_accepted
-        TokenAcceptedResponse TokenAccepted = 10;
+        // continued_output (for message responses that arrive in multiple parts such as logs or shell command output)
+        ContinuedOutputResponse ContinuedOutput = 6;
+        // sensor_updates (gives a list of sensor updates containing only new/changed sensors and their current values)
+        SensorUpdatesResponse SensorUpdates = 7;
+        // password_required (sent when a password is required to perform an action)
+        PasswordRequiredResponse PasswordRequired = 8;
+        // password_accepted (sent when a password request action is accepted)
+        PasswordAcceptedResponse PasswordAccepted = 9;
+        // password_invalid (sent when a password request action has the incorrect password)
+        PasswordInvalidResponse PasswordInvalid = 10;
+        // token_accepted (sent when a token request action is accepted (replaces password for future requests))
+        TokenAcceptedResponse TokenAccepted = 11;
         // token_invalid
-        TokenInvalidResponse TokenInvalid = 11;
+        TokenInvalidResponse TokenInvalid = 12;
         // driver_changed
-        DriverChangedResponse DriverChanged = 12;
+        DriverChangedResponse DriverChanged = 13;
         // client_connected
-        ClientConnectedResponse ClientConnected = 13;
+        ClientConnectedResponse ClientConnected = 14;
         // client_disconnected
-        ClientDisconnectedResponse ClientDisconnected = 14;
+        ClientDisconnectedResponse ClientDisconnected = 15;
     }
 }
