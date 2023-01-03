@@ -1,9 +1,5 @@
-<script context="module" lang="ts">
-  let angle = 0;
-
-  export const SetCompassAngle = (angle) => {
-    angle = angle;
-  };
+<script lang="ts">
+  import { rovHeading } from "../../lib/sensors";
 </script>
 
 <!-- <script>
@@ -16,7 +12,7 @@
 
 <div class="compass bg-base-100">
   <div class="line" />
-  <div class="bg" id="compassDiscImg" style:transform={`translateX(${angle}px)`} />
+  <div class="bg" id="compassDiscImg" style:transform={`translateX(${$rovHeading}px)`} />
 </div>
 
 <style>

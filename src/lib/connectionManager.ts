@@ -6,21 +6,22 @@ import { OurPeerMachine } from "./ourPeerMachine"
 import { getROVName } from "./rovUtil"
 import { showToastMessage } from "./ui"
 import { RovConnection } from "./rovConnection"
+import { rovMessageHandler } from "./rovMessageHandler"
+import { RovActions } from "./rovActions"
 
 
 
 
 
-export class ConnectionManager {
-
+export class ConnectionManagerClass {
     ROVs: { [rovId: string]: RovConnection } = {};
     currentTargetRovId: string = getROVName(rovPeerIdEndNumber.get());
     ourPeerMachines: OurPeerMachine[] = []
     overallPeerServerState: ConnectionState = ConnectionState.disconnected;
     reconnectFailureCount: number = 0;
-    onMessageRecivedCallback = (msg: string) => { console.debug("msg recived:" + msg) }
+    onMessageRecivedCallback = (msg: Uint8Array) => { console.debug("msg recived:" + msg) }
 
-    constructor(onMessageRecivedCallback: (msg: string) => void) {
+    constructor(onMessageRecivedCallback: (msg: Uint8Array) => void) {
         this.onMessageRecivedCallback = onMessageRecivedCallback;
     }
 
@@ -37,7 +38,7 @@ export class ConnectionManager {
 
     peerConnStateChange() {
         let states = this.ourPeerMachines.map((peerMachine) => { return peerMachine.currentState })
-        console.log("PeerStatesChange: ", states)
+        console.debug("PeerStatesChange: ", states)
 
         let connectedCount = 0;
         for (let i = 0; i < states.length; i++) {
@@ -100,24 +101,27 @@ export class ConnectionManager {
     }
 
     rovConnStateChange(overallDCState, overallMCState, rovId) {
-        console.info(rovId + " Conn State: dc:" + overallDCState + " mc:" + overallMCState)
+        // console.info(rovId + " Conn State: dc:" + overallDCState + " mc:" + overallMCState)
         if (rovId == this.currentTargetRovId) {
-            console.info("Current Rov " + rovId + " state changed")
             rovDataChannelConnState.set(overallDCState);
             rovVideoStreamConnState.set(overallMCState);
+            if (overallDCState == ConnectionState.connected) {
+                RovActions.refreshAllSensorData();
+                // begin_video_stream();
+            }
         }
     }
 
-    messageRecived(msg, rovId) {
-        console.debug("msg recived:" + msg, rovId, this.currentTargetRovId)
+    messageRecived(msg: Uint8Array, rovId) {
         if (rovId === this.currentTargetRovId) {
             this.onMessageRecivedCallback(msg)
+        } else {
+            console.warn("Message Recived from wrong ROV Peer " + rovId, msg)
         }
     }
 
     connectToRov(rovPeerId) {
         if (!this.ROVs[rovPeerId]) {
-            console.log("new Rov: ", rovPeerId, this.rovConnStateChange.bind(this))
             this.ROVs[rovPeerId] = new RovConnection(rovPeerId, this.ourPeerMachines[0], this.messageRecived.bind(this), this.rovConnStateChange.bind(this))
         }
         this.ROVs[rovPeerId].start();
@@ -163,3 +167,5 @@ export class ConnectionManager {
         this.ourPeerMachines = []
     }
 }
+
+export const connectionManager = new ConnectionManagerClass(rovMessageHandler.handleRecivedMessage.bind(rovMessageHandler));

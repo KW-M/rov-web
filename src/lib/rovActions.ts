@@ -1,4 +1,5 @@
-import { connectionManager, rovPeerIdEndNumber } from "./globalContext";
+import { connectionManager } from "./connectionManager";
+import { rovPeerIdEndNumber } from "./globalContext";
 import type { rov_action_api } from "./proto/rovActionsCompiled";
 import { RovMsgHandlerClass, rovMessageHandler } from "./rovMessageHandler"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
@@ -20,15 +21,10 @@ class RovActionsClass {
 
     // ==== Helpers =====
 
-    sendActionAndWaitForDone(msgData: rov_action_api.IRovAction, callback) {
+    sendActionAndWaitForDone(msgData: rov_action_api.IRovAction, callback: (response: rov_action_api.RovResponse) => void) {
         this.rovMsgHandler.sendRovMessage(msgData, (response: rov_action_api.RovResponse) => {
-            if (response.Done && callback) {
-                if (callback) callback(null);
-            } else if (response.Error && callback) {
-                callback(response.Error.Message + "\n");
-                callback(null);
-            } else if (response.ContinuedOutput && callback) {
-                callback(response.ContinuedOutput.Message + "\n");
+            if (callback && (response.Done || response.Error || response.ContinuedOutput)) {
+                callback(response);
             }
         })
     }
@@ -48,27 +44,21 @@ class RovActionsClass {
     showCommandOutputPopup(title, firstLine, doneLine) {
         let addTextToPopup = showScrollableTextPopup(title, null)
         addTextToPopup(firstLine)
-        return (response) => {
-            let status = response["status"]
-            if (status == "password-required" || status == "password-invalid" || status == "password-accepted" || status == "token-accepted") {
-                return; // ignore these messages
-            }
-            else if (status == "error") addTextToPopup("\nError:\n" + response['val']);
-            else if (response['val']) addTextToPopup(response['val'])
-            else if (response['status'] == "done") addTextToPopup(doneLine);
+        return (response: rov_action_api.RovResponse) => {
+            if (response.ContinuedOutput) addTextToPopup(response.ContinuedOutput.Message + "\n");
+            else if (response.Done) addTextToPopup(response.Done.Message + "\n" + doneLine);
+            else if (response.Error) addTextToPopup(response.Error.Message + "\n");
         }
     }
 
     // ======= Actions ========
 
     connectToRov() {
-        const connMangr = connectionManager.get();
-        connMangr && connMangr.connectToCurrentTargetRov();
+        connectionManager.connectToCurrentTargetRov();
     }
 
     disconnectFromRov() {
-        const connMangr = connectionManager.get();
-        connMangr && connMangr.disconnectFromCurrentRov();
+        connectionManager.disconnectFromCurrentRov();
     }
 
     switchToNextRovPeerId() {
@@ -100,8 +90,12 @@ class RovActionsClass {
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
         if (VelocityX == this.lastMove.VelocityX && VelocityY == this.lastMove.VelocityY && VelocityZ == this.lastMove.VelocityZ && AngularVelocityYaw == this.lastMove.AngularVelocityYaw) return;
         const newMovement = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw }
-        this.rovMsgHandler.sendRovMessage({ Move: this.lastMove }, null);
+        this.rovMsgHandler.sendRovMessage({ Move: newMovement }, null);
         this.lastMove = newMovement;
+    }
+
+    refreshAllSensorData() {
+        this.rovMsgHandler.sendRovMessage({ RefreshAllSensors: {} }, null);
     }
 
     toggleLights() {
@@ -112,10 +106,14 @@ class RovActionsClass {
     shutdownRov = () => {
         showConfirmationMsg("Are you sure you want to shutdown the ROV?", (ok) => {
             showToastMessage("Sending Shutdown Request...")
-            this.sendActionAndWaitForDone({ ShutdownRov: {} }, (doneMsg) => {
-                showToastMessage("Please wait 20 seconds before unplugging")
-                showToastMessage("ROV:" + doneMsg)
-                this.disconnectFromRov();
+            this.sendActionAndWaitForDone({ ShutdownRov: {} }, (msgData) => {
+                if (msgData.Error) {
+                    showToastMessage("ROV Shutdown Error: " + msgData.Error.Message)
+                } else if (msgData.Done) {
+                    showToastMessage("Please wait 20 seconds before unplugging")
+                    showToastMessage("ROV: " + msgData.Done.Message)
+                    this.disconnectFromRov();
+                }
             })
         })
     }
@@ -123,10 +121,14 @@ class RovActionsClass {
     rebootRov = () => {
         showConfirmationMsg("Are you sure you want to reboot the ROV?", (ok) => {
             showToastMessage("Sending Reboot Request...")
-            this.sendActionAndWaitForDone({ RebootRov: {} }, (doneMsg) => {
-                showToastMessage("Press Connect again in about 30 seconds")
-                showToastMessage("ROV:" + doneMsg)
-                this.disconnectFromRov();
+            this.sendActionAndWaitForDone({ RebootRov: {} }, (msgData) => {
+                if (msgData.Error) {
+                    showToastMessage("ROV Reboot Error: " + msgData.Error.Message)
+                } else if (msgData.Done) {
+                    showToastMessage("Press Connect again in about 30 seconds")
+                    showToastMessage("ROV: " + msgData.Done.Message)
+                    this.disconnectFromRov();
+                }
             })
         })
     }
@@ -150,16 +152,24 @@ class RovActionsClass {
 
     enableRovWifi = () => {
         showToastMessage("Sending Enable Wifi Command...")
-        this.sendActionAndWaitForDone({}, (doneMsg) => {
-            showToastMessage("Wifi Enabled! " + doneMsg)
+        this.sendActionAndWaitForDone({ EnableWifi: {} }, (msgData) => {
+            if (msgData.Error) {
+                showToastMessage("Enable Wifi Error: " + msgData.Error.Message)
+            } else if (msgData.Done) {
+                showToastMessage("Wifi Enable: " + msgData.Done.Message)
+            }
         })
     }
 
     disableRovWifi = () => {
         showConfirmationMsg("Are you sure you want to disable rov wifi? If the ROV is connected via wifi, don't do this!", () => {
             showToastMessage("Sending Disable Wifi Command...")
-            this.sendActionAndWaitForDone({ DisableWifi: {} }, (doneMsg) => {
-                showToastMessage("Wifi Disabled! " + doneMsg)
+            this.sendActionAndWaitForDone({ DisableWifi: {} }, (msgData) => {
+                if (msgData.Error) {
+                    showToastMessage("Disable Wifi Error: " + msgData.Error.Message)
+                } else if (msgData.Done) {
+                    showToastMessage("Wifi Disable: " + msgData.Done.Message)
+                }
             })
         })
     }

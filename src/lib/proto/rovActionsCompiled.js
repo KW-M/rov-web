@@ -16,6 +16,40 @@ export const rov_action_api = $root.rov_action_api = (() => {
      */
     const rov_action_api = {};
 
+    /**
+     * SensorMeasurmentTypes enum.
+     * @name rov_action_api.SensorMeasurmentTypes
+     * @enum {number}
+     * @property {number} depth_meters=0 depth_meters value
+     * @property {number} water_temp_celsius=1 water_temp_celsius value
+     * @property {number} pressure_mbar=2 pressure_mbar value
+     * @property {number} yaw_degrees=3 yaw_degrees value
+     * @property {number} pitch_degrees=4 pitch_degrees value
+     * @property {number} roll_degrees=5 roll_degrees value
+     * @property {number} x_acceleration_m_s2=6 x_acceleration_m_s2 value
+     * @property {number} y_acceleration_m_s2=7 y_acceleration_m_s2 value
+     * @property {number} z_acceleration_m_s2=8 z_acceleration_m_s2 value
+     * @property {number} battery_voltage=9 battery_voltage value
+     * @property {number} battery_current_amps=10 battery_current_amps value
+     * @property {number} internal_temp_celsius=11 internal_temp_celsius value
+     */
+    rov_action_api.SensorMeasurmentTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "depth_meters"] = 0;
+        values[valuesById[1] = "water_temp_celsius"] = 1;
+        values[valuesById[2] = "pressure_mbar"] = 2;
+        values[valuesById[3] = "yaw_degrees"] = 3;
+        values[valuesById[4] = "pitch_degrees"] = 4;
+        values[valuesById[5] = "roll_degrees"] = 5;
+        values[valuesById[6] = "x_acceleration_m_s2"] = 6;
+        values[valuesById[7] = "y_acceleration_m_s2"] = 7;
+        values[valuesById[8] = "z_acceleration_m_s2"] = 8;
+        values[valuesById[9] = "battery_voltage"] = 9;
+        values[valuesById[10] = "battery_current_amps"] = 10;
+        values[valuesById[11] = "internal_temp_celsius"] = 11;
+        return values;
+    })();
+
     rov_action_api.PingAction = (function() {
 
         /**
@@ -3187,6 +3221,181 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return RovLogsAction;
     })();
 
+    rov_action_api.RefreshAllSensorsAction = (function() {
+
+        /**
+         * Properties of a RefreshAllSensorsAction.
+         * @memberof rov_action_api
+         * @interface IRefreshAllSensorsAction
+         */
+
+        /**
+         * Constructs a new RefreshAllSensorsAction.
+         * @memberof rov_action_api
+         * @classdesc Represents a RefreshAllSensorsAction.
+         * @implements IRefreshAllSensorsAction
+         * @constructor
+         * @param {rov_action_api.IRefreshAllSensorsAction=} [properties] Properties to set
+         */
+        function RefreshAllSensorsAction(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Creates a new RefreshAllSensorsAction instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {rov_action_api.IRefreshAllSensorsAction=} [properties] Properties to set
+         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction instance
+         */
+        RefreshAllSensorsAction.create = function create(properties) {
+            return new RefreshAllSensorsAction(properties);
+        };
+
+        /**
+         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {rov_action_api.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        RefreshAllSensorsAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {rov_action_api.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        RefreshAllSensorsAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a RefreshAllSensorsAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        RefreshAllSensorsAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RefreshAllSensorsAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a RefreshAllSensorsAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        RefreshAllSensorsAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a RefreshAllSensorsAction message.
+         * @function verify
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        RefreshAllSensorsAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            return null;
+        };
+
+        /**
+         * Creates a RefreshAllSensorsAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         */
+        RefreshAllSensorsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.RefreshAllSensorsAction)
+                return object;
+            return new $root.rov_action_api.RefreshAllSensorsAction();
+        };
+
+        /**
+         * Creates a plain object from a RefreshAllSensorsAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {rov_action_api.RefreshAllSensorsAction} message RefreshAllSensorsAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        RefreshAllSensorsAction.toObject = function toObject() {
+            return {};
+        };
+
+        /**
+         * Converts this RefreshAllSensorsAction to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        RefreshAllSensorsAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for RefreshAllSensorsAction
+         * @function getTypeUrl
+         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        RefreshAllSensorsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.RefreshAllSensorsAction";
+        };
+
+        return RefreshAllSensorsAction;
+    })();
+
     rov_action_api.RovAction = (function() {
 
         /**
@@ -3211,6 +3420,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @property {rov_action_api.IRovStatusReportAction|null} [RovStatusReport] RovAction RovStatusReport
          * @property {rov_action_api.IRestartRovServicesAction|null} [RestartRovServices] RovAction RestartRovServices
          * @property {rov_action_api.IRovLogsAction|null} [RovLogs] RovAction RovLogs
+         * @property {rov_action_api.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
          */
 
         /**
@@ -3372,17 +3582,25 @@ export const rov_action_api = $root.rov_action_api = (() => {
          */
         RovAction.prototype.RovLogs = null;
 
+        /**
+         * RovAction RefreshAllSensors.
+         * @member {rov_action_api.IRefreshAllSensorsAction|null|undefined} RefreshAllSensors
+         * @memberof rov_action_api.RovAction
+         * @instance
+         */
+        RovAction.prototype.RefreshAllSensors = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovAction Body.
-         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|undefined} Body
+         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|undefined} Body
          * @memberof rov_action_api.RovAction
          * @instance
          */
         Object.defineProperty(RovAction.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "BeginVideoStream", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToogleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "RovLogs"]),
+            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "BeginVideoStream", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToogleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "RovLogs", "RefreshAllSensors"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -3446,6 +3664,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 $root.rov_action_api.RestartRovServicesAction.encode(message.RestartRovServices, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             if (message.RovLogs != null && Object.hasOwnProperty.call(message, "RovLogs"))
                 $root.rov_action_api.RovLogsAction.encode(message.RovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+            if (message.RefreshAllSensors != null && Object.hasOwnProperty.call(message, "RefreshAllSensors"))
+                $root.rov_action_api.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             return writer;
         };
 
@@ -3550,6 +3770,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     }
                 case 19: {
                         message.RovLogs = $root.rov_action_api.RovLogsAction.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 20: {
+                        message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -3759,6 +3983,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         return "RovLogs." + error;
                 }
             }
+            if (message.RefreshAllSensors != null && message.hasOwnProperty("RefreshAllSensors")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.RefreshAllSensorsAction.verify(message.RefreshAllSensors);
+                    if (error)
+                        return "RefreshAllSensors." + error;
+                }
+            }
             return null;
         };
 
@@ -3860,6 +4094,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (typeof object.RovLogs !== "object")
                     throw TypeError(".rov_action_api.RovAction.RovLogs: object expected");
                 message.RovLogs = $root.rov_action_api.RovLogsAction.fromObject(object.RovLogs);
+            }
+            if (object.RefreshAllSensors != null) {
+                if (typeof object.RefreshAllSensors !== "object")
+                    throw TypeError(".rov_action_api.RovAction.RefreshAllSensors: object expected");
+                message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.fromObject(object.RefreshAllSensors);
             }
             return message;
         };
@@ -3966,6 +4205,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (options.oneofs)
                     object.Body = "RovLogs";
             }
+            if (message.RefreshAllSensors != null && message.hasOwnProperty("RefreshAllSensors")) {
+                object.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.toObject(message.RefreshAllSensors, options);
+                if (options.oneofs)
+                    object.Body = "RefreshAllSensors";
+            }
             return object;
         };
 
@@ -3998,44 +4242,13 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return RovAction;
     })();
 
-    /**
-     * RovSensorTypes enum.
-     * @name rov_action_api.RovSensorTypes
-     * @enum {number}
-     * @property {number} depth_meters=0 depth_meters value
-     * @property {number} water_temp_celsius=1 water_temp_celsius value
-     * @property {number} pressure_mbar=2 pressure_mbar value
-     * @property {number} yaw_degrees=3 yaw_degrees value
-     * @property {number} pitch_degrees=4 pitch_degrees value
-     * @property {number} roll_degrees=5 roll_degrees value
-     * @property {number} x_acceleration_m_s2=6 x_acceleration_m_s2 value
-     * @property {number} y_acceleration_m_s2=7 y_acceleration_m_s2 value
-     * @property {number} z_acceleration_m_s2=8 z_acceleration_m_s2 value
-     * @property {number} battery_voltage=9 battery_voltage value
-     * @property {number} battery_current=10 battery_current value
-     */
-    rov_action_api.RovSensorTypes = (function() {
-        const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "depth_meters"] = 0;
-        values[valuesById[1] = "water_temp_celsius"] = 1;
-        values[valuesById[2] = "pressure_mbar"] = 2;
-        values[valuesById[3] = "yaw_degrees"] = 3;
-        values[valuesById[4] = "pitch_degrees"] = 4;
-        values[valuesById[5] = "roll_degrees"] = 5;
-        values[valuesById[6] = "x_acceleration_m_s2"] = 6;
-        values[valuesById[7] = "y_acceleration_m_s2"] = 7;
-        values[valuesById[8] = "z_acceleration_m_s2"] = 8;
-        values[valuesById[9] = "battery_voltage"] = 9;
-        values[valuesById[10] = "battery_current"] = 10;
-        return values;
-    })();
-
     rov_action_api.DoneResponse = (function() {
 
         /**
          * Properties of a DoneResponse.
          * @memberof rov_action_api
          * @interface IDoneResponse
+         * @property {string|null} [Message] DoneResponse Message
          */
 
         /**
@@ -4052,6 +4265,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
+
+        /**
+         * DoneResponse Message.
+         * @member {string|null|undefined} Message
+         * @memberof rov_action_api.DoneResponse
+         * @instance
+         */
+        DoneResponse.prototype.Message = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        /**
+         * DoneResponse _Message.
+         * @member {"Message"|undefined} _Message
+         * @memberof rov_action_api.DoneResponse
+         * @instance
+         */
+        Object.defineProperty(DoneResponse.prototype, "_Message", {
+            get: $util.oneOfGetter($oneOfFields = ["Message"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
 
         /**
          * Creates a new DoneResponse instance using the specified properties.
@@ -4077,6 +4312,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
         DoneResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
             return writer;
         };
 
@@ -4111,6 +4348,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.string();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -4146,6 +4387,12 @@ export const rov_action_api = $root.rov_action_api = (() => {
         DoneResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
+            let properties = {};
+            if (message.Message != null && message.hasOwnProperty("Message")) {
+                properties._Message = 1;
+                if (!$util.isString(message.Message))
+                    return "Message: string expected";
+            }
             return null;
         };
 
@@ -4160,7 +4407,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         DoneResponse.fromObject = function fromObject(object) {
             if (object instanceof $root.rov_action_api.DoneResponse)
                 return object;
-            return new $root.rov_action_api.DoneResponse();
+            let message = new $root.rov_action_api.DoneResponse();
+            if (object.Message != null)
+                message.Message = String(object.Message);
+            return message;
         };
 
         /**
@@ -4172,8 +4422,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        DoneResponse.toObject = function toObject() {
-            return {};
+        DoneResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (message.Message != null && message.hasOwnProperty("Message")) {
+                object.Message = message.Message;
+                if (options.oneofs)
+                    object._Message = "Message";
+            }
+            return object;
         };
 
         /**
@@ -4828,25 +5086,25 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return PongResponse;
     })();
 
-    rov_action_api.SensorUpdate = (function() {
+    rov_action_api.Measurement = (function() {
 
         /**
-         * Properties of a SensorUpdate.
+         * Properties of a Measurement.
          * @memberof rov_action_api
-         * @interface ISensorUpdate
-         * @property {string|null} [SensorType] SensorUpdate SensorType
-         * @property {string|null} [Value] SensorUpdate Value
+         * @interface IMeasurement
+         * @property {rov_action_api.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
+         * @property {number|null} [Value] Measurement Value
          */
 
         /**
-         * Constructs a new SensorUpdate.
+         * Constructs a new Measurement.
          * @memberof rov_action_api
-         * @classdesc Represents a SensorUpdate.
-         * @implements ISensorUpdate
+         * @classdesc Represents a Measurement.
+         * @implements IMeasurement
          * @constructor
-         * @param {rov_action_api.ISensorUpdate=} [properties] Properties to set
+         * @param {rov_action_api.IMeasurement=} [properties] Properties to set
          */
-        function SensorUpdate(properties) {
+        function Measurement(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -4854,89 +5112,89 @@ export const rov_action_api = $root.rov_action_api = (() => {
         }
 
         /**
-         * SensorUpdate SensorType.
-         * @member {string} SensorType
-         * @memberof rov_action_api.SensorUpdate
+         * Measurement MeasurementType.
+         * @member {rov_action_api.SensorMeasurmentTypes} MeasurementType
+         * @memberof rov_action_api.Measurement
          * @instance
          */
-        SensorUpdate.prototype.SensorType = "";
+        Measurement.prototype.MeasurementType = 0;
 
         /**
-         * SensorUpdate Value.
-         * @member {string} Value
-         * @memberof rov_action_api.SensorUpdate
+         * Measurement Value.
+         * @member {number} Value
+         * @memberof rov_action_api.Measurement
          * @instance
          */
-        SensorUpdate.prototype.Value = "";
+        Measurement.prototype.Value = 0;
 
         /**
-         * Creates a new SensorUpdate instance using the specified properties.
+         * Creates a new Measurement instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
-         * @param {rov_action_api.ISensorUpdate=} [properties] Properties to set
-         * @returns {rov_action_api.SensorUpdate} SensorUpdate instance
+         * @param {rov_action_api.IMeasurement=} [properties] Properties to set
+         * @returns {rov_action_api.Measurement} Measurement instance
          */
-        SensorUpdate.create = function create(properties) {
-            return new SensorUpdate(properties);
+        Measurement.create = function create(properties) {
+            return new Measurement(properties);
         };
 
         /**
-         * Encodes the specified SensorUpdate message. Does not implicitly {@link rov_action_api.SensorUpdate.verify|verify} messages.
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
-         * @param {rov_action_api.ISensorUpdate} message SensorUpdate message or plain object to encode
+         * @param {rov_action_api.IMeasurement} message Measurement message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SensorUpdate.encode = function encode(message, writer) {
+        Measurement.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.SensorType != null && Object.hasOwnProperty.call(message, "SensorType"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.SensorType);
+            if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
             if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.Value);
+                writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
             return writer;
         };
 
         /**
-         * Encodes the specified SensorUpdate message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdate.verify|verify} messages.
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
-         * @param {rov_action_api.ISensorUpdate} message SensorUpdate message or plain object to encode
+         * @param {rov_action_api.IMeasurement} message Measurement message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SensorUpdate.encodeDelimited = function encodeDelimited(message, writer) {
+        Measurement.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a SensorUpdate message from the specified reader or buffer.
+         * Decodes a Measurement message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.SensorUpdate} SensorUpdate
+         * @returns {rov_action_api.Measurement} Measurement
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SensorUpdate.decode = function decode(reader, length) {
+        Measurement.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SensorUpdate();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.Measurement();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.SensorType = reader.string();
+                        message.MeasurementType = reader.int32();
                         break;
                     }
                 case 2: {
-                        message.Value = reader.string();
+                        message.Value = reader.float();
                         break;
                     }
                 default:
@@ -4948,111 +5206,180 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Decodes a SensorUpdate message from the specified reader or buffer, length delimited.
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.SensorUpdate} SensorUpdate
+         * @returns {rov_action_api.Measurement} Measurement
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SensorUpdate.decodeDelimited = function decodeDelimited(reader) {
+        Measurement.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a SensorUpdate message.
+         * Verifies a Measurement message.
          * @function verify
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        SensorUpdate.verify = function verify(message) {
+        Measurement.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.SensorType != null && message.hasOwnProperty("SensorType"))
-                if (!$util.isString(message.SensorType))
-                    return "SensorType: string expected";
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                switch (message.MeasurementType) {
+                default:
+                    return "MeasurementType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    break;
+                }
             if (message.Value != null && message.hasOwnProperty("Value"))
-                if (!$util.isString(message.Value))
-                    return "Value: string expected";
+                if (typeof message.Value !== "number")
+                    return "Value: number expected";
             return null;
         };
 
         /**
-         * Creates a SensorUpdate message from a plain object. Also converts values to their respective internal types.
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.SensorUpdate} SensorUpdate
+         * @returns {rov_action_api.Measurement} Measurement
          */
-        SensorUpdate.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.SensorUpdate)
+        Measurement.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.Measurement)
                 return object;
-            let message = new $root.rov_action_api.SensorUpdate();
-            if (object.SensorType != null)
-                message.SensorType = String(object.SensorType);
+            let message = new $root.rov_action_api.Measurement();
+            switch (object.MeasurementType) {
+            default:
+                if (typeof object.MeasurementType === "number") {
+                    message.MeasurementType = object.MeasurementType;
+                    break;
+                }
+                break;
+            case "depth_meters":
+            case 0:
+                message.MeasurementType = 0;
+                break;
+            case "water_temp_celsius":
+            case 1:
+                message.MeasurementType = 1;
+                break;
+            case "pressure_mbar":
+            case 2:
+                message.MeasurementType = 2;
+                break;
+            case "yaw_degrees":
+            case 3:
+                message.MeasurementType = 3;
+                break;
+            case "pitch_degrees":
+            case 4:
+                message.MeasurementType = 4;
+                break;
+            case "roll_degrees":
+            case 5:
+                message.MeasurementType = 5;
+                break;
+            case "x_acceleration_m_s2":
+            case 6:
+                message.MeasurementType = 6;
+                break;
+            case "y_acceleration_m_s2":
+            case 7:
+                message.MeasurementType = 7;
+                break;
+            case "z_acceleration_m_s2":
+            case 8:
+                message.MeasurementType = 8;
+                break;
+            case "battery_voltage":
+            case 9:
+                message.MeasurementType = 9;
+                break;
+            case "battery_current_amps":
+            case 10:
+                message.MeasurementType = 10;
+                break;
+            case "internal_temp_celsius":
+            case 11:
+                message.MeasurementType = 11;
+                break;
+            }
             if (object.Value != null)
-                message.Value = String(object.Value);
+                message.Value = Number(object.Value);
             return message;
         };
 
         /**
-         * Creates a plain object from a SensorUpdate message. Also converts values to other types if specified.
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
-         * @param {rov_action_api.SensorUpdate} message SensorUpdate
+         * @param {rov_action_api.Measurement} message Measurement
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        SensorUpdate.toObject = function toObject(message, options) {
+        Measurement.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.SensorType = "";
-                object.Value = "";
+                object.MeasurementType = options.enums === String ? "depth_meters" : 0;
+                object.Value = 0;
             }
-            if (message.SensorType != null && message.hasOwnProperty("SensorType"))
-                object.SensorType = message.SensorType;
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                object.MeasurementType = options.enums === String ? $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
             if (message.Value != null && message.hasOwnProperty("Value"))
-                object.Value = message.Value;
+                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
             return object;
         };
 
         /**
-         * Converts this SensorUpdate to JSON.
+         * Converts this Measurement to JSON.
          * @function toJSON
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        SensorUpdate.prototype.toJSON = function toJSON() {
+        Measurement.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for SensorUpdate
+         * Gets the default type url for Measurement
          * @function getTypeUrl
-         * @memberof rov_action_api.SensorUpdate
+         * @memberof rov_action_api.Measurement
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        SensorUpdate.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.SensorUpdate";
+            return typeUrlPrefix + "/rov_action_api.Measurement";
         };
 
-        return SensorUpdate;
+        return Measurement;
     })();
 
     rov_action_api.SensorUpdatesResponse = (function() {
@@ -5061,7 +5388,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * Properties of a SensorUpdatesResponse.
          * @memberof rov_action_api
          * @interface ISensorUpdatesResponse
-         * @property {Array.<rov_action_api.ISensorUpdate>|null} [SensorUpdates] SensorUpdatesResponse SensorUpdates
+         * @property {Array.<rov_action_api.IMeasurement>|null} [MeasurementUpdates] SensorUpdatesResponse MeasurementUpdates
          */
 
         /**
@@ -5073,7 +5400,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @param {rov_action_api.ISensorUpdatesResponse=} [properties] Properties to set
          */
         function SensorUpdatesResponse(properties) {
-            this.SensorUpdates = [];
+            this.MeasurementUpdates = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -5081,12 +5408,12 @@ export const rov_action_api = $root.rov_action_api = (() => {
         }
 
         /**
-         * SensorUpdatesResponse SensorUpdates.
-         * @member {Array.<rov_action_api.ISensorUpdate>} SensorUpdates
+         * SensorUpdatesResponse MeasurementUpdates.
+         * @member {Array.<rov_action_api.IMeasurement>} MeasurementUpdates
          * @memberof rov_action_api.SensorUpdatesResponse
          * @instance
          */
-        SensorUpdatesResponse.prototype.SensorUpdates = $util.emptyArray;
+        SensorUpdatesResponse.prototype.MeasurementUpdates = $util.emptyArray;
 
         /**
          * Creates a new SensorUpdatesResponse instance using the specified properties.
@@ -5112,9 +5439,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         SensorUpdatesResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.SensorUpdates != null && message.SensorUpdates.length)
-                for (let i = 0; i < message.SensorUpdates.length; ++i)
-                    $root.rov_action_api.SensorUpdate.encode(message.SensorUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.MeasurementUpdates != null && message.MeasurementUpdates.length)
+                for (let i = 0; i < message.MeasurementUpdates.length; ++i)
+                    $root.rov_action_api.Measurement.encode(message.MeasurementUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -5150,9 +5477,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        if (!(message.SensorUpdates && message.SensorUpdates.length))
-                            message.SensorUpdates = [];
-                        message.SensorUpdates.push($root.rov_action_api.SensorUpdate.decode(reader, reader.uint32()));
+                        if (!(message.MeasurementUpdates && message.MeasurementUpdates.length))
+                            message.MeasurementUpdates = [];
+                        message.MeasurementUpdates.push($root.rov_action_api.Measurement.decode(reader, reader.uint32()));
                         break;
                     }
                 default:
@@ -5190,13 +5517,13 @@ export const rov_action_api = $root.rov_action_api = (() => {
         SensorUpdatesResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.SensorUpdates != null && message.hasOwnProperty("SensorUpdates")) {
-                if (!Array.isArray(message.SensorUpdates))
-                    return "SensorUpdates: array expected";
-                for (let i = 0; i < message.SensorUpdates.length; ++i) {
-                    let error = $root.rov_action_api.SensorUpdate.verify(message.SensorUpdates[i]);
+            if (message.MeasurementUpdates != null && message.hasOwnProperty("MeasurementUpdates")) {
+                if (!Array.isArray(message.MeasurementUpdates))
+                    return "MeasurementUpdates: array expected";
+                for (let i = 0; i < message.MeasurementUpdates.length; ++i) {
+                    let error = $root.rov_action_api.Measurement.verify(message.MeasurementUpdates[i]);
                     if (error)
-                        return "SensorUpdates." + error;
+                        return "MeasurementUpdates." + error;
                 }
             }
             return null;
@@ -5214,14 +5541,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (object instanceof $root.rov_action_api.SensorUpdatesResponse)
                 return object;
             let message = new $root.rov_action_api.SensorUpdatesResponse();
-            if (object.SensorUpdates) {
-                if (!Array.isArray(object.SensorUpdates))
-                    throw TypeError(".rov_action_api.SensorUpdatesResponse.SensorUpdates: array expected");
-                message.SensorUpdates = [];
-                for (let i = 0; i < object.SensorUpdates.length; ++i) {
-                    if (typeof object.SensorUpdates[i] !== "object")
-                        throw TypeError(".rov_action_api.SensorUpdatesResponse.SensorUpdates: object expected");
-                    message.SensorUpdates[i] = $root.rov_action_api.SensorUpdate.fromObject(object.SensorUpdates[i]);
+            if (object.MeasurementUpdates) {
+                if (!Array.isArray(object.MeasurementUpdates))
+                    throw TypeError(".rov_action_api.SensorUpdatesResponse.MeasurementUpdates: array expected");
+                message.MeasurementUpdates = [];
+                for (let i = 0; i < object.MeasurementUpdates.length; ++i) {
+                    if (typeof object.MeasurementUpdates[i] !== "object")
+                        throw TypeError(".rov_action_api.SensorUpdatesResponse.MeasurementUpdates: object expected");
+                    message.MeasurementUpdates[i] = $root.rov_action_api.Measurement.fromObject(object.MeasurementUpdates[i]);
                 }
             }
             return message;
@@ -5241,11 +5568,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults)
-                object.SensorUpdates = [];
-            if (message.SensorUpdates && message.SensorUpdates.length) {
-                object.SensorUpdates = [];
-                for (let j = 0; j < message.SensorUpdates.length; ++j)
-                    object.SensorUpdates[j] = $root.rov_action_api.SensorUpdate.toObject(message.SensorUpdates[j], options);
+                object.MeasurementUpdates = [];
+            if (message.MeasurementUpdates && message.MeasurementUpdates.length) {
+                object.MeasurementUpdates = [];
+                for (let j = 0; j < message.MeasurementUpdates.length; ++j)
+                    object.MeasurementUpdates[j] = $root.rov_action_api.Measurement.toObject(message.MeasurementUpdates[j], options);
             }
             return object;
         };
@@ -6819,6 +7146,223 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return ClientDisconnectedResponse;
     })();
 
+    rov_action_api.HeartbeatResponse = (function() {
+
+        /**
+         * Properties of a HeartbeatResponse.
+         * @memberof rov_action_api
+         * @interface IHeartbeatResponse
+         * @property {number|Long|null} [Time] HeartbeatResponse Time
+         */
+
+        /**
+         * Constructs a new HeartbeatResponse.
+         * @memberof rov_action_api
+         * @classdesc Represents a HeartbeatResponse.
+         * @implements IHeartbeatResponse
+         * @constructor
+         * @param {rov_action_api.IHeartbeatResponse=} [properties] Properties to set
+         */
+        function HeartbeatResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * HeartbeatResponse Time.
+         * @member {number|Long} Time
+         * @memberof rov_action_api.HeartbeatResponse
+         * @instance
+         */
+        HeartbeatResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+        /**
+         * Creates a new HeartbeatResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {rov_action_api.IHeartbeatResponse=} [properties] Properties to set
+         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse instance
+         */
+        HeartbeatResponse.create = function create(properties) {
+            return new HeartbeatResponse(properties);
+        };
+
+        /**
+         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {rov_action_api.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HeartbeatResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Time != null && Object.hasOwnProperty.call(message, "Time"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int64(message.Time);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {rov_action_api.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HeartbeatResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a HeartbeatResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HeartbeatResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.HeartbeatResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Time = reader.int64();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a HeartbeatResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HeartbeatResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a HeartbeatResponse message.
+         * @function verify
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        HeartbeatResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Time != null && message.hasOwnProperty("Time"))
+                if (!$util.isInteger(message.Time) && !(message.Time && $util.isInteger(message.Time.low) && $util.isInteger(message.Time.high)))
+                    return "Time: integer|Long expected";
+            return null;
+        };
+
+        /**
+         * Creates a HeartbeatResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         */
+        HeartbeatResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.HeartbeatResponse)
+                return object;
+            let message = new $root.rov_action_api.HeartbeatResponse();
+            if (object.Time != null)
+                if ($util.Long)
+                    (message.Time = $util.Long.fromValue(object.Time)).unsigned = false;
+                else if (typeof object.Time === "string")
+                    message.Time = parseInt(object.Time, 10);
+                else if (typeof object.Time === "number")
+                    message.Time = object.Time;
+                else if (typeof object.Time === "object")
+                    message.Time = new $util.LongBits(object.Time.low >>> 0, object.Time.high >>> 0).toNumber();
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a HeartbeatResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {rov_action_api.HeartbeatResponse} message HeartbeatResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        HeartbeatResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, false);
+                    object.Time = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.Time = options.longs === String ? "0" : 0;
+            if (message.Time != null && message.hasOwnProperty("Time"))
+                if (typeof message.Time === "number")
+                    object.Time = options.longs === String ? String(message.Time) : message.Time;
+                else
+                    object.Time = options.longs === String ? $util.Long.prototype.toString.call(message.Time) : options.longs === Number ? new $util.LongBits(message.Time.low >>> 0, message.Time.high >>> 0).toNumber() : message.Time;
+            return object;
+        };
+
+        /**
+         * Converts this HeartbeatResponse to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.HeartbeatResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        HeartbeatResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for HeartbeatResponse
+         * @function getTypeUrl
+         * @memberof rov_action_api.HeartbeatResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        HeartbeatResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.HeartbeatResponse";
+        };
+
+        return HeartbeatResponse;
+    })();
+
     rov_action_api.RovResponse = (function() {
 
         /**
@@ -6839,6 +7383,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @property {rov_action_api.IDriverChangedResponse|null} [DriverChanged] RovResponse DriverChanged
          * @property {rov_action_api.IClientConnectedResponse|null} [ClientConnected] RovResponse ClientConnected
          * @property {rov_action_api.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
+         * @property {rov_action_api.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
          */
 
         /**
@@ -6968,17 +7513,25 @@ export const rov_action_api = $root.rov_action_api = (() => {
          */
         RovResponse.prototype.ClientDisconnected = null;
 
+        /**
+         * RovResponse Heartbeat.
+         * @member {rov_action_api.IHeartbeatResponse|null|undefined} Heartbeat
+         * @memberof rov_action_api.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.Heartbeat = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovResponse Body.
-         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|undefined} Body
+         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|undefined} Body
          * @memberof rov_action_api.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "TokenAccepted", "TokenInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected"]),
+            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "TokenAccepted", "TokenInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -7034,6 +7587,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 $root.rov_action_api.ClientConnectedResponse.encode(message.ClientConnected, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
             if (message.ClientDisconnected != null && Object.hasOwnProperty.call(message, "ClientDisconnected"))
                 $root.rov_action_api.ClientDisconnectedResponse.encode(message.ClientDisconnected, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
+            if (message.Heartbeat != null && Object.hasOwnProperty.call(message, "Heartbeat"))
+                $root.rov_action_api.HeartbeatResponse.encode(message.Heartbeat, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             return writer;
         };
 
@@ -7122,6 +7677,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     }
                 case 15: {
                         message.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 16: {
+                        message.Heartbeat = $root.rov_action_api.HeartbeatResponse.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -7291,6 +7850,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         return "ClientDisconnected." + error;
                 }
             }
+            if (message.Heartbeat != null && message.hasOwnProperty("Heartbeat")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.HeartbeatResponse.verify(message.Heartbeat);
+                    if (error)
+                        return "Heartbeat." + error;
+                }
+            }
             return null;
         };
 
@@ -7372,6 +7941,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (typeof object.ClientDisconnected !== "object")
                     throw TypeError(".rov_action_api.RovResponse.ClientDisconnected: object expected");
                 message.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.fromObject(object.ClientDisconnected);
+            }
+            if (object.Heartbeat != null) {
+                if (typeof object.Heartbeat !== "object")
+                    throw TypeError(".rov_action_api.RovResponse.Heartbeat: object expected");
+                message.Heartbeat = $root.rov_action_api.HeartbeatResponse.fromObject(object.Heartbeat);
             }
             return message;
         };
@@ -7457,6 +8031,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 object.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.toObject(message.ClientDisconnected, options);
                 if (options.oneofs)
                     object.Body = "ClientDisconnected";
+            }
+            if (message.Heartbeat != null && message.hasOwnProperty("Heartbeat")) {
+                object.Heartbeat = $root.rov_action_api.HeartbeatResponse.toObject(message.Heartbeat, options);
+                if (options.oneofs)
+                    object.Body = "Heartbeat";
             }
             return object;
         };

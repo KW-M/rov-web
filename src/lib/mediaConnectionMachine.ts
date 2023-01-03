@@ -53,7 +53,6 @@ export class MediaConnectionMachine {
             // ignore calls that did not come from the current rov:
             console.info(mediaChannel.peer + " media called us!")
             if (this.mediaChannel && this.mediaChannel.peer != this.rovPeerId) return;
-            console.info(mediaChannel.peer + " media called us- acceping!")
 
             // close out any old connection
             if (this.mediaChannel) this.cleanup();

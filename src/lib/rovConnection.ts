@@ -5,6 +5,10 @@ import { MediaConnectionMachine } from "./mediaConnectionMachine"
 import type { OurPeerMachine } from "./ourPeerMachine"
 import { Queue } from "./util"
 
+type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Array) => void }
+type MsgRecivedCallback = (msg: Uint8Array, rovPeerId: string) => void;
+type StateChangeCallback = (dcState: ConnectionState, mcState: ConnectionState, rovPeerId: string) => void;
+
 export class RovConnection {
     closed: boolean = false
     rovPeerId: string;
@@ -14,13 +18,14 @@ export class RovConnection {
     mediaConnection: MediaConnectionMachine = null;
     msgQueue = new Queue() // stores objects in the pair of {msg:str, onSendCallback:function}
     connectionFailureCount = 0;
-    onMesssageRecived: (msg: string, rovPeerId: string) => void;
+    onMesssageRecived: MsgRecivedCallback;
+    onOverallStateChange: StateChangeCallback;
 
-    constructor(rovPeerId, thisPeer, onMesssageRecivedCallback, onOverallStateChangeCallback) {
+    constructor(rovPeerId, thisPeer, onMesssageRecived: MsgRecivedCallback, onOverallStateChange: StateChangeCallback) {
         this.rovPeerId = rovPeerId;
         this.ourPeerMachine = thisPeer
-        this.onMesssageRecived = (msg) => onMesssageRecivedCallback(msg, rovPeerId);
-        // this.onOverallStateChange = () => { console.log("onOverallStateChangeCallback", onOverallStateChangeCallback); onOverallStateChangeCallback(this.overallDCState, this.overallMCState, this.rovPeerId) };
+        this.onMesssageRecived = (msg: Uint8Array) => onMesssageRecived(msg, rovPeerId);
+        this.onOverallStateChange = onOverallStateChange;
     }
 
     start() {
@@ -35,15 +40,14 @@ export class RovConnection {
         dc.start();
     }
 
-    _sendMsgToRov(msgObj) {
+    _sendMsgToRov(msgObj: msgQueueItem) {
         const dc = this.dataConnection;
-        let success = dc.sendMessage(msgObj.msg)
+        let success = dc.sendMessage(msgObj.msgBytes)
         if (success) {
-            console.debug(`Msg sent to rov: ${this.rovPeerId}`, msgObj.msg, msgObj.onSendCallback)
-            if (msgObj.onSendCallback) msgObj.onSendCallback(msgObj.msg);
+            if (msgObj.onSendCallback) msgObj.onSendCallback(msgObj.msgBytes);
             return true
         } else {
-            console.info(`Failed to send \"{}\" to rov: {}`, msgObj.msg, this.rovPeerId)
+            console.info(`Failed to send \"{}\" to rov: {}`, msgObj.msgBytes, this.rovPeerId)
         }
         return false
     }
@@ -61,13 +65,11 @@ export class RovConnection {
     }
 
 
-    sendMessage(msg: string | object, onSendCallback?: () => void, skipQueue = false) {
-        if (typeof (msg) !== "string") msg = JSON.stringify(msg);
-        let msgObj = { msg: msg, onSendCallback: onSendCallback }
+    sendMessage(msgBytes: Uint8Array, onSendCallback?: () => void, skipQueue = false) {
+        let msgObj: msgQueueItem = { msgBytes: msgBytes, onSendCallback: onSendCallback }
         if (skipQueue) {
             this._sendMsgToRov(msgObj)
         } else {
-            console.debug(`Adding msg to queue:`, msg)
             this.msgQueue.push(msgObj);
             setTimeout(this.emptyMsgQueue.bind(this), 0);
         }
@@ -77,6 +79,7 @@ export class RovConnection {
         if (this.closed) return;
         rovDataChannelConnState.set(state)
         console.debug("dcStateChange", state)
+        this.onOverallStateChange(this.dataConnection.currentState, this.mediaConnection.currentState, this.rovPeerId)
         if (state == ConnectionState.connected) {
             this.emptyMsgQueue();
             this.connectionFailureCount = 0;
@@ -119,7 +122,7 @@ export class RovConnection {
     close() {
         console.info("Closing Rov Connection: ", this.rovPeerId)
         this.closed = true;
-        // this.mediaConnection.close();
+        this.mediaConnection.close();
         this.dataConnection.close();
     }
 }

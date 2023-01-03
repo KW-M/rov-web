@@ -58,7 +58,6 @@ export class RovConnection {
             const dc = this.dataConnections[dcIndex];
             let success = dc.sendMessage(msgObj.msg)
             if (success) {
-                console.debug(`Msg sent to rov: ${this.rovPeerId}`, msgObj.msg, msgObj.onSendCallback)
                 if (msgObj.onSendCallback) msgObj.onSendCallback(msgObj.msg);
                 this.msgQueue.pop();  // remove the message from the queue
                 this.connectedDataConnIndex = dcIndex;
@@ -89,7 +88,6 @@ export class RovConnection {
         if (skipQueue) {
             this.sendMsgDirectlyToRov(msgObj)
         } else {
-            console.debug(`Adding msg to queue:`, msg)
             this.msgQueue.push(msgObj);
             setTimeout(this.emptyMsgQueue.bind(this), 0);
         }

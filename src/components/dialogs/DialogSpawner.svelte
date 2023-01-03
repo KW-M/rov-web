@@ -1,35 +1,34 @@
 <script context="module" lang="ts">
   import AlertDialog from "./AlertDialog.svelte";
   import PasswordDialog from "./PasswordDialog.svelte";
-  import { DIALOG_TYPE } from "../../lib/globalContext";
+  import { DIALOG_TYPE, type dialogExtraDataType } from "../../lib/globalContext";
   import ScrollingTextDialog from "./ScrollingTextDialog.svelte";
   import nStore from "../../lib/libraries/nStore";
   import type { nStoreT } from "../../lib/libraries/nStore";
   import type { dialogInfoType } from "../../lib/globalContext";
 
-  let dialogStack = [];
+  let dialogStack: dialogInfoType[] = [];
   let topDialog: nStoreT<dialogInfoType> = nStore(null);
 
-  export const openDialog = (dialogType, extraData, callback) => {
-    let isOpen = true;
-    let thisDialog = { isOpen, dialogType, callback, extraData };
-    dialogStack = [...dialogStack, thisDialog];
-    topDialog.set(thisDialog);
-    return (modifyExtraDataCallback) => {
-      thisDialog.extraData = modifyExtraDataCallback(thisDialog.extraData);
-      topDialog = topDialog;
+  export const openDialog = (type: DIALOG_TYPE, extraData: dialogExtraDataType, callback: () => void) => {
+    const lastTopDialog = topDialog.get();
+    const newDialog = { dialogType: type, callback, extraData };
+    if (lastTopDialog) dialogStack = [...dialogStack, lastTopDialog];
+    topDialog.set(newDialog);
+    return (modifyExtraDataCallback: (d: dialogExtraDataType) => dialogExtraDataType) => {
+      newDialog.extraData = modifyExtraDataCallback(newDialog.extraData);
+      console.log("newDialog.extraData", newDialog.extraData, newDialog === dialogStack[dialogStack.length - 1], dialogStack[dialogStack.length - 1], topDialog.get() === newDialog, topDialog.get());
+      if (topDialog.get() === newDialog) {
+        topDialog.set(newDialog);
+      }
     };
   };
 
   export const closeTopDialog = (e) => {
-    const tDialog = topDialog.get();
-    tDialog.isOpen = false;
-    if (tDialog.callback) tDialog.callback(e.detail);
-    dialogStack.pop();
-    let newTopDialog = dialogStack[dialogStack.length - 1];
-    if (newTopDialog) {
-      newTopDialog.isOpen = true;
-      topDialog.set(newTopDialog);
+    const lastTopDialog = topDialog.get();
+    lastTopDialog.callback && lastTopDialog.callback(e.detail);
+    if (dialogStack.length > 0) {
+      topDialog.set(dialogStack.pop());
     } else {
       topDialog.set(null);
     }
@@ -58,12 +57,10 @@
 
 <!-- <button class="btn" on:click={() => openDialog("alert", (e) => console.log("alert closed", e))}>Open Alert Dialog</button>
 <button class="btn" on:click={() => openDialog("password", (e) => console.log("password closed", e))}>Open Password Dialog</button> -->
-{#if $topDialog}
-  {#if $topDialog.dialogType == DIALOG_TYPE.Password}
-    <PasswordDialog bind:isOpen={$topDialog.isOpen} on:close={closeTopDialog} />
-  {:else if $topDialog.dialogType == DIALOG_TYPE.Alert}
-    <AlertDialog bind:isOpen={$topDialog.isOpen} bind:extraData={$topDialog.extraData} on:close={closeTopDialog} />
-  {:else if $topDialog.dialogType == DIALOG_TYPE.ScrollingText}
-    <ScrollingTextDialog bind:isOpen={$topDialog.isOpen} bind:extraData={$topDialog.extraData} on:close={closeTopDialog} />
-  {/if}
+{#if $topDialog && $topDialog.dialogType == DIALOG_TYPE.Password}
+  <PasswordDialog on:close={closeTopDialog} />
+{:else if $topDialog && $topDialog.dialogType == DIALOG_TYPE.Alert}
+  <AlertDialog extraData={$topDialog.extraData} on:close={closeTopDialog} />
+{:else if $topDialog && $topDialog.dialogType == DIALOG_TYPE.ScrollingText}
+  <ScrollingTextDialog extraData={$topDialog.extraData} on:close={closeTopDialog} />
 {/if}

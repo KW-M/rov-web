@@ -2,9 +2,7 @@ import nStore from './libraries/nStore';
 import type { nStoreT } from './libraries/nStore';
 import type Peer from 'peerjs';
 import { ConnectionState } from './consts.js';
-import type { ConnectionManager } from './connectionManager.js';
 import type { GamepadController } from './gamepad.js';
-import type { MessageHandler } from './messageHandler.js';
 
 export enum DIALOG_TYPE {
     Alert = 0,
@@ -19,14 +17,12 @@ export type dialogExtraDataType = {
 }
 
 export type dialogInfoType = {
-    isOpen: boolean;
     dialogType: DIALOG_TYPE;
     callback: (e: any) => void;
     extraData: dialogExtraDataType;
 };
 
 // export const : {
-//     connManager: ConnectionManager,
 //     msgHandler: MessageHandler,
 //     gpadCtrl: GamepadController,
 //     openDialog: (type: DIALOG_TYPE, extraData: dialogExtraDataType, callback: (d: dialogExtraDataType) => (dialogExtraDataType | void)) => (b: String | Boolean | null | ((dialogExtraDataType) => dialogExtraDataType)) => void,
@@ -34,7 +30,6 @@ export type dialogInfoType = {
 //     hideLoadingUi: (msgId: LOADING_MESSAGE) => void,
 //     addTooltip: (node: Element, config: { label: string, placement: Placement, timeout?: number }, addListeners?: boolean) => void
 // } = {
-//     connManager: null,
 //     msgHandler: null,
 //     gpadCtrl: null,
 //     openDialog: null, //(type, extraData, callback) => { return (b) => { } },
@@ -60,8 +55,6 @@ export const ourPeerId: nStoreT<string> = nStore("No Peer Id");
 export const rovMainVideoTrack: nStoreT<MediaStreamTrack | null> = nStore(null);
 
 export const thisPeer: nStoreT<Peer | null> = nStore(null);
-export const connectionManager: nStoreT<ConnectionManager | null> = nStore(null);
-export const messageHandler: nStoreT<MessageHandler | null> = nStore(null);
 export const gamepadController: nStoreT<GamepadController | null> = nStore(null);
 
 export const peerServerConnState: nStoreT<ConnectionState> = nStore(ConnectionState.disconnected);

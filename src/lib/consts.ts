@@ -38,55 +38,6 @@ export type EventHandlerStore = {
     [key: string]: (e?: any) => void;
 }
 
-/** ----- rov api ----------- */
-
-export enum RovApiAction {
-    ping = "ping",
-    password_attempt = "password_attempt",
-    authtoken_attempt = "authtoken_attempt",
-    take_control = "take_control",
-    move = "move",
-    begin_video_stream = "begin_video_stream",
-    take_photo = "take_photo",
-    start_video_rec = "start_video_rec",
-    stop_video_rec = "stop_video_rec",
-    toogle_lights = "toogle_lights",
-    shutdown_rov = "shutdown_rov",
-    reboot_rov = "reboot_rov",
-    enable_wifi = "enable_wifi",
-    disable_wifi = "disable_wifi",
-    rov_status_report = "rov_status_report",
-    restart_rov_services = "restart_rov_services",
-    rov_logs = "rov_logs",
-}
-
-export interface RovApiActionInterface {
-    action: RovApiAction;
-    val: string;
-    cid: string;
-}
-
-export enum RovApiResponseStatus {
-    done = "done",
-    error = "error",
-    pong = "pong",
-    sensorUpdate = "sensor-update",
-    passwordRequired = "password-required",
-    passwordAccepted = "password-accepted",
-    passwordInvalid = "password-invalid",
-    tokenAccepted = "token-accepted",
-    // tokenInvalid = "token-invalid", // Not implemented
-    driverChanged = "driver-changed",
-    // clientConnected = "client-connected", // Not implemented
-    // clientDisconnected = "client-disconnected", // Not implemented
-}
-
-export interface RovApiResponseInterface {
-    status: RovApiResponseStatus; // lowercase string with dashes separating words
-    val: string | number; // value for the status
-    cid: string; // response continuity id (used to match up requests and responses)
-}
-
 
 /******* UI RELATED CONSTANTS ********/
 

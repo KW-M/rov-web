@@ -20,7 +20,7 @@ export class DataConnectionMachine {
     lastRecivedMessageTime = 0;
     connectionTimeoutId: number = -1;
     currentState: ConnectionState = ConnectionState.disconnected;
-    onMessageRecived: (msg: string) => void;
+    onMessageRecived: (msg: Uint8Array) => void;
     onStateChange: (c: ConnectionState) => void;
     eventHandlers: EventHandlerStore = null;
 
@@ -61,7 +61,9 @@ export class DataConnectionMachine {
 
         if (!this.dataConnection) {
             console.warn("Failed to connect to peer: " + this.rovPeerId);
-            this.restart();
+            this.connectionTimeoutId = window.setTimeout(() => {
+                this.restart();
+            }, INITIAL_CONNECTION_TIMEOUT);
             return;
         }
 
@@ -103,26 +105,25 @@ export class DataConnectionMachine {
         this.dataConnection.on('data', this.eventHandlers['onData'] = (encodedMessage) => {
             this._changeState(ConnectionState.connected);
             this.resetConnectionTimeout();
-            const message = messageDecoder.decode(encodedMessage);
-            console.log("Message Recived: " + message);
-            this.onMessageRecived(message)
+            // const message = messageDecoder.decode(encodedMessage);
+            this.onMessageRecived(encodedMessage)
         });
     }
 
     resetConnectionTimeout() {
         window.clearTimeout(this.connectionTimeoutId);
         this.connectionTimeoutId = setTimeout(() => {
-            this._changeState(ConnectionState.reconnecting);
-            this.connectionTimeoutId = setTimeout(() => {
-                this.restart();
-            }, RETRY_CONNECTION_TIMEOUT);
+            // this._changeState(ConnectionState.reconnecting);
+            // this.connectionTimeoutId = setTimeout(() => {
+            //     this.restart();
+            // }, RETRY_CONNECTION_TIMEOUT);
         }, CONNECTION_TIMEOUT);
     }
 
-    sendMessage(msg) {
+    sendMessage(msgBytes: Uint8Array) {
         if (this.dataConnection && this.dataConnection.open && this.currentState == ConnectionState.connected) {
-            const encodedMessage = messageEncoder.encode(msg);
-            this.dataConnection.send(encodedMessage)
+            // const encodedMessage = messageEncoder.encode(msg);
+            this.dataConnection.send(msgBytes);
             return true;
         }
         return false

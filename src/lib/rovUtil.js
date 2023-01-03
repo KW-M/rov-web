@@ -13,8 +13,10 @@ export function calculateDesiredMotion(axes) {
     var strafe = Number(axes[2].toFixed(3));
     var vertical = -1 * Number(axes[3].toFixed(3));
     return {
-        thrustVector: [strafe, forward, vertical], // vector in the form [x,y,z]
-        turnRate: turn,
+        VelocityX: strafe,
+        VelocityY: forward,
+        VelocityZ: vertical, // vector in the form [x,y,z]
+        AngularVelocityYaw: turn,
     }
 }
 

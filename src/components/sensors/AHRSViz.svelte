@@ -2,6 +2,7 @@
   import fragmentShader from "./shaders/AHRS_Sphere.glsl?raw";
   import * as twgl from "twgl.js";
   import { onMount } from "svelte";
+  import { rovHeading, rovPitch, rovRoll } from "../../lib/sensors";
   let canvas;
 
   // the most basic vertex shader possible:
@@ -11,26 +12,16 @@ void main() {
   gl_Position = position;
 }`;
 
-  let yaw = 0;
-  let pitch = 0;
-  let roll = 0;
-
   let gl, programInfo, bufferInfo;
-  function render(time) {
-    yaw = time * 0.001;
-    pitch = time * 0.0007;
-    roll = time * 0.0003;
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
-
   $: if (programInfo && gl) {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+    // console.log("rovHeading: ", $rovHeading, "rovPitch: ", $rovPitch, "rovRoll: ", $rovRoll);
+
     const uniforms = {
-      yaw: yaw,
-      pitch: pitch,
-      roll: roll,
+      yaw: $rovHeading * (3.14 / 180) * -1,
+      pitch: $rovPitch * (3.14 / 180) * -1,
+      roll: $rovRoll * (3.14 / 180),
       resolution: [gl.canvas.width, gl.canvas.height],
     };
 

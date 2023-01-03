@@ -21,7 +21,7 @@ const RIGHT_Y_AXIS_INDEX = 3;
 const gpadHelpTooltips = [];
 
 export class GamepadController {
-    constructor(throttleDelay = 250) {
+    constructor(throttleDelay = 10) {
         this.gpadUi = new GamepadUi();
         this.touchedGpadButtonCount = 0
         this.throttleDelay = throttleDelay;
@@ -74,8 +74,9 @@ export class GamepadController {
                 }
             },
             (gamepad) => {
-                var { thrustVector, turnRate } = calculateDesiredMotion(gamepad.axes);
-                RovActions.moveRov(thrustVector, turnRate);
+                var { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
+                if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
+                RovActions.moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw);
             }
         );
 

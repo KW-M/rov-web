@@ -1,6 +1,7 @@
 import { toast } from '@zerodevx/svelte-toast';
+import { rov_action_api } from "./proto/rovActionsCompiled";
 import { ROV_PEERID_BASE } from './consts';
-import { DIALOG_TYPE, rovPeerIdEndNumber } from './globalContext';
+import { DIALOG_TYPE, rovPeerIdEndNumber, type dialogExtraDataType } from './globalContext';
 import { hideLoadingUi, showLoadingUi } from '../components/LoadingIndicator.svelte';
 import { getROVName } from './rovUtil';
 import { openDialog } from '../components/dialogs/DialogSpawner.svelte';
@@ -46,13 +47,14 @@ export function showPasswordPrompt(message, callback) {
     })
 }
 
-export function showScrollableTextPopup(title, callback) {
+export function showScrollableTextPopup(title: string, callback: (a: any) => void) {
     let modifyExtraData = openDialog(DIALOG_TYPE.ScrollingText, { title: title, messageLines: [] }, (_) => {
         if (callback) callback(null)
     })
 
-    let addTextToPopup = (textLine) => {
-        modifyExtraData((extraData) => {
+    let addTextToPopup = (textLine: string) => {
+        console.log("addTextToPopup", textLine)
+        modifyExtraData((extraData: dialogExtraDataType) => {
             return {
                 ...extraData,
                 messageLines: [...extraData.messageLines, textLine],
@@ -119,11 +121,6 @@ export function setupDisconnectBtnClickHandler(callback) {
     }
 }
 
-const clientPeerIdLabel = document.getElementById("client_peer_id_label")
-export function setClientPeerIdDisplay(clientPeerId) {
-    clientPeerIdLabel.innerText = clientPeerId
-}
-
 const roleDisplayText = document.getElementById('role_display_text');
 const takeControlButton = document.getElementById('take_control_btn');
 export function updateRoleDisplay(isDriver) {
@@ -136,76 +133,3 @@ export function updateRoleDisplay(isDriver) {
         // takeControlButton.classList.remove('hidden')
     }
 }
-
-var pingDisplay = document.getElementById('ping_value');
-export function updatePingDisplay(pingTimeMs) {
-    // pingDisplay.innerText = pingTimeMs;
-}
-
-var battDisplay = document.getElementById('battery_value');
-export function updateBatteryDisplay(batteryVolts, batteryPercent) {
-    // battDisplay.innerText = batteryVolts + 'V (' + batteryPercent + '%)';
-}
-
-var pressureDisplay = document.getElementById('pressure_value');
-var tempDisplay = document.getElementById('temp_value');
-export function updateDisplayedSensorValues(sensorValues) {
-    // if (sensorValues.pressure) {
-    //     pressureDisplay.innerText = String(sensorValues.pressure / 0.001 * (1023.6 * 9.8065)); // to meters
-    // }
-    // if (sensorValues.temperature) tempDisplay.innerText = sensorValues.temperature;
-    if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
-    if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
-}
-
-let actionsMenu = document.getElementById("actions-menu-overlay")
-let actionsMenuBtn = document.getElementById("actions-menu-button")
-let actionsMenuHidden = true;
-export function toggleActionsMenu() {
-    actionsMenuHidden = !actionsMenuHidden;
-    if (actionsMenuHidden)
-        actionsMenu.classList.add("hidden")
-    else
-        actionsMenu.classList.remove("hidden")
-}
-// actionsMenuBtn.onclick = toggleActionsMenu;
-
-
-/***** COMPASS AND ORIENTATION RELATED UI *******/
-
-// https://codepen.io/fueru/pen/JjjoXez
-var compassDisc = document.getElementById("compassDiscImg");
-const compassOffset = 135;
-export function setCompassHeading(headingDeg) {
-    var totalDir = -(headingDeg + compassOffset);
-
-    // document.getElementById("direction").innerHTML = "dir: " + Math.ceil(dir) + " + offset(" + offset + ") = " + Math.ceil(totalDir);
-    compassDisc.style.transform = `translateX(${totalDir}px)`;
-}
-
-const gradientArtificialHorizonBackground = document.body//getElementById("artificial_horizon_gradient");
-export function setArtificialHorizonBackground(roll, pitch) {
-    var vShift = Math.min(Math.max(pitch, -90), 90) / 90 * 100;
-    gradientArtificialHorizonBackground.style.backgroundImage = `linear-gradient(${roll}deg, rgba(2,0,36,1) ${-100 + vShift}%, rgba(9,88,116,1) ${50 + vShift}%, rgba(10,109,140,1) ${50 + vShift}%, rgba(0,255,235,1) ${200 + vShift}%)`;
-}
-
-// FOR DEBUGGING COMPASS:
-// document.addEventListener("DOMContentLoaded", function () {
-//     if (window.DeviceOrientationEvent) {
-//         window.addEventListener('deviceorientation', function (eventData) {
-//             // gamma: Tilting the device from left to right. Tilting the device to the right will result in a positive value.
-//             // var tiltLR = eventData.gamma;
-
-//             // beta: Tilting the device from the front to the back. Tilting the device to the front will result in a positive value.
-//             var tiltFB = eventData.beta;
-//             // this.document.getElementById("rov_connection_bar").innerHTML = "tiltLR: " + tiltLR + " tiltFB: " + (tiltFB - 90);
-
-//             // alpha: The direction the compass of the device aims to in degrees.
-//             var dir = eventData.alpha
-//             setArtificialHorizonBackground(dir, -tiltFB);
-//             // Call the function to use the data on the page.
-//             setCompassHeading(dir);
-//         }, false);
-//     }
-//     setArtificialHorizonBackground(0, 0);
-// });

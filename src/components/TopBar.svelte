@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RovActions } from "../lib/rovActions_old";
+  import { RovActions } from "../lib/rovActions";
 
   import { Icon } from "@steeze-ui/svelte-icon";
   import { AdjustmentsHorizontal, Wrench, Power, ArrowDownOnSquareStack, ArrowsPointingOut, ArrowsPointingIn, Cog6Tooth, QuestionMarkCircle } from "@steeze-ui/heroicons";
@@ -10,14 +10,15 @@
   import { ConnectionState } from "../lib/consts";
   import { addTooltip } from "./HelpTooltips.svelte";
   let menuOpen = false;
-  $: if ($rovDataChannelConnState != ConnectionState.connected) menuOpen = false;
+  // $: if ($rovDataChannelConnState != ConnectionState.connected) menuOpen = false;
+  // disabled={$rovDataChannelConnState != ConnectionState.connected}
 </script>
 
 <div class="px-1 absolute flex w-full flex-col max-h-screen pointer-events-none">
   <div class="navbar rounded-t-none shadow-xl rounded-box h-9 p-0 min-h-0 lg:rounded-t-none bg-base-100  m-auto max-w-sm  top-bar flex-none pointer-events-auto overflow-hidden">
     <div class="pr-3 justify-start flex-shrink">
       <!-- <div class="dropdown"> -->
-      <button class="btn btn-ghost btn-square rounded-tl-none" disabled={$rovDataChannelConnState != ConnectionState.connected} on:click={() => (menuOpen = !menuOpen)} use:addTooltip={{ label: "Menu", placement: "left" }}>
+      <button class="btn btn-ghost btn-square rounded-tl-none" on:click={() => (menuOpen = !menuOpen)} use:addTooltip={{ label: "Menu", placement: "left" }}>
         <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg> -->
         <Icon theme="solid" src={Cog6Tooth} class="w-6 h-6 pointer-events-none" />
       </button>

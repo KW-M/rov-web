@@ -1,6 +1,21 @@
 syntax = "proto3";
 package rov_action_api;
 
+enum SensorMeasurmentTypes {
+    depth_meters = 0;
+    water_temp_celsius = 1;
+    pressure_mbar = 2;
+    yaw_degrees = 3;
+    pitch_degrees = 4;
+    roll_degrees = 5;
+    x_acceleration_m_s2 = 6; // Not implemented
+    y_acceleration_m_s2 = 7; // Not implemented
+    z_acceleration_m_s2 = 8; // Not implemented
+    battery_voltage = 9; // Not implemented
+    battery_current_amps = 10; // Not implemented
+    internal_temp_celsius = 11; // from the compass/imu
+}
+
 // enum RovActionTypes {
 //     ping = 0;
 //     password_attempt = 1;
@@ -96,6 +111,10 @@ message RovLogsAction {
     // No data needed
 }
 
+message RefreshAllSensorsAction {
+    // No data needed
+}
+
 message RovAction {
     // The type of action to perform see (RovActionTypes).
     // RovActionTypes Type = 1;
@@ -138,6 +157,8 @@ message RovAction {
         RestartRovServicesAction RestartRovServices = 18;
         // rov_logs
         RovLogsAction RovLogs = 19;
+        // refresh_all_sensors
+        RefreshAllSensorsAction RefreshAllSensors = 20;
     }
 }
 
@@ -158,23 +179,9 @@ message RovAction {
 //     client_disconnected = 11; // Not implemented
 // }
 
-enum RovSensorTypes {
-    depth_meters = 0;
-    water_temp_celsius = 1;
-    pressure_mbar = 2;
-    yaw_degrees = 3;
-    pitch_degrees = 4;
-    roll_degrees = 5;
-    x_acceleration_m_s2 = 6; // Not implemented
-    y_acceleration_m_s2 = 7; // Not implemented
-    z_acceleration_m_s2 = 8; // Not implemented
-    battery_voltage = 9; // Not implemented
-    battery_current = 10; // Not implemented
-}
-
-
 message DoneResponse {
-    // No data needed
+    // An optional status message to send back
+    optional string Message = 1;
 }
 
 message ErrorResponse {
@@ -191,16 +198,16 @@ message PongResponse {
     int64 Time = 1;
 }
 
-message SensorUpdate {
-    // The sensor name
-    string SensorType = 1;
+message Measurement {
+    // The sensor type (see RovSensorTypes)
+    SensorMeasurmentTypes MeasurementType = 1;
     // The sensor value
-    string Value = 2;
+    float Value = 2;
 }
 
 message SensorUpdatesResponse {
-    // The sensor updates
-    repeated SensorUpdate SensorUpdates = 1;
+    // All the changed mesurements from the sensors: (see Measurement type)
+    repeated Measurement MeasurementUpdates = 1;
 }
 
 message PasswordRequiredResponse {
@@ -240,6 +247,11 @@ message ClientDisconnectedResponse {
     string ClientPeerId = 1;
 }
 
+message HeartbeatResponse {
+    // The time the heartbeat was sent
+    int64 Time = 1;
+}
+
 message RovResponse {
 	// // The type of response message recived see (RovResponseTypes).
     // RovResponseTypes Type = 1;
@@ -274,5 +286,7 @@ message RovResponse {
         ClientConnectedResponse ClientConnected = 14;
         // client_disconnected
         ClientDisconnectedResponse ClientDisconnected = 15;
+        // heartbeat
+        HeartbeatResponse Heartbeat = 16;
     }
 }

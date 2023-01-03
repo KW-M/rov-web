@@ -2,52 +2,59 @@
   import { Icon } from "@steeze-ui/svelte-icon";
   import { NetworkCheck, Waves, Thermostat } from "@steeze-ui/material-design-icons";
   import { addTooltip } from "../HelpTooltips.svelte";
+  import { depthM, internalTempC, networkLatencyMs, waterTempC } from "../../lib/sensors";
+  import type { nStoreT } from "../../lib/libraries/nStore";
+  import type { IconSource } from "@steeze-ui/svelte-icon/types";
+  import { subscribe } from "svelte/internal";
+  import { onDestroy } from "svelte";
 
-  let sensorValues = {
-    NetPing: 0,
-    Depth: 50,
-    Temperature: 0,
+  type SensorDetails = {
+    measurementName: string;
+    unit: string;
+    icon: IconSource;
+    valueStore: nStoreT<number>;
   };
 
-  export const SetSensorValues = (values) => {
-    sensorValues = { ...values, ...sensorValues };
-  };
-
-  const sensorTypes = [
-    { name: "Depth", unit: "m", icon: Waves },
-    { name: "Temperature", unit: "℃", icon: Thermostat },
-    { name: "NetPing", unit: "ms", icon: NetworkCheck },
+  const sensorDetails: SensorDetails[] = [
+    { measurementName: "Depth", unit: "m", icon: Waves, valueStore: depthM },
+    { measurementName: "Water Temp", unit: "℃", icon: Thermostat, valueStore: waterTempC },
+    { measurementName: "Internal Temp", unit: "℃", icon: Thermostat, valueStore: internalTempC },
+    { measurementName: "Latency", unit: "ms", icon: NetworkCheck, valueStore: networkLatencyMs },
   ];
+</script>
 
-  //// For testing
-  // setInterval(() => {
-  //   let sin = (Math.sin(Date.now() / 1000) + 1) / 2;
-  //   sensorValues = {
-  //     NetPing: 100 * sin,
-  //     Battery: 100 * sin,
-  //     Depth: 100 * sin,
-  //     Temperature: 100 * sin,
-  //     Humidity: 100 * sin,
-  //     Pressure: 100 * sin,
-  //     Light: 100 * sin,
-  //   };
-  // }, 50);
+<script lang="ts">
+  let sensorValues = {};
+  const unsubs = [];
+  for (let i = 0; i < sensorDetails.length; i++) {
+    const { measurementName, valueStore } = sensorDetails[i];
+    unsubs.push(
+      subscribe(valueStore, (value) => {
+        sensorValues[measurementName] = value;
+        sensorValues = sensorValues; // force update
+      })
+    );
+  }
+
+  onDestroy(() => {
+    unsubs.forEach((unsub) => unsub());
+  });
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <!-- <progress id="depth" class="progress progress-warning vertical-indicator left-down h-8" value={sensorValues.Depth} max="100" tabindex="0" use:addTooltip={{ label: "Depth Guage", placement: "right", timeout: 500 }}> Depth: {sensorValues.Depth}ft</progress> -->
 <!-- <input id="depth" type="range" min="0" max="100" value={sensorValues.Depth} class="range range-primary range-md vertical-indicator left-down" /> -->
-<input id="depth2" type="range" min="0" max="100" value={sensorValues.Depth} class="range range-info range-md vertical-indicator left-down" />
+<input id="depth2" type="range" min="0" max="100" value={$depthM} class="range range-info range-md vertical-indicator left-down" />
 <!-- <progress id="depth2" class="progress progress-success" value="40" max="100" /> -->
 <div class="sensor-overlay-container pointer-events-none">
   <div class="sensor-overlay sensor-overlay-left">
     <div class="w-4 h-12" />
-    {#each sensorTypes as { name, unit, icon }, i}
-      {#if i <= sensorTypes.length / 2 && sensorValues[name] != undefined}
+    {#each sensorDetails as { measurementName, unit, icon, valueStore }, i}
+      {#if i <= sensorDetails.length / 2}
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <div class="sensor pointer-events-auto cursor-help" tabindex="0" use:addTooltip={{ label: name, placement: "bottom", timeout: 0 }}>
+        <div class="sensor pointer-events-auto cursor-help" tabindex="0" use:addTooltip={{ label: measurementName, placement: "bottom", timeout: 0 }}>
           <Icon theme="solid" src={icon} class="sensor-icon pointer-events-none w-6 h-6 mr-2" />
-          <span class="sensor-value">{sensorValues[name].toFixed(2)}</span>
+          <span class="sensor-value">{sensorValues[measurementName].toFixed(2).padEnd(4)}</span>
           <span class="sensor-unit">{unit}</span>
         </div>
       {/if}
@@ -56,12 +63,12 @@
   <div class="sensor-center-spacer" />
   <div class="sensor-overlay sensor-overlay-right">
     <div class="w-12 h-12" />
-    {#each sensorTypes as { name, unit, icon }, i}
-      {#if i > sensorTypes.length / 2 && sensorValues[name] != undefined}
+    {#each sensorDetails as { measurementName, unit, icon }, i}
+      {#if i > sensorDetails.length / 2}
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <div class="sensor pointer-events-auto cursor-help" tabindex="0" use:addTooltip={{ label: name, placement: "bottom", timeout: 0 }}>
+        <div class="sensor pointer-events-auto cursor-help" tabindex="0" use:addTooltip={{ label: measurementName, placement: "bottom", timeout: 0 }}>
           <Icon theme="solid" src={icon} class="sensor-icon pointer-events-none w-6 h-6 mr-2" />
-          <span class="sensor-value">{sensorValues[name].toFixed(2).padEnd(4)}</span>
+          <span class="sensor-value">{sensorValues[measurementName].toFixed(2).padEnd(4)}</span>
           <span class="sensor-unit">{unit}</span>
         </div>
       {/if}

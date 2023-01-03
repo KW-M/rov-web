@@ -3,6 +3,22 @@ import Long = require("long");
 /** Namespace rov_action_api. */
 export namespace rov_action_api {
 
+    /** SensorMeasurmentTypes enum. */
+    enum SensorMeasurmentTypes {
+        depth_meters = 0,
+        water_temp_celsius = 1,
+        pressure_mbar = 2,
+        yaw_degrees = 3,
+        pitch_degrees = 4,
+        roll_degrees = 5,
+        x_acceleration_m_s2 = 6,
+        y_acceleration_m_s2 = 7,
+        z_acceleration_m_s2 = 8,
+        battery_voltage = 9,
+        battery_current_amps = 10,
+        internal_temp_celsius = 11
+    }
+
     /** Properties of a PingAction. */
     interface IPingAction {
 
@@ -1592,6 +1608,97 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a RefreshAllSensorsAction. */
+    interface IRefreshAllSensorsAction {
+    }
+
+    /** Represents a RefreshAllSensorsAction. */
+    class RefreshAllSensorsAction implements IRefreshAllSensorsAction {
+
+        /**
+         * Constructs a new RefreshAllSensorsAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IRefreshAllSensorsAction);
+
+        /**
+         * Creates a new RefreshAllSensorsAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RefreshAllSensorsAction instance
+         */
+        public static create(properties?: rov_action_api.IRefreshAllSensorsAction): rov_action_api.RefreshAllSensorsAction;
+
+        /**
+         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * @param message RefreshAllSensorsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * @param message RefreshAllSensorsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RefreshAllSensorsAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RefreshAllSensorsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RefreshAllSensorsAction;
+
+        /**
+         * Decodes a RefreshAllSensorsAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns RefreshAllSensorsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RefreshAllSensorsAction;
+
+        /**
+         * Verifies a RefreshAllSensorsAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a RefreshAllSensorsAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns RefreshAllSensorsAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.RefreshAllSensorsAction;
+
+        /**
+         * Creates a plain object from a RefreshAllSensorsAction message. Also converts values to other types if specified.
+         * @param message RefreshAllSensorsAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.RefreshAllSensorsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this RefreshAllSensorsAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for RefreshAllSensorsAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a RovAction. */
     interface IRovAction {
 
@@ -1648,6 +1755,9 @@ export namespace rov_action_api {
 
         /** RovAction RovLogs */
         RovLogs?: (rov_action_api.IRovLogsAction|null);
+
+        /** RovAction RefreshAllSensors */
+        RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
     }
 
     /** Represents a RovAction. */
@@ -1713,8 +1823,11 @@ export namespace rov_action_api {
         /** RovAction RovLogs. */
         public RovLogs?: (rov_action_api.IRovLogsAction|null);
 
+        /** RovAction RefreshAllSensors. */
+        public RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
+
         /** RovAction Body. */
-        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs");
+        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors");
 
         /**
          * Creates a new RovAction instance using the specified properties.
@@ -1794,23 +1907,11 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** RovSensorTypes enum. */
-    enum RovSensorTypes {
-        depth_meters = 0,
-        water_temp_celsius = 1,
-        pressure_mbar = 2,
-        yaw_degrees = 3,
-        pitch_degrees = 4,
-        roll_degrees = 5,
-        x_acceleration_m_s2 = 6,
-        y_acceleration_m_s2 = 7,
-        z_acceleration_m_s2 = 8,
-        battery_voltage = 9,
-        battery_current = 10
-    }
-
     /** Properties of a DoneResponse. */
     interface IDoneResponse {
+
+        /** DoneResponse Message */
+        Message?: (string|null);
     }
 
     /** Represents a DoneResponse. */
@@ -1821,6 +1922,12 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          */
         constructor(properties?: rov_action_api.IDoneResponse);
+
+        /** DoneResponse Message. */
+        public Message?: (string|null);
+
+        /** DoneResponse _Message. */
+        public _Message?: "Message";
 
         /**
          * Creates a new DoneResponse instance using the specified properties.
@@ -2191,103 +2298,103 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a SensorUpdate. */
-    interface ISensorUpdate {
+    /** Properties of a Measurement. */
+    interface IMeasurement {
 
-        /** SensorUpdate SensorType */
-        SensorType?: (string|null);
+        /** Measurement MeasurementType */
+        MeasurementType?: (rov_action_api.SensorMeasurmentTypes|null);
 
-        /** SensorUpdate Value */
-        Value?: (string|null);
+        /** Measurement Value */
+        Value?: (number|null);
     }
 
-    /** Represents a SensorUpdate. */
-    class SensorUpdate implements ISensorUpdate {
+    /** Represents a Measurement. */
+    class Measurement implements IMeasurement {
 
         /**
-         * Constructs a new SensorUpdate.
+         * Constructs a new Measurement.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ISensorUpdate);
+        constructor(properties?: rov_action_api.IMeasurement);
 
-        /** SensorUpdate SensorType. */
-        public SensorType: string;
+        /** Measurement MeasurementType. */
+        public MeasurementType: rov_action_api.SensorMeasurmentTypes;
 
-        /** SensorUpdate Value. */
-        public Value: string;
+        /** Measurement Value. */
+        public Value: number;
 
         /**
-         * Creates a new SensorUpdate instance using the specified properties.
+         * Creates a new Measurement instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns SensorUpdate instance
+         * @returns Measurement instance
          */
-        public static create(properties?: rov_action_api.ISensorUpdate): rov_action_api.SensorUpdate;
+        public static create(properties?: rov_action_api.IMeasurement): rov_action_api.Measurement;
 
         /**
-         * Encodes the specified SensorUpdate message. Does not implicitly {@link rov_action_api.SensorUpdate.verify|verify} messages.
-         * @param message SensorUpdate message or plain object to encode
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ISensorUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_action_api.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SensorUpdate message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdate.verify|verify} messages.
-         * @param message SensorUpdate message or plain object to encode
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ISensorUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_action_api.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a SensorUpdate message from the specified reader or buffer.
+         * Decodes a Measurement message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns SensorUpdate
+         * @returns Measurement
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SensorUpdate;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.Measurement;
 
         /**
-         * Decodes a SensorUpdate message from the specified reader or buffer, length delimited.
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns SensorUpdate
+         * @returns Measurement
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SensorUpdate;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.Measurement;
 
         /**
-         * Verifies a SensorUpdate message.
+         * Verifies a Measurement message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a SensorUpdate message from a plain object. Also converts values to their respective internal types.
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns SensorUpdate
+         * @returns Measurement
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.SensorUpdate;
+        public static fromObject(object: { [k: string]: any }): rov_action_api.Measurement;
 
         /**
-         * Creates a plain object from a SensorUpdate message. Also converts values to other types if specified.
-         * @param message SensorUpdate
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+         * @param message Measurement
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.SensorUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_action_api.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this SensorUpdate to JSON.
+         * Converts this Measurement to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for SensorUpdate
+         * Gets the default type url for Measurement
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2297,8 +2404,8 @@ export namespace rov_action_api {
     /** Properties of a SensorUpdatesResponse. */
     interface ISensorUpdatesResponse {
 
-        /** SensorUpdatesResponse SensorUpdates */
-        SensorUpdates?: (rov_action_api.ISensorUpdate[]|null);
+        /** SensorUpdatesResponse MeasurementUpdates */
+        MeasurementUpdates?: (rov_action_api.IMeasurement[]|null);
     }
 
     /** Represents a SensorUpdatesResponse. */
@@ -2310,8 +2417,8 @@ export namespace rov_action_api {
          */
         constructor(properties?: rov_action_api.ISensorUpdatesResponse);
 
-        /** SensorUpdatesResponse SensorUpdates. */
-        public SensorUpdates: rov_action_api.ISensorUpdate[];
+        /** SensorUpdatesResponse MeasurementUpdates. */
+        public MeasurementUpdates: rov_action_api.IMeasurement[];
 
         /**
          * Creates a new SensorUpdatesResponse instance using the specified properties.
@@ -3149,6 +3256,103 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a HeartbeatResponse. */
+    interface IHeartbeatResponse {
+
+        /** HeartbeatResponse Time */
+        Time?: (number|Long|null);
+    }
+
+    /** Represents a HeartbeatResponse. */
+    class HeartbeatResponse implements IHeartbeatResponse {
+
+        /**
+         * Constructs a new HeartbeatResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IHeartbeatResponse);
+
+        /** HeartbeatResponse Time. */
+        public Time: (number|Long);
+
+        /**
+         * Creates a new HeartbeatResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns HeartbeatResponse instance
+         */
+        public static create(properties?: rov_action_api.IHeartbeatResponse): rov_action_api.HeartbeatResponse;
+
+        /**
+         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * @param message HeartbeatResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * @param message HeartbeatResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a HeartbeatResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns HeartbeatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.HeartbeatResponse;
+
+        /**
+         * Decodes a HeartbeatResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns HeartbeatResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.HeartbeatResponse;
+
+        /**
+         * Verifies a HeartbeatResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a HeartbeatResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns HeartbeatResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.HeartbeatResponse;
+
+        /**
+         * Creates a plain object from a HeartbeatResponse message. Also converts values to other types if specified.
+         * @param message HeartbeatResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.HeartbeatResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this HeartbeatResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for HeartbeatResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a RovResponse. */
     interface IRovResponse {
 
@@ -3193,6 +3397,9 @@ export namespace rov_action_api {
 
         /** RovResponse ClientDisconnected */
         ClientDisconnected?: (rov_action_api.IClientDisconnectedResponse|null);
+
+        /** RovResponse Heartbeat */
+        Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
     }
 
     /** Represents a RovResponse. */
@@ -3246,8 +3453,11 @@ export namespace rov_action_api {
         /** RovResponse ClientDisconnected. */
         public ClientDisconnected?: (rov_action_api.IClientDisconnectedResponse|null);
 
+        /** RovResponse Heartbeat. */
+        public Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
+
         /** RovResponse Body. */
-        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected");
+        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat");
 
         /**
          * Creates a new RovResponse instance using the specified properties.

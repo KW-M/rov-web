@@ -3,26 +3,25 @@
   import { DialogTitle } from "@rgossiaux/svelte-headlessui";
   import Dialog from "./Dialog.svelte";
 
-  export let isOpen = true;
   let password = "";
+  let inputElem = null;
   const dispatch = createEventDispatcher();
 
   function onClose(submitPassword) {
     if (submitPassword && password.length == 0) {
-      console.log("Password is empty");
       return;
     } else if (submitPassword) {
       dispatch("close", password);
     } else dispatch("close", null);
-    isOpen = false;
   }
 </script>
 
 <br />
 
-<Dialog bind:isOpen on:close={() => onClose(false)} modalStyle={"max-width:16rem; text-align:center"} modalClass="modal-bottom">
+<Dialog on:close={() => onClose(false)} modalStyle={"max-width:16rem; text-align:center"} modalClass="modal-bottom" initialFocus={inputElem}>
   <DialogTitle as="h3" class="font-bold text-lg">Please enter the driver password</DialogTitle>
   <input
+    bind:this={inputElem}
     bind:value={password}
     type="password"
     on:keypress={(e) => {

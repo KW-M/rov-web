@@ -3,12 +3,12 @@
   import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./lib/consts";
-  import { appReady, connectionManager, debugXstateMode, gamepadController, messageHandler, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
+  import { appReady, debugXstateMode, gamepadController, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
 
-  import { ConnectionManager } from "./lib/connectionManager";
-  import { MessageHandler } from "./lib/messageHandler";
+  import { connectionManager } from "./lib/connectionManager";
+  import { rovMessageHandler } from "./lib/rovMessageHandler";
   import { GamepadController } from "./lib/gamepad";
-  import { RovActions } from "./lib/rovActions_old";
+  import { RovActions } from "./lib/rovActions";
   import { runSiteInitMachine } from "./lib/siteInit";
   import { showToastMessage } from "./lib/ui";
   import { getURLQueryStringVariable } from "./lib/util";
@@ -25,7 +25,7 @@
   import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
   import AhrsViz from "./components/sensors/AHRSViz.svelte";
 
-  let gpadCtrl = new GamepadController(100);
+  let gpadCtrl = new GamepadController(10);
   gamepadController.set(gpadCtrl);
   const debugModeActive = getURLQueryStringVariable("debug") != undefined;
   if (debugModeActive) {
@@ -54,7 +54,7 @@
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.connected) {
       showToastMessage("Connected to ROV!", 1000);
-      gpadCtrl.setupGamepadEvents(250);
+      gpadCtrl.setupGamepadEvents(10);
       hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
       hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
       RovActions.startPingLoop();
@@ -72,27 +72,21 @@
   }
 
   onMount(() => {
-    console.log("App mounted0");
     // const loading = loadingIndicator.get();
     appReady.set(true);
     showLoadingUi(LOADING_MESSAGE.internetCheck, null);
     runSiteInitMachine(() => {
       hideLoadingUi(LOADING_MESSAGE.internetCheck);
-      let msgHandler = MessageHandler;
-      messageHandler.set(msgHandler);
-      let connMngr = new ConnectionManager(MessageHandler.handleRecivedMessage);
-      connectionManager.set(connMngr);
-      msgHandler.setSendMessageCallback(connMngr.sendMessageToCurrentRov.bind(connMngr));
-      connMngr.start();
+      rovMessageHandler.setSendMessageCallback(connectionManager.sendMessageToCurrentRov.bind(connectionManager));
+      connectionManager.start();
       // connMngr.connectToCurrentTargetRov(); /// DON"T DO THIS HERE
     });
   });
 
   onDestroy(() => {
-    console.log("cleaning up");
     RovActions.stopPingLoop();
-    RovActions.disconnectFromRov();
-    connectionManager.get() && connectionManager.get().cleanup();
+    // RovActions.disconnectFromRov();
+    // connectionManager.cleanup();
     gpadCtrl.gpadEmulator.cleanup();
   });
 </script>
