@@ -113,10 +113,10 @@ export class DataConnectionMachine {
     resetConnectionTimeout() {
         window.clearTimeout(this.connectionTimeoutId);
         this.connectionTimeoutId = setTimeout(() => {
-            // this._changeState(ConnectionState.reconnecting);
-            // this.connectionTimeoutId = setTimeout(() => {
-            //     this.restart();
-            // }, RETRY_CONNECTION_TIMEOUT);
+            this._changeState(ConnectionState.reconnecting);
+            this.connectionTimeoutId = setTimeout(() => {
+                this.restart();
+            }, RETRY_CONNECTION_TIMEOUT);
         }, CONNECTION_TIMEOUT);
     }
 
