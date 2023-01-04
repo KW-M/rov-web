@@ -43,6 +43,7 @@ export function showPasswordPrompt(message, callback) {
     passwordPromptOpen = true;
 
     openDialog(DIALOG_TYPE.Password, {}, (password) => {
+        passwordPromptOpen = false;
         if (password != null && callback) callback(password);
     })
 }
