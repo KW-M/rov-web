@@ -2,7 +2,7 @@
 import { generateStateChangeFunction } from "./util";
 import { createMachine, interpret } from "xstate";
 import { get } from "svelte/store";
-import { debugXstateMode, rovMainVideoTrack, rovVideoStream } from "./globalContext";
+import { debugPageModeActive, rovMainVideoTrack, rovVideoStream } from "./globalContext";
 import { showToastMessage } from "./ui";
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
@@ -85,7 +85,7 @@ export class MediaConnectionMachine {
     }
 
     start() {
-        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugXstateMode.get() })
+        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugPageModeActive.get() })
         this.runningMachine.onTransition((e) => {
             if (this.currentState == e.value) return;
             this.currentState = e.value;

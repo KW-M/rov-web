@@ -1,6 +1,6 @@
 import { rov_action_api } from "./proto/rovActionsCompiled";
 import { showPasswordPrompt, showToastMessage, updateRoleDisplay } from "./ui";
-import { isRovDriver } from "./globalContext";
+import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
 
@@ -22,7 +22,7 @@ export class RovMsgHandlerClass {
 
     handleRecivedMessage(msgBytes: Uint8Array) {
         const msgData = rov_action_api.RovResponse.decode(new Uint8Array(msgBytes));
-        // console.debug("Msg Rcvd: ", msgData);
+        if (debugPageModeActive.get()) showToastMessage(JSON.stringify(msgData.toJSON()), 800);
         this.runExchangeCallback(msgData.RovExchangeId, msgData);
         if (msgData.Done) {
             return this.handleDoneMsgRecived(msgData.RovExchangeId, msgData.Done);

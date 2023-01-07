@@ -39,12 +39,9 @@ export type dialogInfoType = {
 // };
 
 export const appReady: nStoreT<boolean> = nStore(false);
-export const debugXstateMode: nStoreT<boolean> = nStore(false);
+export const debugPageModeActive: nStoreT<boolean> = nStore(false);
 export const stressTest: nStoreT<boolean> = nStore(false);
 export const fullscreenOpen: nStoreT<boolean> = nStore(false);
-document.addEventListener('fullscreenchange', (e) => {
-    fullscreenOpen.set(document.fullscreenElement !== null);
-});
 
 export const peerServerConfig: nStoreT<any | null> = nStore(null);
 export const rovIpAddr: nStoreT<string> = nStore("raspberrypi.local");

@@ -4,7 +4,7 @@ import { createMachine, interpret } from "xstate";
 import { peerServerCloudOptions } from "./consts";
 import Peer from "peerjs";
 import { get } from "svelte/store";
-import { debugXstateMode, ourPeerId } from "./globalContext";
+import { debugPageModeActive, ourPeerId } from "./globalContext";
 import { showToastMessage } from "./ui";
 
 
@@ -78,7 +78,7 @@ export class OurPeerMachine {
     }
 
     start() {
-        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugXstateMode.get() })
+        this.runningMachine = interpret(this.xstateMachineLayout, { devTools: debugPageModeActive.get() })
         this.runningMachine.onTransition((e) => { this.currentState = e.value; this.onStateChangeCallback(this.currentState) })
         this.runningMachine.start();
 

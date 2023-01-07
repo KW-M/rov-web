@@ -3,7 +3,7 @@
   import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./lib/consts";
-  import { appReady, debugXstateMode, gamepadController, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
+  import { appReady, debugPageModeActive, gamepadController, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
 
   import { connectionManager } from "./lib/connectionManager";
   import { rovMessageHandler } from "./lib/rovMessageHandler";
@@ -27,11 +27,9 @@
 
   let gpadCtrl = new GamepadController(10);
   gamepadController.set(gpadCtrl);
-  const debugModeActive = getURLQueryStringVariable("debug") != undefined;
-  if (debugModeActive) {
-    inspect({ iframe: false });
-  }
-  debugXstateMode.set(debugModeActive);
+  // if (debugModeActive) {
+  //   inspect({ iframe: false });
+  // }
   rovPeerIdEndNumber.set(parseInt(localStorage.getItem("rovPeerIdEndNumber") || "0"));
   ourPeerId.set(localStorage.getItem("ourPeerId") || null);
   ourPeerId.subscribe((newVal) => {

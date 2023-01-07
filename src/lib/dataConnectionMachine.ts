@@ -5,8 +5,8 @@ import type { EventHandlerStore } from "./consts";
 import { ConnectionState } from "./consts";
 
 const INITIAL_CONNECTION_TIMEOUT = 12000; // 12 seconds
-const CONNECTION_TIMEOUT = 2000; // 1.5 seconds
-const RETRY_CONNECTION_TIMEOUT = 5000; // 5 seconds
+const CONNECTION_TIMEOUT = 5000; // 5 seconds
+const RETRY_CONNECTION_TIMEOUT = 3000; // 3 seconds
 
 // FOR CONVERTING TEXT TO/FROM BINARY FOR SENDING OVER THE WEBRTC DATACHANNEL
 const messageEncoder = new TextEncoder(); // always utf-8

@@ -3,7 +3,7 @@ import { isInternetAvailable } from "./util"
 import { showToastMessage } from "./ui";
 
 import { LOADING_MESSAGE, peerServerCloudOptions, peerServerLocalOptions } from "./consts";
-import { debugXstateMode, peerServerConfig, rovIpAddr } from "./globalContext";
+import { debugPageModeActive, peerServerConfig, rovIpAddr } from "./globalContext";
 import { showLoadingUi, hideLoadingUi } from "../components/LoadingIndicator.svelte";
 import { get } from "svelte/store";
 
@@ -164,6 +164,6 @@ export const runSiteInitMachine = (sendParentCallback) => {
     });
 
 
-  const runningMachine = interpret(siteInitMachine, { devTools: debugXstateMode.get() }).start();
+  const runningMachine = interpret(siteInitMachine, { devTools: debugPageModeActive.get() }).start();
   return runningMachine;
 }
