@@ -1,5 +1,5 @@
 import { sendLivekitMessage } from "./livekit";
-import { SimplePeerConnection } from "../../js/simplepeer"
+import { SimplePeerConnection } from "../../js/simplePeer"
 import { handleFrontendMsgRcvd } from "./msgHandler";
 
 
