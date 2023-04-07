@@ -146,7 +146,8 @@ export class LivekitClientConnection {
                     this.videoElem = track.attach();
                     this.videoElem.setAttribute("host", this.hostUrl)
                     videoContainerElem = document.getElementById("video_container");
-                    document.body.appendChild(this.videoElem);
+                    console.log(videoContainerElem);
+                    videoContainerElem.appendChild(this.videoElem);
                 } // else if (track.kind === Track.Kind.Audio) {}
                 console.log(track, this.hostUrl)
             })
