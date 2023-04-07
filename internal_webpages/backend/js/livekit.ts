@@ -66,50 +66,6 @@ export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.Roo
     }));
 }
 
-export async function connectToLivekit(livekitSetup: LivekitSetupOptions): Promise<boolean> {
-    if (!livekitSetup.CloudAPIKey || !livekitSetup.CloudSecretKey || !livekitSetup.RovRoomName) throw new Error("Missing some required livekit setup url query params.");
-    const livekitUrlEndpoint = livekitSetup.ForceLocal ? LIVEKIT_LOCAL_ENDPOINT : LIVEKIT_CLOUD_ENDPOINT;
-    const startTime = Date.now();
-
-    if (!livekitSetup.ForceLocal) {
-        // generate authTokens from the credentials:
-        const cloudToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);
-        const cloudRoomClient = new RoomServiceClient(LIVEKIT_CLOUD_ENDPOINT, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
-        await createLivekitRoom(cloudRoomClient, livekitSetup.RovRoomName);
-        await refreshMetadata(cloudRoomClient, livekitSetup);
-
-        const cloudLivekitConnection = new LivekitPublisherConnection(LIVEKIT_CLOUD_ENDPOINT, (msg, roomId, hostUrl) => {
-            handleBackendMsgRcvd(msg)
-        }, (state, roomId, hostUrl) => {
-            console.log("Cloud Conn State Changed: " + state, roomId, hostUrl)
-        })
-
-        await cloudLivekitConnection.start(livekitSetup.RovRoomName, cloudToken);
-        setSendProxyMessageCallback((data) => {
-            console.log('sendProxyMessage', data);
-            cloudLivekitConnection.sendMessage(new Uint8Array(data))
-        })
-        let cloudRoomList = await listLivekitRooms(cloudRoomClient);
-        console.log('cloud roomList', cloudRoomList);
-    }
-
-    // generate authTokens from the credentials:
-    const localToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);
-    const localRoomClient = new RoomServiceClient(LIVEKIT_LOCAL_ENDPOINT, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
-    await createLivekitRoom(localRoomClient, livekitSetup.RovRoomName);
-    await refreshMetadata(localRoomClient, livekitSetup);
-
-    const localLivekitConnection = new LivekitPublisherConnection(LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
-        handleBackendMsgRcvd(msg)
-    }, (state, roomId, hostUrl) => {
-        console.log("Local Conn State Changed: " + state, roomId, hostUrl)
-    })
-    await localLivekitConnection.start(livekitSetup.RovRoomName, localToken);
-    let localRoomList = await listLivekitRooms(localRoomClient);
-    console.log('local roomList', localRoomList);
-
-    return true;
-}
 
 type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Array) => void }
 type MsgRecivedCallback = (msg: Uint8Array, roomId: string, hostUrl: string) => void;
@@ -253,7 +209,7 @@ export class LivekitPublisherConnection {
     }
 
     sendMessage(msgBytes: Uint8Array, onSendCallback?: () => void, skipQueue = false) {
-        console.log("sendMessage() to rov ", this.roomConn.getParticipantByIdentity(this.roomId))
+        console.log("sendMessage() to driver/spectator ", msgBytes)
         this.roomConn.localParticipant.publishData(msgBytes, DataPacket_Kind.RELIABLE)
     }
 
@@ -263,4 +219,59 @@ export class LivekitPublisherConnection {
             this.roomConn.disconnect(true);
         }
     }
+}
+
+
+
+export const cloudLivekitConnection = new LivekitPublisherConnection(LIVEKIT_CLOUD_ENDPOINT, (msg, roomId, hostUrl) => {
+    handleBackendMsgRcvd(msg)
+}, (state, roomId, hostUrl) => {
+    console.log("Cloud Conn State Changed: " + state, roomId, hostUrl)
+})
+
+
+// export const localLivekitConnection = new LivekitPublisherConnection(LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
+//     handleBackendMsgRcvd(msg)
+// }, (state, roomId, hostUrl) => {
+//     console.log("Local Conn State Changed: " + state, roomId, hostUrl)
+// })
+
+export async function connectToLivekit(livekitSetup: LivekitSetupOptions): Promise<boolean> {
+    if (!livekitSetup.CloudAPIKey || !livekitSetup.CloudSecretKey || !livekitSetup.RovRoomName) throw new Error("Missing some required livekit setup url query params.");
+    const livekitUrlEndpoint = livekitSetup.ForceLocal ? LIVEKIT_LOCAL_ENDPOINT : LIVEKIT_CLOUD_ENDPOINT;
+    const startTime = Date.now();
+
+    if (true) { // USE CLOUD_ENDPOINT
+        // generate authTokens from the credentials:
+        const cloudToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);
+        const cloudRoomClient = new RoomServiceClient(LIVEKIT_CLOUD_ENDPOINT, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
+        await createLivekitRoom(cloudRoomClient, livekitSetup.RovRoomName);
+        await refreshMetadata(cloudRoomClient, livekitSetup);
+
+        await cloudLivekitConnection.start(livekitSetup.RovRoomName, cloudToken);
+        // setSendProxyMessageCallback((data) => {
+        //     console.log('sendProxyMessage', data);
+        //     cloudLivekitConnection.sendMessage(new Uint8Array(data))
+        // })
+        let cloudRoomList = await listLivekitRooms(cloudRoomClient);
+        console.log('cloud roomList', cloudRoomList);
+    } else {
+        // // generate authTokens from the credentials:
+        // const localToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);
+        // const localRoomClient = new RoomServiceClient(LIVEKIT_LOCAL_ENDPOINT, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
+        // await createLivekitRoom(localRoomClient, livekitSetup.RovRoomName);
+        // await refreshMetadata(localRoomClient, livekitSetup);
+
+        // await localLivekitConnection.start(livekitSetup.RovRoomName, localToken);
+        // let localRoomList = await listLivekitRooms(localRoomClient);
+        // console.log('local roomList', localRoomList);
+
+    }
+
+
+    return true;
+}
+
+export function sendLivekitMessage(msg: Uint8Array) {
+    cloudLivekitConnection.sendMessage(msg);
 }

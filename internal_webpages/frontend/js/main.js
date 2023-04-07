@@ -2,6 +2,7 @@ import { connectToRoom, connectToRoomLocal, listLivekitRooms, sendTestMessage } 
 import { waitfor } from "../../js/util"
 import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from "../../js/consts";
 import { handleFrontendMsgRcvd } from "./msgHandler";
+import { initSimplePeerSubscriber } from "./simplePeerSub";
 // import { setSendProxyMessageCallback } from "./proxy";
 
 // import { SignalRequest } from "livekit-client/dist/src/proto/livekit_rtc";
@@ -24,7 +25,7 @@ async function start() {
 
     while (true) {
         const cloudRooms = await listLivekitRooms(LIVEKIT_CLOUD_ENDPOINT)
-        const localRooms = await listLivekitRooms(LIVEKIT_LOCAL_ENDPOINT)
+        // const localRooms = await listLivekitRooms(LIVEKIT_LOCAL_ENDPOINT)
         // console.log("cloud rooms:", cloudRooms, "local rooms:", localRooms)
         const rooms = cloudRooms;
         // const rooms = [{
@@ -43,7 +44,8 @@ async function start() {
                         sendTestButton.disabled = false;
                         button.innerText = "Connect locally to " + room.name;
                         button.onclick = () => {
-                            connectToRoomLocal(room.name, accessToken).then(() => { });
+                            // connectToRoomLocal(room.name, accessToken).then(() => { });
+                            initSimplePeerSubscriber()
                         }
                     });
                 }

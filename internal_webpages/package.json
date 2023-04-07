@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "packageManager": "pnpm@7.29.3",
+  "packageManager": "pnpm@8.1.1",
   "scripts": {
     "compile:proto": "pnpm run compile:proto:python && pnpm run compile:proto:javascript",
     "compile:proto:python": "protoc --python_betterproto_out=src/lib/proto/python src/lib/proto/rov_actions.proto",
@@ -33,6 +33,7 @@
     "livekit-server-sdk": "^1.1.0",
     "protobufjs": "~7.1.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
+    "simple-peer": "^9.11.1",
     "uuid": "^9.0.0",
     "workbox-core": "^6.5.4"
   }

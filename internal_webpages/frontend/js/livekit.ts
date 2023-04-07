@@ -141,13 +141,10 @@ export class LivekitClientConnection {
                 participant: RemoteParticipant,
             ) => {
                 if (track.kind === Track.Kind.Video) {
-                    // attach it to a new HTMLVideoElement or HTMLAudioElement
-                    // TODO: if (this.videoElement) // remove the existing video element
-                    this.videoElem = track.attach();
+                    // attach it to a HTMLVideoElement or HTMLAudioElement
+                    this.videoElem = track.attach(document.getElementById("cloud_video") as HTMLVideoElement);
                     this.videoElem.setAttribute("host", this.hostUrl)
                     videoContainerElem = document.getElementById("video_container");
-                    console.log(videoContainerElem);
-                    videoContainerElem.appendChild(this.videoElem);
                 } // else if (track.kind === Track.Kind.Audio) {}
                 console.log(track, this.hostUrl)
             })
@@ -184,7 +181,8 @@ export class LivekitClientConnection {
     }
 
     sendMessage(msgBytes: Uint8Array, onSendCallback?: () => void, skipQueue = false) {
-        console.log("sendMessage() to rov ", this.roomConn.getParticipantByIdentity(this.roomId))
+        // const rov = this.roomConn.getParticipantByIdentity(this.roomId);
+        console.log("sendMessage() to rov ", msgBytes)
         this.roomConn.localParticipant.publishData(msgBytes, DataPacket_Kind.RELIABLE)
     }
 
@@ -203,33 +201,41 @@ const cloudLivekitConnection = new LivekitClientConnection(LIVEKIT_CLOUD_ENDPOIN
     console.log("Cloud Conn State Changed: " + state, roomId, hostUrl)
 })
 
-const localLivekitConnection = new LivekitClientConnection(PROXY_PREFIX + LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
-    handleFrontendMsgRcvd(msg)
-}, (state, roomId, hostUrl) => {
-    console.log("Local Conn State Changed: " + state, roomId, hostUrl)
-})
+// const localLivekitConnection = new LivekitClientConnection(PROXY_PREFIX + LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
+//     handleFrontendMsgRcvd(msg)
+// }, (state, roomId, hostUrl) => {
+//     console.log("Local Conn State Changed: " + state, roomId, hostUrl)
+// })
 
 export async function connectToRoom(roomName, accessToken) {
     await cloudLivekitConnection.start(roomName, accessToken);
 }
 
-
 export async function connectToRoomLocal(roomName, accessToken) {
     if (!window.parent || window.parent === window.top) {
-        setSendProxyMessageCallback((data) => {
-            console.log("send proxy message: " + data.byteLength);
-            cloudLivekitConnection.sendMessage(new Uint8Array(data))
-        })
+
+        // FOR LOCAL OVER CLOUD PROXY
+        // setSendProxyMessageCallback((data) => {
+        //     console.log("send proxy message: " + data.byteLength);
+        //     cloudLivekitConnection.sendMessage(new Uint8Array(data))
+        // })
     } else {
-        enableFrameProxy();
+        // enableFrameProxy();
+        // await waitfor(100);
+        // await localLivekitConnection.start(roomName, accessToken);
     }
-    await waitfor(100);
-    await localLivekitConnection.start(roomName, accessToken);
+
+    // await waitfor(100);
 }
 
 export async function sendTestMessage() {
-    localLivekitConnection.sendMessage(ENCODE_TXT("HI FROM FRONTEND SHOULD BE LOCAL"))
+    // localLivekitConnection.sendMessage(ENCODE_TXT("HI FROM FRONTEND SHOULD BE LOCAL"))
     cloudLivekitConnection.sendMessage(ENCODE_TXT("HI FROM FRONTEND SHOULD BE CLOUD"))
+}
+
+
+export function sendLivekitMessage(data: Uint8Array) {
+    cloudLivekitConnection.sendMessage(data)
 }
 
 

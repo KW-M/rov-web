@@ -1,9 +1,8 @@
-import { proxyMessageTypes, receiveProxiedMsg } from "../../frontend/js/proxy";
 import { DECODE_TXT, ENCODE_TXT } from "../../js/consts";
 import { waitfor } from "../../js/util";
 import { getMyIpGeolocation } from "./geolocation";
 import { connectToLivekit } from "./livekit";
-
+import { initSimplePeerPublisher } from "./simplePeerPub";
 
 const urlParams = new URLSearchParams(location.search);
 connectToLivekit({
@@ -13,7 +12,14 @@ connectToLivekit({
     CloudSecretKey: urlParams.get("CloudSecretKey"),
     LocalAPIKey: urlParams.get("LocalAPIKey"),
     LocalSecretKey: urlParams.get("LocalSecretKey"),
-}).then(() => { console.log('connected?'); });
+}).then(async () => {
+    console.log('connected?');
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+    });
+    initSimplePeerPublisher(stream);
+});
 
 // console.log(getFrontendAccessToken(urlParams.get("CloudAPIKey"), urlParams.get("CloudSecretKey"), "PERSON" + Date.now().toString()))
 
