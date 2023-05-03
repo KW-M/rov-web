@@ -1,5 +1,4 @@
 import { toast } from '@zerodevx/svelte-toast';
-import { rov_action_api } from "./proto/rovActionsCompiled";
 import { ROV_PEERID_BASE } from './consts';
 import { DIALOG_TYPE, rovPeerIdEndNumber, type dialogExtraDataType } from './globalContext';
 import { hideLoadingUi, showLoadingUi } from '../components/LoadingIndicator.svelte';

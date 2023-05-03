@@ -10,7 +10,7 @@
   let dialogStack: dialogInfoType[] = [];
   let topDialog: nStoreT<dialogInfoType> = nStore(null);
 
-  export const openDialog = (type: DIALOG_TYPE, extraData: dialogExtraDataType, callback: () => void) => {
+  export const openDialog = (type: DIALOG_TYPE, extraData: dialogExtraDataType, callback: (response?: any) => void) => {
     const lastTopDialog = topDialog.get();
     const newDialog = { dialogType: type, callback, extraData };
     if (lastTopDialog) dialogStack = [...dialogStack, lastTopDialog];

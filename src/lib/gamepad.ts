@@ -7,7 +7,7 @@ import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
 import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
-import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug } from "virtual-gamepad-lib";
+import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton } from "virtual-gamepad-lib";
 import { addTooltip } from "../components/HelpTooltips.svelte";
 import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
 import { showToastMessage } from "./ui";
@@ -21,6 +21,14 @@ const RIGHT_Y_AXIS_INDEX = 3;
 const gpadHelpTooltips = [];
 
 export class GamepadController {
+    gpadUi: GamepadUi;
+    gpadEmulator: GamepadEmulator;
+    gpadApiWrapper: GamepadApiWrapper;
+    touchedGpadButtonCount: number;
+    throttleDelay: number;
+    onAxisChange: null | ((gamepad: Gamepad) => void);
+    onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: boolean[]) => void);
+
     constructor(throttleDelay = 10) {
         this.gpadUi = new GamepadUi();
         this.touchedGpadButtonCount = 0
@@ -121,7 +129,7 @@ export class GamepadController {
 
     handleAxisChange(gpadIndex, gamepad) {
 
-        // console.log("handleAxisChange", gpadIndex, gamepad, axiesChangedMask)
+        // console.log("handleAxisChange", gpadIndex, gamepad)
         if (gpadIndex != 0 || !gamepad || !gamepad.axes) return;
         if (this.onAxisChange) this.onAxisChange(gamepad);
 
@@ -178,13 +186,13 @@ export class GamepadController {
                     direction: gamepadDirection.down,
                     directionHighlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_direction_highlight"),
                     movementRange: 10,
-                };
+                } as GamepadDisplayVariableButton;
             } else {
                 // all other buttons are simply on (pressed) or off (not pressed).
                 return {
                     type: gamepadButtonType.onOff,
                     highlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_highlight"),
-                };
+                } as GamepadDisplayButton;
             }
         });
 
@@ -249,14 +257,14 @@ export class GamepadController {
                         [gamepadDirection.left]: false,
                         [gamepadDirection.right]: false,
                     },
-                };
+                } as VariableButtonConfig;
             } else {
                 return {
                     type: gamepadButtonType.onOff,
                     buttonIndex: i,
                     lockTargetWhilePressed: name.includes("stick"),
                     tapTarget: display_gpad.querySelector("#" + name + "_touch_target"),
-                };
+                } as ButtonConfig;
             }
         });
         this.gpadEmulator.AddDisplayButtonEventListeners(gpadIndex, emulatorButtonConfigs);
@@ -333,10 +341,10 @@ export class GamepadController {
 
             // arrow keys to move the right stick (prevent default to prevent scrolling)
             else if (e.key === "ArrowLeft") {
-                this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? -1 : 0);
+                // this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? -1 : 0);
                 e.preventDefault();
             } else if (e.key === "ArrowRight") {
-                this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? 1 : 0);
+                // this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? 1 : 0);
                 e.preventDefault();
             } else if (e.key === "ArrowUp") {
                 this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_Y_AXIS_INDEX, keyDown ? -1 : 0);
