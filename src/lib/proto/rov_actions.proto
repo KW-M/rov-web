@@ -16,25 +16,28 @@ enum SensorMeasurmentTypes {
     internal_temp_celsius = 11; // from the compass/imu
 }
 
-// enum RovActionTypes {
-//     ping = 0;
-//     password_attempt = 1;
-//     authtoken_attempt = 2;
-//     take_control = 3;
-//     move = 4;
-//     begin_video_stream = 5;
-//     take_photo = 6;
-//     start_video_rec = 7;
-//     stop_video_rec = 8;
-//     toogle_lights = 9;
-//     shutdown_rov = 10;
-//     reboot_rov = 11;
-//     enable_wifi = 12;
-//     disable_wifi = 13;
-//     rov_status_report = 14;
-//     restart_rov_services = 15;
-//     rov_logs = 16;
-// }
+enum RovActionTypes {
+    ping = 0;
+    password_attempt = 1;
+    authtoken_attempt = 2;
+    take_control = 3;
+    move = 4;
+    begin_video_stream = 5;
+    take_photo = 6;
+    start_video_rec = 7;
+    stop_video_rec = 8;
+    toogle_lights = 9;
+    shutdown_rov = 10;
+    reboot_rov = 11;
+    enable_wifi = 12;
+    disable_wifi = 13;
+    rov_status_report = 14;
+    restart_rov_services = 15;
+    rov_logs = 16;
+    refresh_all_sensors = 17;
+    mavlink = 18;
+    simplepeer_signal = 19;
+}
 
 message PingAction {
     // The time the ping was sent
@@ -115,6 +118,15 @@ message RefreshAllSensorsAction {
     // No data needed
 }
 
+message MavlinkAction {
+    bytes Message = 1;
+}
+
+message SimplepeerSignalAction {
+    bytes Message = 1;
+}
+
+// wrapper message for anything sent by a client to the rov (aka an "action").
 message RovAction {
     // The type of action to perform see (RovActionTypes).
     // RovActionTypes Type = 1;
@@ -159,103 +171,123 @@ message RovAction {
         RovLogsAction RovLogs = 19;
         // refresh_all_sensors
         RefreshAllSensorsAction RefreshAllSensors = 20;
+        // mavlink
+        MavlinkAction Mavlink = 21;
+        // simplepeer_signal
+        SimplepeerSignalAction SimplepeerSignal = 22;
     }
 }
 
 
-// enum RovResponseTypes {
+enum RovResponseTypes {
+    done = 0;
+    error = 1;
+    pong = 2;
+    measurement = 3;
+    sensor_updates = 4;
+    password_required = 5;
+    password_accepted = 6;
+    password_invalid = 7;
+    token_accepted = 8;
+    token_invalid = 9; // Not implemented
+    driver_changed = 10;
+    client_connected = 11; // Not implemented
+    client_disconnected = 12; // Not implemented
+    heartbeat_response = 13;
+    continued_output = 14;
+    mavlink = 15;
+    simplepeer_signalling = 16;
+}
 
-//     done = 0;
-//     error = 1;
-//     pong = 2;
-//     sensor_updates = 3;
-//     password_required = 4;
-//     password_accepted = 5;
-//     password_invalid = 6;
-//     token_accepted = 7;
-//     token_invalid = 8; // Not implemented
-//     driver_changed = 9;
-//     client_connected = 10; // Not implemented
-//     client_disconnected = 11; // Not implemented
-// }
-
+// sent to a specific client when an action is received by the rov and completes successfully.
 message DoneResponse {
-    // An optional status message to send back
+    // An optional informational status message to send back
     optional string Message = 1;
 }
 
+// sent to a specific client when an action is received by the rov and DOES NOT complete successfully.
 message ErrorResponse {
     // The error message
     string Message = 1;
 }
 
-message ContinuedOutputResponse {
-    string Message = 1;
-}
-
+// sent to a specific client in response to a ping request
 message PongResponse {
     // The time the ping was sent
     int64 Time = 1;
 }
 
-message Measurement {
-    // The sensor type (see RovSensorTypes)
-    SensorMeasurmentTypes MeasurementType = 1;
-    // The sensor value
-    float Value = 2;
-}
-
+// sent to all clients whenever a sensor measurement changes or after a refresh_all_sensors action is sent.
 message SensorUpdatesResponse {
+    message Measurement {
+        // The sensor type (see RovSensorTypes)
+        SensorMeasurmentTypes MeasurementType = 1;
+        // The sensor value
+        float Value = 2;
+    }
     // All the changed mesurements from the sensors: (see Measurement type)
     repeated Measurement MeasurementUpdates = 1;
 }
 
+// sent to a specific client when the proceding action sent by the client to the rov requires a password to show the rov that the client has privilages.
 message PasswordRequiredResponse {
     // the id of the rov that is requesting a password (to be used to match tokens to rov's when using token based auth)
     string RovId = 1;
 }
 
+// sent when a password or token attempt is accepted by the rov.
+// The rov will additionally do whatever action required the password or token in the first place.
 message PasswordAcceptedResponse {
     // Authtoken to use for future requests in place of the password
     string AuthToken = 1;
 }
 
+// sent when a password or token attempt is not accepted by the rov.
 message PasswordInvalidResponse {
     // No data needed
 }
 
-message TokenAcceptedResponse {
-    // No data needed
-}
-
-message TokenInvalidResponse {
-    // No data needed
-}
-
+// sent to all clients (including the new driver) whenever the designated driver client changes.
 message DriverChangedResponse {
     // The new driver's peer id
     string DriverPeerId = 1;
 }
 
+// sent to all clients (including the new client) whenever a new client connects to the rov.
 message ClientConnectedResponse {
     // The new client's peer id
     string ClientPeerId = 1;
 }
 
+// sent to all clients whenever a client becomes disconnected from the rov (either due to leaving or a network timeout).
 message ClientDisconnectedResponse {
     // The disconnected client's peer id
     string ClientPeerId = 1;
 }
 
+// sent at a regular interval to all clients regardless of their connection status.
 message HeartbeatResponse {
     // The time the heartbeat was sent
     int64 Time = 1;
 }
 
-message RovResponse {
-	// // The type of response message recived see (RovResponseTypes).
-    // RovResponseTypes Type = 1;
+// sent to a specific client for responses that have multiple parts such as logs or shell command output that output in an async manner.
+message ContinuedOutputResponse {
+    string Message = 1;
+}
 
+// reserved for future use by the mavlink protocol if we ever need it.
+message MavlinkResponse {
+    bytes Message = 1;
+}
+
+// used by the simplepeer signalling protocol to establish a direct webrtc connection between the rov and driver client (bypassing livekit).
+message SimplepeerSignalResponse {
+    bytes Message = 1;
+}
+
+// wrapper message for any message sent by the rov to a client (aka a response).
+message RovResponse {
     // Response exchange id (used to match up action requests and responses)
     int32 RovExchangeId = 2;
     // The body / content of the response
@@ -266,20 +298,16 @@ message RovResponse {
         ErrorResponse Error = 4;
         // pong (response to a ping action)
         PongResponse Pong = 5;
-        // continued_output (for message responses that arrive in multiple parts such as logs or shell command output)
+        // continued_output (for string responses that arrive in multiple parts such as logs or shell command output)
         ContinuedOutputResponse ContinuedOutput = 6;
         // sensor_updates (gives a list of sensor updates containing only new/changed sensors and their current values)
         SensorUpdatesResponse SensorUpdates = 7;
-        // password_required (sent when a password is required to perform an action)
+        // password_required (sent when a password is required before an action is performed)
         PasswordRequiredResponse PasswordRequired = 8;
-        // password_accepted (sent when a password request action is accepted)
+        // password_accepted (sent when a password request is accepted)
         PasswordAcceptedResponse PasswordAccepted = 9;
-        // password_invalid (sent when a password request action has the incorrect password)
+        // password_invalid (sent when a password or token challenge action has an incorrect password or token)
         PasswordInvalidResponse PasswordInvalid = 10;
-        // token_accepted (sent when a token request action is accepted (replaces password for future requests))
-        TokenAcceptedResponse TokenAccepted = 11;
-        // token_invalid
-        TokenInvalidResponse TokenInvalid = 12;
         // driver_changed
         DriverChangedResponse DriverChanged = 13;
         // client_connected
@@ -288,5 +316,9 @@ message RovResponse {
         ClientDisconnectedResponse ClientDisconnected = 15;
         // heartbeat
         HeartbeatResponse Heartbeat = 16;
+        // mavlink
+        MavlinkResponse Mavlink = 17;
+        // simplepeer_signal
+        SimplepeerSignalResponse SimplepeerSignal = 18;
     }
 }
