@@ -30,6 +30,4 @@ export function updateSensorValues(updates: rov_action_api.IMeasurement[]) {
             rovRoll.set(update.Value)
         }
     }
-    //     if (sensorValues.yaw) setCompassHeading(sensorValues.yaw);
-    // if (sensorValues.pitch && sensorValues.roll) setArtificialHorizonBackground(sensorValues.roll, -sensorValues.pitch);
 }

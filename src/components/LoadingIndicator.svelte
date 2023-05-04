@@ -9,7 +9,7 @@
   /** show the loading indicator with the given message
    * @param msgId {LOADING_MESSAGE}
    * @param customLoadingMessage  {string?} */
-  export const showLoadingUi = (msgId, customLoadingMessage) => {
+  export const showLoadingUi = (msgId: LOADING_MESSAGE, customLoadingMessage?: string) => {
     const message = customLoadingMessage || msgId || LOADING_MESSAGE.default;
     currentMsg.set(message);
     console.debug("showLoadingUi", message);

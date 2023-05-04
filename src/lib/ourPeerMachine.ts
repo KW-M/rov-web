@@ -18,6 +18,7 @@ export class OurPeerMachine {
     peer = null;
     ourPeerId = null
     onStateChangeCallback = (state) => { }
+    currentState = null;
 
     xstateMachineLayout = createMachine({
         predictableActionArguments: true,
