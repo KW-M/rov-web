@@ -6,6 +6,15 @@ declare global {
     }
 }
 
+export enum ConnectionStates {
+    init = "Init",
+    connecting = "Connecting",
+    connected = "Connected",
+    reconnecting = "Reconnecting",
+    disconnectedOk = "Disconnected",
+    failed = "Failed",
+}
+
 const TE = new TextEncoder();
 export const ENCODE_TXT = (txt: string) => TE.encode(txt)
 const TD = new TextDecoder();

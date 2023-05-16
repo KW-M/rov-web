@@ -1,7 +1,7 @@
 import { DECODE_TXT, ENCODE_TXT } from "../../js/consts";
 import { waitfor } from "../../js/util";
 import { getMyIpGeolocation } from "./geolocation";
-import { connectToLivekit } from "./livekit";
+import { connectToLivekit } from "./livekitPublisher";
 import { initSimplePeerPublisher } from "./simplePeerPub";
 
 const urlParams = new URLSearchParams(location.search);

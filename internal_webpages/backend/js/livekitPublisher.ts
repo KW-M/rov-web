@@ -29,43 +29,12 @@ export type LivekitSetupOptions = {
     LocalAPIKey: string
 }
 
-
-import '../../js/nodeShimsBundle'
-
-import type * as livekitServerSDKTypes from 'livekit-server-sdk';
 import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from '../../js/consts';
 import { appendLog, getWebsocketURL, waitfor } from '../../js/util';
-import { getFrontendAccessToken, getPublisherAccessToken } from './livekitTokens';
+import { getFrontendAccessToken, getPublisherAccessToken } from '../../js/livekit/livekitTokens';
 import { setSendProxyMessageCallback } from '../../js/proxyReciever';
 import { handleBackendMsgRcvd } from './msgHandler'
-const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
-
-export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
-    return await client.createRoom({
-        name: roomName,
-        maxParticipants: 12,
-        emptyTimeout: 30, // 30 seconds
-    })
-}
-
-export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.RoomServiceClient, roomName: string, metadata: string) {
-    return await client.updateRoomMetadata(roomName, metadata)
-}
-
-export async function listLivekitRooms(client: livekitServerSDKTypes.RoomServiceClient) {
-    const rooms = await client.listRooms();
-    return rooms
-        // .filter(room => room.numParticipants > 0)
-        .map(room => room.name)
-}
-
-export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, livekitSetup: LivekitSetupOptions) {
-    const frontendAccessToken = getFrontendAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName, "PERSON" + Date.now().toString());
-    await updateLivekitRoomMetadata(cloudRoomClient, livekitSetup.RovRoomName, JSON.stringify({
-        accessToken: frontendAccessToken,
-    }));
-}
-
+// const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Array) => void }
 type MsgRecivedCallback = (msg: Uint8Array, roomId: string, hostUrl: string) => void;
@@ -230,11 +199,11 @@ export const cloudLivekitConnection = new LivekitPublisherConnection(LIVEKIT_CLO
 })
 
 
-// export const localLivekitConnection = new LivekitPublisherConnection(LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
-//     handleBackendMsgRcvd(msg)
-// }, (state, roomId, hostUrl) => {
-//     console.log("Local Conn State Changed: " + state, roomId, hostUrl)
-// })
+export const localLivekitConnection = new LivekitPublisherConnection(LIVEKIT_LOCAL_ENDPOINT, (msg, roomId, hostUrl) => {
+    handleBackendMsgRcvd(msg)
+}, (state, roomId, hostUrl) => {
+    console.log("Local Conn State Changed: " + state, roomId, hostUrl)
+})
 
 export async function connectToLivekit(livekitSetup: LivekitSetupOptions): Promise<boolean> {
     if (!livekitSetup.CloudAPIKey || !livekitSetup.CloudSecretKey || !livekitSetup.RovRoomName) throw new Error("Missing some required livekit setup url query params.");

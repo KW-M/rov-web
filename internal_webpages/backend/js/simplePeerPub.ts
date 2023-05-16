@@ -1,6 +1,6 @@
 import { SimplePeerConnection } from "../../js/simplePeer"
 import { handleBackendMsgRcvd } from "./msgHandler"
-import { sendLivekitMessage } from "./livekit"
+import { sendLivekitMessage } from "./livekitPublisher"
 
 
 let simplePeerPub: SimplePeerConnection | null = null;

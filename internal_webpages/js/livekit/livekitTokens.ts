@@ -1,17 +1,16 @@
 
-import '../../js/nodeShimsBundle'
+import '../nodeShimsBundle'
 import type * as livekitServerSDKTypes from 'livekit-server-sdk';
 const AccessToken = globalThis.livekitServerSDK.AccessToken as typeof livekitServerSDKTypes.AccessToken
 
-
 /**
- * Get a livekit server auth token that's valid for 24 hrs.
- * @param {string} apiKey livekit api key to use
- * @param {string} secretKey livekit api secret key to use
- * @param {string} rovName the room name & user identity to use.
- * @returns {string} JWT token
+ * Get a livekit auth token that's valid for 24 hrs and allows all actions.
+ * @param apiKey livekit api key to use
+ * @param secretKey livekit api secret key to use
+ * @param rovName the room name & user identity to use.
+ * @returns {string} JWT access token
  */
-export function getPublisherAccessToken(apiKey, secretKey, rovName) {
+export function getPublisherAccessToken(apiKey: string, secretKey: string, rovName: string): string {
     const token = new AccessToken(apiKey, secretKey, {
         identity: rovName,
         ttl: 86400, // (seconds in 24hrs),
@@ -30,14 +29,16 @@ export function getPublisherAccessToken(apiKey, secretKey, rovName) {
 }
 
 /**
- * Get a livekit server auth token that's valid for 24 hrs.
+ * Get a livekit auth token that's valid for 24 hrs and allows joining rooms but not broadcasting video.
  * @param {string} apiKey livekit api key to use
  * @param {string} secretKey livekit api secret key to use
- * @returns {string} JWT token */
-export function getFrontendAccessToken(apiKey, secretKey, roomName, name) {
+ * @param {string} roomName livekit room name that this user will be allowed to join
+ * @param {string} userName  user name & identity that this user will get when joining the room / using livekit.
+ * @returns {string} JWT access token */
+export function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string) {
     const token = new AccessToken(apiKey, secretKey, {
-        identity: name,
-        name: name,
+        identity: userName,
+        name: userName,
         ttl: 21600 // 6 hours in seconds,
     })
     token.addGrant({
@@ -52,11 +53,11 @@ export function getFrontendAccessToken(apiKey, secretKey, roomName, name) {
 }
 
 /**
- * Get a livekit server auth token that's valid for hundreds of years, but has little access.
+ * Get a livekit server auth token that's valid for hundreds of years, but only has the ability to list open rooms.
  * @param {string} apiKey livekit api key to use
  * @param {string} secretKey livekit api secret key to use
  * @returns {string} JWT token */
-export function getLongTermStarterAccessToken(apiKey, secretKey) {
+export function getLongTermStarterAccessToken(apiKey: string, secretKey: string): string {
     const token = new AccessToken(apiKey, secretKey, {
         identity: 'lt',
         ttl: 9460800000 // 300 years

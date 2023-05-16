@@ -57,6 +57,29 @@ type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Arra
 type MsgRecivedCallback = (msg: Uint8Array, roomId: string, hostUrl: string) => void;
 type StateChangeCallback = (connState: string, roomId: string, hostUrl: string) => void;
 
+const livkitConfig = {
+    roomConfig: {
+
+        // specify how offten to retry connection when it fails.
+        reconnectPolicy: new DefaultReconnectPolicy(),
+
+        // optimize publishing bandwidth and CPU for published tracks
+        dynacast: true,
+
+        // default capture settings
+        videoCaptureDefaults: {
+            resolution: VideoPresets.h1080.resolution,
+            // facingMode: 'environment',
+            // deviceId: //get device id beforehand
+        },
+
+        publishDefaults: {
+            videoCodec: "h264",
+        },
+
+    }
+}
+
 export class LivekitClientConnection {
     roomId: string;
     hostUrl: string;
