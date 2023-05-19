@@ -3,6 +3,14 @@ import Long = require("long");
 /** Namespace rov_action_api. */
 export namespace rov_action_api {
 
+    /** DataTransportMethod enum. */
+    enum DataTransportMethod {
+        LivekitReliable = 1,
+        LivekitUnreliable = 2,
+        DirectReliable = 3,
+        DirectUnreliable = 4
+    }
+
     /** SensorMeasurmentTypes enum. */
     enum SensorMeasurmentTypes {
         depth_meters = 0,
@@ -17,6 +25,30 @@ export namespace rov_action_api {
         battery_voltage = 9,
         battery_current_amps = 10,
         internal_temp_celsius = 11
+    }
+
+    /** RovActionTypes enum. */
+    enum RovActionTypes {
+        ping = 0,
+        password_attempt = 1,
+        authtoken_attempt = 2,
+        take_control = 3,
+        move = 4,
+        begin_video_stream = 5,
+        take_photo = 6,
+        start_video_rec = 7,
+        stop_video_rec = 8,
+        toogle_lights = 9,
+        shutdown_rov = 10,
+        reboot_rov = 11,
+        enable_wifi = 12,
+        disable_wifi = 13,
+        rov_status_report = 14,
+        restart_rov_services = 15,
+        rov_logs = 16,
+        refresh_all_sensors = 17,
+        mavlink = 18,
+        simplepeer_signal = 19
     }
 
     /** Properties of a PingAction. */
@@ -1699,8 +1731,305 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a MavlinkAction. */
+    interface IMavlinkAction {
+
+        /** MavlinkAction Message */
+        Message?: (Uint8Array|null);
+    }
+
+    /** Represents a MavlinkAction. */
+    class MavlinkAction implements IMavlinkAction {
+
+        /**
+         * Constructs a new MavlinkAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IMavlinkAction);
+
+        /** MavlinkAction Message. */
+        public Message: Uint8Array;
+
+        /**
+         * Creates a new MavlinkAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns MavlinkAction instance
+         */
+        public static create(properties?: rov_action_api.IMavlinkAction): rov_action_api.MavlinkAction;
+
+        /**
+         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * @param message MavlinkAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * @param message MavlinkAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a MavlinkAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns MavlinkAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.MavlinkAction;
+
+        /**
+         * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns MavlinkAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.MavlinkAction;
+
+        /**
+         * Verifies a MavlinkAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a MavlinkAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns MavlinkAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.MavlinkAction;
+
+        /**
+         * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
+         * @param message MavlinkAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.MavlinkAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this MavlinkAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for MavlinkAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SimplepeerSignalAction. */
+    interface ISimplepeerSignalAction {
+
+        /** SimplepeerSignalAction Message */
+        Message?: (Uint8Array|null);
+    }
+
+    /** Represents a SimplepeerSignalAction. */
+    class SimplepeerSignalAction implements ISimplepeerSignalAction {
+
+        /**
+         * Constructs a new SimplepeerSignalAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.ISimplepeerSignalAction);
+
+        /** SimplepeerSignalAction Message. */
+        public Message: Uint8Array;
+
+        /**
+         * Creates a new SimplepeerSignalAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SimplepeerSignalAction instance
+         */
+        public static create(properties?: rov_action_api.ISimplepeerSignalAction): rov_action_api.SimplepeerSignalAction;
+
+        /**
+         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * @param message SimplepeerSignalAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * @param message SimplepeerSignalAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SimplepeerSignalAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SimplepeerSignalAction;
+
+        /**
+         * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SimplepeerSignalAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SimplepeerSignalAction;
+
+        /**
+         * Verifies a SimplepeerSignalAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SimplepeerSignalAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SimplepeerSignalAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.SimplepeerSignalAction;
+
+        /**
+         * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
+         * @param message SimplepeerSignalAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.SimplepeerSignalAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SimplepeerSignalAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SimplepeerSignalAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an ActionBackendMetadata. */
+    interface IActionBackendMetadata {
+
+        /** ActionBackendMetadata FromUserID */
+        FromUserID?: (string|null);
+    }
+
+    /** Represents an ActionBackendMetadata. */
+    class ActionBackendMetadata implements IActionBackendMetadata {
+
+        /**
+         * Constructs a new ActionBackendMetadata.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IActionBackendMetadata);
+
+        /** ActionBackendMetadata FromUserID. */
+        public FromUserID?: (string|null);
+
+        /** ActionBackendMetadata _FromUserID. */
+        public _FromUserID?: "FromUserID";
+
+        /**
+         * Creates a new ActionBackendMetadata instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ActionBackendMetadata instance
+         */
+        public static create(properties?: rov_action_api.IActionBackendMetadata): rov_action_api.ActionBackendMetadata;
+
+        /**
+         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * @param message ActionBackendMetadata message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * @param message ActionBackendMetadata message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes an ActionBackendMetadata message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ActionBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ActionBackendMetadata;
+
+        /**
+         * Decodes an ActionBackendMetadata message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ActionBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ActionBackendMetadata;
+
+        /**
+         * Verifies an ActionBackendMetadata message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates an ActionBackendMetadata message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ActionBackendMetadata
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.ActionBackendMetadata;
+
+        /**
+         * Creates a plain object from an ActionBackendMetadata message. Also converts values to other types if specified.
+         * @param message ActionBackendMetadata
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.ActionBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ActionBackendMetadata to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ActionBackendMetadata
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a RovAction. */
     interface IRovAction {
+
+        /** RovAction BackendMetadata */
+        BackendMetadata?: (rov_action_api.IActionBackendMetadata|null);
 
         /** RovAction RovExchangeId */
         RovExchangeId?: (number|null);
@@ -1758,6 +2087,12 @@ export namespace rov_action_api {
 
         /** RovAction RefreshAllSensors */
         RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
+
+        /** RovAction Mavlink */
+        Mavlink?: (rov_action_api.IMavlinkAction|null);
+
+        /** RovAction SimplepeerSignal */
+        SimplepeerSignal?: (rov_action_api.ISimplepeerSignalAction|null);
     }
 
     /** Represents a RovAction. */
@@ -1768,6 +2103,9 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          */
         constructor(properties?: rov_action_api.IRovAction);
+
+        /** RovAction BackendMetadata. */
+        public BackendMetadata?: (rov_action_api.IActionBackendMetadata|null);
 
         /** RovAction RovExchangeId. */
         public RovExchangeId: number;
@@ -1826,8 +2164,17 @@ export namespace rov_action_api {
         /** RovAction RefreshAllSensors. */
         public RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
 
+        /** RovAction Mavlink. */
+        public Mavlink?: (rov_action_api.IMavlinkAction|null);
+
+        /** RovAction SimplepeerSignal. */
+        public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalAction|null);
+
+        /** RovAction _BackendMetadata. */
+        public _BackendMetadata?: "BackendMetadata";
+
         /** RovAction Body. */
-        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors");
+        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal");
 
         /**
          * Creates a new RovAction instance using the specified properties.
@@ -1905,6 +2252,27 @@ export namespace rov_action_api {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** RovResponseTypes enum. */
+    enum RovResponseTypes {
+        done = 0,
+        error = 1,
+        pong = 2,
+        measurement = 3,
+        sensor_updates = 4,
+        password_required = 5,
+        password_accepted = 6,
+        password_invalid = 7,
+        token_accepted = 8,
+        token_invalid = 9,
+        driver_changed = 10,
+        client_connected = 11,
+        client_disconnected = 12,
+        heartbeat_response = 13,
+        continued_output = 14,
+        mavlink = 15,
+        simplepeer_signalling = 16
     }
 
     /** Properties of a DoneResponse. */
@@ -2104,103 +2472,6 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a ContinuedOutputResponse. */
-    interface IContinuedOutputResponse {
-
-        /** ContinuedOutputResponse Message */
-        Message?: (string|null);
-    }
-
-    /** Represents a ContinuedOutputResponse. */
-    class ContinuedOutputResponse implements IContinuedOutputResponse {
-
-        /**
-         * Constructs a new ContinuedOutputResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_action_api.IContinuedOutputResponse);
-
-        /** ContinuedOutputResponse Message. */
-        public Message: string;
-
-        /**
-         * Creates a new ContinuedOutputResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ContinuedOutputResponse instance
-         */
-        public static create(properties?: rov_action_api.IContinuedOutputResponse): rov_action_api.ContinuedOutputResponse;
-
-        /**
-         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
-         * @param message ContinuedOutputResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
-         * @param message ContinuedOutputResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ContinuedOutputResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ContinuedOutputResponse;
-
-        /**
-         * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns ContinuedOutputResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ContinuedOutputResponse;
-
-        /**
-         * Verifies a ContinuedOutputResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns ContinuedOutputResponse
-         */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ContinuedOutputResponse;
-
-        /**
-         * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
-         * @param message ContinuedOutputResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_action_api.ContinuedOutputResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this ContinuedOutputResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for ContinuedOutputResponse
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** Properties of a PongResponse. */
     interface IPongResponse {
 
@@ -2298,114 +2569,11 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a Measurement. */
-    interface IMeasurement {
-
-        /** Measurement MeasurementType */
-        MeasurementType?: (rov_action_api.SensorMeasurmentTypes|null);
-
-        /** Measurement Value */
-        Value?: (number|null);
-    }
-
-    /** Represents a Measurement. */
-    class Measurement implements IMeasurement {
-
-        /**
-         * Constructs a new Measurement.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_action_api.IMeasurement);
-
-        /** Measurement MeasurementType. */
-        public MeasurementType: rov_action_api.SensorMeasurmentTypes;
-
-        /** Measurement Value. */
-        public Value: number;
-
-        /**
-         * Creates a new Measurement instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Measurement instance
-         */
-        public static create(properties?: rov_action_api.IMeasurement): rov_action_api.Measurement;
-
-        /**
-         * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
-         * @param message Measurement message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_action_api.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
-         * @param message Measurement message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_action_api.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.Measurement;
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.Measurement;
-
-        /**
-         * Verifies a Measurement message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Measurement
-         */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.Measurement;
-
-        /**
-         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-         * @param message Measurement
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_action_api.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Measurement to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for Measurement
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** Properties of a SensorUpdatesResponse. */
     interface ISensorUpdatesResponse {
 
         /** SensorUpdatesResponse MeasurementUpdates */
-        MeasurementUpdates?: (rov_action_api.IMeasurement[]|null);
+        MeasurementUpdates?: (rov_action_api.SensorUpdatesResponse.IMeasurement[]|null);
     }
 
     /** Represents a SensorUpdatesResponse. */
@@ -2418,7 +2586,7 @@ export namespace rov_action_api {
         constructor(properties?: rov_action_api.ISensorUpdatesResponse);
 
         /** SensorUpdatesResponse MeasurementUpdates. */
-        public MeasurementUpdates: rov_action_api.IMeasurement[];
+        public MeasurementUpdates: rov_action_api.SensorUpdatesResponse.IMeasurement[];
 
         /**
          * Creates a new SensorUpdatesResponse instance using the specified properties.
@@ -2496,6 +2664,112 @@ export namespace rov_action_api {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    namespace SensorUpdatesResponse {
+
+        /** Properties of a Measurement. */
+        interface IMeasurement {
+
+            /** Measurement MeasurementType */
+            MeasurementType?: (rov_action_api.SensorMeasurmentTypes|null);
+
+            /** Measurement Value */
+            Value?: (number|null);
+        }
+
+        /** Represents a Measurement. */
+        class Measurement implements IMeasurement {
+
+            /**
+             * Constructs a new Measurement.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: rov_action_api.SensorUpdatesResponse.IMeasurement);
+
+            /** Measurement MeasurementType. */
+            public MeasurementType: rov_action_api.SensorMeasurmentTypes;
+
+            /** Measurement Value. */
+            public Value: number;
+
+            /**
+             * Creates a new Measurement instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Measurement instance
+             */
+            public static create(properties?: rov_action_api.SensorUpdatesResponse.IMeasurement): rov_action_api.SensorUpdatesResponse.Measurement;
+
+            /**
+             * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
+             * @param message Measurement message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: rov_action_api.SensorUpdatesResponse.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
+             * @param message Measurement message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: rov_action_api.SensorUpdatesResponse.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Measurement message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Measurement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SensorUpdatesResponse.Measurement;
+
+            /**
+             * Decodes a Measurement message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Measurement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SensorUpdatesResponse.Measurement;
+
+            /**
+             * Verifies a Measurement message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Measurement
+             */
+            public static fromObject(object: { [k: string]: any }): rov_action_api.SensorUpdatesResponse.Measurement;
+
+            /**
+             * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+             * @param message Measurement
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: rov_action_api.SensorUpdatesResponse.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Measurement to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Measurement
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
     }
 
     /** Properties of a PasswordRequiredResponse. */
@@ -2777,188 +3051,6 @@ export namespace rov_action_api {
 
         /**
          * Gets the default type url for PasswordInvalidResponse
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a TokenAcceptedResponse. */
-    interface ITokenAcceptedResponse {
-    }
-
-    /** Represents a TokenAcceptedResponse. */
-    class TokenAcceptedResponse implements ITokenAcceptedResponse {
-
-        /**
-         * Constructs a new TokenAcceptedResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_action_api.ITokenAcceptedResponse);
-
-        /**
-         * Creates a new TokenAcceptedResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns TokenAcceptedResponse instance
-         */
-        public static create(properties?: rov_action_api.ITokenAcceptedResponse): rov_action_api.TokenAcceptedResponse;
-
-        /**
-         * Encodes the specified TokenAcceptedResponse message. Does not implicitly {@link rov_action_api.TokenAcceptedResponse.verify|verify} messages.
-         * @param message TokenAcceptedResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_action_api.ITokenAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified TokenAcceptedResponse message, length delimited. Does not implicitly {@link rov_action_api.TokenAcceptedResponse.verify|verify} messages.
-         * @param message TokenAcceptedResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_action_api.ITokenAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a TokenAcceptedResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns TokenAcceptedResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.TokenAcceptedResponse;
-
-        /**
-         * Decodes a TokenAcceptedResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns TokenAcceptedResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.TokenAcceptedResponse;
-
-        /**
-         * Verifies a TokenAcceptedResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a TokenAcceptedResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns TokenAcceptedResponse
-         */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.TokenAcceptedResponse;
-
-        /**
-         * Creates a plain object from a TokenAcceptedResponse message. Also converts values to other types if specified.
-         * @param message TokenAcceptedResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_action_api.TokenAcceptedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this TokenAcceptedResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for TokenAcceptedResponse
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a TokenInvalidResponse. */
-    interface ITokenInvalidResponse {
-    }
-
-    /** Represents a TokenInvalidResponse. */
-    class TokenInvalidResponse implements ITokenInvalidResponse {
-
-        /**
-         * Constructs a new TokenInvalidResponse.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_action_api.ITokenInvalidResponse);
-
-        /**
-         * Creates a new TokenInvalidResponse instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns TokenInvalidResponse instance
-         */
-        public static create(properties?: rov_action_api.ITokenInvalidResponse): rov_action_api.TokenInvalidResponse;
-
-        /**
-         * Encodes the specified TokenInvalidResponse message. Does not implicitly {@link rov_action_api.TokenInvalidResponse.verify|verify} messages.
-         * @param message TokenInvalidResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_action_api.ITokenInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified TokenInvalidResponse message, length delimited. Does not implicitly {@link rov_action_api.TokenInvalidResponse.verify|verify} messages.
-         * @param message TokenInvalidResponse message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_action_api.ITokenInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a TokenInvalidResponse message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns TokenInvalidResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.TokenInvalidResponse;
-
-        /**
-         * Decodes a TokenInvalidResponse message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns TokenInvalidResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.TokenInvalidResponse;
-
-        /**
-         * Verifies a TokenInvalidResponse message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a TokenInvalidResponse message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns TokenInvalidResponse
-         */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.TokenInvalidResponse;
-
-        /**
-         * Creates a plain object from a TokenInvalidResponse message. Also converts values to other types if specified.
-         * @param message TokenInvalidResponse
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_action_api.TokenInvalidResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this TokenInvalidResponse to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for TokenInvalidResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -3353,8 +3445,405 @@ export namespace rov_action_api {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a ContinuedOutputResponse. */
+    interface IContinuedOutputResponse {
+
+        /** ContinuedOutputResponse Message */
+        Message?: (string|null);
+    }
+
+    /** Represents a ContinuedOutputResponse. */
+    class ContinuedOutputResponse implements IContinuedOutputResponse {
+
+        /**
+         * Constructs a new ContinuedOutputResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IContinuedOutputResponse);
+
+        /** ContinuedOutputResponse Message. */
+        public Message: string;
+
+        /**
+         * Creates a new ContinuedOutputResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ContinuedOutputResponse instance
+         */
+        public static create(properties?: rov_action_api.IContinuedOutputResponse): rov_action_api.ContinuedOutputResponse;
+
+        /**
+         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * @param message ContinuedOutputResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * @param message ContinuedOutputResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ContinuedOutputResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ContinuedOutputResponse;
+
+        /**
+         * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ContinuedOutputResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ContinuedOutputResponse;
+
+        /**
+         * Verifies a ContinuedOutputResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ContinuedOutputResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.ContinuedOutputResponse;
+
+        /**
+         * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
+         * @param message ContinuedOutputResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.ContinuedOutputResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ContinuedOutputResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ContinuedOutputResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a MavlinkResponse. */
+    interface IMavlinkResponse {
+
+        /** MavlinkResponse Message */
+        Message?: (Uint8Array|null);
+    }
+
+    /** Represents a MavlinkResponse. */
+    class MavlinkResponse implements IMavlinkResponse {
+
+        /**
+         * Constructs a new MavlinkResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IMavlinkResponse);
+
+        /** MavlinkResponse Message. */
+        public Message: Uint8Array;
+
+        /**
+         * Creates a new MavlinkResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns MavlinkResponse instance
+         */
+        public static create(properties?: rov_action_api.IMavlinkResponse): rov_action_api.MavlinkResponse;
+
+        /**
+         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * @param message MavlinkResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * @param message MavlinkResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a MavlinkResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns MavlinkResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.MavlinkResponse;
+
+        /**
+         * Decodes a MavlinkResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns MavlinkResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.MavlinkResponse;
+
+        /**
+         * Verifies a MavlinkResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a MavlinkResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns MavlinkResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.MavlinkResponse;
+
+        /**
+         * Creates a plain object from a MavlinkResponse message. Also converts values to other types if specified.
+         * @param message MavlinkResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.MavlinkResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this MavlinkResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for MavlinkResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SimplepeerSignalResponse. */
+    interface ISimplepeerSignalResponse {
+
+        /** SimplepeerSignalResponse Message */
+        Message?: (Uint8Array|null);
+    }
+
+    /** Represents a SimplepeerSignalResponse. */
+    class SimplepeerSignalResponse implements ISimplepeerSignalResponse {
+
+        /**
+         * Constructs a new SimplepeerSignalResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.ISimplepeerSignalResponse);
+
+        /** SimplepeerSignalResponse Message. */
+        public Message: Uint8Array;
+
+        /**
+         * Creates a new SimplepeerSignalResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SimplepeerSignalResponse instance
+         */
+        public static create(properties?: rov_action_api.ISimplepeerSignalResponse): rov_action_api.SimplepeerSignalResponse;
+
+        /**
+         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * @param message SimplepeerSignalResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * @param message SimplepeerSignalResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SimplepeerSignalResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SimplepeerSignalResponse;
+
+        /**
+         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SimplepeerSignalResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SimplepeerSignalResponse;
+
+        /**
+         * Verifies a SimplepeerSignalResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SimplepeerSignalResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SimplepeerSignalResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.SimplepeerSignalResponse;
+
+        /**
+         * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
+         * @param message SimplepeerSignalResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.SimplepeerSignalResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SimplepeerSignalResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SimplepeerSignalResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ResponseBackendMetadata. */
+    interface IResponseBackendMetadata {
+
+        /** ResponseBackendMetadata TargetUserIDs */
+        TargetUserIDs?: (string[]|null);
+
+        /** ResponseBackendMetadata TransportMethod */
+        TransportMethod?: (rov_action_api.DataTransportMethod|null);
+    }
+
+    /** Represents a ResponseBackendMetadata. */
+    class ResponseBackendMetadata implements IResponseBackendMetadata {
+
+        /**
+         * Constructs a new ResponseBackendMetadata.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_action_api.IResponseBackendMetadata);
+
+        /** ResponseBackendMetadata TargetUserIDs. */
+        public TargetUserIDs: string[];
+
+        /** ResponseBackendMetadata TransportMethod. */
+        public TransportMethod: rov_action_api.DataTransportMethod;
+
+        /**
+         * Creates a new ResponseBackendMetadata instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ResponseBackendMetadata instance
+         */
+        public static create(properties?: rov_action_api.IResponseBackendMetadata): rov_action_api.ResponseBackendMetadata;
+
+        /**
+         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * @param message ResponseBackendMetadata message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_action_api.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * @param message ResponseBackendMetadata message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_action_api.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ResponseBackendMetadata message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ResponseBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ResponseBackendMetadata;
+
+        /**
+         * Decodes a ResponseBackendMetadata message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns ResponseBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ResponseBackendMetadata;
+
+        /**
+         * Verifies a ResponseBackendMetadata message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a ResponseBackendMetadata message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns ResponseBackendMetadata
+         */
+        public static fromObject(object: { [k: string]: any }): rov_action_api.ResponseBackendMetadata;
+
+        /**
+         * Creates a plain object from a ResponseBackendMetadata message. Also converts values to other types if specified.
+         * @param message ResponseBackendMetadata
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_action_api.ResponseBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ResponseBackendMetadata to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for ResponseBackendMetadata
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a RovResponse. */
     interface IRovResponse {
+
+        /** RovResponse BackendMetadata */
+        BackendMetadata?: (rov_action_api.IResponseBackendMetadata|null);
 
         /** RovResponse RovExchangeId */
         RovExchangeId?: (number|null);
@@ -3383,12 +3872,6 @@ export namespace rov_action_api {
         /** RovResponse PasswordInvalid */
         PasswordInvalid?: (rov_action_api.IPasswordInvalidResponse|null);
 
-        /** RovResponse TokenAccepted */
-        TokenAccepted?: (rov_action_api.ITokenAcceptedResponse|null);
-
-        /** RovResponse TokenInvalid */
-        TokenInvalid?: (rov_action_api.ITokenInvalidResponse|null);
-
         /** RovResponse DriverChanged */
         DriverChanged?: (rov_action_api.IDriverChangedResponse|null);
 
@@ -3400,6 +3883,12 @@ export namespace rov_action_api {
 
         /** RovResponse Heartbeat */
         Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
+
+        /** RovResponse Mavlink */
+        Mavlink?: (rov_action_api.IMavlinkResponse|null);
+
+        /** RovResponse SimplepeerSignal */
+        SimplepeerSignal?: (rov_action_api.ISimplepeerSignalResponse|null);
     }
 
     /** Represents a RovResponse. */
@@ -3410,6 +3899,9 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          */
         constructor(properties?: rov_action_api.IRovResponse);
+
+        /** RovResponse BackendMetadata. */
+        public BackendMetadata?: (rov_action_api.IResponseBackendMetadata|null);
 
         /** RovResponse RovExchangeId. */
         public RovExchangeId: number;
@@ -3438,12 +3930,6 @@ export namespace rov_action_api {
         /** RovResponse PasswordInvalid. */
         public PasswordInvalid?: (rov_action_api.IPasswordInvalidResponse|null);
 
-        /** RovResponse TokenAccepted. */
-        public TokenAccepted?: (rov_action_api.ITokenAcceptedResponse|null);
-
-        /** RovResponse TokenInvalid. */
-        public TokenInvalid?: (rov_action_api.ITokenInvalidResponse|null);
-
         /** RovResponse DriverChanged. */
         public DriverChanged?: (rov_action_api.IDriverChangedResponse|null);
 
@@ -3456,8 +3942,17 @@ export namespace rov_action_api {
         /** RovResponse Heartbeat. */
         public Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
 
+        /** RovResponse Mavlink. */
+        public Mavlink?: (rov_action_api.IMavlinkResponse|null);
+
+        /** RovResponse SimplepeerSignal. */
+        public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalResponse|null);
+
+        /** RovResponse _BackendMetadata. */
+        public _BackendMetadata?: "BackendMetadata";
+
         /** RovResponse Body. */
-        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat");
+        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal");
 
         /**
          * Creates a new RovResponse instance using the specified properties.

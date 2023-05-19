@@ -17,6 +17,24 @@ export const rov_action_api = $root.rov_action_api = (() => {
     const rov_action_api = {};
 
     /**
+     * DataTransportMethod enum.
+     * @name rov_action_api.DataTransportMethod
+     * @enum {number}
+     * @property {number} LivekitReliable=1 LivekitReliable value
+     * @property {number} LivekitUnreliable=2 LivekitUnreliable value
+     * @property {number} DirectReliable=3 DirectReliable value
+     * @property {number} DirectUnreliable=4 DirectUnreliable value
+     */
+    rov_action_api.DataTransportMethod = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[1] = "LivekitReliable"] = 1;
+        values[valuesById[2] = "LivekitUnreliable"] = 2;
+        values[valuesById[3] = "DirectReliable"] = 3;
+        values[valuesById[4] = "DirectUnreliable"] = 4;
+        return values;
+    })();
+
+    /**
      * SensorMeasurmentTypes enum.
      * @name rov_action_api.SensorMeasurmentTypes
      * @enum {number}
@@ -47,6 +65,56 @@ export const rov_action_api = $root.rov_action_api = (() => {
         values[valuesById[9] = "battery_voltage"] = 9;
         values[valuesById[10] = "battery_current_amps"] = 10;
         values[valuesById[11] = "internal_temp_celsius"] = 11;
+        return values;
+    })();
+
+    /**
+     * RovActionTypes enum.
+     * @name rov_action_api.RovActionTypes
+     * @enum {number}
+     * @property {number} ping=0 ping value
+     * @property {number} password_attempt=1 password_attempt value
+     * @property {number} authtoken_attempt=2 authtoken_attempt value
+     * @property {number} take_control=3 take_control value
+     * @property {number} move=4 move value
+     * @property {number} begin_video_stream=5 begin_video_stream value
+     * @property {number} take_photo=6 take_photo value
+     * @property {number} start_video_rec=7 start_video_rec value
+     * @property {number} stop_video_rec=8 stop_video_rec value
+     * @property {number} toogle_lights=9 toogle_lights value
+     * @property {number} shutdown_rov=10 shutdown_rov value
+     * @property {number} reboot_rov=11 reboot_rov value
+     * @property {number} enable_wifi=12 enable_wifi value
+     * @property {number} disable_wifi=13 disable_wifi value
+     * @property {number} rov_status_report=14 rov_status_report value
+     * @property {number} restart_rov_services=15 restart_rov_services value
+     * @property {number} rov_logs=16 rov_logs value
+     * @property {number} refresh_all_sensors=17 refresh_all_sensors value
+     * @property {number} mavlink=18 mavlink value
+     * @property {number} simplepeer_signal=19 simplepeer_signal value
+     */
+    rov_action_api.RovActionTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "ping"] = 0;
+        values[valuesById[1] = "password_attempt"] = 1;
+        values[valuesById[2] = "authtoken_attempt"] = 2;
+        values[valuesById[3] = "take_control"] = 3;
+        values[valuesById[4] = "move"] = 4;
+        values[valuesById[5] = "begin_video_stream"] = 5;
+        values[valuesById[6] = "take_photo"] = 6;
+        values[valuesById[7] = "start_video_rec"] = 7;
+        values[valuesById[8] = "stop_video_rec"] = 8;
+        values[valuesById[9] = "toogle_lights"] = 9;
+        values[valuesById[10] = "shutdown_rov"] = 10;
+        values[valuesById[11] = "reboot_rov"] = 11;
+        values[valuesById[12] = "enable_wifi"] = 12;
+        values[valuesById[13] = "disable_wifi"] = 13;
+        values[valuesById[14] = "rov_status_report"] = 14;
+        values[valuesById[15] = "restart_rov_services"] = 15;
+        values[valuesById[16] = "rov_logs"] = 16;
+        values[valuesById[17] = "refresh_all_sensors"] = 17;
+        values[valuesById[18] = "mavlink"] = 18;
+        values[valuesById[19] = "simplepeer_signal"] = 19;
         return values;
     })();
 
@@ -3396,12 +3464,658 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return RefreshAllSensorsAction;
     })();
 
+    rov_action_api.MavlinkAction = (function() {
+
+        /**
+         * Properties of a MavlinkAction.
+         * @memberof rov_action_api
+         * @interface IMavlinkAction
+         * @property {Uint8Array|null} [Message] MavlinkAction Message
+         */
+
+        /**
+         * Constructs a new MavlinkAction.
+         * @memberof rov_action_api
+         * @classdesc Represents a MavlinkAction.
+         * @implements IMavlinkAction
+         * @constructor
+         * @param {rov_action_api.IMavlinkAction=} [properties] Properties to set
+         */
+        function MavlinkAction(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * MavlinkAction Message.
+         * @member {Uint8Array} Message
+         * @memberof rov_action_api.MavlinkAction
+         * @instance
+         */
+        MavlinkAction.prototype.Message = $util.newBuffer([]);
+
+        /**
+         * Creates a new MavlinkAction instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {rov_action_api.IMavlinkAction=} [properties] Properties to set
+         * @returns {rov_action_api.MavlinkAction} MavlinkAction instance
+         */
+        MavlinkAction.create = function create(properties) {
+            return new MavlinkAction(properties);
+        };
+
+        /**
+         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {rov_action_api.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MavlinkAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {rov_action_api.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MavlinkAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a MavlinkAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MavlinkAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.MavlinkAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.bytes();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MavlinkAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a MavlinkAction message.
+         * @function verify
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        MavlinkAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
+                    return "Message: buffer expected";
+            return null;
+        };
+
+        /**
+         * Creates a MavlinkAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         */
+        MavlinkAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.MavlinkAction)
+                return object;
+            let message = new $root.rov_action_api.MavlinkAction();
+            if (object.Message != null)
+                if (typeof object.Message === "string")
+                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
+                else if (object.Message.length >= 0)
+                    message.Message = object.Message;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {rov_action_api.MavlinkAction} message MavlinkAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        MavlinkAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                if (options.bytes === String)
+                    object.Message = "";
+                else {
+                    object.Message = [];
+                    if (options.bytes !== Array)
+                        object.Message = $util.newBuffer(object.Message);
+                }
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+            return object;
+        };
+
+        /**
+         * Converts this MavlinkAction to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.MavlinkAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        MavlinkAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for MavlinkAction
+         * @function getTypeUrl
+         * @memberof rov_action_api.MavlinkAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        MavlinkAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.MavlinkAction";
+        };
+
+        return MavlinkAction;
+    })();
+
+    rov_action_api.SimplepeerSignalAction = (function() {
+
+        /**
+         * Properties of a SimplepeerSignalAction.
+         * @memberof rov_action_api
+         * @interface ISimplepeerSignalAction
+         * @property {Uint8Array|null} [Message] SimplepeerSignalAction Message
+         */
+
+        /**
+         * Constructs a new SimplepeerSignalAction.
+         * @memberof rov_action_api
+         * @classdesc Represents a SimplepeerSignalAction.
+         * @implements ISimplepeerSignalAction
+         * @constructor
+         * @param {rov_action_api.ISimplepeerSignalAction=} [properties] Properties to set
+         */
+        function SimplepeerSignalAction(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SimplepeerSignalAction Message.
+         * @member {Uint8Array} Message
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @instance
+         */
+        SimplepeerSignalAction.prototype.Message = $util.newBuffer([]);
+
+        /**
+         * Creates a new SimplepeerSignalAction instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalAction=} [properties] Properties to set
+         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction instance
+         */
+        SimplepeerSignalAction.create = function create(properties) {
+            return new SimplepeerSignalAction(properties);
+        };
+
+        /**
+         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerSignalAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerSignalAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerSignalAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SimplepeerSignalAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.bytes();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerSignalAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SimplepeerSignalAction message.
+         * @function verify
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SimplepeerSignalAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
+                    return "Message: buffer expected";
+            return null;
+        };
+
+        /**
+         * Creates a SimplepeerSignalAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         */
+        SimplepeerSignalAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.SimplepeerSignalAction)
+                return object;
+            let message = new $root.rov_action_api.SimplepeerSignalAction();
+            if (object.Message != null)
+                if (typeof object.Message === "string")
+                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
+                else if (object.Message.length >= 0)
+                    message.Message = object.Message;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {rov_action_api.SimplepeerSignalAction} message SimplepeerSignalAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SimplepeerSignalAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                if (options.bytes === String)
+                    object.Message = "";
+                else {
+                    object.Message = [];
+                    if (options.bytes !== Array)
+                        object.Message = $util.newBuffer(object.Message);
+                }
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+            return object;
+        };
+
+        /**
+         * Converts this SimplepeerSignalAction to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SimplepeerSignalAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SimplepeerSignalAction
+         * @function getTypeUrl
+         * @memberof rov_action_api.SimplepeerSignalAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SimplepeerSignalAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.SimplepeerSignalAction";
+        };
+
+        return SimplepeerSignalAction;
+    })();
+
+    rov_action_api.ActionBackendMetadata = (function() {
+
+        /**
+         * Properties of an ActionBackendMetadata.
+         * @memberof rov_action_api
+         * @interface IActionBackendMetadata
+         * @property {string|null} [FromUserID] ActionBackendMetadata FromUserID
+         */
+
+        /**
+         * Constructs a new ActionBackendMetadata.
+         * @memberof rov_action_api
+         * @classdesc Represents an ActionBackendMetadata.
+         * @implements IActionBackendMetadata
+         * @constructor
+         * @param {rov_action_api.IActionBackendMetadata=} [properties] Properties to set
+         */
+        function ActionBackendMetadata(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ActionBackendMetadata FromUserID.
+         * @member {string|null|undefined} FromUserID
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @instance
+         */
+        ActionBackendMetadata.prototype.FromUserID = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        /**
+         * ActionBackendMetadata _FromUserID.
+         * @member {"FromUserID"|undefined} _FromUserID
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @instance
+         */
+        Object.defineProperty(ActionBackendMetadata.prototype, "_FromUserID", {
+            get: $util.oneOfGetter($oneOfFields = ["FromUserID"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new ActionBackendMetadata instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {rov_action_api.IActionBackendMetadata=} [properties] Properties to set
+         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata instance
+         */
+        ActionBackendMetadata.create = function create(properties) {
+            return new ActionBackendMetadata(properties);
+        };
+
+        /**
+         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {rov_action_api.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ActionBackendMetadata.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.FromUserID != null && Object.hasOwnProperty.call(message, "FromUserID"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.FromUserID);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {rov_action_api.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ActionBackendMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes an ActionBackendMetadata message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ActionBackendMetadata.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ActionBackendMetadata();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.FromUserID = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes an ActionBackendMetadata message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ActionBackendMetadata.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies an ActionBackendMetadata message.
+         * @function verify
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ActionBackendMetadata.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            let properties = {};
+            if (message.FromUserID != null && message.hasOwnProperty("FromUserID")) {
+                properties._FromUserID = 1;
+                if (!$util.isString(message.FromUserID))
+                    return "FromUserID: string expected";
+            }
+            return null;
+        };
+
+        /**
+         * Creates an ActionBackendMetadata message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         */
+        ActionBackendMetadata.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.ActionBackendMetadata)
+                return object;
+            let message = new $root.rov_action_api.ActionBackendMetadata();
+            if (object.FromUserID != null)
+                message.FromUserID = String(object.FromUserID);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from an ActionBackendMetadata message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {rov_action_api.ActionBackendMetadata} message ActionBackendMetadata
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ActionBackendMetadata.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (message.FromUserID != null && message.hasOwnProperty("FromUserID")) {
+                object.FromUserID = message.FromUserID;
+                if (options.oneofs)
+                    object._FromUserID = "FromUserID";
+            }
+            return object;
+        };
+
+        /**
+         * Converts this ActionBackendMetadata to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ActionBackendMetadata.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ActionBackendMetadata
+         * @function getTypeUrl
+         * @memberof rov_action_api.ActionBackendMetadata
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ActionBackendMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.ActionBackendMetadata";
+        };
+
+        return ActionBackendMetadata;
+    })();
+
     rov_action_api.RovAction = (function() {
 
         /**
          * Properties of a RovAction.
          * @memberof rov_action_api
          * @interface IRovAction
+         * @property {rov_action_api.IActionBackendMetadata|null} [BackendMetadata] RovAction BackendMetadata
          * @property {number|null} [RovExchangeId] RovAction RovExchangeId
          * @property {rov_action_api.IPingAction|null} [Ping] RovAction Ping
          * @property {rov_action_api.IPasswordAttemptAction|null} [PasswordAttempt] RovAction PasswordAttempt
@@ -3421,6 +4135,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @property {rov_action_api.IRestartRovServicesAction|null} [RestartRovServices] RovAction RestartRovServices
          * @property {rov_action_api.IRovLogsAction|null} [RovLogs] RovAction RovLogs
          * @property {rov_action_api.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
+         * @property {rov_action_api.IMavlinkAction|null} [Mavlink] RovAction Mavlink
+         * @property {rov_action_api.ISimplepeerSignalAction|null} [SimplepeerSignal] RovAction SimplepeerSignal
          */
 
         /**
@@ -3437,6 +4153,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
+
+        /**
+         * RovAction BackendMetadata.
+         * @member {rov_action_api.IActionBackendMetadata|null|undefined} BackendMetadata
+         * @memberof rov_action_api.RovAction
+         * @instance
+         */
+        RovAction.prototype.BackendMetadata = null;
 
         /**
          * RovAction RovExchangeId.
@@ -3590,17 +4314,44 @@ export const rov_action_api = $root.rov_action_api = (() => {
          */
         RovAction.prototype.RefreshAllSensors = null;
 
+        /**
+         * RovAction Mavlink.
+         * @member {rov_action_api.IMavlinkAction|null|undefined} Mavlink
+         * @memberof rov_action_api.RovAction
+         * @instance
+         */
+        RovAction.prototype.Mavlink = null;
+
+        /**
+         * RovAction SimplepeerSignal.
+         * @member {rov_action_api.ISimplepeerSignalAction|null|undefined} SimplepeerSignal
+         * @memberof rov_action_api.RovAction
+         * @instance
+         */
+        RovAction.prototype.SimplepeerSignal = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
+         * RovAction _BackendMetadata.
+         * @member {"BackendMetadata"|undefined} _BackendMetadata
+         * @memberof rov_action_api.RovAction
+         * @instance
+         */
+        Object.defineProperty(RovAction.prototype, "_BackendMetadata", {
+            get: $util.oneOfGetter($oneOfFields = ["BackendMetadata"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
          * RovAction Body.
-         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|undefined} Body
+         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal"|undefined} Body
          * @memberof rov_action_api.RovAction
          * @instance
          */
         Object.defineProperty(RovAction.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "BeginVideoStream", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToogleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "RovLogs", "RefreshAllSensors"]),
+            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "BeginVideoStream", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToogleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "RovLogs", "RefreshAllSensors", "Mavlink", "SimplepeerSignal"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -3628,6 +4379,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
         RovAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
+            if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
+                $root.rov_action_api.ActionBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
             if (message.Ping != null && Object.hasOwnProperty.call(message, "Ping"))
@@ -3666,6 +4419,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 $root.rov_action_api.RovLogsAction.encode(message.RovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.RefreshAllSensors != null && Object.hasOwnProperty.call(message, "RefreshAllSensors"))
                 $root.rov_action_api.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+            if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
+                $root.rov_action_api.MavlinkAction.encode(message.Mavlink, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+            if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
+                $root.rov_action_api.SimplepeerSignalAction.encode(message.SimplepeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             return writer;
         };
 
@@ -3700,6 +4457,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
+                case 1: {
+                        message.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.decode(reader, reader.uint32());
+                        break;
+                    }
                 case 2: {
                         message.RovExchangeId = reader.int32();
                         break;
@@ -3776,6 +4537,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.decode(reader, reader.uint32());
                         break;
                     }
+                case 21: {
+                        message.Mavlink = $root.rov_action_api.MavlinkAction.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 22: {
+                        message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.decode(reader, reader.uint32());
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -3812,6 +4581,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             let properties = {};
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
+                properties._BackendMetadata = 1;
+                {
+                    let error = $root.rov_action_api.ActionBackendMetadata.verify(message.BackendMetadata);
+                    if (error)
+                        return "BackendMetadata." + error;
+                }
+            }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 if (!$util.isInteger(message.RovExchangeId))
                     return "RovExchangeId: integer expected";
@@ -3993,6 +4770,26 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         return "RefreshAllSensors." + error;
                 }
             }
+            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.MavlinkAction.verify(message.Mavlink);
+                    if (error)
+                        return "Mavlink." + error;
+                }
+            }
+            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.SimplepeerSignalAction.verify(message.SimplepeerSignal);
+                    if (error)
+                        return "SimplepeerSignal." + error;
+                }
+            }
             return null;
         };
 
@@ -4008,6 +4805,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (object instanceof $root.rov_action_api.RovAction)
                 return object;
             let message = new $root.rov_action_api.RovAction();
+            if (object.BackendMetadata != null) {
+                if (typeof object.BackendMetadata !== "object")
+                    throw TypeError(".rov_action_api.RovAction.BackendMetadata: object expected");
+                message.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.fromObject(object.BackendMetadata);
+            }
             if (object.RovExchangeId != null)
                 message.RovExchangeId = object.RovExchangeId | 0;
             if (object.Ping != null) {
@@ -4100,6 +4902,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     throw TypeError(".rov_action_api.RovAction.RefreshAllSensors: object expected");
                 message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.fromObject(object.RefreshAllSensors);
             }
+            if (object.Mavlink != null) {
+                if (typeof object.Mavlink !== "object")
+                    throw TypeError(".rov_action_api.RovAction.Mavlink: object expected");
+                message.Mavlink = $root.rov_action_api.MavlinkAction.fromObject(object.Mavlink);
+            }
+            if (object.SimplepeerSignal != null) {
+                if (typeof object.SimplepeerSignal !== "object")
+                    throw TypeError(".rov_action_api.RovAction.SimplepeerSignal: object expected");
+                message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.fromObject(object.SimplepeerSignal);
+            }
             return message;
         };
 
@@ -4118,6 +4930,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
             let object = {};
             if (options.defaults)
                 object.RovExchangeId = 0;
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
+                object.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.toObject(message.BackendMetadata, options);
+                if (options.oneofs)
+                    object._BackendMetadata = "BackendMetadata";
+            }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
@@ -4210,6 +5027,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (options.oneofs)
                     object.Body = "RefreshAllSensors";
             }
+            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
+                object.Mavlink = $root.rov_action_api.MavlinkAction.toObject(message.Mavlink, options);
+                if (options.oneofs)
+                    object.Body = "Mavlink";
+            }
+            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+                object.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.toObject(message.SimplepeerSignal, options);
+                if (options.oneofs)
+                    object.Body = "SimplepeerSignal";
+            }
             return object;
         };
 
@@ -4240,6 +5067,50 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         return RovAction;
+    })();
+
+    /**
+     * RovResponseTypes enum.
+     * @name rov_action_api.RovResponseTypes
+     * @enum {number}
+     * @property {number} done=0 done value
+     * @property {number} error=1 error value
+     * @property {number} pong=2 pong value
+     * @property {number} measurement=3 measurement value
+     * @property {number} sensor_updates=4 sensor_updates value
+     * @property {number} password_required=5 password_required value
+     * @property {number} password_accepted=6 password_accepted value
+     * @property {number} password_invalid=7 password_invalid value
+     * @property {number} token_accepted=8 token_accepted value
+     * @property {number} token_invalid=9 token_invalid value
+     * @property {number} driver_changed=10 driver_changed value
+     * @property {number} client_connected=11 client_connected value
+     * @property {number} client_disconnected=12 client_disconnected value
+     * @property {number} heartbeat_response=13 heartbeat_response value
+     * @property {number} continued_output=14 continued_output value
+     * @property {number} mavlink=15 mavlink value
+     * @property {number} simplepeer_signalling=16 simplepeer_signalling value
+     */
+    rov_action_api.RovResponseTypes = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "done"] = 0;
+        values[valuesById[1] = "error"] = 1;
+        values[valuesById[2] = "pong"] = 2;
+        values[valuesById[3] = "measurement"] = 3;
+        values[valuesById[4] = "sensor_updates"] = 4;
+        values[valuesById[5] = "password_required"] = 5;
+        values[valuesById[6] = "password_accepted"] = 6;
+        values[valuesById[7] = "password_invalid"] = 7;
+        values[valuesById[8] = "token_accepted"] = 8;
+        values[valuesById[9] = "token_invalid"] = 9;
+        values[valuesById[10] = "driver_changed"] = 10;
+        values[valuesById[11] = "client_connected"] = 11;
+        values[valuesById[12] = "client_disconnected"] = 12;
+        values[valuesById[13] = "heartbeat_response"] = 13;
+        values[valuesById[14] = "continued_output"] = 14;
+        values[valuesById[15] = "mavlink"] = 15;
+        values[valuesById[16] = "simplepeer_signalling"] = 16;
+        return values;
     })();
 
     rov_action_api.DoneResponse = (function() {
@@ -4666,209 +5537,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return ErrorResponse;
     })();
 
-    rov_action_api.ContinuedOutputResponse = (function() {
-
-        /**
-         * Properties of a ContinuedOutputResponse.
-         * @memberof rov_action_api
-         * @interface IContinuedOutputResponse
-         * @property {string|null} [Message] ContinuedOutputResponse Message
-         */
-
-        /**
-         * Constructs a new ContinuedOutputResponse.
-         * @memberof rov_action_api
-         * @classdesc Represents a ContinuedOutputResponse.
-         * @implements IContinuedOutputResponse
-         * @constructor
-         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
-         */
-        function ContinuedOutputResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * ContinuedOutputResponse Message.
-         * @member {string} Message
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @instance
-         */
-        ContinuedOutputResponse.prototype.Message = "";
-
-        /**
-         * Creates a new ContinuedOutputResponse instance using the specified properties.
-         * @function create
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse instance
-         */
-        ContinuedOutputResponse.create = function create(properties) {
-            return new ContinuedOutputResponse(properties);
-        };
-
-        /**
-         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
-         * @function encode
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ContinuedOutputResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ContinuedOutputResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ContinuedOutputResponse.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ContinuedOutputResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1: {
-                        message.Message = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ContinuedOutputResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a ContinuedOutputResponse message.
-         * @function verify
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        ContinuedOutputResponse.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.Message != null && message.hasOwnProperty("Message"))
-                if (!$util.isString(message.Message))
-                    return "Message: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
-         */
-        ContinuedOutputResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ContinuedOutputResponse)
-                return object;
-            let message = new $root.rov_action_api.ContinuedOutputResponse();
-            if (object.Message != null)
-                message.Message = String(object.Message);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {rov_action_api.ContinuedOutputResponse} message ContinuedOutputResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        ContinuedOutputResponse.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults)
-                object.Message = "";
-            if (message.Message != null && message.hasOwnProperty("Message"))
-                object.Message = message.Message;
-            return object;
-        };
-
-        /**
-         * Converts this ContinuedOutputResponse to JSON.
-         * @function toJSON
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        ContinuedOutputResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for ContinuedOutputResponse
-         * @function getTypeUrl
-         * @memberof rov_action_api.ContinuedOutputResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        ContinuedOutputResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_action_api.ContinuedOutputResponse";
-        };
-
-        return ContinuedOutputResponse;
-    })();
-
     rov_action_api.PongResponse = (function() {
 
         /**
@@ -5086,309 +5754,13 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return PongResponse;
     })();
 
-    rov_action_api.Measurement = (function() {
-
-        /**
-         * Properties of a Measurement.
-         * @memberof rov_action_api
-         * @interface IMeasurement
-         * @property {rov_action_api.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
-         * @property {number|null} [Value] Measurement Value
-         */
-
-        /**
-         * Constructs a new Measurement.
-         * @memberof rov_action_api
-         * @classdesc Represents a Measurement.
-         * @implements IMeasurement
-         * @constructor
-         * @param {rov_action_api.IMeasurement=} [properties] Properties to set
-         */
-        function Measurement(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Measurement MeasurementType.
-         * @member {rov_action_api.SensorMeasurmentTypes} MeasurementType
-         * @memberof rov_action_api.Measurement
-         * @instance
-         */
-        Measurement.prototype.MeasurementType = 0;
-
-        /**
-         * Measurement Value.
-         * @member {number} Value
-         * @memberof rov_action_api.Measurement
-         * @instance
-         */
-        Measurement.prototype.Value = 0;
-
-        /**
-         * Creates a new Measurement instance using the specified properties.
-         * @function create
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {rov_action_api.IMeasurement=} [properties] Properties to set
-         * @returns {rov_action_api.Measurement} Measurement instance
-         */
-        Measurement.create = function create(properties) {
-            return new Measurement(properties);
-        };
-
-        /**
-         * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
-         * @function encode
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {rov_action_api.IMeasurement} message Measurement message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Measurement.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
-            if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
-                writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.Measurement.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {rov_action_api.IMeasurement} message Measurement message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Measurement.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.Measurement} Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Measurement.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.Measurement();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1: {
-                        message.MeasurementType = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.Value = reader.float();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.Measurement} Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Measurement.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a Measurement message.
-         * @function verify
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        Measurement.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                switch (message.MeasurementType) {
-                default:
-                    return "MeasurementType: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                    break;
-                }
-            if (message.Value != null && message.hasOwnProperty("Value"))
-                if (typeof message.Value !== "number")
-                    return "Value: number expected";
-            return null;
-        };
-
-        /**
-         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.Measurement} Measurement
-         */
-        Measurement.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.Measurement)
-                return object;
-            let message = new $root.rov_action_api.Measurement();
-            switch (object.MeasurementType) {
-            default:
-                if (typeof object.MeasurementType === "number") {
-                    message.MeasurementType = object.MeasurementType;
-                    break;
-                }
-                break;
-            case "depth_meters":
-            case 0:
-                message.MeasurementType = 0;
-                break;
-            case "water_temp_celsius":
-            case 1:
-                message.MeasurementType = 1;
-                break;
-            case "pressure_mbar":
-            case 2:
-                message.MeasurementType = 2;
-                break;
-            case "yaw_degrees":
-            case 3:
-                message.MeasurementType = 3;
-                break;
-            case "pitch_degrees":
-            case 4:
-                message.MeasurementType = 4;
-                break;
-            case "roll_degrees":
-            case 5:
-                message.MeasurementType = 5;
-                break;
-            case "x_acceleration_m_s2":
-            case 6:
-                message.MeasurementType = 6;
-                break;
-            case "y_acceleration_m_s2":
-            case 7:
-                message.MeasurementType = 7;
-                break;
-            case "z_acceleration_m_s2":
-            case 8:
-                message.MeasurementType = 8;
-                break;
-            case "battery_voltage":
-            case 9:
-                message.MeasurementType = 9;
-                break;
-            case "battery_current_amps":
-            case 10:
-                message.MeasurementType = 10;
-                break;
-            case "internal_temp_celsius":
-            case 11:
-                message.MeasurementType = 11;
-                break;
-            }
-            if (object.Value != null)
-                message.Value = Number(object.Value);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {rov_action_api.Measurement} message Measurement
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        Measurement.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.MeasurementType = options.enums === String ? "depth_meters" : 0;
-                object.Value = 0;
-            }
-            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                object.MeasurementType = options.enums === String ? $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
-            if (message.Value != null && message.hasOwnProperty("Value"))
-                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
-            return object;
-        };
-
-        /**
-         * Converts this Measurement to JSON.
-         * @function toJSON
-         * @memberof rov_action_api.Measurement
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        Measurement.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for Measurement
-         * @function getTypeUrl
-         * @memberof rov_action_api.Measurement
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_action_api.Measurement";
-        };
-
-        return Measurement;
-    })();
-
     rov_action_api.SensorUpdatesResponse = (function() {
 
         /**
          * Properties of a SensorUpdatesResponse.
          * @memberof rov_action_api
          * @interface ISensorUpdatesResponse
-         * @property {Array.<rov_action_api.IMeasurement>|null} [MeasurementUpdates] SensorUpdatesResponse MeasurementUpdates
+         * @property {Array.<rov_action_api.SensorUpdatesResponse.IMeasurement>|null} [MeasurementUpdates] SensorUpdatesResponse MeasurementUpdates
          */
 
         /**
@@ -5409,7 +5781,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * SensorUpdatesResponse MeasurementUpdates.
-         * @member {Array.<rov_action_api.IMeasurement>} MeasurementUpdates
+         * @member {Array.<rov_action_api.SensorUpdatesResponse.IMeasurement>} MeasurementUpdates
          * @memberof rov_action_api.SensorUpdatesResponse
          * @instance
          */
@@ -5441,7 +5813,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 writer = $Writer.create();
             if (message.MeasurementUpdates != null && message.MeasurementUpdates.length)
                 for (let i = 0; i < message.MeasurementUpdates.length; ++i)
-                    $root.rov_action_api.Measurement.encode(message.MeasurementUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    $root.rov_action_api.SensorUpdatesResponse.Measurement.encode(message.MeasurementUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -5479,7 +5851,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 case 1: {
                         if (!(message.MeasurementUpdates && message.MeasurementUpdates.length))
                             message.MeasurementUpdates = [];
-                        message.MeasurementUpdates.push($root.rov_action_api.Measurement.decode(reader, reader.uint32()));
+                        message.MeasurementUpdates.push($root.rov_action_api.SensorUpdatesResponse.Measurement.decode(reader, reader.uint32()));
                         break;
                     }
                 default:
@@ -5521,7 +5893,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (!Array.isArray(message.MeasurementUpdates))
                     return "MeasurementUpdates: array expected";
                 for (let i = 0; i < message.MeasurementUpdates.length; ++i) {
-                    let error = $root.rov_action_api.Measurement.verify(message.MeasurementUpdates[i]);
+                    let error = $root.rov_action_api.SensorUpdatesResponse.Measurement.verify(message.MeasurementUpdates[i]);
                     if (error)
                         return "MeasurementUpdates." + error;
                 }
@@ -5548,7 +5920,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 for (let i = 0; i < object.MeasurementUpdates.length; ++i) {
                     if (typeof object.MeasurementUpdates[i] !== "object")
                         throw TypeError(".rov_action_api.SensorUpdatesResponse.MeasurementUpdates: object expected");
-                    message.MeasurementUpdates[i] = $root.rov_action_api.Measurement.fromObject(object.MeasurementUpdates[i]);
+                    message.MeasurementUpdates[i] = $root.rov_action_api.SensorUpdatesResponse.Measurement.fromObject(object.MeasurementUpdates[i]);
                 }
             }
             return message;
@@ -5572,7 +5944,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (message.MeasurementUpdates && message.MeasurementUpdates.length) {
                 object.MeasurementUpdates = [];
                 for (let j = 0; j < message.MeasurementUpdates.length; ++j)
-                    object.MeasurementUpdates[j] = $root.rov_action_api.Measurement.toObject(message.MeasurementUpdates[j], options);
+                    object.MeasurementUpdates[j] = $root.rov_action_api.SensorUpdatesResponse.Measurement.toObject(message.MeasurementUpdates[j], options);
             }
             return object;
         };
@@ -5602,6 +5974,302 @@ export const rov_action_api = $root.rov_action_api = (() => {
             }
             return typeUrlPrefix + "/rov_action_api.SensorUpdatesResponse";
         };
+
+        SensorUpdatesResponse.Measurement = (function() {
+
+            /**
+             * Properties of a Measurement.
+             * @memberof rov_action_api.SensorUpdatesResponse
+             * @interface IMeasurement
+             * @property {rov_action_api.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
+             * @property {number|null} [Value] Measurement Value
+             */
+
+            /**
+             * Constructs a new Measurement.
+             * @memberof rov_action_api.SensorUpdatesResponse
+             * @classdesc Represents a Measurement.
+             * @implements IMeasurement
+             * @constructor
+             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement=} [properties] Properties to set
+             */
+            function Measurement(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Measurement MeasurementType.
+             * @member {rov_action_api.SensorMeasurmentTypes} MeasurementType
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @instance
+             */
+            Measurement.prototype.MeasurementType = 0;
+
+            /**
+             * Measurement Value.
+             * @member {number} Value
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @instance
+             */
+            Measurement.prototype.Value = 0;
+
+            /**
+             * Creates a new Measurement instance using the specified properties.
+             * @function create
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement=} [properties] Properties to set
+             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement instance
+             */
+            Measurement.create = function create(properties) {
+                return new Measurement(properties);
+            };
+
+            /**
+             * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
+             * @function encode
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement} message Measurement message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Measurement.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
+                if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
+                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement} message Measurement message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Measurement.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a Measurement message from the specified reader or buffer.
+             * @function decode
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Measurement.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SensorUpdatesResponse.Measurement();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.MeasurementType = reader.int32();
+                            break;
+                        }
+                    case 2: {
+                            message.Value = reader.float();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a Measurement message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Measurement.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a Measurement message.
+             * @function verify
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Measurement.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                    switch (message.MeasurementType) {
+                    default:
+                        return "MeasurementType: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                        break;
+                    }
+                if (message.Value != null && message.hasOwnProperty("Value"))
+                    if (typeof message.Value !== "number")
+                        return "Value: number expected";
+                return null;
+            };
+
+            /**
+             * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
+             */
+            Measurement.fromObject = function fromObject(object) {
+                if (object instanceof $root.rov_action_api.SensorUpdatesResponse.Measurement)
+                    return object;
+                let message = new $root.rov_action_api.SensorUpdatesResponse.Measurement();
+                switch (object.MeasurementType) {
+                default:
+                    if (typeof object.MeasurementType === "number") {
+                        message.MeasurementType = object.MeasurementType;
+                        break;
+                    }
+                    break;
+                case "depth_meters":
+                case 0:
+                    message.MeasurementType = 0;
+                    break;
+                case "water_temp_celsius":
+                case 1:
+                    message.MeasurementType = 1;
+                    break;
+                case "pressure_mbar":
+                case 2:
+                    message.MeasurementType = 2;
+                    break;
+                case "yaw_degrees":
+                case 3:
+                    message.MeasurementType = 3;
+                    break;
+                case "pitch_degrees":
+                case 4:
+                    message.MeasurementType = 4;
+                    break;
+                case "roll_degrees":
+                case 5:
+                    message.MeasurementType = 5;
+                    break;
+                case "x_acceleration_m_s2":
+                case 6:
+                    message.MeasurementType = 6;
+                    break;
+                case "y_acceleration_m_s2":
+                case 7:
+                    message.MeasurementType = 7;
+                    break;
+                case "z_acceleration_m_s2":
+                case 8:
+                    message.MeasurementType = 8;
+                    break;
+                case "battery_voltage":
+                case 9:
+                    message.MeasurementType = 9;
+                    break;
+                case "battery_current_amps":
+                case 10:
+                    message.MeasurementType = 10;
+                    break;
+                case "internal_temp_celsius":
+                case 11:
+                    message.MeasurementType = 11;
+                    break;
+                }
+                if (object.Value != null)
+                    message.Value = Number(object.Value);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {rov_action_api.SensorUpdatesResponse.Measurement} message Measurement
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Measurement.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.MeasurementType = options.enums === String ? "depth_meters" : 0;
+                    object.Value = 0;
+                }
+                if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                    object.MeasurementType = options.enums === String ? $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
+                if (message.Value != null && message.hasOwnProperty("Value"))
+                    object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
+                return object;
+            };
+
+            /**
+             * Converts this Measurement to JSON.
+             * @function toJSON
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Measurement.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for Measurement
+             * @function getTypeUrl
+             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/rov_action_api.SensorUpdatesResponse.Measurement";
+            };
+
+            return Measurement;
+        })();
 
         return SensorUpdatesResponse;
     })();
@@ -6185,356 +6853,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         return PasswordInvalidResponse;
-    })();
-
-    rov_action_api.TokenAcceptedResponse = (function() {
-
-        /**
-         * Properties of a TokenAcceptedResponse.
-         * @memberof rov_action_api
-         * @interface ITokenAcceptedResponse
-         */
-
-        /**
-         * Constructs a new TokenAcceptedResponse.
-         * @memberof rov_action_api
-         * @classdesc Represents a TokenAcceptedResponse.
-         * @implements ITokenAcceptedResponse
-         * @constructor
-         * @param {rov_action_api.ITokenAcceptedResponse=} [properties] Properties to set
-         */
-        function TokenAcceptedResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Creates a new TokenAcceptedResponse instance using the specified properties.
-         * @function create
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {rov_action_api.ITokenAcceptedResponse=} [properties] Properties to set
-         * @returns {rov_action_api.TokenAcceptedResponse} TokenAcceptedResponse instance
-         */
-        TokenAcceptedResponse.create = function create(properties) {
-            return new TokenAcceptedResponse(properties);
-        };
-
-        /**
-         * Encodes the specified TokenAcceptedResponse message. Does not implicitly {@link rov_action_api.TokenAcceptedResponse.verify|verify} messages.
-         * @function encode
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {rov_action_api.ITokenAcceptedResponse} message TokenAcceptedResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TokenAcceptedResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified TokenAcceptedResponse message, length delimited. Does not implicitly {@link rov_action_api.TokenAcceptedResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {rov_action_api.ITokenAcceptedResponse} message TokenAcceptedResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TokenAcceptedResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a TokenAcceptedResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.TokenAcceptedResponse} TokenAcceptedResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TokenAcceptedResponse.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.TokenAcceptedResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a TokenAcceptedResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.TokenAcceptedResponse} TokenAcceptedResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TokenAcceptedResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a TokenAcceptedResponse message.
-         * @function verify
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        TokenAcceptedResponse.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            return null;
-        };
-
-        /**
-         * Creates a TokenAcceptedResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.TokenAcceptedResponse} TokenAcceptedResponse
-         */
-        TokenAcceptedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.TokenAcceptedResponse)
-                return object;
-            return new $root.rov_action_api.TokenAcceptedResponse();
-        };
-
-        /**
-         * Creates a plain object from a TokenAcceptedResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {rov_action_api.TokenAcceptedResponse} message TokenAcceptedResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        TokenAcceptedResponse.toObject = function toObject() {
-            return {};
-        };
-
-        /**
-         * Converts this TokenAcceptedResponse to JSON.
-         * @function toJSON
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        TokenAcceptedResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for TokenAcceptedResponse
-         * @function getTypeUrl
-         * @memberof rov_action_api.TokenAcceptedResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        TokenAcceptedResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_action_api.TokenAcceptedResponse";
-        };
-
-        return TokenAcceptedResponse;
-    })();
-
-    rov_action_api.TokenInvalidResponse = (function() {
-
-        /**
-         * Properties of a TokenInvalidResponse.
-         * @memberof rov_action_api
-         * @interface ITokenInvalidResponse
-         */
-
-        /**
-         * Constructs a new TokenInvalidResponse.
-         * @memberof rov_action_api
-         * @classdesc Represents a TokenInvalidResponse.
-         * @implements ITokenInvalidResponse
-         * @constructor
-         * @param {rov_action_api.ITokenInvalidResponse=} [properties] Properties to set
-         */
-        function TokenInvalidResponse(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Creates a new TokenInvalidResponse instance using the specified properties.
-         * @function create
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {rov_action_api.ITokenInvalidResponse=} [properties] Properties to set
-         * @returns {rov_action_api.TokenInvalidResponse} TokenInvalidResponse instance
-         */
-        TokenInvalidResponse.create = function create(properties) {
-            return new TokenInvalidResponse(properties);
-        };
-
-        /**
-         * Encodes the specified TokenInvalidResponse message. Does not implicitly {@link rov_action_api.TokenInvalidResponse.verify|verify} messages.
-         * @function encode
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {rov_action_api.ITokenInvalidResponse} message TokenInvalidResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TokenInvalidResponse.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified TokenInvalidResponse message, length delimited. Does not implicitly {@link rov_action_api.TokenInvalidResponse.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {rov_action_api.ITokenInvalidResponse} message TokenInvalidResponse message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        TokenInvalidResponse.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a TokenInvalidResponse message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.TokenInvalidResponse} TokenInvalidResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TokenInvalidResponse.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.TokenInvalidResponse();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a TokenInvalidResponse message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.TokenInvalidResponse} TokenInvalidResponse
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        TokenInvalidResponse.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a TokenInvalidResponse message.
-         * @function verify
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        TokenInvalidResponse.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            return null;
-        };
-
-        /**
-         * Creates a TokenInvalidResponse message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.TokenInvalidResponse} TokenInvalidResponse
-         */
-        TokenInvalidResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.TokenInvalidResponse)
-                return object;
-            return new $root.rov_action_api.TokenInvalidResponse();
-        };
-
-        /**
-         * Creates a plain object from a TokenInvalidResponse message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {rov_action_api.TokenInvalidResponse} message TokenInvalidResponse
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        TokenInvalidResponse.toObject = function toObject() {
-            return {};
-        };
-
-        /**
-         * Converts this TokenInvalidResponse to JSON.
-         * @function toJSON
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        TokenInvalidResponse.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for TokenInvalidResponse
-         * @function getTypeUrl
-         * @memberof rov_action_api.TokenInvalidResponse
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        TokenInvalidResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_action_api.TokenInvalidResponse";
-        };
-
-        return TokenInvalidResponse;
     })();
 
     rov_action_api.DriverChangedResponse = (function() {
@@ -7363,12 +7681,912 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return HeartbeatResponse;
     })();
 
+    rov_action_api.ContinuedOutputResponse = (function() {
+
+        /**
+         * Properties of a ContinuedOutputResponse.
+         * @memberof rov_action_api
+         * @interface IContinuedOutputResponse
+         * @property {string|null} [Message] ContinuedOutputResponse Message
+         */
+
+        /**
+         * Constructs a new ContinuedOutputResponse.
+         * @memberof rov_action_api
+         * @classdesc Represents a ContinuedOutputResponse.
+         * @implements IContinuedOutputResponse
+         * @constructor
+         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
+         */
+        function ContinuedOutputResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ContinuedOutputResponse Message.
+         * @member {string} Message
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @instance
+         */
+        ContinuedOutputResponse.prototype.Message = "";
+
+        /**
+         * Creates a new ContinuedOutputResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
+         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse instance
+         */
+        ContinuedOutputResponse.create = function create(properties) {
+            return new ContinuedOutputResponse(properties);
+        };
+
+        /**
+         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ContinuedOutputResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ContinuedOutputResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ContinuedOutputResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ContinuedOutputResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ContinuedOutputResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ContinuedOutputResponse message.
+         * @function verify
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ContinuedOutputResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!$util.isString(message.Message))
+                    return "Message: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         */
+        ContinuedOutputResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.ContinuedOutputResponse)
+                return object;
+            let message = new $root.rov_action_api.ContinuedOutputResponse();
+            if (object.Message != null)
+                message.Message = String(object.Message);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {rov_action_api.ContinuedOutputResponse} message ContinuedOutputResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ContinuedOutputResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.Message = "";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = message.Message;
+            return object;
+        };
+
+        /**
+         * Converts this ContinuedOutputResponse to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ContinuedOutputResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ContinuedOutputResponse
+         * @function getTypeUrl
+         * @memberof rov_action_api.ContinuedOutputResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ContinuedOutputResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.ContinuedOutputResponse";
+        };
+
+        return ContinuedOutputResponse;
+    })();
+
+    rov_action_api.MavlinkResponse = (function() {
+
+        /**
+         * Properties of a MavlinkResponse.
+         * @memberof rov_action_api
+         * @interface IMavlinkResponse
+         * @property {Uint8Array|null} [Message] MavlinkResponse Message
+         */
+
+        /**
+         * Constructs a new MavlinkResponse.
+         * @memberof rov_action_api
+         * @classdesc Represents a MavlinkResponse.
+         * @implements IMavlinkResponse
+         * @constructor
+         * @param {rov_action_api.IMavlinkResponse=} [properties] Properties to set
+         */
+        function MavlinkResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * MavlinkResponse Message.
+         * @member {Uint8Array} Message
+         * @memberof rov_action_api.MavlinkResponse
+         * @instance
+         */
+        MavlinkResponse.prototype.Message = $util.newBuffer([]);
+
+        /**
+         * Creates a new MavlinkResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {rov_action_api.IMavlinkResponse=} [properties] Properties to set
+         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse instance
+         */
+        MavlinkResponse.create = function create(properties) {
+            return new MavlinkResponse(properties);
+        };
+
+        /**
+         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {rov_action_api.IMavlinkResponse} message MavlinkResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MavlinkResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {rov_action_api.IMavlinkResponse} message MavlinkResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        MavlinkResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a MavlinkResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MavlinkResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.MavlinkResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.bytes();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a MavlinkResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        MavlinkResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a MavlinkResponse message.
+         * @function verify
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        MavlinkResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
+                    return "Message: buffer expected";
+            return null;
+        };
+
+        /**
+         * Creates a MavlinkResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         */
+        MavlinkResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.MavlinkResponse)
+                return object;
+            let message = new $root.rov_action_api.MavlinkResponse();
+            if (object.Message != null)
+                if (typeof object.Message === "string")
+                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
+                else if (object.Message.length >= 0)
+                    message.Message = object.Message;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a MavlinkResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {rov_action_api.MavlinkResponse} message MavlinkResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        MavlinkResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                if (options.bytes === String)
+                    object.Message = "";
+                else {
+                    object.Message = [];
+                    if (options.bytes !== Array)
+                        object.Message = $util.newBuffer(object.Message);
+                }
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+            return object;
+        };
+
+        /**
+         * Converts this MavlinkResponse to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.MavlinkResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        MavlinkResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for MavlinkResponse
+         * @function getTypeUrl
+         * @memberof rov_action_api.MavlinkResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        MavlinkResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.MavlinkResponse";
+        };
+
+        return MavlinkResponse;
+    })();
+
+    rov_action_api.SimplepeerSignalResponse = (function() {
+
+        /**
+         * Properties of a SimplepeerSignalResponse.
+         * @memberof rov_action_api
+         * @interface ISimplepeerSignalResponse
+         * @property {Uint8Array|null} [Message] SimplepeerSignalResponse Message
+         */
+
+        /**
+         * Constructs a new SimplepeerSignalResponse.
+         * @memberof rov_action_api
+         * @classdesc Represents a SimplepeerSignalResponse.
+         * @implements ISimplepeerSignalResponse
+         * @constructor
+         * @param {rov_action_api.ISimplepeerSignalResponse=} [properties] Properties to set
+         */
+        function SimplepeerSignalResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SimplepeerSignalResponse Message.
+         * @member {Uint8Array} Message
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @instance
+         */
+        SimplepeerSignalResponse.prototype.Message = $util.newBuffer([]);
+
+        /**
+         * Creates a new SimplepeerSignalResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalResponse=} [properties] Properties to set
+         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse instance
+         */
+        SimplepeerSignalResponse.create = function create(properties) {
+            return new SimplepeerSignalResponse(properties);
+        };
+
+        /**
+         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerSignalResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {rov_action_api.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerSignalResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerSignalResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SimplepeerSignalResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.bytes();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerSignalResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SimplepeerSignalResponse message.
+         * @function verify
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SimplepeerSignalResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
+                    return "Message: buffer expected";
+            return null;
+        };
+
+        /**
+         * Creates a SimplepeerSignalResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         */
+        SimplepeerSignalResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.SimplepeerSignalResponse)
+                return object;
+            let message = new $root.rov_action_api.SimplepeerSignalResponse();
+            if (object.Message != null)
+                if (typeof object.Message === "string")
+                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
+                else if (object.Message.length >= 0)
+                    message.Message = object.Message;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {rov_action_api.SimplepeerSignalResponse} message SimplepeerSignalResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SimplepeerSignalResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                if (options.bytes === String)
+                    object.Message = "";
+                else {
+                    object.Message = [];
+                    if (options.bytes !== Array)
+                        object.Message = $util.newBuffer(object.Message);
+                }
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+            return object;
+        };
+
+        /**
+         * Converts this SimplepeerSignalResponse to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SimplepeerSignalResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SimplepeerSignalResponse
+         * @function getTypeUrl
+         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SimplepeerSignalResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.SimplepeerSignalResponse";
+        };
+
+        return SimplepeerSignalResponse;
+    })();
+
+    rov_action_api.ResponseBackendMetadata = (function() {
+
+        /**
+         * Properties of a ResponseBackendMetadata.
+         * @memberof rov_action_api
+         * @interface IResponseBackendMetadata
+         * @property {Array.<string>|null} [TargetUserIDs] ResponseBackendMetadata TargetUserIDs
+         * @property {rov_action_api.DataTransportMethod|null} [TransportMethod] ResponseBackendMetadata TransportMethod
+         */
+
+        /**
+         * Constructs a new ResponseBackendMetadata.
+         * @memberof rov_action_api
+         * @classdesc Represents a ResponseBackendMetadata.
+         * @implements IResponseBackendMetadata
+         * @constructor
+         * @param {rov_action_api.IResponseBackendMetadata=} [properties] Properties to set
+         */
+        function ResponseBackendMetadata(properties) {
+            this.TargetUserIDs = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ResponseBackendMetadata TargetUserIDs.
+         * @member {Array.<string>} TargetUserIDs
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @instance
+         */
+        ResponseBackendMetadata.prototype.TargetUserIDs = $util.emptyArray;
+
+        /**
+         * ResponseBackendMetadata TransportMethod.
+         * @member {rov_action_api.DataTransportMethod} TransportMethod
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @instance
+         */
+        ResponseBackendMetadata.prototype.TransportMethod = 1;
+
+        /**
+         * Creates a new ResponseBackendMetadata instance using the specified properties.
+         * @function create
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {rov_action_api.IResponseBackendMetadata=} [properties] Properties to set
+         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata instance
+         */
+        ResponseBackendMetadata.create = function create(properties) {
+            return new ResponseBackendMetadata(properties);
+        };
+
+        /**
+         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * @function encode
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {rov_action_api.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ResponseBackendMetadata.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.TargetUserIDs != null && message.TargetUserIDs.length)
+                for (let i = 0; i < message.TargetUserIDs.length; ++i)
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.TargetUserIDs[i]);
+            if (message.TransportMethod != null && Object.hasOwnProperty.call(message, "TransportMethod"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.TransportMethod);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {rov_action_api.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ResponseBackendMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ResponseBackendMetadata message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ResponseBackendMetadata.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ResponseBackendMetadata();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        if (!(message.TargetUserIDs && message.TargetUserIDs.length))
+                            message.TargetUserIDs = [];
+                        message.TargetUserIDs.push(reader.string());
+                        break;
+                    }
+                case 2: {
+                        message.TransportMethod = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ResponseBackendMetadata message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ResponseBackendMetadata.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ResponseBackendMetadata message.
+         * @function verify
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        ResponseBackendMetadata.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.TargetUserIDs != null && message.hasOwnProperty("TargetUserIDs")) {
+                if (!Array.isArray(message.TargetUserIDs))
+                    return "TargetUserIDs: array expected";
+                for (let i = 0; i < message.TargetUserIDs.length; ++i)
+                    if (!$util.isString(message.TargetUserIDs[i]))
+                        return "TargetUserIDs: string[] expected";
+            }
+            if (message.TransportMethod != null && message.hasOwnProperty("TransportMethod"))
+                switch (message.TransportMethod) {
+                default:
+                    return "TransportMethod: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a ResponseBackendMetadata message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         */
+        ResponseBackendMetadata.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_action_api.ResponseBackendMetadata)
+                return object;
+            let message = new $root.rov_action_api.ResponseBackendMetadata();
+            if (object.TargetUserIDs) {
+                if (!Array.isArray(object.TargetUserIDs))
+                    throw TypeError(".rov_action_api.ResponseBackendMetadata.TargetUserIDs: array expected");
+                message.TargetUserIDs = [];
+                for (let i = 0; i < object.TargetUserIDs.length; ++i)
+                    message.TargetUserIDs[i] = String(object.TargetUserIDs[i]);
+            }
+            switch (object.TransportMethod) {
+            default:
+                if (typeof object.TransportMethod === "number") {
+                    message.TransportMethod = object.TransportMethod;
+                    break;
+                }
+                break;
+            case "LivekitReliable":
+            case 1:
+                message.TransportMethod = 1;
+                break;
+            case "LivekitUnreliable":
+            case 2:
+                message.TransportMethod = 2;
+                break;
+            case "DirectReliable":
+            case 3:
+                message.TransportMethod = 3;
+                break;
+            case "DirectUnreliable":
+            case 4:
+                message.TransportMethod = 4;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a ResponseBackendMetadata message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {rov_action_api.ResponseBackendMetadata} message ResponseBackendMetadata
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ResponseBackendMetadata.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.TargetUserIDs = [];
+            if (options.defaults)
+                object.TransportMethod = options.enums === String ? "LivekitReliable" : 1;
+            if (message.TargetUserIDs && message.TargetUserIDs.length) {
+                object.TargetUserIDs = [];
+                for (let j = 0; j < message.TargetUserIDs.length; ++j)
+                    object.TargetUserIDs[j] = message.TargetUserIDs[j];
+            }
+            if (message.TransportMethod != null && message.hasOwnProperty("TransportMethod"))
+                object.TransportMethod = options.enums === String ? $root.rov_action_api.DataTransportMethod[message.TransportMethod] === undefined ? message.TransportMethod : $root.rov_action_api.DataTransportMethod[message.TransportMethod] : message.TransportMethod;
+            return object;
+        };
+
+        /**
+         * Converts this ResponseBackendMetadata to JSON.
+         * @function toJSON
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        ResponseBackendMetadata.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for ResponseBackendMetadata
+         * @function getTypeUrl
+         * @memberof rov_action_api.ResponseBackendMetadata
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        ResponseBackendMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_action_api.ResponseBackendMetadata";
+        };
+
+        return ResponseBackendMetadata;
+    })();
+
     rov_action_api.RovResponse = (function() {
 
         /**
          * Properties of a RovResponse.
          * @memberof rov_action_api
          * @interface IRovResponse
+         * @property {rov_action_api.IResponseBackendMetadata|null} [BackendMetadata] RovResponse BackendMetadata
          * @property {number|null} [RovExchangeId] RovResponse RovExchangeId
          * @property {rov_action_api.IDoneResponse|null} [Done] RovResponse Done
          * @property {rov_action_api.IErrorResponse|null} [Error] RovResponse Error
@@ -7378,12 +8596,12 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @property {rov_action_api.IPasswordRequiredResponse|null} [PasswordRequired] RovResponse PasswordRequired
          * @property {rov_action_api.IPasswordAcceptedResponse|null} [PasswordAccepted] RovResponse PasswordAccepted
          * @property {rov_action_api.IPasswordInvalidResponse|null} [PasswordInvalid] RovResponse PasswordInvalid
-         * @property {rov_action_api.ITokenAcceptedResponse|null} [TokenAccepted] RovResponse TokenAccepted
-         * @property {rov_action_api.ITokenInvalidResponse|null} [TokenInvalid] RovResponse TokenInvalid
          * @property {rov_action_api.IDriverChangedResponse|null} [DriverChanged] RovResponse DriverChanged
          * @property {rov_action_api.IClientConnectedResponse|null} [ClientConnected] RovResponse ClientConnected
          * @property {rov_action_api.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
          * @property {rov_action_api.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
+         * @property {rov_action_api.IMavlinkResponse|null} [Mavlink] RovResponse Mavlink
+         * @property {rov_action_api.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
          */
 
         /**
@@ -7400,6 +8618,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
+
+        /**
+         * RovResponse BackendMetadata.
+         * @member {rov_action_api.IResponseBackendMetadata|null|undefined} BackendMetadata
+         * @memberof rov_action_api.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.BackendMetadata = null;
 
         /**
          * RovResponse RovExchangeId.
@@ -7474,22 +8700,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
         RovResponse.prototype.PasswordInvalid = null;
 
         /**
-         * RovResponse TokenAccepted.
-         * @member {rov_action_api.ITokenAcceptedResponse|null|undefined} TokenAccepted
-         * @memberof rov_action_api.RovResponse
-         * @instance
-         */
-        RovResponse.prototype.TokenAccepted = null;
-
-        /**
-         * RovResponse TokenInvalid.
-         * @member {rov_action_api.ITokenInvalidResponse|null|undefined} TokenInvalid
-         * @memberof rov_action_api.RovResponse
-         * @instance
-         */
-        RovResponse.prototype.TokenInvalid = null;
-
-        /**
          * RovResponse DriverChanged.
          * @member {rov_action_api.IDriverChangedResponse|null|undefined} DriverChanged
          * @memberof rov_action_api.RovResponse
@@ -7521,17 +8731,44 @@ export const rov_action_api = $root.rov_action_api = (() => {
          */
         RovResponse.prototype.Heartbeat = null;
 
+        /**
+         * RovResponse Mavlink.
+         * @member {rov_action_api.IMavlinkResponse|null|undefined} Mavlink
+         * @memberof rov_action_api.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.Mavlink = null;
+
+        /**
+         * RovResponse SimplepeerSignal.
+         * @member {rov_action_api.ISimplepeerSignalResponse|null|undefined} SimplepeerSignal
+         * @memberof rov_action_api.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.SimplepeerSignal = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
+         * RovResponse _BackendMetadata.
+         * @member {"BackendMetadata"|undefined} _BackendMetadata
+         * @memberof rov_action_api.RovResponse
+         * @instance
+         */
+        Object.defineProperty(RovResponse.prototype, "_BackendMetadata", {
+            get: $util.oneOfGetter($oneOfFields = ["BackendMetadata"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
          * RovResponse Body.
-         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"TokenAccepted"|"TokenInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|undefined} Body
+         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|undefined} Body
          * @memberof rov_action_api.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "TokenAccepted", "TokenInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat"]),
+            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -7559,6 +8796,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
         RovResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
+            if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
+                $root.rov_action_api.ResponseBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
             if (message.Done != null && Object.hasOwnProperty.call(message, "Done"))
@@ -7577,10 +8816,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 $root.rov_action_api.PasswordAcceptedResponse.encode(message.PasswordAccepted, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
             if (message.PasswordInvalid != null && Object.hasOwnProperty.call(message, "PasswordInvalid"))
                 $root.rov_action_api.PasswordInvalidResponse.encode(message.PasswordInvalid, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
-            if (message.TokenAccepted != null && Object.hasOwnProperty.call(message, "TokenAccepted"))
-                $root.rov_action_api.TokenAcceptedResponse.encode(message.TokenAccepted, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
-            if (message.TokenInvalid != null && Object.hasOwnProperty.call(message, "TokenInvalid"))
-                $root.rov_action_api.TokenInvalidResponse.encode(message.TokenInvalid, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
             if (message.DriverChanged != null && Object.hasOwnProperty.call(message, "DriverChanged"))
                 $root.rov_action_api.DriverChangedResponse.encode(message.DriverChanged, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.ClientConnected != null && Object.hasOwnProperty.call(message, "ClientConnected"))
@@ -7589,6 +8824,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 $root.rov_action_api.ClientDisconnectedResponse.encode(message.ClientDisconnected, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
             if (message.Heartbeat != null && Object.hasOwnProperty.call(message, "Heartbeat"))
                 $root.rov_action_api.HeartbeatResponse.encode(message.Heartbeat, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
+            if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
+                $root.rov_action_api.MavlinkResponse.encode(message.Mavlink, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+            if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
+                $root.rov_action_api.SimplepeerSignalResponse.encode(message.SimplepeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             return writer;
         };
 
@@ -7623,6 +8862,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
+                case 1: {
+                        message.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.decode(reader, reader.uint32());
+                        break;
+                    }
                 case 2: {
                         message.RovExchangeId = reader.int32();
                         break;
@@ -7659,14 +8902,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         message.PasswordInvalid = $root.rov_action_api.PasswordInvalidResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 11: {
-                        message.TokenAccepted = $root.rov_action_api.TokenAcceptedResponse.decode(reader, reader.uint32());
-                        break;
-                    }
-                case 12: {
-                        message.TokenInvalid = $root.rov_action_api.TokenInvalidResponse.decode(reader, reader.uint32());
-                        break;
-                    }
                 case 13: {
                         message.DriverChanged = $root.rov_action_api.DriverChangedResponse.decode(reader, reader.uint32());
                         break;
@@ -7681,6 +8916,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     }
                 case 16: {
                         message.Heartbeat = $root.rov_action_api.HeartbeatResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 17: {
+                        message.Mavlink = $root.rov_action_api.MavlinkResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 18: {
+                        message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -7719,6 +8962,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             let properties = {};
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
+                properties._BackendMetadata = 1;
+                {
+                    let error = $root.rov_action_api.ResponseBackendMetadata.verify(message.BackendMetadata);
+                    if (error)
+                        return "BackendMetadata." + error;
+                }
+            }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 if (!$util.isInteger(message.RovExchangeId))
                     return "RovExchangeId: integer expected";
@@ -7800,26 +9051,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         return "PasswordInvalid." + error;
                 }
             }
-            if (message.TokenAccepted != null && message.hasOwnProperty("TokenAccepted")) {
-                if (properties.Body === 1)
-                    return "Body: multiple values";
-                properties.Body = 1;
-                {
-                    let error = $root.rov_action_api.TokenAcceptedResponse.verify(message.TokenAccepted);
-                    if (error)
-                        return "TokenAccepted." + error;
-                }
-            }
-            if (message.TokenInvalid != null && message.hasOwnProperty("TokenInvalid")) {
-                if (properties.Body === 1)
-                    return "Body: multiple values";
-                properties.Body = 1;
-                {
-                    let error = $root.rov_action_api.TokenInvalidResponse.verify(message.TokenInvalid);
-                    if (error)
-                        return "TokenInvalid." + error;
-                }
-            }
             if (message.DriverChanged != null && message.hasOwnProperty("DriverChanged")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
@@ -7860,6 +9091,26 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         return "Heartbeat." + error;
                 }
             }
+            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.MavlinkResponse.verify(message.Mavlink);
+                    if (error)
+                        return "Mavlink." + error;
+                }
+            }
+            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_action_api.SimplepeerSignalResponse.verify(message.SimplepeerSignal);
+                    if (error)
+                        return "SimplepeerSignal." + error;
+                }
+            }
             return null;
         };
 
@@ -7875,6 +9126,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (object instanceof $root.rov_action_api.RovResponse)
                 return object;
             let message = new $root.rov_action_api.RovResponse();
+            if (object.BackendMetadata != null) {
+                if (typeof object.BackendMetadata !== "object")
+                    throw TypeError(".rov_action_api.RovResponse.BackendMetadata: object expected");
+                message.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.fromObject(object.BackendMetadata);
+            }
             if (object.RovExchangeId != null)
                 message.RovExchangeId = object.RovExchangeId | 0;
             if (object.Done != null) {
@@ -7917,16 +9173,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     throw TypeError(".rov_action_api.RovResponse.PasswordInvalid: object expected");
                 message.PasswordInvalid = $root.rov_action_api.PasswordInvalidResponse.fromObject(object.PasswordInvalid);
             }
-            if (object.TokenAccepted != null) {
-                if (typeof object.TokenAccepted !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.TokenAccepted: object expected");
-                message.TokenAccepted = $root.rov_action_api.TokenAcceptedResponse.fromObject(object.TokenAccepted);
-            }
-            if (object.TokenInvalid != null) {
-                if (typeof object.TokenInvalid !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.TokenInvalid: object expected");
-                message.TokenInvalid = $root.rov_action_api.TokenInvalidResponse.fromObject(object.TokenInvalid);
-            }
             if (object.DriverChanged != null) {
                 if (typeof object.DriverChanged !== "object")
                     throw TypeError(".rov_action_api.RovResponse.DriverChanged: object expected");
@@ -7947,6 +9193,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     throw TypeError(".rov_action_api.RovResponse.Heartbeat: object expected");
                 message.Heartbeat = $root.rov_action_api.HeartbeatResponse.fromObject(object.Heartbeat);
             }
+            if (object.Mavlink != null) {
+                if (typeof object.Mavlink !== "object")
+                    throw TypeError(".rov_action_api.RovResponse.Mavlink: object expected");
+                message.Mavlink = $root.rov_action_api.MavlinkResponse.fromObject(object.Mavlink);
+            }
+            if (object.SimplepeerSignal != null) {
+                if (typeof object.SimplepeerSignal !== "object")
+                    throw TypeError(".rov_action_api.RovResponse.SimplepeerSignal: object expected");
+                message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.fromObject(object.SimplepeerSignal);
+            }
             return message;
         };
 
@@ -7965,6 +9221,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
             let object = {};
             if (options.defaults)
                 object.RovExchangeId = 0;
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
+                object.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
+                if (options.oneofs)
+                    object._BackendMetadata = "BackendMetadata";
+            }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Done != null && message.hasOwnProperty("Done")) {
@@ -8007,16 +9268,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (options.oneofs)
                     object.Body = "PasswordInvalid";
             }
-            if (message.TokenAccepted != null && message.hasOwnProperty("TokenAccepted")) {
-                object.TokenAccepted = $root.rov_action_api.TokenAcceptedResponse.toObject(message.TokenAccepted, options);
-                if (options.oneofs)
-                    object.Body = "TokenAccepted";
-            }
-            if (message.TokenInvalid != null && message.hasOwnProperty("TokenInvalid")) {
-                object.TokenInvalid = $root.rov_action_api.TokenInvalidResponse.toObject(message.TokenInvalid, options);
-                if (options.oneofs)
-                    object.Body = "TokenInvalid";
-            }
             if (message.DriverChanged != null && message.hasOwnProperty("DriverChanged")) {
                 object.DriverChanged = $root.rov_action_api.DriverChangedResponse.toObject(message.DriverChanged, options);
                 if (options.oneofs)
@@ -8036,6 +9287,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 object.Heartbeat = $root.rov_action_api.HeartbeatResponse.toObject(message.Heartbeat, options);
                 if (options.oneofs)
                     object.Body = "Heartbeat";
+            }
+            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
+                object.Mavlink = $root.rov_action_api.MavlinkResponse.toObject(message.Mavlink, options);
+                if (options.oneofs)
+                    object.Body = "Mavlink";
+            }
+            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+                object.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.toObject(message.SimplepeerSignal, options);
+                if (options.oneofs)
+                    object.Body = "SimplepeerSignal";
             }
             return object;
         };

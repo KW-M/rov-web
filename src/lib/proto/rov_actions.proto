@@ -1,6 +1,17 @@
 syntax = "proto3";
 package rov_action_api;
 
+enum DataTransportMethod {
+    // Livekit reliable messages are sent / received through the livekit server via TCP.
+    LivekitReliable = 1;
+    // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
+    LivekitUnreliable = 2;
+    // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    DirectReliable = 3;
+    // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
+    DirectUnreliable = 4;
+}
+
 enum SensorMeasurmentTypes {
     depth_meters = 0;
     water_temp_celsius = 1;
@@ -126,11 +137,18 @@ message SimplepeerSignalAction {
     bytes Message = 1;
 }
 
+
+message ActionBackendMetadata {
+    // The identity of the livekit user/client that sent the message.
+    // !!!! This MUST get overwritten by the backend with the true origin user
+    // before being sent to the python code for security.
+    optional string FromUserID = 1;
+}
+
 // wrapper message for anything sent by a client to the rov (aka an "action").
 message RovAction {
-    // The type of action to perform see (RovActionTypes).
-    // RovActionTypes Type = 1;
-
+    // Metadata set by backend webpage before the message is forwarded to the python code.
+    optional ActionBackendMetadata BackendMetadata = 1;
     // Action exchange id (used to match up action requests and responses)
     int32 RovExchangeId = 2;
     // The body / content of the action
@@ -286,8 +304,19 @@ message SimplepeerSignalResponse {
     bytes Message = 1;
 }
 
+message ResponseBackendMetadata {
+    // The identiies of the livekit user/clients to sent this response to.
+    // !!!! If empty, the message will be sent to ALL clients.
+    repeated string TargetUserIDs = 1;
+    // How to send this response (reliable/unreliable):
+    DataTransportMethod TransportMethod = 2;
+}
+
 // wrapper message for any message sent by the rov to a client (aka a response).
 message RovResponse {
+    // Metadata sent by the python code to the backend webpage to tell it how to send the message.
+    // !!!! This field WILL be erased before the message is forwarded from the backend website to the livekit users.
+    optional ResponseBackendMetadata BackendMetadata = 1;
     // Response exchange id (used to match up action requests and responses)
     int32 RovExchangeId = 2;
     // The body / content of the response
