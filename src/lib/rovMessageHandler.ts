@@ -1,5 +1,5 @@
 import { rov_action_api } from "./proto/rovActionsCompiled";
-import { showPasswordPrompt, showToastMessage, updateRoleDisplay } from "./ui";
+import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
@@ -121,11 +121,9 @@ export class RovMsgHandlerClass {
         let thisPeerId = connectionManager.getThisPeerId();
         if (msgData.DriverPeerId == thisPeerId) {
             showToastMessage("You are now the driver");
-            updateRoleDisplay(true);
             isRovDriver.set(true);
         } else {
             showToastMessage("ROV Driver is now " + msgData.DriverPeerId);
-            updateRoleDisplay(false);
             isRovDriver.set(false);
         }
     }

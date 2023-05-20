@@ -1,5 +1,5 @@
 import { toast } from '@zerodevx/svelte-toast';
-import { ROV_PEERID_BASE } from './consts';
+import { LOADING_MESSAGE, ROV_PEERID_BASE } from './consts';
 import { DIALOG_TYPE, rovPeerIdEndNumber, type dialogExtraDataType } from './globalContext';
 import { hideLoadingUi, showLoadingUi } from '../components/LoadingIndicator.svelte';
 import { getROVName } from './rovUtil';
@@ -85,7 +85,6 @@ export function showROVConnectingUi(rovPeerId) {
 export function showROVConnectedUi() {
     // connectBtnOptions.style.display = 'none';
     // disconnectBtn.style.display = 'block';
-    updateRoleDisplay(false)
     document.body.classList.add("rov-connected");
     hideLoadingUi("webrtc-connecting")
     hideLoadingUi("webrtc-reconnecting")
@@ -94,7 +93,7 @@ export function showROVConnectedUi() {
 export function showReloadingWebsiteUi() {
     connectBtn.style.display = 'none';
     // disconnectBtn.style.display = 'none';
-    showLoadingUi("reloading-site", null);
+    showLoadingUi(LOADING_MESSAGE.reloadingSite);
 }
 
 export function setCurrentRovName() {
@@ -102,8 +101,6 @@ export function setCurrentRovName() {
     let name = getROVName(index);
     let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
     connectBtn.innerText = "Connect to " + uiName;
-    // if (index == 0) switchToPrevRovBtn.setAttribute("disabled", "true");
-    // else switchToPrevRovBtn.removeAttribute("disabled");
     connectedRovLabel.innerText = uiName
 }
 
@@ -118,18 +115,5 @@ export function setupDisconnectBtnClickHandler(callback) {
     disconnectBtn.addEventListener('click', callback);
     return () => { // cleanup function
         disconnectBtn.removeEventListener('click', callback);
-    }
-}
-
-const roleDisplayText = document.getElementById('role_display_text');
-const takeControlButton = document.getElementById('take_control_btn');
-export function updateRoleDisplay(isDriver) {
-    // roleDisplayText.innerText = isDriver ? "Driver" : "Spectator";
-    if (isDriver) {
-        document.body.classList.add('rov-driver')
-        // takeControlButton.classList.add('hidden')
-    } else {
-        document.body.classList.remove('rov-driver')
-        // takeControlButton.classList.remove('hidden')
     }
 }

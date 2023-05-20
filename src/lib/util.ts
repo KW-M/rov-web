@@ -1,3 +1,4 @@
+import type { nStoreT } from './libraries/nStore';
 import { EMOJI_MAP } from "./consts";
 import { fullscreenOpen } from "./globalContext";
 
@@ -30,11 +31,40 @@ declare global {
 }
 
 /**
- * @param {(KeyboardEvent)=>void} callback
- * @returns {(KeyboardEvent)=>void} return a function that should be passed as a keyboard event listener, and will call the callback if the key is enter or space.
+ * keeps a svelte store and local storage value in sync.
+ * @param label label to use as the key to store this value in local storage.
+ * @param store the svelte store to keep in sync with the local storage value.
+ * @param defaultValue {optional} the value to initilize the store and local storage with if neither has been set.
  */
-export function selectKeypressFactory(callback) {
-    return (e) => {
+export function bindStringSvelteStoreToLocalStorage(label: string, store: nStoreT<string>, defaultValue?: string): void {
+    store.set(localStorage.getItem(label) || store.get() || defaultValue);
+    store.subscribe((newVal) => {
+        localStorage.setItem(label, newVal);
+    });
+}
+
+
+/**
+ * keeps a svelte store and local storage value in sync.
+ * @param label label to use as the key to store this value in local storage.
+ * @param store the svelte store to keep in sync with the local storage value.
+ * @param defaultValue {optional} the value to initilize the store and local storage with if neither has been set.
+ */
+export function bindNumberSvelteStoreToLocalStorage(label: string, store: nStoreT<number>, defaultValue?: number): void {
+    store.set(parseFloat(localStorage.getItem(label)) || store.get() || defaultValue);
+    store.subscribe((newVal) => {
+        localStorage.setItem(label, String(newVal));
+    });
+}
+
+/** wrap the callback for a keyboard event so it only fires on Enter or Space.
+ * The output of this function should be passed to a keyboard event listener.
+ * eg: body.addEventListener('keydown',selectKeypressFactory(console.log));
+ * @param callback your callback function to run when the key enter or space is pressed
+ * @returns return a function  will call the callback if the key is enter or space.
+ */
+export function selectKeypressFactory(callback: (KeyboardEvent) => void) {
+    return (e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             callback(e);
         }
@@ -45,6 +75,12 @@ export function clamp(number, max, min) {
     return Math.max(Math.min(number, max), min)
 }
 
+/**
+ *
+ * @param a1 Array 1
+ * @param a2 Array 2
+ * @returns true if the all the array elements are equal
+ */
 export function arraysEqual(a1, a2) {
     var i = a1.length;
     while (i--) {
@@ -53,7 +89,11 @@ export function arraysEqual(a1, a2) {
     return true
 }
 
-export function getDayOfYear(date = new Date()) {
+/**
+ * @param date a JS date object
+ * @returns Returns the integer number of the day of the year (1-365)
+ */
+export function getDayOfYear(date = new Date()): number {
     const timestamp1 = Date.UTC(
         date.getFullYear(),
         date.getMonth(),

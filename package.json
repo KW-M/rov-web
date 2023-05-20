@@ -44,7 +44,6 @@
     "@popperjs/core": "^2.11.6",
     "daisyui": "^2.43.0",
     "livekit-client": "^1.6.9",
-    "nanostores": "^0.7.1",
     "protobufjs": "~7.1.2",
     "twgl.js": "^5.3.0",
     "uuid": "^9.0.0",

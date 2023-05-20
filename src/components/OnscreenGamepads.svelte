@@ -1,18 +1,28 @@
-<script>
+<script lang="ts">
   import { ConnectionState } from "../lib/consts";
-  import { appReady, gamepadController, peerServerConnState, rovDataChannelConnState } from "../lib/globalContext";
+  import { appReady, peerServerConnState, rovDataChannelConnState } from "../lib/globalContext";
   import GamepadLeftSvg from "../assets/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/optimized/display-gamepad-right.svg?raw";
+  import { gpadCtrl } from "../lib/gamepad";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;
   $: collapsedMode = $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
+  export let visible: boolean = true;
+  export let disabled: boolean = false;
+  $: if (visible && !disabled) {
+    gpadCtrl.clearExternalEventListenerCallbacks();
+  } else {
+    gpadCtrl.setupGamepadEvents(10);
+  }
+
+  // TODO? switch to onMount()?
   const unSub = appReady.subscribe((ready) => {
-    if (!ready) return;
-    unSub();
-    const gpadCtrl = gamepadController.get();
-    if (gpadCtrl) gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
+    if (ready) {
+      unSub();
+      gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
+    }
   });
 </script>
 
@@ -23,12 +33,12 @@
   <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
 
   <!-- SPLIT gamepad left -->
-  <div class="hidden gpad-display gpad-display-left">
+  <div class="gpad-display gpad-display-left" class:hidden={!visible}>
     {@html GamepadLeftSvg}
   </div>
 
   <!-- SPLIT gamepad right -->
-  <div class="hidden gpad-display gpad-display-right">
+  <div class="gpad-display gpad-display-right" class:hidden={!visible}>
     {@html GamepadRightSvg}
   </div>
 
@@ -108,15 +118,6 @@
   :global(body.gamepad-help-open #gamepad-help-tooltip) {
     display: block !important;
   }
-
-  :global(body.rov-driver #gamepad-container:not(.gamepad-connected) #display-gamepad-left) {
-    transform: translateX(-42%);
-  }
-
-  :global(body.rov-driver #gamepad-container:not(.gamepad-connected) #display-gamepad-right) {
-    transform: translateX(42%);
-  }
-
 */
   :global(.gpad-btn-highlight) {
     visibility: hidden;

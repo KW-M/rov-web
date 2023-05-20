@@ -3,15 +3,14 @@
   import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./lib/consts";
-  import { appReady, debugPageModeActive, gamepadController, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
+  import { appReady, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
 
   import { connectionManager } from "./lib/connectionManager";
   import { rovMessageHandler } from "./lib/rovMessageHandler";
-  import { GamepadController } from "./lib/gamepad";
   import { RovActions } from "./lib/rovActions";
   import { runSiteInitMachine } from "./lib/siteInit";
   import { showToastMessage } from "./lib/ui";
-  import { getURLQueryStringVariable } from "./lib/util";
+  import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./lib/util";
   import { getROVName } from "./lib/rovUtil";
 
   import { SvelteToast } from "@zerodevx/svelte-toast";
@@ -24,35 +23,27 @@
   import SensorDisplay from "./components/sensors/SensorDisplay.svelte";
   import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
   import AhrsViz from "./components/sensors/AHRSViz.svelte";
+  import DropdownRovSelector from "./components/unused/DropdownRovSelector.svelte";
 
-  let gpadCtrl = new GamepadController(10);
-  gamepadController.set(gpadCtrl);
-  // if (debugModeActive) {
-  //   inspect({ iframe: false });
-  // }
-  rovPeerIdEndNumber.set(parseInt(localStorage.getItem("rovPeerIdEndNumber") || "0"));
-  ourPeerId.set(localStorage.getItem("ourPeerId") || null);
-  ourPeerId.subscribe((newVal) => {
-    localStorage.setItem("ourPeerId", newVal);
-  });
+  // -- init svelte stores --
+  bindNumberSvelteStoreToLocalStorage("rovPeerIdEndNumber", rovPeerIdEndNumber, 0);
+  bindStringSvelteStoreToLocalStorage("ourPeerId", ourPeerId);
+
+  // if (debugModeActive) { inspect({ iframe: false }); }
 
   $: if ($appReady === true) {
     if ($rovDataChannelConnState == ConnectionState.connecting) {
       showLoadingUi(LOADING_MESSAGE.webrtcConnecting, "Searching for " + getROVName($rovPeerIdEndNumber));
-      gpadCtrl.clearExternalEventListenerCallbacks();
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.reconnecting) {
       showLoadingUi(LOADING_MESSAGE.webrtcReconnecting, null);
-      gpadCtrl.clearExternalEventListenerCallbacks();
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.disconnected) {
-      gpadCtrl.clearExternalEventListenerCallbacks();
       hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
       hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
       RovActions.stopPingLoop();
     } else if ($rovDataChannelConnState == ConnectionState.connected) {
       showToastMessage("Connected to ROV!", 1000);
-      gpadCtrl.setupGamepadEvents(10);
       hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
       hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
       RovActions.startPingLoop();
@@ -100,12 +91,13 @@
 
   <!-- UI Layout -->
   <VideoPlayer />
-  <OnscreenGamepads />
-  <SensorDisplay />
+  <OnscreenGamepads disabled={$rovDataChannelConnState !== ConnectionState.connected} />
+  <!-- <SensorDisplay /> -->
 
-  <AhrsViz />
+  <!-- <AhrsViz /> -->
   <TopBar />
   <RovSelector />
+
   <!-- UI Layout -->
 </main>
 

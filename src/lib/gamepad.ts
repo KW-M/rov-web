@@ -380,3 +380,6 @@ export class GamepadController {
         })
     }
 }
+
+
+export const gpadCtrl = new GamepadController(10)
