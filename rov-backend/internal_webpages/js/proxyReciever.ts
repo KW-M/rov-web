@@ -1,4 +1,4 @@
-import { proxyInterchangeFormat, proxyMessageTypes } from "../frontend/js/proxy";
+import { proxyInterchangeFormat, proxyMessageTypes } from "../../rov-backend/internal_webpages/frontend/js/proxy";
 import { DECODE_TXT, ENCODE_TXT } from "./consts";
 
 const openHttpConnections: { [key: string]: Promise<Response> } = {}

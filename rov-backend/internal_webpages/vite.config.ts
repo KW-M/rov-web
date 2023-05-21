@@ -1,5 +1,5 @@
 import { join, parse, resolve } from "path";
-import { VitePWA } from 'vite-plugin-pwa'
+// import { VitePWA } from 'vite-plugin-pwa'
 
 export default {
   base: './',
