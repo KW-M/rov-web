@@ -3,9 +3,9 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects
 // Some Ideas
 
-import { DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from "../../js/consts";
-import { waitfor } from "../../js/util";
-import { wsHook } from "../../js/wsHook";
+import { DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from "./consts";
+import { waitfor } from "./util";
+import { wsHook } from "./wsHook";
 
 export enum proxyMessageTypes {
     openWebsocket,

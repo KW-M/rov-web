@@ -19,10 +19,10 @@ import {
     ConnectionQuality,
     DataPacket_Kind
 } from 'livekit-client';
-import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from '../../js/consts';
-import { appendLog, getWebsocketURL, waitfor } from '../../js/util';
+import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from '../../../shared/js/consts';
+import { appendLog, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { handleFrontendMsgRcvd } from './msgHandler';
-import { setSendProxyMessageCallback } from './proxy';
+import { setSendProxyMessageCallback } from '../../../shared/js/proxy';
 import { enableFrameProxy } from "./frameProxy";
 
 let videoContainerElem;

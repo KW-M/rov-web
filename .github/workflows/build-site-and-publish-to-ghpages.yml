@@ -33,7 +33,13 @@ jobs:
             submodules: recursive
 
         - name: Setup pnpm
-          uses: pnpm/action-setup@v2.2.2
+          uses: pnpm/action-setup@v2.2.4
+          # with:
+          #   version: 8.5.1
+          #   dest: ./internal_website
+          #   run_install: |
+          #     - recursive: false
+          #     - cwd: ./internal_website
 
         - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
           run: |

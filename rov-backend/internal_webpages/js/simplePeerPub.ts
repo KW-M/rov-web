@@ -1,4 +1,4 @@
-import { SimplePeerConnection } from "../../js/simplePeer"
+import { SimplePeerConnection } from "../../../shared/js/simplePeer"
 import { handleBackendMsgRcvd } from "./msgHandler"
 import { sendLivekitMessage } from "./livekitPublisher"
 

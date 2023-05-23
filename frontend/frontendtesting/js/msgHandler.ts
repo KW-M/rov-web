@@ -1,4 +1,4 @@
-import { receiveProxiedMsg } from "./proxy";
+import { receiveProxiedMsg } from "../../../shared/js/proxy";
 import { sendSignalingDataToSimplePeerSubscriber } from "./simplePeerSub"
 
 export function handleFrontendMsgRcvd(msgBytes: ArrayBufferLike) {

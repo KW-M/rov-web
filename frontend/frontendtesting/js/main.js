@@ -1,6 +1,6 @@
 import { connectToRoom, connectToRoomLocal, listLivekitRooms, sendTestMessage } from "./livekit";
-import { waitfor } from "../../js/util"
-import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from "../../js/consts";
+import { waitfor } from "../../../shared/js/util"
+import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from "../../../shared/js/consts";
 import { handleFrontendMsgRcvd } from "./msgHandler";
 import { initSimplePeerSubscriber } from "./simplePeerSub";
 // import { setSendProxyMessageCallback } from "./proxy";

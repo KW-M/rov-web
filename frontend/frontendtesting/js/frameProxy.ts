@@ -1,4 +1,4 @@
-import { setSendProxyMessageCallback, receiveProxiedMsg } from "./proxy"
+import { setSendProxyMessageCallback, receiveProxiedMsg } from "../../../shared/js/proxy"
 
 export function enableFrameProxy() {
     if (window.parent) {

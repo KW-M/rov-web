@@ -1,4 +1,4 @@
-import idClassSplitterPlugin from "./svgo-IdClassSplitterPlugin.js";
+import idClassSplitterPlugin from "./tooling/svgo-IdClassSplitterPlugin.js";
 
 /******************************************************
  * This SVGO config optimizes SVGs for inlining in HTML

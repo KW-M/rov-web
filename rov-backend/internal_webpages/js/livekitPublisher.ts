@@ -20,21 +20,16 @@ import {
     DataPacket_Kind
 } from 'livekit-client';
 
-export type LivekitSetupOptions = {
-    ForceLocal: boolean,
-    RovRoomName: string,
-    CloudSecretKey: string,
-    CloudAPIKey: string,
-    LocalSecretKey: string,
-    LocalAPIKey: string
-}
-
-import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from '../../js/consts';
-import { appendLog, getWebsocketURL, waitfor } from '../../js/util';
-import { getFrontendAccessToken, getPublisherAccessToken } from '../../js/livekit/livekitTokens';
-import { setSendProxyMessageCallback } from '../../js/proxyReciever';
+import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from '../../../shared/js/consts';
+import { appendLog, getWebsocketURL, waitfor } from '../../../shared/js/util';
+import { getFrontendAccessToken, getPublisherAccessToken } from '../../../shared/js/livekit/livekitTokens';
+import { setSendProxyMessageCallback } from '../../../shared/js/proxyReciever';
 import { handleBackendMsgRcvd } from './msgHandler'
-// const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
+import { LivekitSetupOptions, createLivekitRoom, listLivekitRooms, refreshMetadata } from '../../../shared/js/livekit/adminActions';
+
+import '../../../shared/js/nodeShimsBundle'
+import type * as livekitServerSDKTypes from 'livekit-server-sdk';
+const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Array) => void }
 type MsgRecivedCallback = (msg: Uint8Array, roomId: string, hostUrl: string) => void;

@@ -1,9 +1,17 @@
 
-import '../../js/nodeShimsBundle'
+import '../../../shared/js/nodeShimsBundle'
 
 import type * as livekitServerSDKTypes from 'livekit-server-sdk';
 import { getFrontendAccessToken } from './livekitTokens';
-import { LivekitSetupOptions } from './clientActions';
+
+export type LivekitSetupOptions = {
+    ForceLocal: boolean,
+    RovRoomName: string,
+    CloudSecretKey: string,
+    CloudAPIKey: string,
+    LocalSecretKey: string,
+    LocalAPIKey: string
+}
 
 export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
     return await client.createRoom({

@@ -1,10 +1,12 @@
+const daisyui = require('daisyui')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: ['./**/*.{html,js,svelte,ts}'],
   // theme: {
   //   extend: {},
   // },
-  plugins: [require("daisyui")],
+  plugins: [daisyui],
   daisyui: {
     themes: ["forest", "winter"],
     styled: true,

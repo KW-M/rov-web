@@ -4,12 +4,28 @@
         "target": "ESNext",
         "useDefineForClassFields": true,
         "module": "ESNext",
+        "moduleResolution": "node",
         // Service worker types:
         "lib": [
             "ESNext",
             "DOM",
             "WebWorker"
         ],
+        "baseUrl": "/",
+        // "paths": {
+        //     "/*": [
+        //         "/*"
+        //     ],
+        //     "index.html": [
+        //         "frontend/index.html"
+        //     ],
+        //     "internal/index.html": [
+        //         "rov-backend/internal_webpages/index.html"
+        //     ],
+        //     "serviceworker.ts": [
+        //         "shared/js/serviceworker/serviceworker.ts"
+        //     ]
+        // },
         /**
         * Typecheck JS in `.svelte` and `.js` files by default.
         * Disable checkJs if you'd like to use dynamic types in JS.
@@ -22,10 +38,12 @@
         "noEmit": true,
     },
     "include": [
-        "src/**/*.d.ts",
-        "src/**/*.ts",
-        "src/**/*.js",
-        "src/**/*.svelte"
+        "./**/*.d.ts",
+        "./**/*.ts",
+        "./**/*.js",
+        "./**/*.svelte",
+        "./vite-env.d.ts",
+        "./tooling/*.ts"
     ],
     "references": [
         {

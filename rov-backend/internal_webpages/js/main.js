@@ -1,5 +1,5 @@
-import { DECODE_TXT, ENCODE_TXT } from "../../js/consts";
-import { waitfor } from "../../js/util";
+import { DECODE_TXT, ENCODE_TXT } from "../../../shared/js/consts";
+import { waitfor } from "../../../shared/js/util";
 import { getMyIpGeolocation } from "./geolocation";
 import { connectToLivekit } from "./livekitPublisher";
 import { initSimplePeerPublisher } from "./simplePeerPub";

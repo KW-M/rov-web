@@ -1,6 +1,6 @@
 import type { nStoreT } from "./libraries/nStore";
 import nStore from "./libraries/nStore";
-import { rov_action_api } from "./proto/rovActionsCompiled";
+import { rov_action_api } from "../../../shared/js/protobufs/rovActionsCompiled";
 
 export const networkLatencyMs: nStoreT<number> = nStore(0);
 export const depthM: nStoreT<number> = nStore(0);

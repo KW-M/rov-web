@@ -1,4 +1,4 @@
-import { rov_action_api } from "./proto/rovActionsCompiled";
+import { rov_action_api } from "../../../shared/js/protobufs/rovActionsCompiled";
 import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
@@ -15,7 +15,7 @@ export class RovMsgHandlerClass {
 
     // sendMessageCallback: Function that will send the message to the rov peer.
     // This callback should be set in the constructor below.
-    sendMessageCallback: (msgData: Uint8Array) => boolean = null;
+    sendMessageCallback?: (msgData: Uint8Array) => boolean;
     setSendMessageCallback = (callback: (msgData: Uint8Array) => boolean) => {
         this.sendMessageCallback = callback;
     }
