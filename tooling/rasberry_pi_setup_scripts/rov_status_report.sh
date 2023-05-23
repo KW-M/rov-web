@@ -91,7 +91,7 @@ echo "";
 echo "========================="
 echo "";
 echo " * git status of the Internet ROV Code from Github: * ";
-cd /home/pi/internet_rov_code/
+cd /home/pi/rov-web/
 GIT_HTTP_CONNECT_TIMEOUT=2 git fetch > /dev/null
 git status;
 echo "Last git commit: `git log -1 --pretty=format:"%h %s"`";
@@ -121,4 +121,4 @@ echo "$(tput setaf 2)
 $(tput sgr0)"
 echo "========================="
 echo "";
-# /bin/bash /home/pi/internet_rov_code/show_system_warnings.sh
+# /bin/bash /home/pi/rov-web/show_system_warnings.sh

@@ -216,7 +216,7 @@ fi
     exe 'python3 python/cython_modules/setup.py build_ext --inplace'
 } || { # catch
     echoRed "Failed to install python packages or compile cython"
-    echoRed "Install them manually, see the python/requirements.txt file and python/cython_modules/setup.py file in this internet_rov_code/ folder. Also this cython tutorial may be helpful: https://ron.sh/compiling-python-code-with-cython/"
+    echoRed "Install them manually, see the python/requirements.txt file and python/cython_modules/setup.py file in this rov-web/ folder. Also this cython tutorial may be helpful: https://ron.sh/compiling-python-code-with-cython/"
     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
     exit 1
 }
