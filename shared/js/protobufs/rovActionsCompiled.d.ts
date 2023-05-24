@@ -5,10 +5,10 @@ export namespace rov_action_api {
 
     /** DataTransportMethod enum. */
     enum DataTransportMethod {
-        LivekitReliable = 1,
-        LivekitUnreliable = 2,
-        DirectReliable = 3,
-        DirectUnreliable = 4
+        LivekitReliable = 0,
+        LivekitUnreliable = 1,
+        DirectReliable = 2,
+        DirectUnreliable = 3
     }
 
     /** SensorMeasurmentTypes enum. */
@@ -47,7 +47,7 @@ export namespace rov_action_api {
         restart_rov_services = 15,
         rov_logs = 16,
         refresh_all_sensors = 17,
-        mavlink = 18,
+        mavlink_action = 18,
         simplepeer_signal = 19
     }
 
@@ -1942,10 +1942,7 @@ export namespace rov_action_api {
         constructor(properties?: rov_action_api.IActionBackendMetadata);
 
         /** ActionBackendMetadata FromUserID. */
-        public FromUserID?: (string|null);
-
-        /** ActionBackendMetadata _FromUserID. */
-        public _FromUserID?: "FromUserID";
+        public FromUserID: string;
 
         /**
          * Creates a new ActionBackendMetadata instance using the specified properties.
@@ -2170,9 +2167,6 @@ export namespace rov_action_api {
         /** RovAction SimplepeerSignal. */
         public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalAction|null);
 
-        /** RovAction _BackendMetadata. */
-        public _BackendMetadata?: "BackendMetadata";
-
         /** RovAction Body. */
         public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal");
 
@@ -2271,7 +2265,7 @@ export namespace rov_action_api {
         client_disconnected = 12,
         heartbeat_response = 13,
         continued_output = 14,
-        mavlink = 15,
+        mavlink_response = 15,
         simplepeer_signalling = 16
     }
 
@@ -2292,10 +2286,7 @@ export namespace rov_action_api {
         constructor(properties?: rov_action_api.IDoneResponse);
 
         /** DoneResponse Message. */
-        public Message?: (string|null);
-
-        /** DoneResponse _Message. */
-        public _Message?: "Message";
+        public Message: string;
 
         /**
          * Creates a new DoneResponse instance using the specified properties.
@@ -3947,9 +3938,6 @@ export namespace rov_action_api {
 
         /** RovResponse SimplepeerSignal. */
         public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalResponse|null);
-
-        /** RovResponse _BackendMetadata. */
-        public _BackendMetadata?: "BackendMetadata";
 
         /** RovResponse Body. */
         public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal");

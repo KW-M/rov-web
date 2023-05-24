@@ -20,17 +20,17 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * DataTransportMethod enum.
      * @name rov_action_api.DataTransportMethod
      * @enum {number}
-     * @property {number} LivekitReliable=1 LivekitReliable value
-     * @property {number} LivekitUnreliable=2 LivekitUnreliable value
-     * @property {number} DirectReliable=3 DirectReliable value
-     * @property {number} DirectUnreliable=4 DirectUnreliable value
+     * @property {number} LivekitReliable=0 LivekitReliable value
+     * @property {number} LivekitUnreliable=1 LivekitUnreliable value
+     * @property {number} DirectReliable=2 DirectReliable value
+     * @property {number} DirectUnreliable=3 DirectUnreliable value
      */
     rov_action_api.DataTransportMethod = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[1] = "LivekitReliable"] = 1;
-        values[valuesById[2] = "LivekitUnreliable"] = 2;
-        values[valuesById[3] = "DirectReliable"] = 3;
-        values[valuesById[4] = "DirectUnreliable"] = 4;
+        values[valuesById[0] = "LivekitReliable"] = 0;
+        values[valuesById[1] = "LivekitUnreliable"] = 1;
+        values[valuesById[2] = "DirectReliable"] = 2;
+        values[valuesById[3] = "DirectUnreliable"] = 3;
         return values;
     })();
 
@@ -90,7 +90,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * @property {number} restart_rov_services=15 restart_rov_services value
      * @property {number} rov_logs=16 rov_logs value
      * @property {number} refresh_all_sensors=17 refresh_all_sensors value
-     * @property {number} mavlink=18 mavlink value
+     * @property {number} mavlink_action=18 mavlink_action value
      * @property {number} simplepeer_signal=19 simplepeer_signal value
      */
     rov_action_api.RovActionTypes = (function() {
@@ -113,7 +113,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         values[valuesById[15] = "restart_rov_services"] = 15;
         values[valuesById[16] = "rov_logs"] = 16;
         values[valuesById[17] = "refresh_all_sensors"] = 17;
-        values[valuesById[18] = "mavlink"] = 18;
+        values[valuesById[18] = "mavlink_action"] = 18;
         values[valuesById[19] = "simplepeer_signal"] = 19;
         return values;
     })();
@@ -3914,25 +3914,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * ActionBackendMetadata FromUserID.
-         * @member {string|null|undefined} FromUserID
+         * @member {string} FromUserID
          * @memberof rov_action_api.ActionBackendMetadata
          * @instance
          */
-        ActionBackendMetadata.prototype.FromUserID = null;
-
-        // OneOf field names bound to virtual getters and setters
-        let $oneOfFields;
-
-        /**
-         * ActionBackendMetadata _FromUserID.
-         * @member {"FromUserID"|undefined} _FromUserID
-         * @memberof rov_action_api.ActionBackendMetadata
-         * @instance
-         */
-        Object.defineProperty(ActionBackendMetadata.prototype, "_FromUserID", {
-            get: $util.oneOfGetter($oneOfFields = ["FromUserID"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
+        ActionBackendMetadata.prototype.FromUserID = "";
 
         /**
          * Creates a new ActionBackendMetadata instance using the specified properties.
@@ -4033,12 +4019,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         ActionBackendMetadata.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            let properties = {};
-            if (message.FromUserID != null && message.hasOwnProperty("FromUserID")) {
-                properties._FromUserID = 1;
+            if (message.FromUserID != null && message.hasOwnProperty("FromUserID"))
                 if (!$util.isString(message.FromUserID))
                     return "FromUserID: string expected";
-            }
             return null;
         };
 
@@ -4072,11 +4055,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (message.FromUserID != null && message.hasOwnProperty("FromUserID")) {
+            if (options.defaults)
+                object.FromUserID = "";
+            if (message.FromUserID != null && message.hasOwnProperty("FromUserID"))
                 object.FromUserID = message.FromUserID;
-                if (options.oneofs)
-                    object._FromUserID = "FromUserID";
-            }
             return object;
         };
 
@@ -4334,17 +4316,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
         let $oneOfFields;
 
         /**
-         * RovAction _BackendMetadata.
-         * @member {"BackendMetadata"|undefined} _BackendMetadata
-         * @memberof rov_action_api.RovAction
-         * @instance
-         */
-        Object.defineProperty(RovAction.prototype, "_BackendMetadata", {
-            get: $util.oneOfGetter($oneOfFields = ["BackendMetadata"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
-
-        /**
          * RovAction Body.
          * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal"|undefined} Body
          * @memberof rov_action_api.RovAction
@@ -4582,12 +4553,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 return "object expected";
             let properties = {};
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                properties._BackendMetadata = 1;
-                {
-                    let error = $root.rov_action_api.ActionBackendMetadata.verify(message.BackendMetadata);
-                    if (error)
-                        return "BackendMetadata." + error;
-                }
+                let error = $root.rov_action_api.ActionBackendMetadata.verify(message.BackendMetadata);
+                if (error)
+                    return "BackendMetadata." + error;
             }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 if (!$util.isInteger(message.RovExchangeId))
@@ -4928,13 +4896,12 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
+                object.BackendMetadata = null;
                 object.RovExchangeId = 0;
-            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                object.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.toObject(message.BackendMetadata, options);
-                if (options.oneofs)
-                    object._BackendMetadata = "BackendMetadata";
             }
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
+                object.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.toObject(message.BackendMetadata, options);
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
@@ -5088,7 +5055,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * @property {number} client_disconnected=12 client_disconnected value
      * @property {number} heartbeat_response=13 heartbeat_response value
      * @property {number} continued_output=14 continued_output value
-     * @property {number} mavlink=15 mavlink value
+     * @property {number} mavlink_response=15 mavlink_response value
      * @property {number} simplepeer_signalling=16 simplepeer_signalling value
      */
     rov_action_api.RovResponseTypes = (function() {
@@ -5108,7 +5075,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         values[valuesById[12] = "client_disconnected"] = 12;
         values[valuesById[13] = "heartbeat_response"] = 13;
         values[valuesById[14] = "continued_output"] = 14;
-        values[valuesById[15] = "mavlink"] = 15;
+        values[valuesById[15] = "mavlink_response"] = 15;
         values[valuesById[16] = "simplepeer_signalling"] = 16;
         return values;
     })();
@@ -5139,25 +5106,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * DoneResponse Message.
-         * @member {string|null|undefined} Message
+         * @member {string} Message
          * @memberof rov_action_api.DoneResponse
          * @instance
          */
-        DoneResponse.prototype.Message = null;
-
-        // OneOf field names bound to virtual getters and setters
-        let $oneOfFields;
-
-        /**
-         * DoneResponse _Message.
-         * @member {"Message"|undefined} _Message
-         * @memberof rov_action_api.DoneResponse
-         * @instance
-         */
-        Object.defineProperty(DoneResponse.prototype, "_Message", {
-            get: $util.oneOfGetter($oneOfFields = ["Message"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
+        DoneResponse.prototype.Message = "";
 
         /**
          * Creates a new DoneResponse instance using the specified properties.
@@ -5258,12 +5211,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         DoneResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            let properties = {};
-            if (message.Message != null && message.hasOwnProperty("Message")) {
-                properties._Message = 1;
+            if (message.Message != null && message.hasOwnProperty("Message"))
                 if (!$util.isString(message.Message))
                     return "Message: string expected";
-            }
             return null;
         };
 
@@ -5297,11 +5247,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (message.Message != null && message.hasOwnProperty("Message")) {
+            if (options.defaults)
+                object.Message = "";
+            if (message.Message != null && message.hasOwnProperty("Message"))
                 object.Message = message.Message;
-                if (options.oneofs)
-                    object._Message = "Message";
-            }
             return object;
         };
 
@@ -8348,7 +8297,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
          * @memberof rov_action_api.ResponseBackendMetadata
          * @instance
          */
-        ResponseBackendMetadata.prototype.TransportMethod = 1;
+        ResponseBackendMetadata.prototype.TransportMethod = 0;
 
         /**
          * Creates a new ResponseBackendMetadata instance using the specified properties.
@@ -8469,10 +8418,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 switch (message.TransportMethod) {
                 default:
                     return "TransportMethod: enum value expected";
+                case 0:
                 case 1:
                 case 2:
                 case 3:
-                case 4:
                     break;
                 }
             return null;
@@ -8505,20 +8454,20 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 }
                 break;
             case "LivekitReliable":
+            case 0:
+                message.TransportMethod = 0;
+                break;
+            case "LivekitUnreliable":
             case 1:
                 message.TransportMethod = 1;
                 break;
-            case "LivekitUnreliable":
+            case "DirectReliable":
             case 2:
                 message.TransportMethod = 2;
                 break;
-            case "DirectReliable":
+            case "DirectUnreliable":
             case 3:
                 message.TransportMethod = 3;
-                break;
-            case "DirectUnreliable":
-            case 4:
-                message.TransportMethod = 4;
                 break;
             }
             return message;
@@ -8540,7 +8489,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (options.arrays || options.defaults)
                 object.TargetUserIDs = [];
             if (options.defaults)
-                object.TransportMethod = options.enums === String ? "LivekitReliable" : 1;
+                object.TransportMethod = options.enums === String ? "LivekitReliable" : 0;
             if (message.TargetUserIDs && message.TargetUserIDs.length) {
                 object.TargetUserIDs = [];
                 for (let j = 0; j < message.TargetUserIDs.length; ++j)
@@ -8751,17 +8700,6 @@ export const rov_action_api = $root.rov_action_api = (() => {
         let $oneOfFields;
 
         /**
-         * RovResponse _BackendMetadata.
-         * @member {"BackendMetadata"|undefined} _BackendMetadata
-         * @memberof rov_action_api.RovResponse
-         * @instance
-         */
-        Object.defineProperty(RovResponse.prototype, "_BackendMetadata", {
-            get: $util.oneOfGetter($oneOfFields = ["BackendMetadata"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
-
-        /**
          * RovResponse Body.
          * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|undefined} Body
          * @memberof rov_action_api.RovResponse
@@ -8963,12 +8901,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 return "object expected";
             let properties = {};
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                properties._BackendMetadata = 1;
-                {
-                    let error = $root.rov_action_api.ResponseBackendMetadata.verify(message.BackendMetadata);
-                    if (error)
-                        return "BackendMetadata." + error;
-                }
+                let error = $root.rov_action_api.ResponseBackendMetadata.verify(message.BackendMetadata);
+                if (error)
+                    return "BackendMetadata." + error;
             }
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 if (!$util.isInteger(message.RovExchangeId))
@@ -9219,13 +9154,12 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
+                object.BackendMetadata = null;
                 object.RovExchangeId = 0;
-            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                object.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
-                if (options.oneofs)
-                    object._BackendMetadata = "BackendMetadata";
             }
+            if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
+                object.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Done != null && message.hasOwnProperty("Done")) {
