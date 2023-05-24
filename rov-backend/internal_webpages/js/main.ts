@@ -1,10 +1,22 @@
 import { DECODE_TXT, ENCODE_TXT } from "../../../shared/js/consts";
 import { waitfor } from "../../../shared/js/util";
 import { getMyIpGeolocation } from "./geolocation";
-import { connectToLivekit } from "./livekitPublisher";
+import { connectToLivekit, sendLivekitMessage } from "./livekitPublisher";
 import { initSimplePeerPublisher } from "./simplePeerPub";
+import { iRovWebSocketRelay } from "./websocketRelay";
+
 
 const urlParams = new URLSearchParams(location.search);
+
+iRovWebSocketRelay.start(function(messageEvent: MessageEvent<Uint8Array>){
+    // Callback to handle messages being received from the iROV python
+    
+    // TODO we want to properly unpackage all the metadata from the protobuf
+    
+    // send this stuff to livekit
+    sendLivekitMessage(messageEvent.data)
+});
+
 connectToLivekit({
     ForceLocal: (urlParams.get("ForceLocal") || "").toLowerCase() === 'true',
     RovRoomName: urlParams.get("RovRoomName"),
@@ -20,6 +32,8 @@ connectToLivekit({
     });
     initSimplePeerPublisher(stream);
 });
+
+
 
 // console.log(getFrontendAccessToken(urlParams.get("CloudAPIKey"), urlParams.get("CloudSecretKey"), "PERSON" + Date.now().toString()))
 
