@@ -6,7 +6,7 @@ from ahrs import Quaternion
 
 from cython_modules.rov_cython_modules import Py_Fused_Compass
 from sensors.generic_sensor import GenericSensor
-from protobuf.rov_action_api import Measurement, SensorMeasurmentTypes
+from protobufs.rov_action_api import Measurement, SensorMeasurmentTypes
 
 ###### setup logging #######
 log = logging.getLogger(__name__)

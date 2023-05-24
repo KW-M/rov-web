@@ -3,7 +3,7 @@
 # import asyncio
 # from random import randrange
 # import logging
-# from protobuf.webrtcrelay import WebRtcRelayStub, EventStreamRequest, CallRequest, RtpCodecParams, TrackInfo, SendMsgRequest
+# from protobufs.webrtcrelay import WebRtcRelayStub, EventStreamRequest, CallRequest, RtpCodecParams, TrackInfo, SendMsgRequest
 # from grpclib.client import Channel
 # from mesage_handler import MessageHandler
 
