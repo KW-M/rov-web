@@ -49,7 +49,7 @@ async def main():
     status_led_ctrl = Status_Led_Controller(21, pigpio_instance)
     status_led_ctrl.on()
 
-    relay_grpc = RelayGRPCClient(config['GRPCServerAddress'])
+    # relay_grpc = RelayGRPCClient(config['GRPCServerAddress'])
     sensors = SensorController()
     # sensor_log = Sensor_Log(sensors.all_sensors)
     motion_ctrl = MotionController(pigpio_instance=pigpio_instance)
