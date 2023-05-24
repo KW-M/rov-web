@@ -12,7 +12,6 @@ import { RovActions } from "./rovActions"
 
 
 
-
 export class ConnectionManagerClass {
     ROVs: { [rovId: string]: RovConnection } = {};
     currentTargetRovId: string = getROVName(rovPeerIdEndNumber.get());

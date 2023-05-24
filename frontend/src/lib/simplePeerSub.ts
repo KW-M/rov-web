@@ -2,7 +2,6 @@ import { sendLivekitMessage } from "./livekit";
 import { SimplePeerConnection } from "../../../shared/js/simplePeer"
 import { handleFrontendMsgRcvd } from "./msgHandler";
 
-
 let simplePeerSub: SimplePeerConnection | null = null;
 export const initSimplePeerSubscriber = (): SimplePeerConnection => {
     // if (simplePeerPub) simplePeerPub.stop()

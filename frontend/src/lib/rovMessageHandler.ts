@@ -3,6 +3,7 @@ import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
+import { sendSignalingDataToSimplePeerSubscriber } from "./simplePeerSub";
 
 let lastTimeRecvdPong = NaN;
 
@@ -21,6 +22,9 @@ export class RovMsgHandlerClass {
     }
 
     handleRecivedMessage(msgBytes: Uint8Array) {
+        let rawData = new Uint8Array(msgBytes)
+        if (!rawData || rawData.length === 0) return;
+        console.log("GOT DC DATA:", rawData);
         const msgData = rov_action_api.RovResponse.decode(new Uint8Array(msgBytes));
         if (debugPageModeActive.get()) showToastMessage(JSON.stringify(msgData.toJSON()), 800);
         this.runExchangeCallback(msgData.RovExchangeId, msgData);
@@ -40,16 +44,19 @@ export class RovMsgHandlerClass {
             return this.handlePasswordAcceptedMsgRecived(msgData.RovExchangeId, msgData.PasswordAccepted);
         } else if (msgData.PasswordInvalid) {
             return this.handlePasswordInvalidMsgRecived(msgData.RovExchangeId, msgData.PasswordInvalid);
-        } else if (msgData.TokenAccepted) {
-            return this.handleTokenAcceptedMsgRecived(msgData.RovExchangeId, msgData.TokenAccepted);
-        } else if (msgData.TokenInvalid) {
-            return this.handleTokenInvalidMsgRecived(msgData.RovExchangeId, msgData.TokenInvalid);
+            // } else if (msgData.TokenAccepted) {
+            //     return this.handleTokenAcceptedMsgRecived(msgData.RovExchangeId, msgData.TokenAccepted);
+            // } else if (msgData.TokenInvalid) {
+            //     return this.handleTokenInvalidMsgRecived(msgData.RovExchangeId, msgData.TokenInvalid);
         } else if (msgData.DriverChanged) {
             return this.handleDriverChangedMsgRecived(msgData.RovExchangeId, msgData.DriverChanged);
         } else if (msgData.ClientConnected) {
             return this.handleClientConnectedMsgRecived(msgData.RovExchangeId, msgData.ClientConnected);
         } else if (msgData.ClientDisconnected) {
             return this.handleClientDisconnectedMsgRecived(msgData.RovExchangeId, msgData.ClientDisconnected);
+        } else if (msgData.SimplepeerSignal) {
+            // Handle and reply
+            // sendSignalingDataToSimplePeerSubscriber(msgData.SimplepeerSignal.Message);
         }
     }
 
@@ -103,16 +110,6 @@ export class RovMsgHandlerClass {
 
     handlePasswordInvalidMsgRecived(rovExchangeId: number, msgData: rov_action_api.IPasswordInvalidResponse) {
         showToastMessage("Wrong Password", 1000, null);
-        this.handlePasswordRequiredMsgRecived(rovExchangeId, msgData);
-    }
-
-    handleTokenAcceptedMsgRecived(rovExchangeId: number, msgData: rov_action_api.ITokenAcceptedResponse) {
-        console.debug("Token Accepted: ", msgData);
-        this.resendMessage(rovExchangeId);
-    }
-
-    handleTokenInvalidMsgRecived(rovExchangeId: number, msgData: rov_action_api.ITokenInvalidResponse) {
-        console.debug("Token Invalid: ", msgData);
         this.handlePasswordRequiredMsgRecived(rovExchangeId, msgData);
     }
 

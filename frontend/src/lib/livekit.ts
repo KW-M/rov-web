@@ -7,8 +7,6 @@ import {
     Participant,
     VideoPresets,
     DefaultReconnectPolicy,
-    RoomConnectOptions,
-    LivekitError,
     LocalTrackPublication,
     LocalParticipant,
     Track,
@@ -19,6 +17,7 @@ import {
     ConnectionQuality,
     DataPacket_Kind
 } from 'livekit-client';
+
 import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT, PROXY_PREFIX } from '../../../shared/js/consts';
 import { appendLog, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { handleFrontendMsgRcvd } from './msgHandler';
@@ -235,20 +234,11 @@ export async function connectToRoom(roomName, accessToken) {
 }
 
 export async function connectToRoomLocal(roomName, accessToken) {
-    if (!window.parent || window.parent === window.top) {
-
-        // FOR LOCAL OVER CLOUD PROXY
-        // setSendProxyMessageCallback((data) => {
-        //     console.log("send proxy message: " + data.byteLength);
-        //     cloudLivekitConnection.sendMessage(new Uint8Array(data))
-        // })
-    } else {
-        // enableFrameProxy();
-        // await waitfor(100);
+    if (window.parent && window.parent === window.top) {
+        enableFrameProxy();
+        await waitfor(100);
         // await localLivekitConnection.start(roomName, accessToken);
     }
-
-    // await waitfor(100);
 }
 
 export async function sendTestMessage() {
