@@ -13,7 +13,7 @@ import pigpio
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
 # from command_api import start_aiohttp_api_server
-from grpc_client import RelayGRPCClient
+# from grpc_client import RelayGRPCClient
 # from unix_socket import Unix_Socket
 from motion.motion_controller import MotionController
 from media_stream_controller import MediaStreamController
@@ -56,7 +56,7 @@ async def main():
     media_ctrl = MediaStreamController()
     message_handler = MessageHandler(relay_grpc, media_ctrl, motion_ctrl, sensors)
     websocket_server = WebSocketServer(message_handler.handle_incoming_msg)
-    
+
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(
