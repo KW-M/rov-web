@@ -5,7 +5,7 @@ high level support for doing this and that.
 import asyncio
 import logging
 from typing import Tuple
-from protobufs.rov_action_api import Measurement
+from protobufs.rov_actions_proto import Measurement
 
 
 class GenericSensor:

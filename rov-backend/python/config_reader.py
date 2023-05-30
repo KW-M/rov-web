@@ -3,21 +3,17 @@ import argparse
 import json
 import logging
 
-SECONDS_PER_DAY = 86400
+SECONDS_IN_A_DAY = 86400
 
 # default values for the program config json
 program_config = {
     "LogLevel": "info",
-    "NamedPipeFolder": "/tmp/webtrc-relay-pipes/",
-    "MessageMetadataSeparator": "|\"|",
-    "RovControlPassword":
-    "Change this password in the program config json file",
+    "RovControlPassword": "pls change this in rov-config.json file",
     "AuthStateStorageFilepath": "./rov-auth-state.json",
-    "AuthTokenTimeout": SECONDS_PER_DAY,
-    "RovAttestationPrivateKey":
-    "Change this private key in the program config json file",
-    "EnabledSensors": [],
-    "GRPCServerAddress": "http://localhost:7413",
+    "AuthTokenTimeout": SECONDS_IN_A_DAY,
+    "RovAttestationPrivateKey": "pls set this in rov-config.json file",
+    "EnabledSensors": [], # list of sensor names to enable (see python classes in sensor folder)
+    "WebsocketServerAddress": "http://localhost:7413",
 }
 
 

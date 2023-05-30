@@ -1,9 +1,6 @@
 [Unit]
 Description=Runs the main.py python code on boot, and restarts it if it crashes from the /home/pi/rov-web/python folder
 
-Requires=rov_go_code.service
-After=rov_go_code.service
-
 [Service]
 User=pi
 # PYTHONUNBUFFERED=1 is so python will spit out print messages to the system log instantly instead of waiting to in batches

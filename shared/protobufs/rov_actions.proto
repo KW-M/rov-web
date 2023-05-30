@@ -1,16 +1,5 @@
 syntax = "proto3";
-package rov_action_api;
-
-enum DataTransportMethod {
-    // Livekit reliable messages are sent / received through the livekit server via TCP.
-    LivekitReliable = 0;
-    // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
-    LivekitUnreliable = 1;
-    // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
-    DirectReliable = 2;
-    // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
-    DirectUnreliable = 3;
-}
+package rov_actions_proto;
 
 enum SensorMeasurmentTypes {
     depth_meters = 0;
@@ -25,6 +14,25 @@ enum SensorMeasurmentTypes {
     battery_voltage = 9; // Not implemented
     battery_current_amps = 10; // Not implemented
     internal_temp_celsius = 11; // from the compass/imu
+}
+
+// Storez a single sensor measurement/value
+message Measurement {
+    // The sensor type (see RovSensorTypes)
+    SensorMeasurmentTypes MeasurementType = 1;
+    // The sensor value
+    float Value = 2;
+}
+
+enum DataTransportMethod {
+    // Livekit reliable messages are sent / received through the livekit server via TCP.
+    LivekitReliable = 0;
+    // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
+    LivekitUnreliable = 1;
+    // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    DirectReliable = 2;
+    // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
+    DirectUnreliable = 3;
 }
 
 enum RovActionTypes {
@@ -237,12 +245,6 @@ message PongResponse {
 
 // sent to all clients whenever a sensor measurement changes or after a refresh_all_sensors action is sent.
 message SensorUpdatesResponse {
-    message Measurement {
-        // The sensor type (see RovSensorTypes)
-        SensorMeasurmentTypes MeasurementType = 1;
-        // The sensor value
-        float Value = 2;
-    }
     // All the changed mesurements from the sensors: (see Measurement type)
     repeated Measurement MeasurementUpdates = 1;
 }

@@ -7,24 +7,18 @@
 
 import logging
 import asyncio
-import pigpio
-# import select, sys
 
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
-# from command_api import start_aiohttp_api_server
-# from grpc_client import RelayGRPCClient
-# from unix_socket import Unix_Socket
-from motion.motion_controller import MotionController
-from media_stream_controller import MediaStreamController
-from status_led import Status_Led_Controller
-from rovSecurity.userAuth import readAuthStateFromDisk
+from gpio_interface import GPIO_ctrl
+from motion.motion_controller import motion_ctrl
+from status_led import status_led_ctrl
+from rov_security.auth_tokens import readAuthStateFromDisk
 
+from websocket_server import websocket_server
+from mesage_handler import message_handler
+from sensors.sensors_controller import sensor_ctrl
 # from sensor_log import Sensor_Log
-from sensors.sensors_controller import SensorController
-from mesage_handler import MessageHandler
-from websocket_server import WebSocketServer
-# import logging_formatter
 
 config = read_config_file()
 readAuthStateFromDisk()
@@ -32,41 +26,34 @@ readAuthStateFromDisk()
 ###### Setup Logging #######
 ############################
 
-# set the Loglevel from command line argument or config file. Use either --LogLevel=DEBUG or --LogLevel=debug
+# set the Loglevel from command line argument or config file. Use --LogLevel=DEBUG
 logging.basicConfig(level=get_log_level(config['LogLevel']))
 log = logging.getLogger(__name__)
-
 
 ######## Main Program Loop ###########
 ######################################
 async def main():
-    global relay_grpc, sensors, motion_ctrl, message_handler, media_ctrl, status_led_ctrl
 
-    ##### Setup Variables #####
+    ##### Setup Controllers #####
     ############################
 
-    pigpio_instance = pigpio.pi()
-    status_led_ctrl = Status_Led_Controller(21, pigpio_instance)
+    GPIO_ctrl.init()
+    status_led_ctrl.init(21)
     status_led_ctrl.on()
-
-    # relay_grpc = RelayGRPCClient(config['GRPCServerAddress'])
-    sensors = SensorController()
-    # sensor_log = Sensor_Log(sensors.all_sensors)
-    motion_ctrl = MotionController(pigpio_instance=pigpio_instance)
-    media_ctrl = MediaStreamController()
-    message_handler = MessageHandler(relay_grpc, media_ctrl, motion_ctrl, sensors)
-    websocket_server = WebSocketServer(message_handler.handle_incoming_msg)
-
+    message_handler.init()
+    websocket_server.init(message_handler.handle_incoming_msg)
+    motion_ctrl.init()
+    sensor_ctrl.init()
+    # sensor_log.start(sensors.all_sensors)
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(
-        sensors.sensor_setup_loop(),
+        sensor_ctrl.sensor_setup_loop(),
         motion_ctrl.motor_setup_loop(),
-        # relay_grpc.start_loop(message_handler),
         websocket_server.start_wss(),
-        message_handler.update_sender_loop(),
+        message_handler.status_broadcast_loop(),
         # start_aiohttp_api_server(),
-        # monitor_tasks()
+        # monitor_tasks() # debug
     )
 
 
@@ -76,12 +63,11 @@ try:
 except KeyboardInterrupt:
     pass
 finally:
-    # finally = stuff that will always run no matter what
+    # finally block is stuff that will always run no matter what
     status_led_ctrl.off()
-    sensors.cleanup()
-    motion_ctrl.cleanup_gpio()
-    relay_grpc.cleanup()
-    media_ctrl.cleanup()
+    sensor_ctrl.cleanup()
+    motion_ctrl.stop_motors()
+    GPIO_ctrl.cleanup()
 
 #### ASYNCIO DEBUG ####
 

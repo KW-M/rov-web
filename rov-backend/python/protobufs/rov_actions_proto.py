@@ -7,21 +7,6 @@ from typing import List
 import betterproto
 
 
-class DataTransportMethod(betterproto.Enum):
-    # Livekit reliable messages are sent / received through the livekit server
-    # via TCP.
-    LivekitReliable = 0
-    # Livekit unreliable messages are sent / received through the livekit server
-    # via UDP (messages may get lost in transit).
-    LivekitUnreliable = 1
-    # [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over
-    # the simplepeer webrtc connection via TCP
-    DirectReliable = 2
-    # Direct unreliable messages are sent/recived over the simplepeer webrtc
-    # connection via UDP (messages may get lost in transit)
-    DirectUnreliable = 3
-
-
 class SensorMeasurmentTypes(betterproto.Enum):
     depth_meters = 0
     water_temp_celsius = 1
@@ -35,6 +20,21 @@ class SensorMeasurmentTypes(betterproto.Enum):
     battery_voltage = 9
     battery_current_amps = 10
     internal_temp_celsius = 11
+
+
+class DataTransportMethod(betterproto.Enum):
+    # Livekit reliable messages are sent / received through the livekit server
+    # via TCP.
+    LivekitReliable = 0
+    # Livekit unreliable messages are sent / received through the livekit server
+    # via UDP (messages may get lost in transit).
+    LivekitUnreliable = 1
+    # [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over
+    # the simplepeer webrtc connection via TCP
+    DirectReliable = 2
+    # Direct unreliable messages are sent/recived over the simplepeer webrtc
+    # connection via UDP (messages may get lost in transit)
+    DirectUnreliable = 3
 
 
 class RovActionTypes(betterproto.Enum):
@@ -78,6 +78,16 @@ class RovResponseTypes(betterproto.Enum):
     continued_output = 14
     mavlink_response = 15
     simplepeer_signalling = 16
+
+
+@dataclass
+class Measurement(betterproto.Message):
+    """Storez a single sensor measurement/value"""
+
+    # The sensor type (see RovSensorTypes)
+    measurement_type: "SensorMeasurmentTypes" = betterproto.enum_field(1)
+    # The sensor value
+    value: float = betterproto.float_field(2)
 
 
 @dataclass
@@ -302,17 +312,7 @@ class SensorUpdatesResponse(betterproto.Message):
     """
 
     # All the changed mesurements from the sensors: (see Measurement type)
-    measurement_updates: List[
-        "SensorUpdatesResponseMeasurement"
-    ] = betterproto.message_field(1)
-
-
-@dataclass
-class SensorUpdatesResponseMeasurement(betterproto.Message):
-    # The sensor type (see RovSensorTypes)
-    measurement_type: "SensorMeasurmentTypes" = betterproto.enum_field(1)
-    # The sensor value
-    value: float = betterproto.float_field(2)
+    measurement_updates: List["Measurement"] = betterproto.message_field(1)
 
 
 @dataclass

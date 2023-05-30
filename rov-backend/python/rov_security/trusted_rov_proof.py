@@ -1,3 +1,6 @@
+# NOT YET USED!!
+# -------------
+
 import logging
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Signature import PKCS1_v1_5

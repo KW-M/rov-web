@@ -4,6 +4,8 @@ import asyncio
 import logging
 import pigpio
 
+from gpio_interface import GPIO_ctrl
+
 REQUIRED_BREAKING_TIME = 0.05  # seconds
 
 ###### setup logging #######
@@ -30,23 +32,20 @@ class Drok_Pwm_Motor:
     # pylint: disable=too-many-arguments
     def __init__(
             self,
-            pigpio_instance,  #: pigpio.pi,
             pin_ena: int,
             pin_in1: int,
             pin_in2: int,
             async_loop: Optional[asyncio.AbstractEventLoop] = None):
-        self.pigpio_instance = pigpio_instance
         self.pin_ena = pin_ena
         self.pin_in1 = pin_in1
         self.pin_in2 = pin_in2
-        self.pigpio_instance.set_mode(self.pin_ena, pigpio.OUTPUT)
-        self.pigpio_instance.set_mode(self.pin_in1, pigpio.OUTPUT)
-        self.pigpio_instance.set_mode(self.pin_in2, pigpio.OUTPUT)
+        GPIO_ctrl.set_pin_mode(self.pin_ena, pigpio.OUTPUT)
+        GPIO_ctrl.set_pin_mode(self.pin_in1, pigpio.OUTPUT)
+        GPIO_ctrl.set_pin_mode(self.pin_in2, pigpio.OUTPUT)
         # Halt pwm / motor (breaking mode)
-        self.pigpio_instance.set_PWM_dutycycle(self.pin_ena, 0)
-        self.pigpio_instance.write(self.pin_in1, 0)  # pin LOW (off)
-        self.pigpio_instance.write(self.pin_in2, 0)  # pin LOW (off)
-        print(f'PWM Freq: pin_ena = {pigpio_instance.get_PWM_frequency(self.pin_ena)}')
+        GPIO_ctrl.set_pin_pwm(self.pin_ena, 0)
+        GPIO_ctrl.set_pin_low(self.pin_in1)  # pin LOW (off)
+        GPIO_ctrl.set_pin_low(self.pin_in2)  # pin LOW (off)
 
         if async_loop is not None:
             self.ascync_loop = async_loop
@@ -140,22 +139,22 @@ class Drok_Pwm_Motor:
             # print("Halting before changing direction",self.pin_ena)
             speed = 0
 
-        # https://abyz.me.uk/rpi/pigpio/python.html#set_PWM_dutycycle
+        # https://abyz.me.uk/rpi/pigpio/python.html#set_pin_pwm
         if (speed > 0):
             # Drive forward and cap speed at 1 (max)
-            self.pigpio_instance.write(self.pin_in1, 1)  # pin HIGH (on)
-            self.pigpio_instance.write(self.pin_in2, 0)  # pin LOW (off)
-            self.pigpio_instance.set_PWM_dutycycle(self.pin_ena, min(speed, 1) * 255)
+            GPIO_ctrl.set_pin_high(self.pin_in1)  # pin HIGH (on)
+            GPIO_ctrl.set_pin_low(self.pin_in2) # pin LOW (off)
+            GPIO_ctrl.set_pin_pwm(self.pin_ena, int(min(speed, 1) * 255))
         elif (speed < 0):
             # Drive backwards and cap speed at 1 (max)
-            self.pigpio_instance.write(self.pin_in1, 0)  # pin LOW (off)
-            self.pigpio_instance.write(self.pin_in2, 1)  # pin HIGH (on)
-            self.pigpio_instance.set_PWM_dutycycle(self.pin_ena, min(-speed, 1) * 255)
+            GPIO_ctrl.set_pin_low(self.pin_in1)  # pin LOW (off)
+            GPIO_ctrl.set_pin_high(self.pin_in2)  # pin HIGH (on)
+            GPIO_ctrl.set_pin_pwm(self.pin_ena, int(min(-speed, 1) * 255))
         else:
             # Speed = 0. Halt pwm / motor (breaking mode)
-            self.pigpio_instance.write(self.pin_in1, 0)  # pin LOW (off)
-            self.pigpio_instance.write(self.pin_in2, 0)  # pin LOW (off)
-            self.pigpio_instance.set_PWM_dutycycle(self.pin_ena, 0)
+            GPIO_ctrl.set_pin_low(self.pin_in1) # pin LOW (off)
+            GPIO_ctrl.set_pin_low(self.pin_in2) # pin LOW (off)
+            GPIO_ctrl.set_pin_pwm(self.pin_ena, 0)
 
         if self._check_for_motor_state_change():
             self.current_speed = speed
@@ -176,7 +175,7 @@ if __name__ == '__main__':
         def set_mode(self, pin, mode):
             pass
 
-        def set_PWM_dutycycle(self, pin, duty_cycle):
+        def set_pin_pwm(self, pin, duty_cycle):
             pass
 
         def set_PWM_frequency(self, pin, frequency):
