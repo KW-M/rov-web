@@ -11,6 +11,7 @@ export class WebSocketRelay {
     msgReceivedFn: (msgEvent: MessageEvent<Uint8Array>) => void 
     isRunning: boolean
     isConnected: boolean
+    connectionTimerId // type is "a positive integer"
     
     /*
         When instantiated, an arbitrary callback function is expected to handle incoming messages
@@ -22,6 +23,7 @@ export class WebSocketRelay {
     constructor() {
         this.isConnected = false
         this.isRunning = false
+        this.connectionTimerId = 0
     }
 
     /*
@@ -45,22 +47,34 @@ export class WebSocketRelay {
         WebSocket and assigning callbacks. Arbitrary delays occur in the event of a di
     */
     connect() {
+        console.log("Attempting to connect to python websocket...")
         this.socket = new WebSocket("ws://localhost:8765/");
         this.isConnected = true
         this.socket.addEventListener('close', (event) => {
-          console.log('WebSocket connection closed with code:', event.code);
+          console.log('WebSocket connection closed with code: ', event.code);
           this.isConnected = false
-          if(this.isRunning) setTimeout(this.connect, 2000); // Attempt to reconnect after a delay
+          if(this.isRunning) this.queueConnect()
         });
       
         this.socket.addEventListener('error', (error) => {
           console.error('WebSocket error:', error);
           this.isConnected = false
-          if(this.isRunning) setTimeout(this.connect, 2000); // Attempt to reconnect after a delay
+          if(this.isRunning) this.queueConnect()
         });
 
         this.socket.addEventListener("message", this.msgReceivedFn)
       
+    }
+
+    /*
+        Helper function that sets a delay for the connect() function to be called
+        asynchronously. Used for trying to reconnect if the server is unresponsive
+    */
+    queueConnect() {
+        // console.log("queuing connect(), clearing ID=", this.connectionTimerId)
+        clearTimeout(this.connectionTimerId) // Unqueue any current connection events.
+        this.connectionTimerId = setTimeout(this.connect.bind(this), 2000); // Attempt to reconnect after a delay
+        // console.log("finished queuing connect(), new ID=", this.connectionTimerId)
     }
 
     getIsConnected() {
