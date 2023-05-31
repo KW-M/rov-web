@@ -10,8 +10,8 @@ const livekitConfig: LivekitSetupOptions = {
     RovRoomName: urlParams.get("RovRoomName"),
     CloudAPIKey: urlParams.get("CloudAPIKey"),
     CloudSecretKey: urlParams.get("CloudSecretKey"),
-    LocalAPIKey: urlParams.get("LocalAPIKey"),
-    LocalSecretKey: urlParams.get("LocalSecretKey"),
+    LocalAPIKey: urlParams.get("LocalAPIKey") || "N/A",
+    LocalSecretKey: urlParams.get("LocalSecretKey") || "N/A",
 }
 for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
 connectionManager.start(livekitConfig)

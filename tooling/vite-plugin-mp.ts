@@ -21,12 +21,12 @@ export function ViteEntrypointRewritePlugin(entryMap: { [key: string]: string })
      * Intercept virtual html requests.
      */
     resolveId(id, importer, options) {
-      console.log('Virtual', id, importer)
+      // console.log('Virtual', id, importer)
       if (options.isEntry && entryMap[id]) {
         return id;
       } else if (entryMap[importer]) {
         let path = relative(resolve("./"), resolve(dirname(entryMap[importer]), id))
-        console.log(id, path)
+        // console.log(id, path)
         return path;
       }
     },
