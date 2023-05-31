@@ -3,6 +3,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
+# import socket
+# import httplib
+from selenium.webdriver.remote.command import Command
+
+
+
+
 
 
 class WebdriverManager:
@@ -10,26 +17,30 @@ class WebdriverManager:
     def init(self):
         pass
 
+    
     def start(self):     
 
         # necessary to make virtual display to run graphical applications in headless mode
         self.display = Display(visible=0, size=(800, 600))
         self.display.start()
 
-        # 
-        
+        # WARNING: these hardcoded paths must be correct
+        # TODO these URLs should be accepted as parameters in some way.q
         browser_binary_path = '/usr/bin/chromium-browser'
         driver_path = '/usr/lib/chromium-browser/chromedriver'
 
+        # Object that can be used to pass in command line option flags when starting chromium apps
+        # (anything that can otherwise be passed through CLI is valid here.)
         chrome_options = Options()
         # chrome_options.add_experimental_option("detach", True)
         chrome_options.binary_location=browser_binary_path
         # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--use-fake-ui-for-media-stream")
 
+        # Instantiate driver and navigate to appropriate webpage
         self.driver = webdriver.Chrome(driver_path, options=chrome_options)
+        self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html") #TODO should point to appropriate website. (M) if it's static content couldn't we fetch it from the local file system?
 
-        self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
 
     def stop(self):
         self.driver.quit()
@@ -39,37 +50,23 @@ class WebdriverManager:
         print("The title of the page in the headless webdriver instance is ", title)
 
 
-#Code to model this module off of.
-"""
-class WebSocketServer:
-
-    def init(self, msgReceivedFn):
-        self.msgReceivedFn = msgReceivedFn
-        self.connections = set()
-
-    async def _register(self, websocket, path):
-        self.connections.add(websocket)
-        print("Client connected to Web Socket Server: ", websocket)
-
-        # While client is connected, await messages and process them
-        # with the provided message-received-function
-        async for message in websocket:
-            self.msgReceivedFn(message, "Dummy") # For now, add dummy metadata. TODO extract with protobuf
-
-        print("Client disconnected from Web Socket Server: ", websocket)
-        self.connections.remove(websocket)
-
-    async def broadcast(self, message):
-        websockets.broadcast(self.connections, message)
+    """returns true if the webdriver is running, false otherwise"""
+    def is_running(self):
+        # return "unknown"
+        try:
+            self.driver.title
+            return True
+        except:
+            return False
 
 
-    async def start_wss(self):
-        async with websockets.serve(self._register, "localhost", 8765):
-            await asyncio.Future()  # run forever
+rovWebdriverManager = WebdriverManager()
 
-    def is_connected(self):
-        return len(self.connections) > 0
-
-websocket_server = WebSocketServer()
-
-"""
+# Testing scripts
+if __name__=="__main__":
+    rovWebdriverManager.init()
+    rovWebdriverManager.start()
+    rovWebdriverManager.test_fetch_title()
+    print("started manager, ", rovWebdriverManager.is_running())
+    rovWebdriverManager.stop()
+    print("stopped manager, ", rovWebdriverManager.is_running())
