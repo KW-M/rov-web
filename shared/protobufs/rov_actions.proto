@@ -29,33 +29,21 @@ enum DataTransportMethod {
     LivekitReliable = 0;
     // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
     LivekitUnreliable = 1;
-    // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
-    DirectReliable = 2;
+    // // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    // DirectReliable = 2;
     // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
     DirectUnreliable = 3;
 }
 
-enum RovActionTypes {
-    ping = 0;
-    password_attempt = 1;
-    authtoken_attempt = 2;
-    take_control = 3;
-    move = 4;
-    begin_video_stream = 5;
-    take_photo = 6;
-    start_video_rec = 7;
-    stop_video_rec = 8;
-    toogle_lights = 9;
-    shutdown_rov = 10;
-    reboot_rov = 11;
-    enable_wifi = 12;
-    disable_wifi = 13;
-    rov_status_report = 14;
-    restart_rov_services = 15;
-    rov_logs = 16;
-    refresh_all_sensors = 17;
-    mavlink_action = 18;
-    simplepeer_signal = 19;
+enum InternalWebpageEvent {
+    // The rov has connected to at least one livekit server
+    RovConnected = 0;
+    // The rov is disconnected from all livekit servers
+    RovDisconnected = 1;
+    // A livekit user has connected to the rov
+    UserConnected = 2;
+    // A livekit user has disconnected from the rov
+    UserDisconnected = 3;
 }
 
 message PingAction {
@@ -142,23 +130,24 @@ message MavlinkAction {
 }
 
 message SimplepeerSignalAction {
-    bytes Message = 1;
+    string Message = 1;
 }
 
-
 message ActionBackendMetadata {
-    // The identity of the livekit user/client that sent the message.
+    // The identity of the livekit user/client that sent the message or the message relates to.
     // !!!! This MUST get overwritten by the backend with the true origin user
     // before being sent to the python code for security.
     string FromUserID = 1; // optional
+    // If an event happens such as a user connection or disconnection this will be set:
+    InternalWebpageEvent InternalWebpageEvt = 2; // optional
 }
 
 // wrapper message for anything sent by a pilot/spectator to the rov (aka an "action").
 message RovAction {
     // Metadata set by backend webpage before the message is forwarded to the python code.
     ActionBackendMetadata BackendMetadata = 1;
-    // Action exchange id (used to match up action requests and responses)
-    int32 RovExchangeId = 2;
+    // MUST BE UNIQUE! Message exchange id (used to match up action requests and responses and prevent duplicate messages from being processed)
+    int32 ExchangeId = 2;
     // The body / content of the action
     oneof Body {
         // ping
@@ -202,27 +191,6 @@ message RovAction {
         // simplepeer_signal
         SimplepeerSignalAction SimplepeerSignal = 22;
     }
-}
-
-
-enum RovResponseTypes {
-    done = 0;
-    error = 1;
-    pong = 2;
-    measurement = 3;
-    sensor_updates = 4;
-    password_required = 5;
-    password_accepted = 6;
-    password_invalid = 7;
-    token_accepted = 8;
-    token_invalid = 9; // Not implemented
-    driver_changed = 10;
-    client_connected = 11; // Not implemented
-    client_disconnected = 12; // Not implemented
-    heartbeat_response = 13;
-    continued_output = 14;
-    mavlink_response = 15;
-    simplepeer_signalling = 16;
 }
 
 // sent to a specific client when an action is received by the rov and completes successfully.
@@ -303,7 +271,7 @@ message MavlinkResponse {
 
 // used by the simplepeer signalling protocol to establish a direct webrtc connection between the rov and driver client (bypassing livekit).
 message SimplepeerSignalResponse {
-    bytes Message = 1;
+    string Message = 1;
 }
 
 message ResponseBackendMetadata {
@@ -320,7 +288,7 @@ message RovResponse {
     // !!!! This field WILL be erased before the message is forwarded from the backend website to the livekit users.
     ResponseBackendMetadata BackendMetadata = 1; // optional
     // Response exchange id (used to match up action requests and responses)
-    int32 RovExchangeId = 2;
+    int32 ExchangeId = 2;
     // The body / content of the response
 	oneof Body {
         // done (action was completed successfully)

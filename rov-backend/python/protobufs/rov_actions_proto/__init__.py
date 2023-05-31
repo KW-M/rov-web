@@ -23,311 +23,329 @@ class SensorMeasurmentTypes(betterproto.Enum):
 
 
 class DataTransportMethod(betterproto.Enum):
-    # Livekit reliable messages are sent / received through the livekit server
-    # via TCP.
     LivekitReliable = 0
-    # Livekit unreliable messages are sent / received through the livekit server
-    # via UDP (messages may get lost in transit).
+    """
+    Livekit reliable messages are sent / received through the livekit server
+    via TCP.
+    """
+
     LivekitUnreliable = 1
-    # [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over
-    # the simplepeer webrtc connection via TCP
-    DirectReliable = 2
-    # Direct unreliable messages are sent/recived over the simplepeer webrtc
-    # connection via UDP (messages may get lost in transit)
+    """
+    Livekit unreliable messages are sent / received through the livekit server
+    via UDP (messages may get lost in transit).
+    """
+
     DirectUnreliable = 3
+    """
+    // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived
+    over the simplepeer webrtc connection via TCP DirectReliable = 2; Direct
+    unreliable messages are sent/recived over the simplepeer webrtc connection
+    via UDP (messages may get lost in transit)
+    """
 
 
-class RovActionTypes(betterproto.Enum):
-    ping = 0
-    password_attempt = 1
-    authtoken_attempt = 2
-    take_control = 3
-    move = 4
-    begin_video_stream = 5
-    take_photo = 6
-    start_video_rec = 7
-    stop_video_rec = 8
-    toogle_lights = 9
-    shutdown_rov = 10
-    reboot_rov = 11
-    enable_wifi = 12
-    disable_wifi = 13
-    rov_status_report = 14
-    restart_rov_services = 15
-    rov_logs = 16
-    refresh_all_sensors = 17
-    mavlink_action = 18
-    simplepeer_signal = 19
+class InternalWebpageEvent(betterproto.Enum):
+    RovConnected = 0
+    """The rov has connected to at least one livekit server"""
+
+    RovDisconnected = 1
+    """The rov is disconnected from all livekit servers"""
+
+    UserConnected = 2
+    """A livekit user has connected to the rov"""
+
+    UserDisconnected = 3
+    """A livekit user has disconnected from the rov"""
 
 
-class RovResponseTypes(betterproto.Enum):
-    done = 0
-    error = 1
-    pong = 2
-    measurement = 3
-    sensor_updates = 4
-    password_required = 5
-    password_accepted = 6
-    password_invalid = 7
-    token_accepted = 8
-    token_invalid = 9
-    driver_changed = 10
-    client_connected = 11
-    client_disconnected = 12
-    heartbeat_response = 13
-    continued_output = 14
-    mavlink_response = 15
-    simplepeer_signalling = 16
-
-
-@dataclass
+@dataclass(eq=False, repr=False)
 class Measurement(betterproto.Message):
     """Storez a single sensor measurement/value"""
 
-    # The sensor type (see RovSensorTypes)
     measurement_type: "SensorMeasurmentTypes" = betterproto.enum_field(1)
-    # The sensor value
+    """The sensor type (see RovSensorTypes)"""
+
     value: float = betterproto.float_field(2)
+    """The sensor value"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PingAction(betterproto.Message):
-    # The time the ping was sent
     time: int = betterproto.int64_field(1)
+    """The time the ping was sent"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PasswordAttemptAction(betterproto.Message):
-    # The password to attempt
     password: str = betterproto.string_field(1)
+    """The password to attempt"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class AuthTokenAttemptAction(betterproto.Message):
-    # The token to attempt
     token: str = betterproto.string_field(1)
+    """The token to attempt"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class TakeControlAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class MoveAction(betterproto.Message):
-    # How to move the rov (X is left/right, Y is forward/backward, Z is up/down,
-    # Yaw is rotation))
     velocity_x: float = betterproto.float_field(1)
+    """
+    How to move the rov (X is left/right, Y is forward/backward, Z is up/down,
+    Yaw is rotation))
+    """
+
     velocity_y: float = betterproto.float_field(2)
     velocity_z: float = betterproto.float_field(3)
     angular_velocity_yaw: float = betterproto.float_field(4)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class BeginVideoStreamAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class TakePhotoAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class StartVideoRecAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class StopVideoRecAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ToogleLightsAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ShutdownRovAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RebootRovAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class EnableWifiAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class DisableWifiAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RovStatusReportAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RestartRovServicesAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RovLogsAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RefreshAllSensorsAction(betterproto.Message):
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class MavlinkAction(betterproto.Message):
     message: bytes = betterproto.bytes_field(1)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class SimplepeerSignalAction(betterproto.Message):
-    message: bytes = betterproto.bytes_field(1)
+    message: str = betterproto.string_field(1)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ActionBackendMetadata(betterproto.Message):
-    # The identity of the livekit user/client that sent the message. !!!! This
-    # MUST get overwritten by the backend with the true origin user before being
-    # sent to the python code for security.
-    from_user_i_d: str = betterproto.string_field(1)
+    from_user_id: str = betterproto.string_field(1)
+    """
+    The identity of the livekit user/client that sent the message or the
+    message relates to. !!!! This MUST get overwritten by the backend with the
+    true origin user before being sent to the python code for security.
+    """
+
+    internal_webpage_evt: "InternalWebpageEvent" = betterproto.enum_field(2)
+    """
+    If an event happens such as a user connection or disconnection this will be
+    set:
+    """
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RovAction(betterproto.Message):
     """
     wrapper message for anything sent by a pilot/spectator to the rov (aka an
     "action").
     """
 
-    # Metadata set by backend webpage before the message is forwarded to the
-    # python code.
     backend_metadata: "ActionBackendMetadata" = betterproto.message_field(1)
-    # Action exchange id (used to match up action requests and responses)
-    rov_exchange_id: int = betterproto.int32_field(2)
-    # ping
+    """
+    Metadata set by backend webpage before the message is forwarded to the
+    python code.
+    """
+
+    exchange_id: int = betterproto.int32_field(2)
+    """
+    MUST BE UNIQUE! Message exchange id (used to match up action requests and
+    responses and prevent duplicate messages from being processed)
+    """
+
     ping: "PingAction" = betterproto.message_field(3, group="Body")
-    # password_attempt
+    """ping"""
+
     password_attempt: "PasswordAttemptAction" = betterproto.message_field(
         4, group="Body"
     )
-    # authtoken_attempt
+    """password_attempt"""
+
     auth_token_attempt: "AuthTokenAttemptAction" = betterproto.message_field(
         5, group="Body"
     )
-    # take_control
+    """authtoken_attempt"""
+
     take_control: "TakeControlAction" = betterproto.message_field(6, group="Body")
-    # move
+    """take_control"""
+
     move: "MoveAction" = betterproto.message_field(7, group="Body")
-    # begin_video_stream
+    """move"""
+
     begin_video_stream: "BeginVideoStreamAction" = betterproto.message_field(
         8, group="Body"
     )
-    # take_photo
+    """begin_video_stream"""
+
     take_photo: "TakePhotoAction" = betterproto.message_field(9, group="Body")
-    # start_video_rec
+    """take_photo"""
+
     start_video_rec: "StartVideoRecAction" = betterproto.message_field(10, group="Body")
-    # stop_video_rec
+    """start_video_rec"""
+
     stop_video_rec: "StopVideoRecAction" = betterproto.message_field(11, group="Body")
-    # toogle_lights
+    """stop_video_rec"""
+
     toogle_lights: "ToogleLightsAction" = betterproto.message_field(12, group="Body")
-    # shutdown_rov
+    """toogle_lights"""
+
     shutdown_rov: "ShutdownRovAction" = betterproto.message_field(13, group="Body")
-    # reboot_rov
+    """shutdown_rov"""
+
     reboot_rov: "RebootRovAction" = betterproto.message_field(14, group="Body")
-    # enable_wifi
+    """reboot_rov"""
+
     enable_wifi: "EnableWifiAction" = betterproto.message_field(15, group="Body")
-    # disable_wifi
+    """enable_wifi"""
+
     disable_wifi: "DisableWifiAction" = betterproto.message_field(16, group="Body")
-    # rov_status_report
+    """disable_wifi"""
+
     rov_status_report: "RovStatusReportAction" = betterproto.message_field(
         17, group="Body"
     )
-    # restart_rov_services
+    """rov_status_report"""
+
     restart_rov_services: "RestartRovServicesAction" = betterproto.message_field(
         18, group="Body"
     )
-    # rov_logs
+    """restart_rov_services"""
+
     rov_logs: "RovLogsAction" = betterproto.message_field(19, group="Body")
-    # refresh_all_sensors
+    """rov_logs"""
+
     refresh_all_sensors: "RefreshAllSensorsAction" = betterproto.message_field(
         20, group="Body"
     )
-    # mavlink
+    """refresh_all_sensors"""
+
     mavlink: "MavlinkAction" = betterproto.message_field(21, group="Body")
-    # simplepeer_signal
+    """mavlink"""
+
     simplepeer_signal: "SimplepeerSignalAction" = betterproto.message_field(
         22, group="Body"
     )
+    """simplepeer_signal"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class DoneResponse(betterproto.Message):
     """
     sent to a specific client when an action is received by the rov and
     completes successfully.
     """
 
-    # An optional informational status message to send back
     message: str = betterproto.string_field(1)
+    """An optional informational status message to send back"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ErrorResponse(betterproto.Message):
     """
     sent to a specific client when an action is received by the rov and DOES
     NOT complete successfully.
     """
 
-    # The error message
     message: str = betterproto.string_field(1)
+    """The error message"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PongResponse(betterproto.Message):
     """sent to a specific client in response to a ping request"""
 
-    # The time the ping was sent
     time: int = betterproto.int64_field(1)
+    """The time the ping was sent"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class SensorUpdatesResponse(betterproto.Message):
     """
     sent to all clients whenever a sensor measurement changes or after a
     refresh_all_sensors action is sent.
     """
 
-    # All the changed mesurements from the sensors: (see Measurement type)
     measurement_updates: List["Measurement"] = betterproto.message_field(1)
+    """All the changed mesurements from the sensors: (see Measurement type)"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PasswordRequiredResponse(betterproto.Message):
     """
     sent to a specific client when the proceding action sent by the client to
     the rov requires a password to show the rov that the client has privilages.
     """
 
-    # the id of the rov that is requesting a password (to be used to match tokens
-    # to rov's when using token based auth)
     rov_id: str = betterproto.string_field(1)
+    """
+    the id of the rov that is requesting a password (to be used to match tokens
+    to rov's when using token based auth)
+    """
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PasswordAcceptedResponse(betterproto.Message):
     """
     sent when a password or token attempt is accepted by the rov. The rov will
@@ -335,62 +353,62 @@ class PasswordAcceptedResponse(betterproto.Message):
     place.
     """
 
-    # Authtoken to use for future requests in place of the password
     auth_token: str = betterproto.string_field(1)
+    """Authtoken to use for future requests in place of the password"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class PasswordInvalidResponse(betterproto.Message):
     """sent when a password or token attempt is not accepted by the rov."""
 
     pass
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class DriverChangedResponse(betterproto.Message):
     """
     sent to all clients (including the new driver) whenever the designated
     driver client changes.
     """
 
-    # The new driver's peer id
     driver_peer_id: str = betterproto.string_field(1)
+    """The new driver's peer id"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ClientConnectedResponse(betterproto.Message):
     """
     sent to all clients (including the new client) whenever a new client
     connects to the rov.
     """
 
-    # The new client's peer id
     client_peer_id: str = betterproto.string_field(1)
+    """The new client's peer id"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ClientDisconnectedResponse(betterproto.Message):
     """
     sent to all clients whenever a client becomes disconnected from the rov
     (either due to leaving or a network timeout).
     """
 
-    # The disconnected client's peer id
     client_peer_id: str = betterproto.string_field(1)
+    """The disconnected client's peer id"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class HeartbeatResponse(betterproto.Message):
     """
     sent at a regular interval to all clients regardless of their connection
     status.
     """
 
-    # The time the heartbeat was sent
     time: int = betterproto.int64_field(1)
+    """The time the heartbeat was sent"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ContinuedOutputResponse(betterproto.Message):
     """
     sent to a specific client for responses that have multiple parts such as
@@ -400,90 +418,120 @@ class ContinuedOutputResponse(betterproto.Message):
     message: str = betterproto.string_field(1)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class MavlinkResponse(betterproto.Message):
     """reserved for future use by the mavlink protocol if we ever need it."""
 
     message: bytes = betterproto.bytes_field(1)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class SimplepeerSignalResponse(betterproto.Message):
     """
     used by the simplepeer signalling protocol to establish a direct webrtc
     connection between the rov and driver client (bypassing livekit).
     """
 
-    message: bytes = betterproto.bytes_field(1)
+    message: str = betterproto.string_field(1)
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class ResponseBackendMetadata(betterproto.Message):
-    # The identiies of the livekit user/clients to sent this response to. !!!! If
-    # empty, the message will be sent to ALL clients.
     target_user_i_ds: List[str] = betterproto.string_field(1)
-    # How to send this response (reliable/unreliable):
+    """
+    The identiies of the livekit user/clients to sent this response to. !!!! If
+    empty, the message will be sent to ALL clients.
+    """
+
     transport_method: "DataTransportMethod" = betterproto.enum_field(2)
+    """How to send this response (reliable/unreliable):"""
 
 
-@dataclass
+@dataclass(eq=False, repr=False)
 class RovResponse(betterproto.Message):
     """
     wrapper message for any message sent by the rov to a pilot/spectator (aka a
     response).
     """
 
-    # Metadata sent by the python code to the backend webpage to tell it how to
-    # send the message. !!!! This field WILL be erased before the message is
-    # forwarded from the backend website to the livekit users.
     backend_metadata: "ResponseBackendMetadata" = betterproto.message_field(1)
-    # Response exchange id (used to match up action requests and responses)
-    rov_exchange_id: int = betterproto.int32_field(2)
-    # done (action was completed successfully)
+    """
+    Metadata sent by the python code to the backend webpage to tell it how to
+    send the message. !!!! This field WILL be erased before the message is
+    forwarded from the backend website to the livekit users.
+    """
+
+    exchange_id: int = betterproto.int32_field(2)
+    """
+    Response exchange id (used to match up action requests and responses)
+    """
+
     done: "DoneResponse" = betterproto.message_field(3, group="Body")
-    # error (action failed)
+    """done (action was completed successfully)"""
+
     error: "ErrorResponse" = betterproto.message_field(4, group="Body")
-    # pong (response to a ping action)
+    """error (action failed)"""
+
     pong: "PongResponse" = betterproto.message_field(5, group="Body")
-    # continued_output (for string responses that arrive in multiple parts such
-    # as logs or shell command output)
+    """pong (response to a ping action)"""
+
     continued_output: "ContinuedOutputResponse" = betterproto.message_field(
         6, group="Body"
     )
-    # sensor_updates (gives a list of sensor updates containing only new/changed
-    # sensors and their current values)
+    """
+    continued_output (for string responses that arrive in multiple parts such
+    as logs or shell command output)
+    """
+
     sensor_updates: "SensorUpdatesResponse" = betterproto.message_field(7, group="Body")
-    # password_required (sent when a password is required before an action is
-    # performed)
+    """
+    sensor_updates (gives a list of sensor updates containing only new/changed
+    sensors and their current values)
+    """
+
     password_required: "PasswordRequiredResponse" = betterproto.message_field(
         8, group="Body"
     )
-    # password_accepted (sent when a password request is accepted)
+    """
+    password_required (sent when a password is required before an action is
+    performed)
+    """
+
     password_accepted: "PasswordAcceptedResponse" = betterproto.message_field(
         9, group="Body"
     )
-    # password_invalid (sent when a password or token challenge action has an
-    # incorrect password or token)
+    """password_accepted (sent when a password request is accepted)"""
+
     password_invalid: "PasswordInvalidResponse" = betterproto.message_field(
         10, group="Body"
     )
-    # driver_changed
+    """
+    password_invalid (sent when a password or token challenge action has an
+    incorrect password or token)
+    """
+
     driver_changed: "DriverChangedResponse" = betterproto.message_field(
         13, group="Body"
     )
-    # client_connected
+    """driver_changed"""
+
     client_connected: "ClientConnectedResponse" = betterproto.message_field(
         14, group="Body"
     )
-    # client_disconnected
+    """client_connected"""
+
     client_disconnected: "ClientDisconnectedResponse" = betterproto.message_field(
         15, group="Body"
     )
-    # heartbeat
+    """client_disconnected"""
+
     heartbeat: "HeartbeatResponse" = betterproto.message_field(16, group="Body")
-    # mavlink
+    """heartbeat"""
+
     mavlink: "MavlinkResponse" = betterproto.message_field(17, group="Body")
-    # simplepeer_signal
+    """mavlink"""
+
     simplepeer_signal: "SimplepeerSignalResponse" = betterproto.message_field(
         18, group="Body"
     )
+    """simplepeer_signal"""

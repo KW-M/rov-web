@@ -126,32 +126,15 @@ export namespace rov_actions_proto {
     enum DataTransportMethod {
         LivekitReliable = 0,
         LivekitUnreliable = 1,
-        DirectReliable = 2,
         DirectUnreliable = 3
     }
 
-    /** RovActionTypes enum. */
-    enum RovActionTypes {
-        ping = 0,
-        password_attempt = 1,
-        authtoken_attempt = 2,
-        take_control = 3,
-        move = 4,
-        begin_video_stream = 5,
-        take_photo = 6,
-        start_video_rec = 7,
-        stop_video_rec = 8,
-        toogle_lights = 9,
-        shutdown_rov = 10,
-        reboot_rov = 11,
-        enable_wifi = 12,
-        disable_wifi = 13,
-        rov_status_report = 14,
-        restart_rov_services = 15,
-        rov_logs = 16,
-        refresh_all_sensors = 17,
-        mavlink_action = 18,
-        simplepeer_signal = 19
+    /** InternalWebpageEvent enum. */
+    enum InternalWebpageEvent {
+        RovConnected = 0,
+        RovDisconnected = 1,
+        UserConnected = 2,
+        UserDisconnected = 3
     }
 
     /** Properties of a PingAction. */
@@ -1935,7 +1918,7 @@ export namespace rov_actions_proto {
     interface ISimplepeerSignalAction {
 
         /** SimplepeerSignalAction Message */
-        Message?: (Uint8Array|null);
+        Message?: (string|null);
     }
 
     /** Represents a SimplepeerSignalAction. */
@@ -1948,7 +1931,7 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.ISimplepeerSignalAction);
 
         /** SimplepeerSignalAction Message. */
-        public Message: Uint8Array;
+        public Message: string;
 
         /**
          * Creates a new SimplepeerSignalAction instance using the specified properties.
@@ -2033,6 +2016,9 @@ export namespace rov_actions_proto {
 
         /** ActionBackendMetadata FromUserID */
         FromUserID?: (string|null);
+
+        /** ActionBackendMetadata InternalWebpageEvt */
+        InternalWebpageEvt?: (rov_actions_proto.InternalWebpageEvent|null);
     }
 
     /** Represents an ActionBackendMetadata. */
@@ -2046,6 +2032,9 @@ export namespace rov_actions_proto {
 
         /** ActionBackendMetadata FromUserID. */
         public FromUserID: string;
+
+        /** ActionBackendMetadata InternalWebpageEvt. */
+        public InternalWebpageEvt: rov_actions_proto.InternalWebpageEvent;
 
         /**
          * Creates a new ActionBackendMetadata instance using the specified properties.
@@ -2131,8 +2120,8 @@ export namespace rov_actions_proto {
         /** RovAction BackendMetadata */
         BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
 
-        /** RovAction RovExchangeId */
-        RovExchangeId?: (number|null);
+        /** RovAction ExchangeId */
+        ExchangeId?: (number|null);
 
         /** RovAction Ping */
         Ping?: (rov_actions_proto.IPingAction|null);
@@ -2207,8 +2196,8 @@ export namespace rov_actions_proto {
         /** RovAction BackendMetadata. */
         public BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
 
-        /** RovAction RovExchangeId. */
-        public RovExchangeId: number;
+        /** RovAction ExchangeId. */
+        public ExchangeId: number;
 
         /** RovAction Ping. */
         public Ping?: (rov_actions_proto.IPingAction|null);
@@ -2349,27 +2338,6 @@ export namespace rov_actions_proto {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** RovResponseTypes enum. */
-    enum RovResponseTypes {
-        done = 0,
-        error = 1,
-        pong = 2,
-        measurement = 3,
-        sensor_updates = 4,
-        password_required = 5,
-        password_accepted = 6,
-        password_invalid = 7,
-        token_accepted = 8,
-        token_invalid = 9,
-        driver_changed = 10,
-        client_connected = 11,
-        client_disconnected = 12,
-        heartbeat_response = 13,
-        continued_output = 14,
-        mavlink_response = 15,
-        simplepeer_signalling = 16
     }
 
     /** Properties of a DoneResponse. */
@@ -3631,7 +3599,7 @@ export namespace rov_actions_proto {
     interface ISimplepeerSignalResponse {
 
         /** SimplepeerSignalResponse Message */
-        Message?: (Uint8Array|null);
+        Message?: (string|null);
     }
 
     /** Represents a SimplepeerSignalResponse. */
@@ -3644,7 +3612,7 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.ISimplepeerSignalResponse);
 
         /** SimplepeerSignalResponse Message. */
-        public Message: Uint8Array;
+        public Message: string;
 
         /**
          * Creates a new SimplepeerSignalResponse instance using the specified properties.
@@ -3833,8 +3801,8 @@ export namespace rov_actions_proto {
         /** RovResponse BackendMetadata */
         BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
 
-        /** RovResponse RovExchangeId */
-        RovExchangeId?: (number|null);
+        /** RovResponse ExchangeId */
+        ExchangeId?: (number|null);
 
         /** RovResponse Done */
         Done?: (rov_actions_proto.IDoneResponse|null);
@@ -3891,8 +3859,8 @@ export namespace rov_actions_proto {
         /** RovResponse BackendMetadata. */
         public BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
 
-        /** RovResponse RovExchangeId. */
-        public RovExchangeId: number;
+        /** RovResponse ExchangeId. */
+        public ExchangeId: number;
 
         /** RovResponse Done. */
         public Done?: (rov_actions_proto.IDoneResponse|null);

@@ -352,65 +352,31 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @enum {number}
      * @property {number} LivekitReliable=0 LivekitReliable value
      * @property {number} LivekitUnreliable=1 LivekitUnreliable value
-     * @property {number} DirectReliable=2 DirectReliable value
      * @property {number} DirectUnreliable=3 DirectUnreliable value
      */
     rov_actions_proto.DataTransportMethod = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "LivekitReliable"] = 0;
         values[valuesById[1] = "LivekitUnreliable"] = 1;
-        values[valuesById[2] = "DirectReliable"] = 2;
         values[valuesById[3] = "DirectUnreliable"] = 3;
         return values;
     })();
 
     /**
-     * RovActionTypes enum.
-     * @name rov_actions_proto.RovActionTypes
+     * InternalWebpageEvent enum.
+     * @name rov_actions_proto.InternalWebpageEvent
      * @enum {number}
-     * @property {number} ping=0 ping value
-     * @property {number} password_attempt=1 password_attempt value
-     * @property {number} authtoken_attempt=2 authtoken_attempt value
-     * @property {number} take_control=3 take_control value
-     * @property {number} move=4 move value
-     * @property {number} begin_video_stream=5 begin_video_stream value
-     * @property {number} take_photo=6 take_photo value
-     * @property {number} start_video_rec=7 start_video_rec value
-     * @property {number} stop_video_rec=8 stop_video_rec value
-     * @property {number} toogle_lights=9 toogle_lights value
-     * @property {number} shutdown_rov=10 shutdown_rov value
-     * @property {number} reboot_rov=11 reboot_rov value
-     * @property {number} enable_wifi=12 enable_wifi value
-     * @property {number} disable_wifi=13 disable_wifi value
-     * @property {number} rov_status_report=14 rov_status_report value
-     * @property {number} restart_rov_services=15 restart_rov_services value
-     * @property {number} rov_logs=16 rov_logs value
-     * @property {number} refresh_all_sensors=17 refresh_all_sensors value
-     * @property {number} mavlink_action=18 mavlink_action value
-     * @property {number} simplepeer_signal=19 simplepeer_signal value
+     * @property {number} RovConnected=0 RovConnected value
+     * @property {number} RovDisconnected=1 RovDisconnected value
+     * @property {number} UserConnected=2 UserConnected value
+     * @property {number} UserDisconnected=3 UserDisconnected value
      */
-    rov_actions_proto.RovActionTypes = (function() {
+    rov_actions_proto.InternalWebpageEvent = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "ping"] = 0;
-        values[valuesById[1] = "password_attempt"] = 1;
-        values[valuesById[2] = "authtoken_attempt"] = 2;
-        values[valuesById[3] = "take_control"] = 3;
-        values[valuesById[4] = "move"] = 4;
-        values[valuesById[5] = "begin_video_stream"] = 5;
-        values[valuesById[6] = "take_photo"] = 6;
-        values[valuesById[7] = "start_video_rec"] = 7;
-        values[valuesById[8] = "stop_video_rec"] = 8;
-        values[valuesById[9] = "toogle_lights"] = 9;
-        values[valuesById[10] = "shutdown_rov"] = 10;
-        values[valuesById[11] = "reboot_rov"] = 11;
-        values[valuesById[12] = "enable_wifi"] = 12;
-        values[valuesById[13] = "disable_wifi"] = 13;
-        values[valuesById[14] = "rov_status_report"] = 14;
-        values[valuesById[15] = "restart_rov_services"] = 15;
-        values[valuesById[16] = "rov_logs"] = 16;
-        values[valuesById[17] = "refresh_all_sensors"] = 17;
-        values[valuesById[18] = "mavlink_action"] = 18;
-        values[valuesById[19] = "simplepeer_signal"] = 19;
+        values[valuesById[0] = "RovConnected"] = 0;
+        values[valuesById[1] = "RovDisconnected"] = 1;
+        values[valuesById[2] = "UserConnected"] = 2;
+        values[valuesById[3] = "UserDisconnected"] = 3;
         return values;
     })();
 
@@ -3978,7 +3944,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * Properties of a SimplepeerSignalAction.
          * @memberof rov_actions_proto
          * @interface ISimplepeerSignalAction
-         * @property {Uint8Array|null} [Message] SimplepeerSignalAction Message
+         * @property {string|null} [Message] SimplepeerSignalAction Message
          */
 
         /**
@@ -3998,11 +3964,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
 
         /**
          * SimplepeerSignalAction Message.
-         * @member {Uint8Array} Message
+         * @member {string} Message
          * @memberof rov_actions_proto.SimplepeerSignalAction
          * @instance
          */
-        SimplepeerSignalAction.prototype.Message = $util.newBuffer([]);
+        SimplepeerSignalAction.prototype.Message = "";
 
         /**
          * Creates a new SimplepeerSignalAction instance using the specified properties.
@@ -4029,7 +3995,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (!writer)
                 writer = $Writer.create();
             if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
-                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
             return writer;
         };
 
@@ -4065,7 +4031,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.Message = reader.bytes();
+                        message.Message = reader.string();
                         break;
                     }
                 default:
@@ -4104,8 +4070,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Message != null && message.hasOwnProperty("Message"))
-                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
-                    return "Message: buffer expected";
+                if (!$util.isString(message.Message))
+                    return "Message: string expected";
             return null;
         };
 
@@ -4122,10 +4088,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 return object;
             let message = new $root.rov_actions_proto.SimplepeerSignalAction();
             if (object.Message != null)
-                if (typeof object.Message === "string")
-                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
-                else if (object.Message.length >= 0)
-                    message.Message = object.Message;
+                message.Message = String(object.Message);
             return message;
         };
 
@@ -4143,15 +4106,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                if (options.bytes === String)
-                    object.Message = "";
-                else {
-                    object.Message = [];
-                    if (options.bytes !== Array)
-                        object.Message = $util.newBuffer(object.Message);
-                }
+                object.Message = "";
             if (message.Message != null && message.hasOwnProperty("Message"))
-                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+                object.Message = message.Message;
             return object;
         };
 
@@ -4191,6 +4148,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto
          * @interface IActionBackendMetadata
          * @property {string|null} [FromUserID] ActionBackendMetadata FromUserID
+         * @property {rov_actions_proto.InternalWebpageEvent|null} [InternalWebpageEvt] ActionBackendMetadata InternalWebpageEvt
          */
 
         /**
@@ -4215,6 +4173,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @instance
          */
         ActionBackendMetadata.prototype.FromUserID = "";
+
+        /**
+         * ActionBackendMetadata InternalWebpageEvt.
+         * @member {rov_actions_proto.InternalWebpageEvent} InternalWebpageEvt
+         * @memberof rov_actions_proto.ActionBackendMetadata
+         * @instance
+         */
+        ActionBackendMetadata.prototype.InternalWebpageEvt = 0;
 
         /**
          * Creates a new ActionBackendMetadata instance using the specified properties.
@@ -4242,6 +4208,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 writer = $Writer.create();
             if (message.FromUserID != null && Object.hasOwnProperty.call(message, "FromUserID"))
                 writer.uint32(/* id 1, wireType 2 =*/10).string(message.FromUserID);
+            if (message.InternalWebpageEvt != null && Object.hasOwnProperty.call(message, "InternalWebpageEvt"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.InternalWebpageEvt);
             return writer;
         };
 
@@ -4278,6 +4246,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 switch (tag >>> 3) {
                 case 1: {
                         message.FromUserID = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.InternalWebpageEvt = reader.int32();
                         break;
                     }
                 default:
@@ -4318,6 +4290,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (message.FromUserID != null && message.hasOwnProperty("FromUserID"))
                 if (!$util.isString(message.FromUserID))
                     return "FromUserID: string expected";
+            if (message.InternalWebpageEvt != null && message.hasOwnProperty("InternalWebpageEvt"))
+                switch (message.InternalWebpageEvt) {
+                default:
+                    return "InternalWebpageEvt: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
             return null;
         };
 
@@ -4335,6 +4317,30 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             let message = new $root.rov_actions_proto.ActionBackendMetadata();
             if (object.FromUserID != null)
                 message.FromUserID = String(object.FromUserID);
+            switch (object.InternalWebpageEvt) {
+            default:
+                if (typeof object.InternalWebpageEvt === "number") {
+                    message.InternalWebpageEvt = object.InternalWebpageEvt;
+                    break;
+                }
+                break;
+            case "RovConnected":
+            case 0:
+                message.InternalWebpageEvt = 0;
+                break;
+            case "RovDisconnected":
+            case 1:
+                message.InternalWebpageEvt = 1;
+                break;
+            case "UserConnected":
+            case 2:
+                message.InternalWebpageEvt = 2;
+                break;
+            case "UserDisconnected":
+            case 3:
+                message.InternalWebpageEvt = 3;
+                break;
+            }
             return message;
         };
 
@@ -4351,10 +4357,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.defaults)
+            if (options.defaults) {
                 object.FromUserID = "";
+                object.InternalWebpageEvt = options.enums === String ? "RovConnected" : 0;
+            }
             if (message.FromUserID != null && message.hasOwnProperty("FromUserID"))
                 object.FromUserID = message.FromUserID;
+            if (message.InternalWebpageEvt != null && message.hasOwnProperty("InternalWebpageEvt"))
+                object.InternalWebpageEvt = options.enums === String ? $root.rov_actions_proto.InternalWebpageEvent[message.InternalWebpageEvt] === undefined ? message.InternalWebpageEvt : $root.rov_actions_proto.InternalWebpageEvent[message.InternalWebpageEvt] : message.InternalWebpageEvt;
             return object;
         };
 
@@ -4394,7 +4404,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto
          * @interface IRovAction
          * @property {rov_actions_proto.IActionBackendMetadata|null} [BackendMetadata] RovAction BackendMetadata
-         * @property {number|null} [RovExchangeId] RovAction RovExchangeId
+         * @property {number|null} [ExchangeId] RovAction ExchangeId
          * @property {rov_actions_proto.IPingAction|null} [Ping] RovAction Ping
          * @property {rov_actions_proto.IPasswordAttemptAction|null} [PasswordAttempt] RovAction PasswordAttempt
          * @property {rov_actions_proto.IAuthTokenAttemptAction|null} [AuthTokenAttempt] RovAction AuthTokenAttempt
@@ -4441,12 +4451,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.BackendMetadata = null;
 
         /**
-         * RovAction RovExchangeId.
-         * @member {number} RovExchangeId
+         * RovAction ExchangeId.
+         * @member {number} ExchangeId
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.RovExchangeId = 0;
+        RovAction.prototype.ExchangeId = 0;
 
         /**
          * RovAction Ping.
@@ -4648,8 +4658,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 writer = $Writer.create();
             if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
                 $root.rov_actions_proto.ActionBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
+            if (message.ExchangeId != null && Object.hasOwnProperty.call(message, "ExchangeId"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.ExchangeId);
             if (message.Ping != null && Object.hasOwnProperty.call(message, "Ping"))
                 $root.rov_actions_proto.PingAction.encode(message.Ping, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.PasswordAttempt != null && Object.hasOwnProperty.call(message, "PasswordAttempt"))
@@ -4729,7 +4739,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 2: {
-                        message.RovExchangeId = reader.int32();
+                        message.ExchangeId = reader.int32();
                         break;
                     }
                 case 3: {
@@ -4853,9 +4863,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (error)
                     return "BackendMetadata." + error;
             }
-            if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
-                if (!$util.isInteger(message.RovExchangeId))
-                    return "RovExchangeId: integer expected";
+            if (message.ExchangeId != null && message.hasOwnProperty("ExchangeId"))
+                if (!$util.isInteger(message.ExchangeId))
+                    return "ExchangeId: integer expected";
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
                 properties.Body = 1;
                 {
@@ -5074,8 +5084,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.BackendMetadata: object expected");
                 message.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.fromObject(object.BackendMetadata);
             }
-            if (object.RovExchangeId != null)
-                message.RovExchangeId = object.RovExchangeId | 0;
+            if (object.ExchangeId != null)
+                message.ExchangeId = object.ExchangeId | 0;
             if (object.Ping != null) {
                 if (typeof object.Ping !== "object")
                     throw TypeError(".rov_actions_proto.RovAction.Ping: object expected");
@@ -5194,12 +5204,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             let object = {};
             if (options.defaults) {
                 object.BackendMetadata = null;
-                object.RovExchangeId = 0;
+                object.ExchangeId = 0;
             }
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
                 object.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.toObject(message.BackendMetadata, options);
-            if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
-                object.RovExchangeId = message.RovExchangeId;
+            if (message.ExchangeId != null && message.hasOwnProperty("ExchangeId"))
+                object.ExchangeId = message.ExchangeId;
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
                 object.Ping = $root.rov_actions_proto.PingAction.toObject(message.Ping, options);
                 if (options.oneofs)
@@ -5330,50 +5340,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         return RovAction;
-    })();
-
-    /**
-     * RovResponseTypes enum.
-     * @name rov_actions_proto.RovResponseTypes
-     * @enum {number}
-     * @property {number} done=0 done value
-     * @property {number} error=1 error value
-     * @property {number} pong=2 pong value
-     * @property {number} measurement=3 measurement value
-     * @property {number} sensor_updates=4 sensor_updates value
-     * @property {number} password_required=5 password_required value
-     * @property {number} password_accepted=6 password_accepted value
-     * @property {number} password_invalid=7 password_invalid value
-     * @property {number} token_accepted=8 token_accepted value
-     * @property {number} token_invalid=9 token_invalid value
-     * @property {number} driver_changed=10 driver_changed value
-     * @property {number} client_connected=11 client_connected value
-     * @property {number} client_disconnected=12 client_disconnected value
-     * @property {number} heartbeat_response=13 heartbeat_response value
-     * @property {number} continued_output=14 continued_output value
-     * @property {number} mavlink_response=15 mavlink_response value
-     * @property {number} simplepeer_signalling=16 simplepeer_signalling value
-     */
-    rov_actions_proto.RovResponseTypes = (function() {
-        const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "done"] = 0;
-        values[valuesById[1] = "error"] = 1;
-        values[valuesById[2] = "pong"] = 2;
-        values[valuesById[3] = "measurement"] = 3;
-        values[valuesById[4] = "sensor_updates"] = 4;
-        values[valuesById[5] = "password_required"] = 5;
-        values[valuesById[6] = "password_accepted"] = 6;
-        values[valuesById[7] = "password_invalid"] = 7;
-        values[valuesById[8] = "token_accepted"] = 8;
-        values[valuesById[9] = "token_invalid"] = 9;
-        values[valuesById[10] = "driver_changed"] = 10;
-        values[valuesById[11] = "client_connected"] = 11;
-        values[valuesById[12] = "client_disconnected"] = 12;
-        values[valuesById[13] = "heartbeat_response"] = 13;
-        values[valuesById[14] = "continued_output"] = 14;
-        values[valuesById[15] = "mavlink_response"] = 15;
-        values[valuesById[16] = "simplepeer_signalling"] = 16;
-        return values;
     })();
 
     rov_actions_proto.DoneResponse = (function() {
@@ -8051,7 +8017,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * Properties of a SimplepeerSignalResponse.
          * @memberof rov_actions_proto
          * @interface ISimplepeerSignalResponse
-         * @property {Uint8Array|null} [Message] SimplepeerSignalResponse Message
+         * @property {string|null} [Message] SimplepeerSignalResponse Message
          */
 
         /**
@@ -8071,11 +8037,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
 
         /**
          * SimplepeerSignalResponse Message.
-         * @member {Uint8Array} Message
+         * @member {string} Message
          * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @instance
          */
-        SimplepeerSignalResponse.prototype.Message = $util.newBuffer([]);
+        SimplepeerSignalResponse.prototype.Message = "";
 
         /**
          * Creates a new SimplepeerSignalResponse instance using the specified properties.
@@ -8102,7 +8068,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (!writer)
                 writer = $Writer.create();
             if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
-                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
             return writer;
         };
 
@@ -8138,7 +8104,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.Message = reader.bytes();
+                        message.Message = reader.string();
                         break;
                     }
                 default:
@@ -8177,8 +8143,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Message != null && message.hasOwnProperty("Message"))
-                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
-                    return "Message: buffer expected";
+                if (!$util.isString(message.Message))
+                    return "Message: string expected";
             return null;
         };
 
@@ -8195,10 +8161,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 return object;
             let message = new $root.rov_actions_proto.SimplepeerSignalResponse();
             if (object.Message != null)
-                if (typeof object.Message === "string")
-                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
-                else if (object.Message.length >= 0)
-                    message.Message = object.Message;
+                message.Message = String(object.Message);
             return message;
         };
 
@@ -8216,15 +8179,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 options = {};
             let object = {};
             if (options.defaults)
-                if (options.bytes === String)
-                    object.Message = "";
-                else {
-                    object.Message = [];
-                    if (options.bytes !== Array)
-                        object.Message = $util.newBuffer(object.Message);
-                }
+                object.Message = "";
             if (message.Message != null && message.hasOwnProperty("Message"))
-                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+                object.Message = message.Message;
             return object;
         };
 
@@ -8420,7 +8377,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "TransportMethod: enum value expected";
                 case 0:
                 case 1:
-                case 2:
                 case 3:
                     break;
                 }
@@ -8460,10 +8416,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             case "LivekitUnreliable":
             case 1:
                 message.TransportMethod = 1;
-                break;
-            case "DirectReliable":
-            case 2:
-                message.TransportMethod = 2;
                 break;
             case "DirectUnreliable":
             case 3:
@@ -8536,7 +8488,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto
          * @interface IRovResponse
          * @property {rov_actions_proto.IResponseBackendMetadata|null} [BackendMetadata] RovResponse BackendMetadata
-         * @property {number|null} [RovExchangeId] RovResponse RovExchangeId
+         * @property {number|null} [ExchangeId] RovResponse ExchangeId
          * @property {rov_actions_proto.IDoneResponse|null} [Done] RovResponse Done
          * @property {rov_actions_proto.IErrorResponse|null} [Error] RovResponse Error
          * @property {rov_actions_proto.IPongResponse|null} [Pong] RovResponse Pong
@@ -8577,12 +8529,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovResponse.prototype.BackendMetadata = null;
 
         /**
-         * RovResponse RovExchangeId.
-         * @member {number} RovExchangeId
+         * RovResponse ExchangeId.
+         * @member {number} ExchangeId
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
-        RovResponse.prototype.RovExchangeId = 0;
+        RovResponse.prototype.ExchangeId = 0;
 
         /**
          * RovResponse Done.
@@ -8736,8 +8688,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 writer = $Writer.create();
             if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
                 $root.rov_actions_proto.ResponseBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
+            if (message.ExchangeId != null && Object.hasOwnProperty.call(message, "ExchangeId"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.ExchangeId);
             if (message.Done != null && Object.hasOwnProperty.call(message, "Done"))
                 $root.rov_actions_proto.DoneResponse.encode(message.Done, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.Error != null && Object.hasOwnProperty.call(message, "Error"))
@@ -8805,7 +8757,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 2: {
-                        message.RovExchangeId = reader.int32();
+                        message.ExchangeId = reader.int32();
                         break;
                     }
                 case 3: {
@@ -8905,9 +8857,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (error)
                     return "BackendMetadata." + error;
             }
-            if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
-                if (!$util.isInteger(message.RovExchangeId))
-                    return "RovExchangeId: integer expected";
+            if (message.ExchangeId != null && message.hasOwnProperty("ExchangeId"))
+                if (!$util.isInteger(message.ExchangeId))
+                    return "ExchangeId: integer expected";
             if (message.Done != null && message.hasOwnProperty("Done")) {
                 properties.Body = 1;
                 {
@@ -9066,8 +9018,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovResponse.BackendMetadata: object expected");
                 message.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.fromObject(object.BackendMetadata);
             }
-            if (object.RovExchangeId != null)
-                message.RovExchangeId = object.RovExchangeId | 0;
+            if (object.ExchangeId != null)
+                message.ExchangeId = object.ExchangeId | 0;
             if (object.Done != null) {
                 if (typeof object.Done !== "object")
                     throw TypeError(".rov_actions_proto.RovResponse.Done: object expected");
@@ -9156,12 +9108,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             let object = {};
             if (options.defaults) {
                 object.BackendMetadata = null;
-                object.RovExchangeId = 0;
+                object.ExchangeId = 0;
             }
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
                 object.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
-            if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
-                object.RovExchangeId = message.RovExchangeId;
+            if (message.ExchangeId != null && message.hasOwnProperty("ExchangeId"))
+                object.ExchangeId = message.ExchangeId;
             if (message.Done != null && message.hasOwnProperty("Done")) {
                 object.Done = $root.rov_actions_proto.DoneResponse.toObject(message.Done, options);
                 if (options.oneofs)
