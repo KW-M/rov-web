@@ -1,8 +1,8 @@
 
 import '../../../shared/js/nodeShimsBundle'
-
 import type * as livekitServerSDKTypes from 'livekit-server-sdk';
 import { getFrontendAccessToken } from './livekitTokens';
+const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 export type LivekitSetupOptions = {
     ForceLocal: boolean,
@@ -35,4 +35,9 @@ export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.Roo
     await updateLivekitRoomMetadata(cloudRoomClient, livekitSetup.RovRoomName, JSON.stringify({
         accessToken: frontendAccessToken,
     }));
+}
+
+
+export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string, secretKey: string) {
+    return new RoomServiceClient(host, apiKey, secretKey)
 }

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { ConnectionState } from "../lib/consts";
-  import { appReady, peerServerConnState, rovDataChannelConnState } from "../lib/globalContext";
+  import { ConnectionState } from "../js/consts";
+  import { appReady, peerServerConnState, rovDataChannelConnState } from "../js/globalContext";
   import GamepadLeftSvg from "../assets/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/optimized/display-gamepad-right.svg?raw";
-  import { gpadCtrl } from "../lib/gamepad";
+  import { gpadCtrl } from "../js/gamepad";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;

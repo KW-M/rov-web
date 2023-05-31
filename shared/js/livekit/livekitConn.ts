@@ -3,8 +3,6 @@ import {
     RoomEvent,
     RemoteParticipant,
     Participant,
-    VideoPresets,
-    DefaultReconnectPolicy,
     LocalTrackPublication,
     LocalParticipant,
     MediaDeviceFailure,
@@ -13,22 +11,17 @@ import {
     TrackPublication,
     DisconnectReason,
     DataPacket_Kind,
-    RoomOptions,
-    RoomConnectOptions,
-    ConnectionState
+    type RoomOptions,
+    type RoomConnectOptions,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { appendLog, getWebsocketURL } from '../util';
 import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
-import { sleep } from 'livekit-client/dist/src/room/utils';
 
 interface msgQueueItem {
     msgBytes: Uint8Array,
     onSendCallback: (msgBytes: Uint8Array) => void
 }
-
-type MsgRecivedCallback = (msg: Uint8Array, roomId: string, hostUrl: string) => void;
-type StateChangeCallback = (connState: string, roomId: string, hostUrl: string) => void;
 
 interface LivekitConfig {
     hostUrl: string;
@@ -38,51 +31,66 @@ interface LivekitConfig {
     roomConnectionConfig: RoomConnectOptions;
 }
 
+interface ParticipantConnectionEvent {
+    id: string; // the livekit identity of the participant
+    joined: boolean; // true if the participant joined, false if they left
+}
+
 export class LivekitGenericConnection {
     config: LivekitConfig;
-    rovRoomName: string;
-    accessToken: string;
-    reconnectAttemptCount: number;
-    should_reconnect: boolean;
-    videoElem: Element;
-    roomConn: Room;
+    // timestamp in ms which is updated whenever a message is recived from another participant.
+    lastMsgRecivedTimestamp: number;
     // subscribe to get updates on the state of the webrtc connection overall.
     connectionState: nStoreT<ConnectionStates>; // TODO
     // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
     latestRecivedDataMessage: nStoreT<Uint8Array>;
-    // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
-    participants: nStoreT<Map<string, Participant>>;
+    // subscribe to get notified when a participant joins or leaves the room.
+    participantConnectionEvents: nStoreT<ParticipantConnectionEvent>;
+
+    // the name of the room we are connected to (will also be the livekit identity of the rov in that room)
+    _rovRoomName: string;
+    // the livekit JWT accessToken used to connect to the livekit server (controls our identity, what room we'll connect to, and what permissions we have)
+    _accessToken: string;
+    // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
+    _reconnectAttemptCount: number;
+    // flag used durring shutdown/cleanup to stop it from automatically reconnecting
+    _shouldReconnect: boolean;
+    // the html element on the page to attach the video stream to
+    _videoElem: Element;
+    // the livekit room object
+    _roomConn: Room;
 
     constructor(config: LivekitConfig) {
         this.config = config;
-        this.should_reconnect = true;
+        this._shouldReconnect = true;
 
         // setup reactive stores
         this.connectionState = nStore<ConnectionStates>(ConnectionStates.init)
         this.latestRecivedDataMessage = nStore<Uint8Array>(new Uint8Array())
-        this.participants = nStore<Map<string, Participant>>(new Map<string, Participant>());
+        this.participantConnectionEvents = nStore<ParticipantConnectionEvent>(null);
 
         // creates a new room object with options
-        this.roomConn = new Room(config.roomConfig);
+        this._roomConn = new Room(config.roomConfig);
 
         // set up event listeners on the room
-        this.roomConn
+        this._roomConn
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
-                if (participant && participant.identity !== this.rovRoomName) return; // Ignore messages that come from participants other than the ROV
-                appendLog(`Got dataReceived from ${!participant ? "SERVER" : participant.identity} via ${this.config.hostUrl}|${this.roomConn.name}`, DECODE_TXT(msg));
+                if (participant && participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
+                appendLog(`Got dataReceived from ${!participant ? "SERVER" : participant.identity} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
+                this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set(msg)
             })
             .on(RoomEvent.SignalConnected, async () => { // DIFF
                 appendLog(`signal connection established`);
             })
             .on(RoomEvent.Connected, async () => {
-                appendLog(`Connected to room: ${this.roomConn.name}`)
+                appendLog(`Connected to room: ${this._roomConn.name}`)
                 this.connectionState.set(ConnectionStates.connected)
             })
             .on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
-                if (!this.roomConn) return;
+                if (!this._roomConn) return;
                 appendLog('disconnected from room', reason);
-                this.roomConn.participants.forEach((p) => { });
+                this._roomConn.participants.forEach((p) => { });
                 this._reconnect();
             })
             .on(RoomEvent.Reconnecting, () => {
@@ -92,12 +100,12 @@ export class LivekitGenericConnection {
             .on(RoomEvent.Reconnected, async () => {
                 appendLog(
                     'Successfully reconnected. server',
-                    await this.roomConn.engine.getConnectedServerAddress(),
+                    await this._roomConn.engine.getConnectedServerAddress(),
                 );
             })
             .on(RoomEvent.ParticipantConnected, async (participant: Participant) => {
                 appendLog('participant', participant.identity, 'connected', participant.metadata);
-                this.participants.set(this.roomConn.participants)
+                this.participantConnectionEvents.set({ id: participant.identity, joined: true })
                 participant
                     .on(ParticipantEvent.TrackMuted, (pub: TrackPublication) => {
                         appendLog('track was muted', pub.trackSid, participant.identity);
@@ -114,7 +122,7 @@ export class LivekitGenericConnection {
             })
             .on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
                 appendLog('participant', participant.sid, 'disconnected');
-                this.participants.set(this.roomConn.participants)
+                this.participantConnectionEvents.set({ id: participant.identity, joined: false })
             })
             .on(RoomEvent.MediaDevicesError, (e: Error) => {
                 const failure = MediaDeviceFailure.getFailure(e);
@@ -144,14 +152,14 @@ export class LivekitGenericConnection {
                 appendLog('connection quality changed', participant?.identity, quality);
             })
             .on(RoomEvent.AudioPlaybackStatusChanged, () => {
-                appendLog('AudioPlaybackStatusChanged _THIS SHOULDN\'T HAPPEN on BACKEND??_', this.roomConn.canPlaybackAudio);
+                appendLog('AudioPlaybackStatusChanged _THIS SHOULDN\'T HAPPEN on BACKEND??_', this._roomConn.canPlaybackAudio);
             })
 
     }
 
     async start(rovRoomName: string, accessToken: string) {
-        this.rovRoomName = rovRoomName;
-        this.accessToken = accessToken;
+        this._rovRoomName = rovRoomName;
+        this._accessToken = accessToken;
 
         const startTime = Date.now();
         appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
@@ -159,31 +167,31 @@ export class LivekitGenericConnection {
         appendLog(`Connected or Failed in ${Date.now() - startTime}ms`);
     }
 
-    async sendMessageLossy(msgBytes: Uint8Array) {
-        await this.roomConn.localParticipant.publishData(msgBytes, DataPacket_Kind.LOSSY)
-    }
-
-    async sendMessageReliable(msgBytes: Uint8Array, onSendCallback?: () => void, skipQueue = false) {
+    async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
         console.log("sendMessage() to driver/spectator ", msgBytes)
-        await this.roomConn.localParticipant.publishData(msgBytes, DataPacket_Kind.RELIABLE)
+        await this._roomConn.localParticipant.publishData(
+            msgBytes,
+            reliable ? DataPacket_Kind.RELIABLE : DataPacket_Kind.LOSSY,
+            { destination: toUserIds }
+        )
     }
 
     async close() {
-        this.should_reconnect = false;
-        console.info("Closing Livekit Connection: ", this.rovRoomName, this.config.hostUrl);
-        if (this.roomConn) await this.roomConn.disconnect(true);
+        this._shouldReconnect = false;
+        console.info("Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
+        if (this._roomConn) await this._roomConn.disconnect(true);
     }
 
     async _connect() {
-        await this.roomConn.connect(getWebsocketURL(this.config.hostUrl), this.accessToken, this.config.roomConnectionConfig);
-        console.info('connected to room', this.roomConn.name, this.roomConn);
+        await this._roomConn.connect(getWebsocketURL(this.config.hostUrl), this._accessToken, this.config.roomConnectionConfig);
+        console.info('connected to room', this._roomConn.name, this._roomConn);
     }
 
     async _reconnect() {
-        await this.roomConn.disconnect(true);
-        if (this.should_reconnect == false) return;
-        if (this.reconnectAttemptCount < this.config.reconnectAttempts) {
-            const expBackoffDelay = this.reconnectAttemptCount * 800;
+        await this._roomConn.disconnect(true);
+        if (this._shouldReconnect == false) return;
+        if (this._reconnectAttemptCount < this.config.reconnectAttempts) {
+            const expBackoffDelay = this._reconnectAttemptCount * 800;
             await sleep(expBackoffDelay)
             await this._connect();
         } else {
@@ -192,7 +200,7 @@ export class LivekitGenericConnection {
     }
 
     _fail() {
-        this.should_reconnect = false;
+        this._shouldReconnect = false;
         this.connectionState.set(ConnectionStates.failed)
     }
 }
@@ -205,10 +213,10 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
         super(config);
 
         // set up more specific event listeners for video publisher (the rov)
-        this.roomConn
+        this._roomConn
             .on(RoomEvent.SignalConnected, async () => {
                 while (!this.camTrack) {
-                    this.camTrack = await this.roomConn.localParticipant.setCameraEnabled(true);
+                    this.camTrack = await this._roomConn.localParticipant.setCameraEnabled(true);
                 }
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
@@ -227,7 +235,7 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
         super(config);
 
         // set up more specific event listeners for video publisher (the rov)
-        this.roomConn
+        this._roomConn
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
                 appendLog('subscribed to track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid, participant.identity, track.source);
             })

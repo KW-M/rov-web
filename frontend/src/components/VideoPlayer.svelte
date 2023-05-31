@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { ConnectionState, LOADING_MESSAGE } from "../lib/consts";
+  import { ConnectionState, LOADING_MESSAGE } from "../js/consts";
   import videoPlaceholderUrl from "../assets/video-placeholder.jpg";
-  import { appReady, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../lib/globalContext";
+  import { appReady, fullscreenOpen, rovDataChannelConnState, rovMainVideoTrack, rovVideoStream, rovVideoStreamConnState } from "../js/globalContext";
   let videoContainerElement = null;
   let trackId = null;
   import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
   import { onDestroy } from "svelte";
-  import { showToastMessage } from "../lib/ui";
+  import { showToastMessage } from "../js/ui";
   let currentVideoStream = null;
 
   $: if ($appReady === true) {

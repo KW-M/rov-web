@@ -2,8 +2,8 @@
   import { Icon } from "@steeze-ui/svelte-icon";
   import { NetworkCheck, Waves, Thermostat } from "@steeze-ui/material-design-icons";
   import { addTooltip } from "../HelpTooltips.svelte";
-  import { depthM, internalTempC, networkLatencyMs, waterTempC } from "../../lib/sensors";
-  import type { nStoreT } from "../../lib/libraries/nStore";
+  import { depthM, internalTempC, networkLatencyMs, waterTempC } from "../../js/sensors";
+  import type { nStoreT } from "../../js/libraries/nStore";
   import type { IconSource } from "@steeze-ui/svelte-icon/types";
   import { subscribe } from "svelte/internal";
   import { onDestroy } from "svelte";

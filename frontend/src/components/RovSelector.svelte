@@ -4,10 +4,10 @@
   import { ChevronRight } from "@steeze-ui/heroicons";
   import { ChevronLeft } from "@steeze-ui/heroicons";
   import { fade } from "svelte/transition";
-  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState, isRovDriver } from "../lib/globalContext";
-  import { RovActions } from "../lib/rovActions";
-  import { getROVName } from "../lib/rovUtil";
-  import { ConnectionState } from "../lib/consts";
+  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState, isRovDriver } from "../js/globalContext";
+  import { RovActions } from "../js/rovActions";
+  import { getROVName } from "../js/rovUtil";
+  import { ConnectionState } from "../js/consts";
   import { addTooltip } from "./HelpTooltips.svelte";
   import { LocationSearching } from "@steeze-ui/material-design-icons";
 

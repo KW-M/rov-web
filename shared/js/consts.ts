@@ -1,4 +1,4 @@
-import type { RoomConnectOptions } from "livekit-client"
+import { VideoPresets, type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } from "livekit-client"
 
 declare global {
     interface Window {
@@ -34,4 +34,25 @@ export const LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: true,
     maxRetries: 6,
     peerConnectionTimeout: 15_000, // miliseconds
+}
+
+
+export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
+
+    // specify how offten to retry connection when it fails.
+    reconnectPolicy: new DefaultReconnectPolicy(),
+
+    // optimize publishing bandwidth and CPU for published tracks
+    dynacast: true,
+
+    // default capture settings
+    videoCaptureDefaults: {
+        resolution: VideoPresets.h1080.resolution,
+        // facingMode: 'environment',
+        // deviceId: //get device id beforehand
+    },
+
+    publishDefaults: {
+        videoCodec: "h264",
+    },
 }

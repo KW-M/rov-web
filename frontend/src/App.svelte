@@ -2,16 +2,16 @@
   import { onMount, onDestroy } from "svelte";
   import { inspect } from "@xstate/inspect";
 
-  import { ConnectionState, LOADING_MESSAGE } from "./lib/consts";
-  import { appReady, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./lib/globalContext";
+  import { ConnectionState, LOADING_MESSAGE } from "./js/consts";
+  import { appReady, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./js/globalContext";
 
-  import { connectionManager } from "./lib/connectionManager";
-  import { rovMessageHandler } from "./lib/rovMessageHandler";
-  import { RovActions } from "./lib/rovActions";
-  import { runSiteInitMachine } from "./lib/siteInit";
-  import { showToastMessage } from "./lib/ui";
-  import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./lib/util";
-  import { getROVName } from "./lib/rovUtil";
+  import { connectionManager } from "./js/connectionManager";
+  import { rovMessageHandler } from "./js/rovMessageHandler";
+  import { RovActions } from "./js/rovActions";
+  import { runSiteInitMachine } from "./js/siteInit";
+  import { showToastMessage } from "./js/ui";
+  import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./js/util";
+  import { getROVName } from "./js/rovUtil";
 
   import { SvelteToast } from "@zerodevx/svelte-toast";
   import DialogSpawner from "./components/dialogs/DialogSpawner.svelte";

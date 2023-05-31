@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { RovActions } from "../lib/rovActions";
+  import { RovActions } from "../js/rovActions";
 
   import { Icon } from "@steeze-ui/svelte-icon";
   import { AdjustmentsHorizontal, Wrench, Power, ArrowDownOnSquareStack, ArrowsPointingOut, ArrowsPointingIn, Cog6Tooth, QuestionMarkCircle } from "@steeze-ui/heroicons";
   import { fade, slide } from "svelte/transition";
   import CompassDial from "./sensors/CompassDial.svelte";
-  import { fullscreenOpen, rovDataChannelConnState } from "../lib/globalContext";
-  import { selectKeypressFactory, toggleFullscreen } from "../lib/util";
-  import { ConnectionState } from "../lib/consts";
+  import { fullscreenOpen, rovDataChannelConnState } from "../js/globalContext";
+  import { selectKeypressFactory, toggleFullscreen } from "../js/util";
+  import { ConnectionState } from "../js/consts";
   import { addTooltip } from "./HelpTooltips.svelte";
   let menuOpen = false;
   $: if ($rovDataChannelConnState != ConnectionState.connected) menuOpen = false;
 </script>
 
 <div class="px-1 absolute flex w-full flex-col max-h-screen pointer-events-none">
-  <div class="navbar rounded-t-none shadow-xl rounded-box h-9 p-0 min-h-0 lg:rounded-t-none bg-base-100  m-auto max-w-sm  top-bar flex-none pointer-events-auto overflow-hidden">
+  <div class="navbar rounded-t-none shadow-xl rounded-box h-9 p-0 min-h-0 lg:rounded-t-none bg-base-100 m-auto max-w-sm top-bar flex-none pointer-events-auto overflow-hidden">
     <div class="pr-3 justify-start flex-shrink">
       <!-- <div class="dropdown"> -->
       <button class="btn btn-ghost btn-square rounded-tl-none" on:click={() => (menuOpen = !menuOpen)} use:addTooltip={{ label: "Menu", placement: "left" }} disabled={$rovDataChannelConnState != ConnectionState.connected}>
@@ -28,7 +28,7 @@
         </ul> -->
       <!-- </div> -->
     </div>
-    <div class="navbar-center  flex-1 self-stretch"><CompassDial /></div>
+    <div class="navbar-center flex-1 self-stretch"><CompassDial /></div>
     <div class="pl-3 justify-end flex-shrink">
       <!-- <button class="btn btn-square btn-ghost" on:click={(e) => toggleFullscreen(e.target, null)} use:addTooltip={{ label: "Toggle Fullscreen", placement: "right" }}>
         <Icon theme="solid" src={$fullscreenOpen ? ArrowsPointingIn : ArrowsPointingOut} class="w-6 h-6 pointer-events-none" />
@@ -40,7 +40,7 @@
   </div>
   {#if menuOpen}
     <div transition:slide class="mt-1 mb-24 m-auto w-full max-w-max card card-compact dropdown-content bg-base-100 shadow p-1 overflow-auto pointer-events-auto">
-      <div class="multi-menu card-body md:flex-row rounded-box ">
+      <div class="multi-menu card-body md:flex-row rounded-box">
         <ul class="menu inline-block menu-normal flex-1">
           <li aria-hidden="true"><Icon theme="mini" src={Power} class="h-12 pointer-events-none" /></li>
           <li on:click={RovActions.shutdownRov} on:keypress={selectKeypressFactory(RovActions.shutdownRov)} role="menuitem"><span class="btn btn-ghost">Shutdown ROV</span></li>

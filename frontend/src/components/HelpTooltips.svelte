@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
-  import nStore from "../lib/libraries/nStore";
-  import type { nStoreT } from "../lib/libraries/nStore";
+  import nStore from "../js/libraries/nStore";
+  import type { nStoreT } from "../js/libraries/nStore";
   import { createPopperActions } from "svelte-popperjs";
   import type { ContentAction } from "svelte-popperjs";
   import { fade } from "svelte/transition";

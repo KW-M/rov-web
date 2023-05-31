@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { DialogTitle } from "@rgossiaux/svelte-headlessui";
   import Dialog from "./Dialog.svelte";
-  import type { dialogExtraDataType } from "../../lib/globalContext";
+  import type { dialogExtraDataType } from "../../js/globalContext";
   const dispatch = createEventDispatcher();
 
   export let extraData: dialogExtraDataType = {
@@ -26,7 +26,7 @@
 <Dialog on:close={() => onClose()} modalClass="flex-col flex">
   <button class="btn btn-sm btn-circle absolute right-2 top-2" on:click={onClose}>✕</button>
   <DialogTitle as="h3" class="font-bold text-lg mb-5">{title}</DialogTitle>
-  <pre class="overflow-auto flex-1 -mx-5  px-6 -mb-2 pb-2" bind:this={scrollArea}>
+  <pre class="overflow-auto flex-1 -mx-5 px-6 -mb-2 pb-2" bind:this={scrollArea}>
     {#each lines as line}
       {line}
     {/each}

@@ -1,11 +1,11 @@
 <script context="module" lang="ts">
   import AlertDialog from "./AlertDialog.svelte";
   import PasswordDialog from "./PasswordDialog.svelte";
-  import { DIALOG_TYPE, type dialogExtraDataType } from "../../lib/globalContext";
+  import { DIALOG_TYPE, type dialogExtraDataType } from "../../js/globalContext";
   import ScrollingTextDialog from "./ScrollingTextDialog.svelte";
-  import nStore from "../../lib/libraries/nStore";
-  import type { nStoreT } from "../../lib/libraries/nStore";
-  import type { dialogInfoType } from "../../lib/globalContext";
+  import nStore from "../../js/libraries/nStore";
+  import type { nStoreT } from "../../js/libraries/nStore";
+  import type { dialogInfoType } from "../../js/globalContext";
 
   let dialogStack: dialogInfoType[] = [];
   let topDialog: nStoreT<dialogInfoType> = nStore(null);

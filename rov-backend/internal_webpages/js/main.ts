@@ -1,37 +1,30 @@
-import { DECODE_TXT, ENCODE_TXT } from "../../../shared/js/consts";
-import { waitfor } from "../../../shared/js/util";
-import { getMyIpGeolocation } from "./geolocation";
-import { connectToLivekit, sendLivekitMessage } from "./livekitPublisher";
-import { initSimplePeerPublisher } from "./simplePeerPub";
+import { connectionManager } from "./connectionManager"
 import { iRovWebSocketRelay } from "./websocketRelay";
+import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 
 
 const urlParams = new URLSearchParams(location.search);
-
-iRovWebSocketRelay.start(function(messageEvent: MessageEvent<Uint8Array>){
-    // Callback to handle messages being received from the iROV python
-    
-    // TODO we want to properly unpackage all the metadata from the protobuf
-    
-    // send this stuff to livekit
-    sendLivekitMessage(messageEvent.data)
-});
-
-connectToLivekit({
+const livekitConfig: LivekitSetupOptions = {
     ForceLocal: (urlParams.get("ForceLocal") || "").toLowerCase() === 'true',
     RovRoomName: urlParams.get("RovRoomName"),
     CloudAPIKey: urlParams.get("CloudAPIKey"),
     CloudSecretKey: urlParams.get("CloudSecretKey"),
     LocalAPIKey: urlParams.get("LocalAPIKey"),
     LocalSecretKey: urlParams.get("LocalSecretKey"),
-}).then(async () => {
-    console.log('connected?');
-    const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-    });
-    initSimplePeerPublisher(stream);
+}
+for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
+connectionManager.start(livekitConfig)
+iRovWebSocketRelay.start(function (messageEvent: MessageEvent<Uint8Array>) {
+    // Callback to handle messages being received from the iROV python
+
+    // TODO we want to properly unpackage all the metadata from the protobu
+    const msgProto = rov_actions_proto.RovResponse.decode(messageEvent.data)
+
+    // send this stuff to livekit
+    connectionManager.sendMessage(msgProto, true, []) // TODO: REPLACE THIS WITH THE ACTUAL USER ID & Data trasport method
 });
+
 
 
 

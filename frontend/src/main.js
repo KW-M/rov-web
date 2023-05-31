@@ -1,8 +1,8 @@
 import './app.css'
 import App from './App.svelte'
-import { connectionManager } from './lib/connectionManager';
-import { debugPageModeActive, fullscreenOpen } from './lib/globalContext';
-import { getURLQueryStringVariable } from './lib/util';
+import { connectionManager } from './js/connectionManager';
+import { debugPageModeActive, fullscreenOpen } from './js/globalContext';
+import { getURLQueryStringVariable } from './js/util';
 
 debugPageModeActive.set(getURLQueryStringVariable("debug") != undefined);
 

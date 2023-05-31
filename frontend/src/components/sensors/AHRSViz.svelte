@@ -2,7 +2,7 @@
   import fragmentShader from "./shaders/AHRS_Sphere.glsl?raw";
   import * as twgl from "twgl.js";
   import { onMount } from "svelte";
-  import { rovHeading, rovPitch, rovRoll } from "../../lib/sensors";
+  import { rovHeading, rovPitch, rovRoll } from "../../js/sensors";
   let canvas;
 
   // the most basic vertex shader possible:

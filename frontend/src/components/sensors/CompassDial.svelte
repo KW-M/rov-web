@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { rovHeading } from "../../lib/sensors";
+  import { rovHeading } from "../../js/sensors";
 </script>
 
 <!-- <script>

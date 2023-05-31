@@ -7,7 +7,7 @@ import { iRovWebSocketRelay } from "./websocketRelay";
     Intended to handle messages coming FROM Livekit/The Internet
     TODO We wish to send this data to the iROV python code
 */
-export function handleBackendMsgRcvd(msgBytes: ArrayBufferLike) {
+export function backendHandleWebrtcMsgRcvd(msgBytes: ArrayBufferLike) {
     let data = new Uint8Array(msgBytes)
     if (!data || data.length === 0) return;
     console.log("GOT DC DATA:", data);
