@@ -3,7 +3,7 @@ import asyncio
 import logging
 # from types import AsyncGeneratorType
 from async_timeout import timeout
-from protobuf.rov_action_api import RovResponse, DoneResponse, ContinuedOutputResponse
+from protobufs.rov_actions_proto import RovResponse, DoneResponse, ContinuedOutputResponse
 
 ###### setup logging #######
 log = logging.getLogger(__name__)

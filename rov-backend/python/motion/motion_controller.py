@@ -4,12 +4,12 @@ import asyncio
 import logging
 import math
 
+from gpio_interface import GPIO_ctrl
 from motion.drok_pwm_motor_controller import Drok_Pwm_Motor
 from motion.adafruit_pwm_motor_controller import Adafruit_Pwm_Motor
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
-
 
 class MotionTarget:
     __slots__ = ("velocity_x", "velocity_y", "velocity_z", "yaw_angular_velocity")
@@ -30,7 +30,6 @@ class MotionTarget:
     def __str__(self) -> str:
         return f"MotionTarget(x={self.velocity_x}, y={self.velocity_y}, z={self.velocity_z}, yaw={self.yaw_angular_velocity})"
 
-
 # pylint: disable=too-many-instance-attributes
 class MotionController:
     gpio_issue_flag: asyncio.Event
@@ -41,8 +40,7 @@ class MotionController:
     up_left_motor: Drok_Pwm_Motor
     claw_motor: Adafruit_Pwm_Motor
 
-    def __init__(self, pigpio_instance) -> None:
-        self.pigpio_instance = pigpio_instance
+    def init(self) -> None:
         self.last_motion_target = MotionTarget(0, 0, 0, 0)
 
     async def motor_setup_loop(self):
@@ -69,20 +67,20 @@ class MotionController:
         try:
 
             # Small Blue Motor Controller (claw or lights)
-            self.claw_motor = Adafruit_Pwm_Motor(self.pigpio_instance, pin_in1=4, pin_in2=17)
+            self.claw_motor = Adafruit_Pwm_Motor(pin_in1=4, pin_in2=17)
 
             # Motor Controller 1A (forward right)
             #Top Red Motor Controller; plug closer to controller power input (left)
-            self.forward_right_motor = Drok_Pwm_Motor(self.pigpio_instance, pin_ena=18, pin_in1=27, pin_in2=22, async_loop=async_loop)
+            self.forward_right_motor = Drok_Pwm_Motor(pin_ena=18, pin_in1=27, pin_in2=22, async_loop=async_loop)
 
             # Motor Controller 1B (up right)
-            self.up_right_motor = Drok_Pwm_Motor(self.pigpio_instance, pin_ena=23, pin_in1=24, pin_in2=25, async_loop=async_loop)
+            self.up_right_motor = Drok_Pwm_Motor(pin_ena=23, pin_in1=24, pin_in2=25, async_loop=async_loop)
 
             # Motor Controller 2A (forward right)
-            self.forward_left_motor = Drok_Pwm_Motor(self.pigpio_instance, pin_ena=5, pin_in1=6, pin_in2=12, async_loop=async_loop)
+            self.forward_left_motor = Drok_Pwm_Motor( pin_ena=5, pin_in1=6, pin_in2=12, async_loop=async_loop)
 
             # Motor Controller 2B (up left)
-            self.up_left_motor = Drok_Pwm_Motor(self.pigpio_instance, pin_ena=13, pin_in1=16, pin_in2=19, async_loop=async_loop)
+            self.up_left_motor = Drok_Pwm_Motor( pin_ena=13, pin_in1=16, pin_in2=19, async_loop=async_loop)
 
         except ValueError:
             self.gpio_issue_flag.set()
@@ -114,7 +112,6 @@ class MotionController:
         # angle represending the angle of the two vertical thrusters off the vertical in the strafe direction.
         # Format: radians = math.radians(degrees)
         vertical_thrusters_angle = math.radians(45)
-
         up_left_thrust_amt = (vertical_amt * math.sin(vertical_thrusters_angle) - strafe_amt * math.cos(vertical_thrusters_angle))
         up_right_thrust_amt = (vertical_amt * math.sin(vertical_thrusters_angle) + strafe_amt * math.cos(vertical_thrusters_angle))
         forward_left_thrust_amt = -forward_amt - turn_rate
@@ -144,9 +141,4 @@ class MotionController:
             log.warning("Error stopping motors! %s", err, exc_info=True)
             self.gpio_issue_flag.set()
 
-    def cleanup_gpio(self):
-        """ Function to shut down the current pigpio.pi() instance. useful when turning off / exiting the rov program"""
-        self.stop_motors()
-        print("CLEAN GPIO")
-        if self.pigpio_instance:
-            self.pigpio_instance.stop()
+motion_ctrl = MotionController()

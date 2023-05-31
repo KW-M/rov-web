@@ -8,7 +8,7 @@ import math
 from uuid import uuid4
 from genericpath import exists
 
-from config_reader import program_config, SECONDS_PER_DAY
+from config_reader import program_config, SECONDS_IN_A_DAY
 
 auth_tokens = {}
 rov_uuid = None
@@ -21,7 +21,7 @@ def generateAuthToken():
     """
     global auth_tokens
     auth_token = binascii.hexlify(os.urandom(20)).decode()  # https://stackoverflow.com/questions/41354205/how-to-generate-a-unique-auth-token-in-python
-    auth_tokens[auth_token] = math.floor(time.time() + program_config.get("AuthTokenTimeout", SECONDS_PER_DAY))  # time at which this key should expire (expressed in seconds since epoch)
+    auth_tokens[auth_token] = math.floor(time.time() + program_config.get("AuthTokenTimeout", SECONDS_IN_A_DAY))  # time at which this key should expire (expressed in seconds since epoch)
     saveAuthStateToDisk()
     return auth_token
 

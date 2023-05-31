@@ -2,7 +2,7 @@ import logging
 
 import ms5803py
 from sensors.generic_sensor import GenericSensor
-from protobuf.rov_action_api import Measurement, SensorMeasurmentTypes
+from protobufs.rov_actions_proto import Measurement, SensorMeasurmentTypes
 
 ###### setup logging #######
 log = logging.getLogger(__name__)

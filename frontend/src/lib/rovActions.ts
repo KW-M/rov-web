@@ -1,6 +1,6 @@
 import { connectionManager } from "./connectionManager";
 import { rovPeerIdEndNumber } from "./globalContext";
-import type { rov_action_api } from "./proto/rovActionsCompiled";
+import type { rov_actions_proto } from "./proto/rovActionsProto";
 import { RovMsgHandlerClass, rovMessageHandler } from "./rovMessageHandler"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
 import { arraysEqual } from "./util";
@@ -21,8 +21,8 @@ class RovActionsClass {
 
     // ==== Helpers =====
 
-    sendActionAndWaitForDone(msgData: rov_action_api.IRovAction, callback: (response: rov_action_api.RovResponse) => void) {
-        this.rovMsgHandler.sendRovMessage(msgData, (response: rov_action_api.RovResponse) => {
+    sendActionAndWaitForDone(msgData: rov_actions_proto.IRovAction, callback: (response: rov_actions_proto.RovResponse) => void) {
+        this.rovMsgHandler.sendRovMessage(msgData, (response: rov_actions_proto.RovResponse) => {
             if (callback && (response.Done || response.Error || response.ContinuedOutput)) {
                 callback(response);
             }
@@ -44,7 +44,7 @@ class RovActionsClass {
     showCommandOutputPopup(title, firstLine, doneLine) {
         let addTextToPopup = showScrollableTextPopup(title, null)
         addTextToPopup(firstLine)
-        return (response: rov_action_api.RovResponse) => {
+        return (response: rov_actions_proto.RovResponse) => {
             if (response.ContinuedOutput) addTextToPopup(response.ContinuedOutput.Message + "\n");
             else if (response.Done) addTextToPopup(response.Done.Message + "\n" + doneLine);
             else if (response.Error) addTextToPopup(response.Error.Message + "\n");

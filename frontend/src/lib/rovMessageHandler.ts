@@ -1,4 +1,4 @@
-import { rov_action_api } from "../../../shared/js/protobufs/rovActionsCompiled";
+import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
@@ -7,7 +7,7 @@ import { sendSignalingDataToSimplePeerSubscriber } from "./simplePeerSub";
 
 let lastTimeRecvdPong = NaN;
 
-type ReplyExchangeData = { callback: (replyMsgData: rov_action_api.RovResponse) => void, originalMsgData: rov_action_api.IRovAction };
+type ReplyExchangeData = { callback: (replyMsgData: rov_actions_proto.RovResponse) => void, originalMsgData: rov_actions_proto.IRovAction };
 
 export class RovMsgHandlerClass {
     // replyContinuityCallbacks: keep track of functions to run when we get a reply to a message we sent with some RovExchangeId
@@ -25,7 +25,7 @@ export class RovMsgHandlerClass {
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
         console.log("GOT DC DATA:", rawData);
-        const msgData = rov_action_api.RovResponse.decode(new Uint8Array(msgBytes));
+        const msgData = rov_actions_proto.RovResponse.decode(new Uint8Array(msgBytes));
         if (debugPageModeActive.get()) showToastMessage(JSON.stringify(msgData.toJSON()), 800);
         this.runExchangeCallback(msgData.RovExchangeId, msgData);
         if (msgData.Done) {
@@ -60,32 +60,32 @@ export class RovMsgHandlerClass {
         }
     }
 
-    handleDoneMsgRecived(rovExchangeId: number, msgData: rov_action_api.IDoneResponse) {
+    handleDoneMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IDoneResponse) {
         console.log("Done: ", msgData);
     }
 
-    handleErrorMsgRecived(rovExchangeId: number, msgData: rov_action_api.IErrorResponse) {
+    handleErrorMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IErrorResponse) {
         console.warn("ROV Error: ", msgData);
         showToastMessage("ROV Error: " + msgData.Message, 2000, null);
     }
 
-    handlePongMsgRecived(rovExchangeId: number, msgData: rov_action_api.IPongResponse) {
+    handlePongMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IPongResponse) {
         lastTimeRecvdPong = Date.now();
         const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msgData.Time) // since the rpi replies with the ms time we sent in the ping in the pong message
         networkLatencyMs.set(networkPingDelay);
     }
 
-    handleContinuedOutputMsgRecived(rovExchangeId: number, msgData: rov_action_api.IContinuedOutputResponse) {
+    handleContinuedOutputMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IContinuedOutputResponse) {
         console.log("ContinuedOutput: ", rovExchangeId, msgData);
         // pass
     }
 
-    handleSensorUpdatesMsgRecived(rovExchangeId: number, msgData: rov_action_api.ISensorUpdatesResponse) {
+    handleSensorUpdatesMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.ISensorUpdatesResponse) {
         // console.log("SensorUpdates: ", msgData);
         updateSensorValues(msgData.MeasurementUpdates);
     }
 
-    handlePasswordRequiredMsgRecived(rovExchangeId: number, msgData: rov_action_api.IPasswordRequiredResponse) {
+    handlePasswordRequiredMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IPasswordRequiredResponse) {
         console.log("PasswordRequired for rovId:", msgData.RovId);
         // TODO: use the rovId to determine if we have authtoken
         showPasswordPrompt("Enter Driver Password", (password) => {
@@ -102,18 +102,18 @@ export class RovMsgHandlerClass {
         })
     }
 
-    handlePasswordAcceptedMsgRecived(rovExchangeId: number, msgData: rov_action_api.IPasswordAcceptedResponse) {
+    handlePasswordAcceptedMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IPasswordAcceptedResponse) {
         showToastMessage("Password Accepted", 1000, null);
         // TODO: save the auth token
         console.log("TODO: Got AuthToken:", msgData.AuthToken)
     }
 
-    handlePasswordInvalidMsgRecived(rovExchangeId: number, msgData: rov_action_api.IPasswordInvalidResponse) {
+    handlePasswordInvalidMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IPasswordInvalidResponse) {
         showToastMessage("Wrong Password", 1000, null);
         this.handlePasswordRequiredMsgRecived(rovExchangeId, msgData);
     }
 
-    handleDriverChangedMsgRecived(rovExchangeId: number, msgData: rov_action_api.IDriverChangedResponse) {
+    handleDriverChangedMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IDriverChangedResponse) {
         console.info("Driver Changed: ", msgData);
         let thisPeerId = connectionManager.getThisPeerId();
         if (msgData.DriverPeerId == thisPeerId) {
@@ -125,19 +125,19 @@ export class RovMsgHandlerClass {
         }
     }
 
-    handleClientConnectedMsgRecived(rovExchangeId: number, msgData: rov_action_api.IClientConnectedResponse) {
+    handleClientConnectedMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IClientConnectedResponse) {
         showToastMessage(msgData.ClientPeerId + " Connected to ROV", 1500, null);
     }
 
-    handleClientDisconnectedMsgRecived(rovExchangeId: number, msgData: rov_action_api.IClientConnectedResponse) {
+    handleClientDisconnectedMsgRecived(rovExchangeId: number, msgData: rov_actions_proto.IClientConnectedResponse) {
         showToastMessage(msgData.ClientPeerId + " Disconnected from ROV", 1500, null);
     }
 
-    sendRovMessage(msgData: rov_action_api.IRovAction, replyCallback: (replyMsgData: rov_action_api.RovResponse) => void = null) {
+    sendRovMessage(msgData: rov_actions_proto.IRovAction, replyCallback: (replyMsgData: rov_actions_proto.RovResponse) => void = null) {
         if (!msgData.RovExchangeId && replyCallback) msgData.RovExchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random cid if none is provided
         if (!this.replyContinuityCallbacks[msgData.RovExchangeId]) this.replyContinuityCallbacks[msgData.RovExchangeId] = { callback: replyCallback, originalMsgData: msgData };
         console.info("Sending RovMessage: ", msgData);
-        const msgBytes = rov_action_api.RovAction.encode(msgData).finish();
+        const msgBytes = rov_actions_proto.RovAction.encode(msgData).finish();
         this.sendMessageCallback(msgBytes);
     }
 
@@ -151,7 +151,7 @@ export class RovMsgHandlerClass {
         }
     }
 
-    runExchangeCallback(rovExchangeId: number, msgData: rov_action_api.RovResponse) {
+    runExchangeCallback(rovExchangeId: number, msgData: rov_actions_proto.RovResponse) {
         const replyExchageData = this.replyContinuityCallbacks[rovExchangeId];
         if (replyExchageData) {
             replyExchageData.callback && replyExchageData.callback(msgData);

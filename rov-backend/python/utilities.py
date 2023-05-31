@@ -1,3 +1,29 @@
+from functools import wraps
+from typing import Any, AsyncGenerator, Callable
+
+known_is_raspberry_pi = False
+def is_raspberry_pi():
+    """Returns True if the code is running on a raspberry pi, False otherwise."""
+    global known_is_raspberry_pi
+    if known_is_raspberry_pi:
+        return True
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            txt = f.read()
+            is_pi = 'Raspberry Pi' in txt
+            print(txt, is_pi)
+            known_is_raspberry_pi = is_pi
+            return is_pi
+    except:
+        return False
+
+def only_on_raspi(func):
+    """Decorator that only runs the given function if it is running on a raspberry pi."""
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        func(*args, **kwargs)
+    return wrapper_func
+
 def clamp(minimum: float, value: float, maximum: float):
     return max(minimum, min(value, maximum))
 
@@ -5,6 +31,14 @@ def clamp(minimum: float, value: float, maximum: float):
 def get_rounded_string(value):
     # from: https://stackoverflow.com/questions/20457038/how-to-round-to-2-decimals-with-python/20457284#20457284
     return f'{value:0.3f}'
+
+async def map_for_async_generator(iterable: AsyncGenerator[Any,Any], func: Callable,  *args, **kwargs):
+    """Returns another async generator that applies the given function to each item in the iterable as it comes in.
+    pass additional arguments to the function with *args and **kwargs
+    the function will get called with the item from the iterable as the first argument, followed by the additional arguments."""
+    async for item in iterable:
+        yield func(item, *args, **kwargs)
+
 
 
 # -------------------------------------------------------------------------------------

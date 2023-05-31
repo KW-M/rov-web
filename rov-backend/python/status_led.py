@@ -1,23 +1,23 @@
 import logging
-import pigpio
+from gpio_interface import GPIO_ctrl, OUTPUT_PIN_MODE
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
 
-
-class Status_Led_Controller:
-    """ for the Adafruit drv8871 single motor controller
-    led_pin: the raspberry pi pin going to the + side of the led
-    pigpio_instance: the pigpio library instance to use to drive the gpio signals from the pi
+class StatusLedController:
     """
-    def __init__(self, led_pin, pigpio_instance):
-        self.pigpio_instance = pigpio_instance
+    led_pin: The number of the raspberry pi pin going to the positive side of the led
+    """
+
+    def init(self, led_pin: int = 21):
         self.led_pin = led_pin
-        self.pigpio_instance.set_mode(self.led_pin, pigpio.OUTPUT)
-        self.pigpio_instance.write(self.led_pin, 0)  # pin LOW (off)
+        GPIO_ctrl.set_pin_mode(self.led_pin, OUTPUT_PIN_MODE)
+        self.off()
 
     def on(self):
-        self.pigpio_instance.write(self.led_pin, 1)  # pin HIGH (on)
+        GPIO_ctrl.set_pin_high(self.led_pin)  # pin HIGH (on)
 
     def off(self):
-        self.pigpio_instance.write(self.led_pin, 0)
+         GPIO_ctrl.set_pin_low(self.led_pin)  # pin LOW (off)
+
+status_led_ctrl = StatusLedController()

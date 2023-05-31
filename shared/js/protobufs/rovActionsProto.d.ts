@@ -1,15 +1,7 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
-/** Namespace rov_action_api. */
-export namespace rov_action_api {
-
-    /** DataTransportMethod enum. */
-    enum DataTransportMethod {
-        LivekitReliable = 0,
-        LivekitUnreliable = 1,
-        DirectReliable = 2,
-        DirectUnreliable = 3
-    }
+/** Namespace rov_actions_proto. */
+export namespace rov_actions_proto {
 
     /** SensorMeasurmentTypes enum. */
     enum SensorMeasurmentTypes {
@@ -25,6 +17,117 @@ export namespace rov_action_api {
         battery_voltage = 9,
         battery_current_amps = 10,
         internal_temp_celsius = 11
+    }
+
+    /** Properties of a Measurement. */
+    interface IMeasurement {
+
+        /** Measurement MeasurementType */
+        MeasurementType?: (rov_actions_proto.SensorMeasurmentTypes|null);
+
+        /** Measurement Value */
+        Value?: (number|null);
+    }
+
+    /** Represents a Measurement. */
+    class Measurement implements IMeasurement {
+
+        /**
+         * Constructs a new Measurement.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IMeasurement);
+
+        /** Measurement MeasurementType. */
+        public MeasurementType: rov_actions_proto.SensorMeasurmentTypes;
+
+        /** Measurement Value. */
+        public Value: number;
+
+        /**
+         * Creates a new Measurement instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Measurement instance
+         */
+        public static create(properties?: rov_actions_proto.IMeasurement): rov_actions_proto.Measurement;
+
+        /**
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.Measurement;
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.Measurement;
+
+        /**
+         * Verifies a Measurement message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Measurement
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.Measurement;
+
+        /**
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+         * @param message Measurement
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Measurement to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Measurement
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** DataTransportMethod enum. */
+    enum DataTransportMethod {
+        LivekitReliable = 0,
+        LivekitUnreliable = 1,
+        DirectReliable = 2,
+        DirectUnreliable = 3
     }
 
     /** RovActionTypes enum. */
@@ -65,7 +168,7 @@ export namespace rov_action_api {
          * Constructs a new PingAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPingAction);
+        constructor(properties?: rov_actions_proto.IPingAction);
 
         /** PingAction Time. */
         public Time: (number|Long);
@@ -75,23 +178,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns PingAction instance
          */
-        public static create(properties?: rov_action_api.IPingAction): rov_action_api.PingAction;
+        public static create(properties?: rov_actions_proto.IPingAction): rov_actions_proto.PingAction;
 
         /**
-         * Encodes the specified PingAction message. Does not implicitly {@link rov_action_api.PingAction.verify|verify} messages.
+         * Encodes the specified PingAction message. Does not implicitly {@link rov_actions_proto.PingAction.verify|verify} messages.
          * @param message PingAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPingAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPingAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PingAction message, length delimited. Does not implicitly {@link rov_action_api.PingAction.verify|verify} messages.
+         * Encodes the specified PingAction message, length delimited. Does not implicitly {@link rov_actions_proto.PingAction.verify|verify} messages.
          * @param message PingAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPingAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPingAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PingAction message from the specified reader or buffer.
@@ -101,7 +204,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PingAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PingAction;
 
         /**
          * Decodes a PingAction message from the specified reader or buffer, length delimited.
@@ -110,7 +213,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PingAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PingAction;
 
         /**
          * Verifies a PingAction message.
@@ -124,7 +227,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PingAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PingAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PingAction;
 
         /**
          * Creates a plain object from a PingAction message. Also converts values to other types if specified.
@@ -132,7 +235,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PingAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PingAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PingAction to JSON.
@@ -162,7 +265,7 @@ export namespace rov_action_api {
          * Constructs a new PasswordAttemptAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPasswordAttemptAction);
+        constructor(properties?: rov_actions_proto.IPasswordAttemptAction);
 
         /** PasswordAttemptAction Password. */
         public Password: string;
@@ -172,23 +275,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns PasswordAttemptAction instance
          */
-        public static create(properties?: rov_action_api.IPasswordAttemptAction): rov_action_api.PasswordAttemptAction;
+        public static create(properties?: rov_actions_proto.IPasswordAttemptAction): rov_actions_proto.PasswordAttemptAction;
 
         /**
-         * Encodes the specified PasswordAttemptAction message. Does not implicitly {@link rov_action_api.PasswordAttemptAction.verify|verify} messages.
+         * Encodes the specified PasswordAttemptAction message. Does not implicitly {@link rov_actions_proto.PasswordAttemptAction.verify|verify} messages.
          * @param message PasswordAttemptAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPasswordAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPasswordAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PasswordAttemptAction message, length delimited. Does not implicitly {@link rov_action_api.PasswordAttemptAction.verify|verify} messages.
+         * Encodes the specified PasswordAttemptAction message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordAttemptAction.verify|verify} messages.
          * @param message PasswordAttemptAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPasswordAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPasswordAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PasswordAttemptAction message from the specified reader or buffer.
@@ -198,7 +301,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PasswordAttemptAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordAttemptAction;
 
         /**
          * Decodes a PasswordAttemptAction message from the specified reader or buffer, length delimited.
@@ -207,7 +310,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PasswordAttemptAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordAttemptAction;
 
         /**
          * Verifies a PasswordAttemptAction message.
@@ -221,7 +324,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PasswordAttemptAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PasswordAttemptAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PasswordAttemptAction;
 
         /**
          * Creates a plain object from a PasswordAttemptAction message. Also converts values to other types if specified.
@@ -229,7 +332,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PasswordAttemptAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PasswordAttemptAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PasswordAttemptAction to JSON.
@@ -259,7 +362,7 @@ export namespace rov_action_api {
          * Constructs a new AuthTokenAttemptAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IAuthTokenAttemptAction);
+        constructor(properties?: rov_actions_proto.IAuthTokenAttemptAction);
 
         /** AuthTokenAttemptAction Token. */
         public Token: string;
@@ -269,23 +372,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns AuthTokenAttemptAction instance
          */
-        public static create(properties?: rov_action_api.IAuthTokenAttemptAction): rov_action_api.AuthTokenAttemptAction;
+        public static create(properties?: rov_actions_proto.IAuthTokenAttemptAction): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
-         * Encodes the specified AuthTokenAttemptAction message. Does not implicitly {@link rov_action_api.AuthTokenAttemptAction.verify|verify} messages.
+         * Encodes the specified AuthTokenAttemptAction message. Does not implicitly {@link rov_actions_proto.AuthTokenAttemptAction.verify|verify} messages.
          * @param message AuthTokenAttemptAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IAuthTokenAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IAuthTokenAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified AuthTokenAttemptAction message, length delimited. Does not implicitly {@link rov_action_api.AuthTokenAttemptAction.verify|verify} messages.
+         * Encodes the specified AuthTokenAttemptAction message, length delimited. Does not implicitly {@link rov_actions_proto.AuthTokenAttemptAction.verify|verify} messages.
          * @param message AuthTokenAttemptAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IAuthTokenAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IAuthTokenAttemptAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an AuthTokenAttemptAction message from the specified reader or buffer.
@@ -295,7 +398,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.AuthTokenAttemptAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
          * Decodes an AuthTokenAttemptAction message from the specified reader or buffer, length delimited.
@@ -304,7 +407,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.AuthTokenAttemptAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
          * Verifies an AuthTokenAttemptAction message.
@@ -318,7 +421,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns AuthTokenAttemptAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.AuthTokenAttemptAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
          * Creates a plain object from an AuthTokenAttemptAction message. Also converts values to other types if specified.
@@ -326,7 +429,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.AuthTokenAttemptAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.AuthTokenAttemptAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this AuthTokenAttemptAction to JSON.
@@ -353,30 +456,30 @@ export namespace rov_action_api {
          * Constructs a new TakeControlAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ITakeControlAction);
+        constructor(properties?: rov_actions_proto.ITakeControlAction);
 
         /**
          * Creates a new TakeControlAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns TakeControlAction instance
          */
-        public static create(properties?: rov_action_api.ITakeControlAction): rov_action_api.TakeControlAction;
+        public static create(properties?: rov_actions_proto.ITakeControlAction): rov_actions_proto.TakeControlAction;
 
         /**
-         * Encodes the specified TakeControlAction message. Does not implicitly {@link rov_action_api.TakeControlAction.verify|verify} messages.
+         * Encodes the specified TakeControlAction message. Does not implicitly {@link rov_actions_proto.TakeControlAction.verify|verify} messages.
          * @param message TakeControlAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ITakeControlAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ITakeControlAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified TakeControlAction message, length delimited. Does not implicitly {@link rov_action_api.TakeControlAction.verify|verify} messages.
+         * Encodes the specified TakeControlAction message, length delimited. Does not implicitly {@link rov_actions_proto.TakeControlAction.verify|verify} messages.
          * @param message TakeControlAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ITakeControlAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ITakeControlAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a TakeControlAction message from the specified reader or buffer.
@@ -386,7 +489,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.TakeControlAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.TakeControlAction;
 
         /**
          * Decodes a TakeControlAction message from the specified reader or buffer, length delimited.
@@ -395,7 +498,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.TakeControlAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.TakeControlAction;
 
         /**
          * Verifies a TakeControlAction message.
@@ -409,7 +512,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns TakeControlAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.TakeControlAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.TakeControlAction;
 
         /**
          * Creates a plain object from a TakeControlAction message. Also converts values to other types if specified.
@@ -417,7 +520,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.TakeControlAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.TakeControlAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this TakeControlAction to JSON.
@@ -456,7 +559,7 @@ export namespace rov_action_api {
          * Constructs a new MoveAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IMoveAction);
+        constructor(properties?: rov_actions_proto.IMoveAction);
 
         /** MoveAction VelocityX. */
         public VelocityX: number;
@@ -475,23 +578,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns MoveAction instance
          */
-        public static create(properties?: rov_action_api.IMoveAction): rov_action_api.MoveAction;
+        public static create(properties?: rov_actions_proto.IMoveAction): rov_actions_proto.MoveAction;
 
         /**
-         * Encodes the specified MoveAction message. Does not implicitly {@link rov_action_api.MoveAction.verify|verify} messages.
+         * Encodes the specified MoveAction message. Does not implicitly {@link rov_actions_proto.MoveAction.verify|verify} messages.
          * @param message MoveAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IMoveAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IMoveAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified MoveAction message, length delimited. Does not implicitly {@link rov_action_api.MoveAction.verify|verify} messages.
+         * Encodes the specified MoveAction message, length delimited. Does not implicitly {@link rov_actions_proto.MoveAction.verify|verify} messages.
          * @param message MoveAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IMoveAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IMoveAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a MoveAction message from the specified reader or buffer.
@@ -501,7 +604,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.MoveAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MoveAction;
 
         /**
          * Decodes a MoveAction message from the specified reader or buffer, length delimited.
@@ -510,7 +613,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.MoveAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MoveAction;
 
         /**
          * Verifies a MoveAction message.
@@ -524,7 +627,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns MoveAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.MoveAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.MoveAction;
 
         /**
          * Creates a plain object from a MoveAction message. Also converts values to other types if specified.
@@ -532,7 +635,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.MoveAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.MoveAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this MoveAction to JSON.
@@ -559,30 +662,30 @@ export namespace rov_action_api {
          * Constructs a new BeginVideoStreamAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IBeginVideoStreamAction);
+        constructor(properties?: rov_actions_proto.IBeginVideoStreamAction);
 
         /**
          * Creates a new BeginVideoStreamAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns BeginVideoStreamAction instance
          */
-        public static create(properties?: rov_action_api.IBeginVideoStreamAction): rov_action_api.BeginVideoStreamAction;
+        public static create(properties?: rov_actions_proto.IBeginVideoStreamAction): rov_actions_proto.BeginVideoStreamAction;
 
         /**
-         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_action_api.BeginVideoStreamAction.verify|verify} messages.
+         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
          * @param message BeginVideoStreamAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_action_api.BeginVideoStreamAction.verify|verify} messages.
+         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
          * @param message BeginVideoStreamAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a BeginVideoStreamAction message from the specified reader or buffer.
@@ -592,7 +695,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.BeginVideoStreamAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.BeginVideoStreamAction;
 
         /**
          * Decodes a BeginVideoStreamAction message from the specified reader or buffer, length delimited.
@@ -601,7 +704,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.BeginVideoStreamAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.BeginVideoStreamAction;
 
         /**
          * Verifies a BeginVideoStreamAction message.
@@ -615,7 +718,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns BeginVideoStreamAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.BeginVideoStreamAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.BeginVideoStreamAction;
 
         /**
          * Creates a plain object from a BeginVideoStreamAction message. Also converts values to other types if specified.
@@ -623,7 +726,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.BeginVideoStreamAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.BeginVideoStreamAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this BeginVideoStreamAction to JSON.
@@ -650,30 +753,30 @@ export namespace rov_action_api {
          * Constructs a new TakePhotoAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ITakePhotoAction);
+        constructor(properties?: rov_actions_proto.ITakePhotoAction);
 
         /**
          * Creates a new TakePhotoAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns TakePhotoAction instance
          */
-        public static create(properties?: rov_action_api.ITakePhotoAction): rov_action_api.TakePhotoAction;
+        public static create(properties?: rov_actions_proto.ITakePhotoAction): rov_actions_proto.TakePhotoAction;
 
         /**
-         * Encodes the specified TakePhotoAction message. Does not implicitly {@link rov_action_api.TakePhotoAction.verify|verify} messages.
+         * Encodes the specified TakePhotoAction message. Does not implicitly {@link rov_actions_proto.TakePhotoAction.verify|verify} messages.
          * @param message TakePhotoAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ITakePhotoAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ITakePhotoAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified TakePhotoAction message, length delimited. Does not implicitly {@link rov_action_api.TakePhotoAction.verify|verify} messages.
+         * Encodes the specified TakePhotoAction message, length delimited. Does not implicitly {@link rov_actions_proto.TakePhotoAction.verify|verify} messages.
          * @param message TakePhotoAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ITakePhotoAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ITakePhotoAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a TakePhotoAction message from the specified reader or buffer.
@@ -683,7 +786,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.TakePhotoAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.TakePhotoAction;
 
         /**
          * Decodes a TakePhotoAction message from the specified reader or buffer, length delimited.
@@ -692,7 +795,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.TakePhotoAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.TakePhotoAction;
 
         /**
          * Verifies a TakePhotoAction message.
@@ -706,7 +809,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns TakePhotoAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.TakePhotoAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.TakePhotoAction;
 
         /**
          * Creates a plain object from a TakePhotoAction message. Also converts values to other types if specified.
@@ -714,7 +817,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.TakePhotoAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.TakePhotoAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this TakePhotoAction to JSON.
@@ -741,30 +844,30 @@ export namespace rov_action_api {
          * Constructs a new StartVideoRecAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IStartVideoRecAction);
+        constructor(properties?: rov_actions_proto.IStartVideoRecAction);
 
         /**
          * Creates a new StartVideoRecAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns StartVideoRecAction instance
          */
-        public static create(properties?: rov_action_api.IStartVideoRecAction): rov_action_api.StartVideoRecAction;
+        public static create(properties?: rov_actions_proto.IStartVideoRecAction): rov_actions_proto.StartVideoRecAction;
 
         /**
-         * Encodes the specified StartVideoRecAction message. Does not implicitly {@link rov_action_api.StartVideoRecAction.verify|verify} messages.
+         * Encodes the specified StartVideoRecAction message. Does not implicitly {@link rov_actions_proto.StartVideoRecAction.verify|verify} messages.
          * @param message StartVideoRecAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IStartVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IStartVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified StartVideoRecAction message, length delimited. Does not implicitly {@link rov_action_api.StartVideoRecAction.verify|verify} messages.
+         * Encodes the specified StartVideoRecAction message, length delimited. Does not implicitly {@link rov_actions_proto.StartVideoRecAction.verify|verify} messages.
          * @param message StartVideoRecAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IStartVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IStartVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a StartVideoRecAction message from the specified reader or buffer.
@@ -774,7 +877,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.StartVideoRecAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.StartVideoRecAction;
 
         /**
          * Decodes a StartVideoRecAction message from the specified reader or buffer, length delimited.
@@ -783,7 +886,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.StartVideoRecAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.StartVideoRecAction;
 
         /**
          * Verifies a StartVideoRecAction message.
@@ -797,7 +900,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns StartVideoRecAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.StartVideoRecAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.StartVideoRecAction;
 
         /**
          * Creates a plain object from a StartVideoRecAction message. Also converts values to other types if specified.
@@ -805,7 +908,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.StartVideoRecAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.StartVideoRecAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this StartVideoRecAction to JSON.
@@ -832,30 +935,30 @@ export namespace rov_action_api {
          * Constructs a new StopVideoRecAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IStopVideoRecAction);
+        constructor(properties?: rov_actions_proto.IStopVideoRecAction);
 
         /**
          * Creates a new StopVideoRecAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns StopVideoRecAction instance
          */
-        public static create(properties?: rov_action_api.IStopVideoRecAction): rov_action_api.StopVideoRecAction;
+        public static create(properties?: rov_actions_proto.IStopVideoRecAction): rov_actions_proto.StopVideoRecAction;
 
         /**
-         * Encodes the specified StopVideoRecAction message. Does not implicitly {@link rov_action_api.StopVideoRecAction.verify|verify} messages.
+         * Encodes the specified StopVideoRecAction message. Does not implicitly {@link rov_actions_proto.StopVideoRecAction.verify|verify} messages.
          * @param message StopVideoRecAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IStopVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IStopVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified StopVideoRecAction message, length delimited. Does not implicitly {@link rov_action_api.StopVideoRecAction.verify|verify} messages.
+         * Encodes the specified StopVideoRecAction message, length delimited. Does not implicitly {@link rov_actions_proto.StopVideoRecAction.verify|verify} messages.
          * @param message StopVideoRecAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IStopVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IStopVideoRecAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a StopVideoRecAction message from the specified reader or buffer.
@@ -865,7 +968,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.StopVideoRecAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.StopVideoRecAction;
 
         /**
          * Decodes a StopVideoRecAction message from the specified reader or buffer, length delimited.
@@ -874,7 +977,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.StopVideoRecAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.StopVideoRecAction;
 
         /**
          * Verifies a StopVideoRecAction message.
@@ -888,7 +991,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns StopVideoRecAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.StopVideoRecAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.StopVideoRecAction;
 
         /**
          * Creates a plain object from a StopVideoRecAction message. Also converts values to other types if specified.
@@ -896,7 +999,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.StopVideoRecAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.StopVideoRecAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this StopVideoRecAction to JSON.
@@ -923,30 +1026,30 @@ export namespace rov_action_api {
          * Constructs a new ToogleLightsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IToogleLightsAction);
+        constructor(properties?: rov_actions_proto.IToogleLightsAction);
 
         /**
          * Creates a new ToogleLightsAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns ToogleLightsAction instance
          */
-        public static create(properties?: rov_action_api.IToogleLightsAction): rov_action_api.ToogleLightsAction;
+        public static create(properties?: rov_actions_proto.IToogleLightsAction): rov_actions_proto.ToogleLightsAction;
 
         /**
-         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_action_api.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
          * @param message ToogleLightsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_action_api.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
          * @param message ToogleLightsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ToogleLightsAction message from the specified reader or buffer.
@@ -956,7 +1059,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ToogleLightsAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ToogleLightsAction;
 
         /**
          * Decodes a ToogleLightsAction message from the specified reader or buffer, length delimited.
@@ -965,7 +1068,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ToogleLightsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ToogleLightsAction;
 
         /**
          * Verifies a ToogleLightsAction message.
@@ -979,7 +1082,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ToogleLightsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ToogleLightsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ToogleLightsAction;
 
         /**
          * Creates a plain object from a ToogleLightsAction message. Also converts values to other types if specified.
@@ -987,7 +1090,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ToogleLightsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ToogleLightsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ToogleLightsAction to JSON.
@@ -1014,30 +1117,30 @@ export namespace rov_action_api {
          * Constructs a new ShutdownRovAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IShutdownRovAction);
+        constructor(properties?: rov_actions_proto.IShutdownRovAction);
 
         /**
          * Creates a new ShutdownRovAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns ShutdownRovAction instance
          */
-        public static create(properties?: rov_action_api.IShutdownRovAction): rov_action_api.ShutdownRovAction;
+        public static create(properties?: rov_actions_proto.IShutdownRovAction): rov_actions_proto.ShutdownRovAction;
 
         /**
-         * Encodes the specified ShutdownRovAction message. Does not implicitly {@link rov_action_api.ShutdownRovAction.verify|verify} messages.
+         * Encodes the specified ShutdownRovAction message. Does not implicitly {@link rov_actions_proto.ShutdownRovAction.verify|verify} messages.
          * @param message ShutdownRovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IShutdownRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IShutdownRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ShutdownRovAction message, length delimited. Does not implicitly {@link rov_action_api.ShutdownRovAction.verify|verify} messages.
+         * Encodes the specified ShutdownRovAction message, length delimited. Does not implicitly {@link rov_actions_proto.ShutdownRovAction.verify|verify} messages.
          * @param message ShutdownRovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IShutdownRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IShutdownRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ShutdownRovAction message from the specified reader or buffer.
@@ -1047,7 +1150,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ShutdownRovAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ShutdownRovAction;
 
         /**
          * Decodes a ShutdownRovAction message from the specified reader or buffer, length delimited.
@@ -1056,7 +1159,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ShutdownRovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ShutdownRovAction;
 
         /**
          * Verifies a ShutdownRovAction message.
@@ -1070,7 +1173,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ShutdownRovAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ShutdownRovAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ShutdownRovAction;
 
         /**
          * Creates a plain object from a ShutdownRovAction message. Also converts values to other types if specified.
@@ -1078,7 +1181,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ShutdownRovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ShutdownRovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ShutdownRovAction to JSON.
@@ -1105,30 +1208,30 @@ export namespace rov_action_api {
          * Constructs a new RebootRovAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRebootRovAction);
+        constructor(properties?: rov_actions_proto.IRebootRovAction);
 
         /**
          * Creates a new RebootRovAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RebootRovAction instance
          */
-        public static create(properties?: rov_action_api.IRebootRovAction): rov_action_api.RebootRovAction;
+        public static create(properties?: rov_actions_proto.IRebootRovAction): rov_actions_proto.RebootRovAction;
 
         /**
-         * Encodes the specified RebootRovAction message. Does not implicitly {@link rov_action_api.RebootRovAction.verify|verify} messages.
+         * Encodes the specified RebootRovAction message. Does not implicitly {@link rov_actions_proto.RebootRovAction.verify|verify} messages.
          * @param message RebootRovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRebootRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRebootRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RebootRovAction message, length delimited. Does not implicitly {@link rov_action_api.RebootRovAction.verify|verify} messages.
+         * Encodes the specified RebootRovAction message, length delimited. Does not implicitly {@link rov_actions_proto.RebootRovAction.verify|verify} messages.
          * @param message RebootRovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRebootRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRebootRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RebootRovAction message from the specified reader or buffer.
@@ -1138,7 +1241,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RebootRovAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RebootRovAction;
 
         /**
          * Decodes a RebootRovAction message from the specified reader or buffer, length delimited.
@@ -1147,7 +1250,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RebootRovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RebootRovAction;
 
         /**
          * Verifies a RebootRovAction message.
@@ -1161,7 +1264,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RebootRovAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RebootRovAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RebootRovAction;
 
         /**
          * Creates a plain object from a RebootRovAction message. Also converts values to other types if specified.
@@ -1169,7 +1272,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RebootRovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RebootRovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RebootRovAction to JSON.
@@ -1196,30 +1299,30 @@ export namespace rov_action_api {
          * Constructs a new EnableWifiAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IEnableWifiAction);
+        constructor(properties?: rov_actions_proto.IEnableWifiAction);
 
         /**
          * Creates a new EnableWifiAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns EnableWifiAction instance
          */
-        public static create(properties?: rov_action_api.IEnableWifiAction): rov_action_api.EnableWifiAction;
+        public static create(properties?: rov_actions_proto.IEnableWifiAction): rov_actions_proto.EnableWifiAction;
 
         /**
-         * Encodes the specified EnableWifiAction message. Does not implicitly {@link rov_action_api.EnableWifiAction.verify|verify} messages.
+         * Encodes the specified EnableWifiAction message. Does not implicitly {@link rov_actions_proto.EnableWifiAction.verify|verify} messages.
          * @param message EnableWifiAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IEnableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IEnableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified EnableWifiAction message, length delimited. Does not implicitly {@link rov_action_api.EnableWifiAction.verify|verify} messages.
+         * Encodes the specified EnableWifiAction message, length delimited. Does not implicitly {@link rov_actions_proto.EnableWifiAction.verify|verify} messages.
          * @param message EnableWifiAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IEnableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IEnableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an EnableWifiAction message from the specified reader or buffer.
@@ -1229,7 +1332,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.EnableWifiAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.EnableWifiAction;
 
         /**
          * Decodes an EnableWifiAction message from the specified reader or buffer, length delimited.
@@ -1238,7 +1341,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.EnableWifiAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.EnableWifiAction;
 
         /**
          * Verifies an EnableWifiAction message.
@@ -1252,7 +1355,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns EnableWifiAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.EnableWifiAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.EnableWifiAction;
 
         /**
          * Creates a plain object from an EnableWifiAction message. Also converts values to other types if specified.
@@ -1260,7 +1363,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.EnableWifiAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.EnableWifiAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this EnableWifiAction to JSON.
@@ -1287,30 +1390,30 @@ export namespace rov_action_api {
          * Constructs a new DisableWifiAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IDisableWifiAction);
+        constructor(properties?: rov_actions_proto.IDisableWifiAction);
 
         /**
          * Creates a new DisableWifiAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns DisableWifiAction instance
          */
-        public static create(properties?: rov_action_api.IDisableWifiAction): rov_action_api.DisableWifiAction;
+        public static create(properties?: rov_actions_proto.IDisableWifiAction): rov_actions_proto.DisableWifiAction;
 
         /**
-         * Encodes the specified DisableWifiAction message. Does not implicitly {@link rov_action_api.DisableWifiAction.verify|verify} messages.
+         * Encodes the specified DisableWifiAction message. Does not implicitly {@link rov_actions_proto.DisableWifiAction.verify|verify} messages.
          * @param message DisableWifiAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IDisableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IDisableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified DisableWifiAction message, length delimited. Does not implicitly {@link rov_action_api.DisableWifiAction.verify|verify} messages.
+         * Encodes the specified DisableWifiAction message, length delimited. Does not implicitly {@link rov_actions_proto.DisableWifiAction.verify|verify} messages.
          * @param message DisableWifiAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IDisableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IDisableWifiAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a DisableWifiAction message from the specified reader or buffer.
@@ -1320,7 +1423,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.DisableWifiAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DisableWifiAction;
 
         /**
          * Decodes a DisableWifiAction message from the specified reader or buffer, length delimited.
@@ -1329,7 +1432,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.DisableWifiAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DisableWifiAction;
 
         /**
          * Verifies a DisableWifiAction message.
@@ -1343,7 +1446,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns DisableWifiAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.DisableWifiAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.DisableWifiAction;
 
         /**
          * Creates a plain object from a DisableWifiAction message. Also converts values to other types if specified.
@@ -1351,7 +1454,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.DisableWifiAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.DisableWifiAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this DisableWifiAction to JSON.
@@ -1378,30 +1481,30 @@ export namespace rov_action_api {
          * Constructs a new RovStatusReportAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRovStatusReportAction);
+        constructor(properties?: rov_actions_proto.IRovStatusReportAction);
 
         /**
          * Creates a new RovStatusReportAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RovStatusReportAction instance
          */
-        public static create(properties?: rov_action_api.IRovStatusReportAction): rov_action_api.RovStatusReportAction;
+        public static create(properties?: rov_actions_proto.IRovStatusReportAction): rov_actions_proto.RovStatusReportAction;
 
         /**
-         * Encodes the specified RovStatusReportAction message. Does not implicitly {@link rov_action_api.RovStatusReportAction.verify|verify} messages.
+         * Encodes the specified RovStatusReportAction message. Does not implicitly {@link rov_actions_proto.RovStatusReportAction.verify|verify} messages.
          * @param message RovStatusReportAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRovStatusReportAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRovStatusReportAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RovStatusReportAction message, length delimited. Does not implicitly {@link rov_action_api.RovStatusReportAction.verify|verify} messages.
+         * Encodes the specified RovStatusReportAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovStatusReportAction.verify|verify} messages.
          * @param message RovStatusReportAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRovStatusReportAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRovStatusReportAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RovStatusReportAction message from the specified reader or buffer.
@@ -1411,7 +1514,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RovStatusReportAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovStatusReportAction;
 
         /**
          * Decodes a RovStatusReportAction message from the specified reader or buffer, length delimited.
@@ -1420,7 +1523,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RovStatusReportAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovStatusReportAction;
 
         /**
          * Verifies a RovStatusReportAction message.
@@ -1434,7 +1537,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RovStatusReportAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RovStatusReportAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RovStatusReportAction;
 
         /**
          * Creates a plain object from a RovStatusReportAction message. Also converts values to other types if specified.
@@ -1442,7 +1545,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RovStatusReportAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RovStatusReportAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RovStatusReportAction to JSON.
@@ -1469,30 +1572,30 @@ export namespace rov_action_api {
          * Constructs a new RestartRovServicesAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRestartRovServicesAction);
+        constructor(properties?: rov_actions_proto.IRestartRovServicesAction);
 
         /**
          * Creates a new RestartRovServicesAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RestartRovServicesAction instance
          */
-        public static create(properties?: rov_action_api.IRestartRovServicesAction): rov_action_api.RestartRovServicesAction;
+        public static create(properties?: rov_actions_proto.IRestartRovServicesAction): rov_actions_proto.RestartRovServicesAction;
 
         /**
-         * Encodes the specified RestartRovServicesAction message. Does not implicitly {@link rov_action_api.RestartRovServicesAction.verify|verify} messages.
+         * Encodes the specified RestartRovServicesAction message. Does not implicitly {@link rov_actions_proto.RestartRovServicesAction.verify|verify} messages.
          * @param message RestartRovServicesAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRestartRovServicesAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRestartRovServicesAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RestartRovServicesAction message, length delimited. Does not implicitly {@link rov_action_api.RestartRovServicesAction.verify|verify} messages.
+         * Encodes the specified RestartRovServicesAction message, length delimited. Does not implicitly {@link rov_actions_proto.RestartRovServicesAction.verify|verify} messages.
          * @param message RestartRovServicesAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRestartRovServicesAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRestartRovServicesAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RestartRovServicesAction message from the specified reader or buffer.
@@ -1502,7 +1605,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RestartRovServicesAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RestartRovServicesAction;
 
         /**
          * Decodes a RestartRovServicesAction message from the specified reader or buffer, length delimited.
@@ -1511,7 +1614,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RestartRovServicesAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RestartRovServicesAction;
 
         /**
          * Verifies a RestartRovServicesAction message.
@@ -1525,7 +1628,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RestartRovServicesAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RestartRovServicesAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RestartRovServicesAction;
 
         /**
          * Creates a plain object from a RestartRovServicesAction message. Also converts values to other types if specified.
@@ -1533,7 +1636,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RestartRovServicesAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RestartRovServicesAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RestartRovServicesAction to JSON.
@@ -1560,30 +1663,30 @@ export namespace rov_action_api {
          * Constructs a new RovLogsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRovLogsAction);
+        constructor(properties?: rov_actions_proto.IRovLogsAction);
 
         /**
          * Creates a new RovLogsAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RovLogsAction instance
          */
-        public static create(properties?: rov_action_api.IRovLogsAction): rov_action_api.RovLogsAction;
+        public static create(properties?: rov_actions_proto.IRovLogsAction): rov_actions_proto.RovLogsAction;
 
         /**
-         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_action_api.RovLogsAction.verify|verify} messages.
+         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
          * @param message RovLogsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_action_api.RovLogsAction.verify|verify} messages.
+         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
          * @param message RovLogsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RovLogsAction message from the specified reader or buffer.
@@ -1593,7 +1696,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RovLogsAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovLogsAction;
 
         /**
          * Decodes a RovLogsAction message from the specified reader or buffer, length delimited.
@@ -1602,7 +1705,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RovLogsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovLogsAction;
 
         /**
          * Verifies a RovLogsAction message.
@@ -1616,7 +1719,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RovLogsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RovLogsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RovLogsAction;
 
         /**
          * Creates a plain object from a RovLogsAction message. Also converts values to other types if specified.
@@ -1624,7 +1727,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RovLogsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RovLogsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RovLogsAction to JSON.
@@ -1651,30 +1754,30 @@ export namespace rov_action_api {
          * Constructs a new RefreshAllSensorsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRefreshAllSensorsAction);
+        constructor(properties?: rov_actions_proto.IRefreshAllSensorsAction);
 
         /**
          * Creates a new RefreshAllSensorsAction instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RefreshAllSensorsAction instance
          */
-        public static create(properties?: rov_action_api.IRefreshAllSensorsAction): rov_action_api.RefreshAllSensorsAction;
+        public static create(properties?: rov_actions_proto.IRefreshAllSensorsAction): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
-         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_actions_proto.RefreshAllSensorsAction.verify|verify} messages.
          * @param message RefreshAllSensorsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RefreshAllSensorsAction.verify|verify} messages.
          * @param message RefreshAllSensorsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRefreshAllSensorsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RefreshAllSensorsAction message from the specified reader or buffer.
@@ -1684,7 +1787,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RefreshAllSensorsAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
          * Decodes a RefreshAllSensorsAction message from the specified reader or buffer, length delimited.
@@ -1693,7 +1796,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RefreshAllSensorsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
          * Verifies a RefreshAllSensorsAction message.
@@ -1707,7 +1810,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RefreshAllSensorsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RefreshAllSensorsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
          * Creates a plain object from a RefreshAllSensorsAction message. Also converts values to other types if specified.
@@ -1715,7 +1818,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RefreshAllSensorsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RefreshAllSensorsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RefreshAllSensorsAction to JSON.
@@ -1745,7 +1848,7 @@ export namespace rov_action_api {
          * Constructs a new MavlinkAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IMavlinkAction);
+        constructor(properties?: rov_actions_proto.IMavlinkAction);
 
         /** MavlinkAction Message. */
         public Message: Uint8Array;
@@ -1755,23 +1858,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns MavlinkAction instance
          */
-        public static create(properties?: rov_action_api.IMavlinkAction): rov_action_api.MavlinkAction;
+        public static create(properties?: rov_actions_proto.IMavlinkAction): rov_actions_proto.MavlinkAction;
 
         /**
-         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
          * @param message MavlinkAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
          * @param message MavlinkAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a MavlinkAction message from the specified reader or buffer.
@@ -1781,7 +1884,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.MavlinkAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MavlinkAction;
 
         /**
          * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
@@ -1790,7 +1893,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.MavlinkAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MavlinkAction;
 
         /**
          * Verifies a MavlinkAction message.
@@ -1804,7 +1907,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns MavlinkAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.MavlinkAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.MavlinkAction;
 
         /**
          * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
@@ -1812,7 +1915,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.MavlinkAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.MavlinkAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this MavlinkAction to JSON.
@@ -1842,7 +1945,7 @@ export namespace rov_action_api {
          * Constructs a new SimplepeerSignalAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ISimplepeerSignalAction);
+        constructor(properties?: rov_actions_proto.ISimplepeerSignalAction);
 
         /** SimplepeerSignalAction Message. */
         public Message: Uint8Array;
@@ -1852,23 +1955,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns SimplepeerSignalAction instance
          */
-        public static create(properties?: rov_action_api.ISimplepeerSignalAction): rov_action_api.SimplepeerSignalAction;
+        public static create(properties?: rov_actions_proto.ISimplepeerSignalAction): rov_actions_proto.SimplepeerSignalAction;
 
         /**
-         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
          * @param message SimplepeerSignalAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
          * @param message SimplepeerSignalAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
@@ -1878,7 +1981,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SimplepeerSignalAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerSignalAction;
 
         /**
          * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
@@ -1887,7 +1990,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SimplepeerSignalAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerSignalAction;
 
         /**
          * Verifies a SimplepeerSignalAction message.
@@ -1901,7 +2004,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns SimplepeerSignalAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.SimplepeerSignalAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerSignalAction;
 
         /**
          * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
@@ -1909,7 +2012,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.SimplepeerSignalAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SimplepeerSignalAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this SimplepeerSignalAction to JSON.
@@ -1939,7 +2042,7 @@ export namespace rov_action_api {
          * Constructs a new ActionBackendMetadata.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IActionBackendMetadata);
+        constructor(properties?: rov_actions_proto.IActionBackendMetadata);
 
         /** ActionBackendMetadata FromUserID. */
         public FromUserID: string;
@@ -1949,23 +2052,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns ActionBackendMetadata instance
          */
-        public static create(properties?: rov_action_api.IActionBackendMetadata): rov_action_api.ActionBackendMetadata;
+        public static create(properties?: rov_actions_proto.IActionBackendMetadata): rov_actions_proto.ActionBackendMetadata;
 
         /**
-         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_actions_proto.ActionBackendMetadata.verify|verify} messages.
          * @param message ActionBackendMetadata message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_actions_proto.ActionBackendMetadata.verify|verify} messages.
          * @param message ActionBackendMetadata message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IActionBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an ActionBackendMetadata message from the specified reader or buffer.
@@ -1975,7 +2078,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ActionBackendMetadata;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ActionBackendMetadata;
 
         /**
          * Decodes an ActionBackendMetadata message from the specified reader or buffer, length delimited.
@@ -1984,7 +2087,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ActionBackendMetadata;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ActionBackendMetadata;
 
         /**
          * Verifies an ActionBackendMetadata message.
@@ -1998,7 +2101,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ActionBackendMetadata
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ActionBackendMetadata;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ActionBackendMetadata;
 
         /**
          * Creates a plain object from an ActionBackendMetadata message. Also converts values to other types if specified.
@@ -2006,7 +2109,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ActionBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ActionBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ActionBackendMetadata to JSON.
@@ -2026,70 +2129,70 @@ export namespace rov_action_api {
     interface IRovAction {
 
         /** RovAction BackendMetadata */
-        BackendMetadata?: (rov_action_api.IActionBackendMetadata|null);
+        BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
 
         /** RovAction RovExchangeId */
         RovExchangeId?: (number|null);
 
         /** RovAction Ping */
-        Ping?: (rov_action_api.IPingAction|null);
+        Ping?: (rov_actions_proto.IPingAction|null);
 
         /** RovAction PasswordAttempt */
-        PasswordAttempt?: (rov_action_api.IPasswordAttemptAction|null);
+        PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction|null);
 
         /** RovAction AuthTokenAttempt */
-        AuthTokenAttempt?: (rov_action_api.IAuthTokenAttemptAction|null);
+        AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction|null);
 
         /** RovAction TakeControl */
-        TakeControl?: (rov_action_api.ITakeControlAction|null);
+        TakeControl?: (rov_actions_proto.ITakeControlAction|null);
 
         /** RovAction Move */
-        Move?: (rov_action_api.IMoveAction|null);
+        Move?: (rov_actions_proto.IMoveAction|null);
 
         /** RovAction BeginVideoStream */
-        BeginVideoStream?: (rov_action_api.IBeginVideoStreamAction|null);
+        BeginVideoStream?: (rov_actions_proto.IBeginVideoStreamAction|null);
 
         /** RovAction TakePhoto */
-        TakePhoto?: (rov_action_api.ITakePhotoAction|null);
+        TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
 
         /** RovAction StartVideoRec */
-        StartVideoRec?: (rov_action_api.IStartVideoRecAction|null);
+        StartVideoRec?: (rov_actions_proto.IStartVideoRecAction|null);
 
         /** RovAction StopVideoRec */
-        StopVideoRec?: (rov_action_api.IStopVideoRecAction|null);
+        StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
 
         /** RovAction ToogleLights */
-        ToogleLights?: (rov_action_api.IToogleLightsAction|null);
+        ToogleLights?: (rov_actions_proto.IToogleLightsAction|null);
 
         /** RovAction ShutdownRov */
-        ShutdownRov?: (rov_action_api.IShutdownRovAction|null);
+        ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
 
         /** RovAction RebootRov */
-        RebootRov?: (rov_action_api.IRebootRovAction|null);
+        RebootRov?: (rov_actions_proto.IRebootRovAction|null);
 
         /** RovAction EnableWifi */
-        EnableWifi?: (rov_action_api.IEnableWifiAction|null);
+        EnableWifi?: (rov_actions_proto.IEnableWifiAction|null);
 
         /** RovAction DisableWifi */
-        DisableWifi?: (rov_action_api.IDisableWifiAction|null);
+        DisableWifi?: (rov_actions_proto.IDisableWifiAction|null);
 
         /** RovAction RovStatusReport */
-        RovStatusReport?: (rov_action_api.IRovStatusReportAction|null);
+        RovStatusReport?: (rov_actions_proto.IRovStatusReportAction|null);
 
         /** RovAction RestartRovServices */
-        RestartRovServices?: (rov_action_api.IRestartRovServicesAction|null);
+        RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
 
         /** RovAction RovLogs */
-        RovLogs?: (rov_action_api.IRovLogsAction|null);
+        RovLogs?: (rov_actions_proto.IRovLogsAction|null);
 
         /** RovAction RefreshAllSensors */
-        RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
+        RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
 
         /** RovAction Mavlink */
-        Mavlink?: (rov_action_api.IMavlinkAction|null);
+        Mavlink?: (rov_actions_proto.IMavlinkAction|null);
 
         /** RovAction SimplepeerSignal */
-        SimplepeerSignal?: (rov_action_api.ISimplepeerSignalAction|null);
+        SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
     }
 
     /** Represents a RovAction. */
@@ -2099,73 +2202,73 @@ export namespace rov_action_api {
          * Constructs a new RovAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRovAction);
+        constructor(properties?: rov_actions_proto.IRovAction);
 
         /** RovAction BackendMetadata. */
-        public BackendMetadata?: (rov_action_api.IActionBackendMetadata|null);
+        public BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
 
         /** RovAction RovExchangeId. */
         public RovExchangeId: number;
 
         /** RovAction Ping. */
-        public Ping?: (rov_action_api.IPingAction|null);
+        public Ping?: (rov_actions_proto.IPingAction|null);
 
         /** RovAction PasswordAttempt. */
-        public PasswordAttempt?: (rov_action_api.IPasswordAttemptAction|null);
+        public PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction|null);
 
         /** RovAction AuthTokenAttempt. */
-        public AuthTokenAttempt?: (rov_action_api.IAuthTokenAttemptAction|null);
+        public AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction|null);
 
         /** RovAction TakeControl. */
-        public TakeControl?: (rov_action_api.ITakeControlAction|null);
+        public TakeControl?: (rov_actions_proto.ITakeControlAction|null);
 
         /** RovAction Move. */
-        public Move?: (rov_action_api.IMoveAction|null);
+        public Move?: (rov_actions_proto.IMoveAction|null);
 
         /** RovAction BeginVideoStream. */
-        public BeginVideoStream?: (rov_action_api.IBeginVideoStreamAction|null);
+        public BeginVideoStream?: (rov_actions_proto.IBeginVideoStreamAction|null);
 
         /** RovAction TakePhoto. */
-        public TakePhoto?: (rov_action_api.ITakePhotoAction|null);
+        public TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
 
         /** RovAction StartVideoRec. */
-        public StartVideoRec?: (rov_action_api.IStartVideoRecAction|null);
+        public StartVideoRec?: (rov_actions_proto.IStartVideoRecAction|null);
 
         /** RovAction StopVideoRec. */
-        public StopVideoRec?: (rov_action_api.IStopVideoRecAction|null);
+        public StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
 
         /** RovAction ToogleLights. */
-        public ToogleLights?: (rov_action_api.IToogleLightsAction|null);
+        public ToogleLights?: (rov_actions_proto.IToogleLightsAction|null);
 
         /** RovAction ShutdownRov. */
-        public ShutdownRov?: (rov_action_api.IShutdownRovAction|null);
+        public ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
 
         /** RovAction RebootRov. */
-        public RebootRov?: (rov_action_api.IRebootRovAction|null);
+        public RebootRov?: (rov_actions_proto.IRebootRovAction|null);
 
         /** RovAction EnableWifi. */
-        public EnableWifi?: (rov_action_api.IEnableWifiAction|null);
+        public EnableWifi?: (rov_actions_proto.IEnableWifiAction|null);
 
         /** RovAction DisableWifi. */
-        public DisableWifi?: (rov_action_api.IDisableWifiAction|null);
+        public DisableWifi?: (rov_actions_proto.IDisableWifiAction|null);
 
         /** RovAction RovStatusReport. */
-        public RovStatusReport?: (rov_action_api.IRovStatusReportAction|null);
+        public RovStatusReport?: (rov_actions_proto.IRovStatusReportAction|null);
 
         /** RovAction RestartRovServices. */
-        public RestartRovServices?: (rov_action_api.IRestartRovServicesAction|null);
+        public RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
 
         /** RovAction RovLogs. */
-        public RovLogs?: (rov_action_api.IRovLogsAction|null);
+        public RovLogs?: (rov_actions_proto.IRovLogsAction|null);
 
         /** RovAction RefreshAllSensors. */
-        public RefreshAllSensors?: (rov_action_api.IRefreshAllSensorsAction|null);
+        public RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
 
         /** RovAction Mavlink. */
-        public Mavlink?: (rov_action_api.IMavlinkAction|null);
+        public Mavlink?: (rov_actions_proto.IMavlinkAction|null);
 
         /** RovAction SimplepeerSignal. */
-        public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalAction|null);
+        public SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
 
         /** RovAction Body. */
         public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal");
@@ -2175,23 +2278,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns RovAction instance
          */
-        public static create(properties?: rov_action_api.IRovAction): rov_action_api.RovAction;
+        public static create(properties?: rov_actions_proto.IRovAction): rov_actions_proto.RovAction;
 
         /**
-         * Encodes the specified RovAction message. Does not implicitly {@link rov_action_api.RovAction.verify|verify} messages.
+         * Encodes the specified RovAction message. Does not implicitly {@link rov_actions_proto.RovAction.verify|verify} messages.
          * @param message RovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RovAction message, length delimited. Does not implicitly {@link rov_action_api.RovAction.verify|verify} messages.
+         * Encodes the specified RovAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovAction.verify|verify} messages.
          * @param message RovAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRovAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RovAction message from the specified reader or buffer.
@@ -2201,7 +2304,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RovAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovAction;
 
         /**
          * Decodes a RovAction message from the specified reader or buffer, length delimited.
@@ -2210,7 +2313,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovAction;
 
         /**
          * Verifies a RovAction message.
@@ -2224,7 +2327,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RovAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RovAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RovAction;
 
         /**
          * Creates a plain object from a RovAction message. Also converts values to other types if specified.
@@ -2232,7 +2335,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RovAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RovAction to JSON.
@@ -2283,7 +2386,7 @@ export namespace rov_action_api {
          * Constructs a new DoneResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IDoneResponse);
+        constructor(properties?: rov_actions_proto.IDoneResponse);
 
         /** DoneResponse Message. */
         public Message: string;
@@ -2293,23 +2396,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns DoneResponse instance
          */
-        public static create(properties?: rov_action_api.IDoneResponse): rov_action_api.DoneResponse;
+        public static create(properties?: rov_actions_proto.IDoneResponse): rov_actions_proto.DoneResponse;
 
         /**
-         * Encodes the specified DoneResponse message. Does not implicitly {@link rov_action_api.DoneResponse.verify|verify} messages.
+         * Encodes the specified DoneResponse message. Does not implicitly {@link rov_actions_proto.DoneResponse.verify|verify} messages.
          * @param message DoneResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IDoneResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IDoneResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified DoneResponse message, length delimited. Does not implicitly {@link rov_action_api.DoneResponse.verify|verify} messages.
+         * Encodes the specified DoneResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DoneResponse.verify|verify} messages.
          * @param message DoneResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IDoneResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IDoneResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a DoneResponse message from the specified reader or buffer.
@@ -2319,7 +2422,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.DoneResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DoneResponse;
 
         /**
          * Decodes a DoneResponse message from the specified reader or buffer, length delimited.
@@ -2328,7 +2431,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.DoneResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DoneResponse;
 
         /**
          * Verifies a DoneResponse message.
@@ -2342,7 +2445,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns DoneResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.DoneResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.DoneResponse;
 
         /**
          * Creates a plain object from a DoneResponse message. Also converts values to other types if specified.
@@ -2350,7 +2453,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.DoneResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.DoneResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this DoneResponse to JSON.
@@ -2380,7 +2483,7 @@ export namespace rov_action_api {
          * Constructs a new ErrorResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IErrorResponse);
+        constructor(properties?: rov_actions_proto.IErrorResponse);
 
         /** ErrorResponse Message. */
         public Message: string;
@@ -2390,23 +2493,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns ErrorResponse instance
          */
-        public static create(properties?: rov_action_api.IErrorResponse): rov_action_api.ErrorResponse;
+        public static create(properties?: rov_actions_proto.IErrorResponse): rov_actions_proto.ErrorResponse;
 
         /**
-         * Encodes the specified ErrorResponse message. Does not implicitly {@link rov_action_api.ErrorResponse.verify|verify} messages.
+         * Encodes the specified ErrorResponse message. Does not implicitly {@link rov_actions_proto.ErrorResponse.verify|verify} messages.
          * @param message ErrorResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link rov_action_api.ErrorResponse.verify|verify} messages.
+         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ErrorResponse.verify|verify} messages.
          * @param message ErrorResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IErrorResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an ErrorResponse message from the specified reader or buffer.
@@ -2416,7 +2519,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ErrorResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ErrorResponse;
 
         /**
          * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
@@ -2425,7 +2528,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ErrorResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ErrorResponse;
 
         /**
          * Verifies an ErrorResponse message.
@@ -2439,7 +2542,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ErrorResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ErrorResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ErrorResponse;
 
         /**
          * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
@@ -2447,7 +2550,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ErrorResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ErrorResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ErrorResponse to JSON.
@@ -2477,7 +2580,7 @@ export namespace rov_action_api {
          * Constructs a new PongResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPongResponse);
+        constructor(properties?: rov_actions_proto.IPongResponse);
 
         /** PongResponse Time. */
         public Time: (number|Long);
@@ -2487,23 +2590,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns PongResponse instance
          */
-        public static create(properties?: rov_action_api.IPongResponse): rov_action_api.PongResponse;
+        public static create(properties?: rov_actions_proto.IPongResponse): rov_actions_proto.PongResponse;
 
         /**
-         * Encodes the specified PongResponse message. Does not implicitly {@link rov_action_api.PongResponse.verify|verify} messages.
+         * Encodes the specified PongResponse message. Does not implicitly {@link rov_actions_proto.PongResponse.verify|verify} messages.
          * @param message PongResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPongResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPongResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PongResponse message, length delimited. Does not implicitly {@link rov_action_api.PongResponse.verify|verify} messages.
+         * Encodes the specified PongResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PongResponse.verify|verify} messages.
          * @param message PongResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPongResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPongResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PongResponse message from the specified reader or buffer.
@@ -2513,7 +2616,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PongResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PongResponse;
 
         /**
          * Decodes a PongResponse message from the specified reader or buffer, length delimited.
@@ -2522,7 +2625,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PongResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PongResponse;
 
         /**
          * Verifies a PongResponse message.
@@ -2536,7 +2639,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PongResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PongResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PongResponse;
 
         /**
          * Creates a plain object from a PongResponse message. Also converts values to other types if specified.
@@ -2544,7 +2647,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PongResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PongResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PongResponse to JSON.
@@ -2564,7 +2667,7 @@ export namespace rov_action_api {
     interface ISensorUpdatesResponse {
 
         /** SensorUpdatesResponse MeasurementUpdates */
-        MeasurementUpdates?: (rov_action_api.SensorUpdatesResponse.IMeasurement[]|null);
+        MeasurementUpdates?: (rov_actions_proto.IMeasurement[]|null);
     }
 
     /** Represents a SensorUpdatesResponse. */
@@ -2574,33 +2677,33 @@ export namespace rov_action_api {
          * Constructs a new SensorUpdatesResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ISensorUpdatesResponse);
+        constructor(properties?: rov_actions_proto.ISensorUpdatesResponse);
 
         /** SensorUpdatesResponse MeasurementUpdates. */
-        public MeasurementUpdates: rov_action_api.SensorUpdatesResponse.IMeasurement[];
+        public MeasurementUpdates: rov_actions_proto.IMeasurement[];
 
         /**
          * Creates a new SensorUpdatesResponse instance using the specified properties.
          * @param [properties] Properties to set
          * @returns SensorUpdatesResponse instance
          */
-        public static create(properties?: rov_action_api.ISensorUpdatesResponse): rov_action_api.SensorUpdatesResponse;
+        public static create(properties?: rov_actions_proto.ISensorUpdatesResponse): rov_actions_proto.SensorUpdatesResponse;
 
         /**
-         * Encodes the specified SensorUpdatesResponse message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.verify|verify} messages.
+         * Encodes the specified SensorUpdatesResponse message. Does not implicitly {@link rov_actions_proto.SensorUpdatesResponse.verify|verify} messages.
          * @param message SensorUpdatesResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ISensorUpdatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISensorUpdatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SensorUpdatesResponse message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.verify|verify} messages.
+         * Encodes the specified SensorUpdatesResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SensorUpdatesResponse.verify|verify} messages.
          * @param message SensorUpdatesResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ISensorUpdatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISensorUpdatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a SensorUpdatesResponse message from the specified reader or buffer.
@@ -2610,7 +2713,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SensorUpdatesResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SensorUpdatesResponse;
 
         /**
          * Decodes a SensorUpdatesResponse message from the specified reader or buffer, length delimited.
@@ -2619,7 +2722,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SensorUpdatesResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SensorUpdatesResponse;
 
         /**
          * Verifies a SensorUpdatesResponse message.
@@ -2633,7 +2736,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns SensorUpdatesResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.SensorUpdatesResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SensorUpdatesResponse;
 
         /**
          * Creates a plain object from a SensorUpdatesResponse message. Also converts values to other types if specified.
@@ -2641,7 +2744,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.SensorUpdatesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SensorUpdatesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this SensorUpdatesResponse to JSON.
@@ -2655,112 +2758,6 @@ export namespace rov_action_api {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    namespace SensorUpdatesResponse {
-
-        /** Properties of a Measurement. */
-        interface IMeasurement {
-
-            /** Measurement MeasurementType */
-            MeasurementType?: (rov_action_api.SensorMeasurmentTypes|null);
-
-            /** Measurement Value */
-            Value?: (number|null);
-        }
-
-        /** Represents a Measurement. */
-        class Measurement implements IMeasurement {
-
-            /**
-             * Constructs a new Measurement.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: rov_action_api.SensorUpdatesResponse.IMeasurement);
-
-            /** Measurement MeasurementType. */
-            public MeasurementType: rov_action_api.SensorMeasurmentTypes;
-
-            /** Measurement Value. */
-            public Value: number;
-
-            /**
-             * Creates a new Measurement instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns Measurement instance
-             */
-            public static create(properties?: rov_action_api.SensorUpdatesResponse.IMeasurement): rov_action_api.SensorUpdatesResponse.Measurement;
-
-            /**
-             * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
-             * @param message Measurement message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: rov_action_api.SensorUpdatesResponse.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
-             * @param message Measurement message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: rov_action_api.SensorUpdatesResponse.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes a Measurement message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns Measurement
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SensorUpdatesResponse.Measurement;
-
-            /**
-             * Decodes a Measurement message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns Measurement
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SensorUpdatesResponse.Measurement;
-
-            /**
-             * Verifies a Measurement message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns Measurement
-             */
-            public static fromObject(object: { [k: string]: any }): rov_action_api.SensorUpdatesResponse.Measurement;
-
-            /**
-             * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-             * @param message Measurement
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: rov_action_api.SensorUpdatesResponse.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this Measurement to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-
-            /**
-             * Gets the default type url for Measurement
-             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns The default type url
-             */
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
     }
 
     /** Properties of a PasswordRequiredResponse. */
@@ -2777,7 +2774,7 @@ export namespace rov_action_api {
          * Constructs a new PasswordRequiredResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPasswordRequiredResponse);
+        constructor(properties?: rov_actions_proto.IPasswordRequiredResponse);
 
         /** PasswordRequiredResponse RovId. */
         public RovId: string;
@@ -2787,23 +2784,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns PasswordRequiredResponse instance
          */
-        public static create(properties?: rov_action_api.IPasswordRequiredResponse): rov_action_api.PasswordRequiredResponse;
+        public static create(properties?: rov_actions_proto.IPasswordRequiredResponse): rov_actions_proto.PasswordRequiredResponse;
 
         /**
-         * Encodes the specified PasswordRequiredResponse message. Does not implicitly {@link rov_action_api.PasswordRequiredResponse.verify|verify} messages.
+         * Encodes the specified PasswordRequiredResponse message. Does not implicitly {@link rov_actions_proto.PasswordRequiredResponse.verify|verify} messages.
          * @param message PasswordRequiredResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPasswordRequiredResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPasswordRequiredResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PasswordRequiredResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordRequiredResponse.verify|verify} messages.
+         * Encodes the specified PasswordRequiredResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordRequiredResponse.verify|verify} messages.
          * @param message PasswordRequiredResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPasswordRequiredResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPasswordRequiredResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PasswordRequiredResponse message from the specified reader or buffer.
@@ -2813,7 +2810,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PasswordRequiredResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordRequiredResponse;
 
         /**
          * Decodes a PasswordRequiredResponse message from the specified reader or buffer, length delimited.
@@ -2822,7 +2819,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PasswordRequiredResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordRequiredResponse;
 
         /**
          * Verifies a PasswordRequiredResponse message.
@@ -2836,7 +2833,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PasswordRequiredResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PasswordRequiredResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PasswordRequiredResponse;
 
         /**
          * Creates a plain object from a PasswordRequiredResponse message. Also converts values to other types if specified.
@@ -2844,7 +2841,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PasswordRequiredResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PasswordRequiredResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PasswordRequiredResponse to JSON.
@@ -2874,7 +2871,7 @@ export namespace rov_action_api {
          * Constructs a new PasswordAcceptedResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPasswordAcceptedResponse);
+        constructor(properties?: rov_actions_proto.IPasswordAcceptedResponse);
 
         /** PasswordAcceptedResponse AuthToken. */
         public AuthToken: string;
@@ -2884,23 +2881,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns PasswordAcceptedResponse instance
          */
-        public static create(properties?: rov_action_api.IPasswordAcceptedResponse): rov_action_api.PasswordAcceptedResponse;
+        public static create(properties?: rov_actions_proto.IPasswordAcceptedResponse): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
-         * Encodes the specified PasswordAcceptedResponse message. Does not implicitly {@link rov_action_api.PasswordAcceptedResponse.verify|verify} messages.
+         * Encodes the specified PasswordAcceptedResponse message. Does not implicitly {@link rov_actions_proto.PasswordAcceptedResponse.verify|verify} messages.
          * @param message PasswordAcceptedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPasswordAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPasswordAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PasswordAcceptedResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordAcceptedResponse.verify|verify} messages.
+         * Encodes the specified PasswordAcceptedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordAcceptedResponse.verify|verify} messages.
          * @param message PasswordAcceptedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPasswordAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPasswordAcceptedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PasswordAcceptedResponse message from the specified reader or buffer.
@@ -2910,7 +2907,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PasswordAcceptedResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
          * Decodes a PasswordAcceptedResponse message from the specified reader or buffer, length delimited.
@@ -2919,7 +2916,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PasswordAcceptedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
          * Verifies a PasswordAcceptedResponse message.
@@ -2933,7 +2930,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PasswordAcceptedResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PasswordAcceptedResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
          * Creates a plain object from a PasswordAcceptedResponse message. Also converts values to other types if specified.
@@ -2941,7 +2938,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PasswordAcceptedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PasswordAcceptedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PasswordAcceptedResponse to JSON.
@@ -2968,30 +2965,30 @@ export namespace rov_action_api {
          * Constructs a new PasswordInvalidResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IPasswordInvalidResponse);
+        constructor(properties?: rov_actions_proto.IPasswordInvalidResponse);
 
         /**
          * Creates a new PasswordInvalidResponse instance using the specified properties.
          * @param [properties] Properties to set
          * @returns PasswordInvalidResponse instance
          */
-        public static create(properties?: rov_action_api.IPasswordInvalidResponse): rov_action_api.PasswordInvalidResponse;
+        public static create(properties?: rov_actions_proto.IPasswordInvalidResponse): rov_actions_proto.PasswordInvalidResponse;
 
         /**
-         * Encodes the specified PasswordInvalidResponse message. Does not implicitly {@link rov_action_api.PasswordInvalidResponse.verify|verify} messages.
+         * Encodes the specified PasswordInvalidResponse message. Does not implicitly {@link rov_actions_proto.PasswordInvalidResponse.verify|verify} messages.
          * @param message PasswordInvalidResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IPasswordInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPasswordInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified PasswordInvalidResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordInvalidResponse.verify|verify} messages.
+         * Encodes the specified PasswordInvalidResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordInvalidResponse.verify|verify} messages.
          * @param message PasswordInvalidResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IPasswordInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPasswordInvalidResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a PasswordInvalidResponse message from the specified reader or buffer.
@@ -3001,7 +2998,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.PasswordInvalidResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordInvalidResponse;
 
         /**
          * Decodes a PasswordInvalidResponse message from the specified reader or buffer, length delimited.
@@ -3010,7 +3007,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.PasswordInvalidResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordInvalidResponse;
 
         /**
          * Verifies a PasswordInvalidResponse message.
@@ -3024,7 +3021,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns PasswordInvalidResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.PasswordInvalidResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PasswordInvalidResponse;
 
         /**
          * Creates a plain object from a PasswordInvalidResponse message. Also converts values to other types if specified.
@@ -3032,7 +3029,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.PasswordInvalidResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PasswordInvalidResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this PasswordInvalidResponse to JSON.
@@ -3062,7 +3059,7 @@ export namespace rov_action_api {
          * Constructs a new DriverChangedResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IDriverChangedResponse);
+        constructor(properties?: rov_actions_proto.IDriverChangedResponse);
 
         /** DriverChangedResponse DriverPeerId. */
         public DriverPeerId: string;
@@ -3072,23 +3069,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns DriverChangedResponse instance
          */
-        public static create(properties?: rov_action_api.IDriverChangedResponse): rov_action_api.DriverChangedResponse;
+        public static create(properties?: rov_actions_proto.IDriverChangedResponse): rov_actions_proto.DriverChangedResponse;
 
         /**
-         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_action_api.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
          * @param message DriverChangedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_action_api.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
          * @param message DriverChangedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a DriverChangedResponse message from the specified reader or buffer.
@@ -3098,7 +3095,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.DriverChangedResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DriverChangedResponse;
 
         /**
          * Decodes a DriverChangedResponse message from the specified reader or buffer, length delimited.
@@ -3107,7 +3104,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.DriverChangedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DriverChangedResponse;
 
         /**
          * Verifies a DriverChangedResponse message.
@@ -3121,7 +3118,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns DriverChangedResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.DriverChangedResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.DriverChangedResponse;
 
         /**
          * Creates a plain object from a DriverChangedResponse message. Also converts values to other types if specified.
@@ -3129,7 +3126,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.DriverChangedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.DriverChangedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this DriverChangedResponse to JSON.
@@ -3159,7 +3156,7 @@ export namespace rov_action_api {
          * Constructs a new ClientConnectedResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IClientConnectedResponse);
+        constructor(properties?: rov_actions_proto.IClientConnectedResponse);
 
         /** ClientConnectedResponse ClientPeerId. */
         public ClientPeerId: string;
@@ -3169,23 +3166,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns ClientConnectedResponse instance
          */
-        public static create(properties?: rov_action_api.IClientConnectedResponse): rov_action_api.ClientConnectedResponse;
+        public static create(properties?: rov_actions_proto.IClientConnectedResponse): rov_actions_proto.ClientConnectedResponse;
 
         /**
-         * Encodes the specified ClientConnectedResponse message. Does not implicitly {@link rov_action_api.ClientConnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientConnectedResponse message. Does not implicitly {@link rov_actions_proto.ClientConnectedResponse.verify|verify} messages.
          * @param message ClientConnectedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IClientConnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IClientConnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ClientConnectedResponse message, length delimited. Does not implicitly {@link rov_action_api.ClientConnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientConnectedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ClientConnectedResponse.verify|verify} messages.
          * @param message ClientConnectedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IClientConnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IClientConnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ClientConnectedResponse message from the specified reader or buffer.
@@ -3195,7 +3192,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ClientConnectedResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ClientConnectedResponse;
 
         /**
          * Decodes a ClientConnectedResponse message from the specified reader or buffer, length delimited.
@@ -3204,7 +3201,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ClientConnectedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ClientConnectedResponse;
 
         /**
          * Verifies a ClientConnectedResponse message.
@@ -3218,7 +3215,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ClientConnectedResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ClientConnectedResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ClientConnectedResponse;
 
         /**
          * Creates a plain object from a ClientConnectedResponse message. Also converts values to other types if specified.
@@ -3226,7 +3223,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ClientConnectedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ClientConnectedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ClientConnectedResponse to JSON.
@@ -3256,7 +3253,7 @@ export namespace rov_action_api {
          * Constructs a new ClientDisconnectedResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IClientDisconnectedResponse);
+        constructor(properties?: rov_actions_proto.IClientDisconnectedResponse);
 
         /** ClientDisconnectedResponse ClientPeerId. */
         public ClientPeerId: string;
@@ -3266,23 +3263,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns ClientDisconnectedResponse instance
          */
-        public static create(properties?: rov_action_api.IClientDisconnectedResponse): rov_action_api.ClientDisconnectedResponse;
+        public static create(properties?: rov_actions_proto.IClientDisconnectedResponse): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
-         * Encodes the specified ClientDisconnectedResponse message. Does not implicitly {@link rov_action_api.ClientDisconnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientDisconnectedResponse message. Does not implicitly {@link rov_actions_proto.ClientDisconnectedResponse.verify|verify} messages.
          * @param message ClientDisconnectedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IClientDisconnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IClientDisconnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ClientDisconnectedResponse message, length delimited. Does not implicitly {@link rov_action_api.ClientDisconnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientDisconnectedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ClientDisconnectedResponse.verify|verify} messages.
          * @param message ClientDisconnectedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IClientDisconnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IClientDisconnectedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ClientDisconnectedResponse message from the specified reader or buffer.
@@ -3292,7 +3289,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ClientDisconnectedResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
          * Decodes a ClientDisconnectedResponse message from the specified reader or buffer, length delimited.
@@ -3301,7 +3298,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ClientDisconnectedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
          * Verifies a ClientDisconnectedResponse message.
@@ -3315,7 +3312,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ClientDisconnectedResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ClientDisconnectedResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
          * Creates a plain object from a ClientDisconnectedResponse message. Also converts values to other types if specified.
@@ -3323,7 +3320,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ClientDisconnectedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ClientDisconnectedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ClientDisconnectedResponse to JSON.
@@ -3353,7 +3350,7 @@ export namespace rov_action_api {
          * Constructs a new HeartbeatResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IHeartbeatResponse);
+        constructor(properties?: rov_actions_proto.IHeartbeatResponse);
 
         /** HeartbeatResponse Time. */
         public Time: (number|Long);
@@ -3363,23 +3360,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns HeartbeatResponse instance
          */
-        public static create(properties?: rov_action_api.IHeartbeatResponse): rov_action_api.HeartbeatResponse;
+        public static create(properties?: rov_actions_proto.IHeartbeatResponse): rov_actions_proto.HeartbeatResponse;
 
         /**
-         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_actions_proto.HeartbeatResponse.verify|verify} messages.
          * @param message HeartbeatResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_actions_proto.HeartbeatResponse.verify|verify} messages.
          * @param message HeartbeatResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IHeartbeatResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a HeartbeatResponse message from the specified reader or buffer.
@@ -3389,7 +3386,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.HeartbeatResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.HeartbeatResponse;
 
         /**
          * Decodes a HeartbeatResponse message from the specified reader or buffer, length delimited.
@@ -3398,7 +3395,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.HeartbeatResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.HeartbeatResponse;
 
         /**
          * Verifies a HeartbeatResponse message.
@@ -3412,7 +3409,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns HeartbeatResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.HeartbeatResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.HeartbeatResponse;
 
         /**
          * Creates a plain object from a HeartbeatResponse message. Also converts values to other types if specified.
@@ -3420,7 +3417,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.HeartbeatResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.HeartbeatResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this HeartbeatResponse to JSON.
@@ -3450,7 +3447,7 @@ export namespace rov_action_api {
          * Constructs a new ContinuedOutputResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IContinuedOutputResponse);
+        constructor(properties?: rov_actions_proto.IContinuedOutputResponse);
 
         /** ContinuedOutputResponse Message. */
         public Message: string;
@@ -3460,23 +3457,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns ContinuedOutputResponse instance
          */
-        public static create(properties?: rov_action_api.IContinuedOutputResponse): rov_action_api.ContinuedOutputResponse;
+        public static create(properties?: rov_actions_proto.IContinuedOutputResponse): rov_actions_proto.ContinuedOutputResponse;
 
         /**
-         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_actions_proto.ContinuedOutputResponse.verify|verify} messages.
          * @param message ContinuedOutputResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ContinuedOutputResponse.verify|verify} messages.
          * @param message ContinuedOutputResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IContinuedOutputResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
@@ -3486,7 +3483,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ContinuedOutputResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ContinuedOutputResponse;
 
         /**
          * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
@@ -3495,7 +3492,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ContinuedOutputResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ContinuedOutputResponse;
 
         /**
          * Verifies a ContinuedOutputResponse message.
@@ -3509,7 +3506,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ContinuedOutputResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ContinuedOutputResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ContinuedOutputResponse;
 
         /**
          * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
@@ -3517,7 +3514,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ContinuedOutputResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ContinuedOutputResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ContinuedOutputResponse to JSON.
@@ -3547,7 +3544,7 @@ export namespace rov_action_api {
          * Constructs a new MavlinkResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IMavlinkResponse);
+        constructor(properties?: rov_actions_proto.IMavlinkResponse);
 
         /** MavlinkResponse Message. */
         public Message: Uint8Array;
@@ -3557,23 +3554,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns MavlinkResponse instance
          */
-        public static create(properties?: rov_action_api.IMavlinkResponse): rov_action_api.MavlinkResponse;
+        public static create(properties?: rov_actions_proto.IMavlinkResponse): rov_actions_proto.MavlinkResponse;
 
         /**
-         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_actions_proto.MavlinkResponse.verify|verify} messages.
          * @param message MavlinkResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkResponse.verify|verify} messages.
          * @param message MavlinkResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IMavlinkResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a MavlinkResponse message from the specified reader or buffer.
@@ -3583,7 +3580,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.MavlinkResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MavlinkResponse;
 
         /**
          * Decodes a MavlinkResponse message from the specified reader or buffer, length delimited.
@@ -3592,7 +3589,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.MavlinkResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MavlinkResponse;
 
         /**
          * Verifies a MavlinkResponse message.
@@ -3606,7 +3603,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns MavlinkResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.MavlinkResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.MavlinkResponse;
 
         /**
          * Creates a plain object from a MavlinkResponse message. Also converts values to other types if specified.
@@ -3614,7 +3611,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.MavlinkResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.MavlinkResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this MavlinkResponse to JSON.
@@ -3644,7 +3641,7 @@ export namespace rov_action_api {
          * Constructs a new SimplepeerSignalResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.ISimplepeerSignalResponse);
+        constructor(properties?: rov_actions_proto.ISimplepeerSignalResponse);
 
         /** SimplepeerSignalResponse Message. */
         public Message: Uint8Array;
@@ -3654,23 +3651,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns SimplepeerSignalResponse instance
          */
-        public static create(properties?: rov_action_api.ISimplepeerSignalResponse): rov_action_api.SimplepeerSignalResponse;
+        public static create(properties?: rov_actions_proto.ISimplepeerSignalResponse): rov_actions_proto.SimplepeerSignalResponse;
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
          * @param message SimplepeerSignalResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
          * @param message SimplepeerSignalResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
@@ -3680,7 +3677,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.SimplepeerSignalResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerSignalResponse;
 
         /**
          * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
@@ -3689,7 +3686,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.SimplepeerSignalResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerSignalResponse;
 
         /**
          * Verifies a SimplepeerSignalResponse message.
@@ -3703,7 +3700,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns SimplepeerSignalResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.SimplepeerSignalResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerSignalResponse;
 
         /**
          * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
@@ -3711,7 +3708,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.SimplepeerSignalResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SimplepeerSignalResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this SimplepeerSignalResponse to JSON.
@@ -3734,7 +3731,7 @@ export namespace rov_action_api {
         TargetUserIDs?: (string[]|null);
 
         /** ResponseBackendMetadata TransportMethod */
-        TransportMethod?: (rov_action_api.DataTransportMethod|null);
+        TransportMethod?: (rov_actions_proto.DataTransportMethod|null);
     }
 
     /** Represents a ResponseBackendMetadata. */
@@ -3744,36 +3741,36 @@ export namespace rov_action_api {
          * Constructs a new ResponseBackendMetadata.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IResponseBackendMetadata);
+        constructor(properties?: rov_actions_proto.IResponseBackendMetadata);
 
         /** ResponseBackendMetadata TargetUserIDs. */
         public TargetUserIDs: string[];
 
         /** ResponseBackendMetadata TransportMethod. */
-        public TransportMethod: rov_action_api.DataTransportMethod;
+        public TransportMethod: rov_actions_proto.DataTransportMethod;
 
         /**
          * Creates a new ResponseBackendMetadata instance using the specified properties.
          * @param [properties] Properties to set
          * @returns ResponseBackendMetadata instance
          */
-        public static create(properties?: rov_action_api.IResponseBackendMetadata): rov_action_api.ResponseBackendMetadata;
+        public static create(properties?: rov_actions_proto.IResponseBackendMetadata): rov_actions_proto.ResponseBackendMetadata;
 
         /**
-         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_actions_proto.ResponseBackendMetadata.verify|verify} messages.
          * @param message ResponseBackendMetadata message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_actions_proto.ResponseBackendMetadata.verify|verify} messages.
          * @param message ResponseBackendMetadata message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IResponseBackendMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ResponseBackendMetadata message from the specified reader or buffer.
@@ -3783,7 +3780,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.ResponseBackendMetadata;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ResponseBackendMetadata;
 
         /**
          * Decodes a ResponseBackendMetadata message from the specified reader or buffer, length delimited.
@@ -3792,7 +3789,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.ResponseBackendMetadata;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ResponseBackendMetadata;
 
         /**
          * Verifies a ResponseBackendMetadata message.
@@ -3806,7 +3803,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns ResponseBackendMetadata
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.ResponseBackendMetadata;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ResponseBackendMetadata;
 
         /**
          * Creates a plain object from a ResponseBackendMetadata message. Also converts values to other types if specified.
@@ -3814,7 +3811,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.ResponseBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ResponseBackendMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this ResponseBackendMetadata to JSON.
@@ -3834,52 +3831,52 @@ export namespace rov_action_api {
     interface IRovResponse {
 
         /** RovResponse BackendMetadata */
-        BackendMetadata?: (rov_action_api.IResponseBackendMetadata|null);
+        BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
 
         /** RovResponse RovExchangeId */
         RovExchangeId?: (number|null);
 
         /** RovResponse Done */
-        Done?: (rov_action_api.IDoneResponse|null);
+        Done?: (rov_actions_proto.IDoneResponse|null);
 
         /** RovResponse Error */
-        Error?: (rov_action_api.IErrorResponse|null);
+        Error?: (rov_actions_proto.IErrorResponse|null);
 
         /** RovResponse Pong */
-        Pong?: (rov_action_api.IPongResponse|null);
+        Pong?: (rov_actions_proto.IPongResponse|null);
 
         /** RovResponse ContinuedOutput */
-        ContinuedOutput?: (rov_action_api.IContinuedOutputResponse|null);
+        ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse|null);
 
         /** RovResponse SensorUpdates */
-        SensorUpdates?: (rov_action_api.ISensorUpdatesResponse|null);
+        SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse|null);
 
         /** RovResponse PasswordRequired */
-        PasswordRequired?: (rov_action_api.IPasswordRequiredResponse|null);
+        PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse|null);
 
         /** RovResponse PasswordAccepted */
-        PasswordAccepted?: (rov_action_api.IPasswordAcceptedResponse|null);
+        PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse|null);
 
         /** RovResponse PasswordInvalid */
-        PasswordInvalid?: (rov_action_api.IPasswordInvalidResponse|null);
+        PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
 
         /** RovResponse DriverChanged */
-        DriverChanged?: (rov_action_api.IDriverChangedResponse|null);
+        DriverChanged?: (rov_actions_proto.IDriverChangedResponse|null);
 
         /** RovResponse ClientConnected */
-        ClientConnected?: (rov_action_api.IClientConnectedResponse|null);
+        ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
 
         /** RovResponse ClientDisconnected */
-        ClientDisconnected?: (rov_action_api.IClientDisconnectedResponse|null);
+        ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse|null);
 
         /** RovResponse Heartbeat */
-        Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
+        Heartbeat?: (rov_actions_proto.IHeartbeatResponse|null);
 
         /** RovResponse Mavlink */
-        Mavlink?: (rov_action_api.IMavlinkResponse|null);
+        Mavlink?: (rov_actions_proto.IMavlinkResponse|null);
 
         /** RovResponse SimplepeerSignal */
-        SimplepeerSignal?: (rov_action_api.ISimplepeerSignalResponse|null);
+        SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalResponse|null);
     }
 
     /** Represents a RovResponse. */
@@ -3889,55 +3886,55 @@ export namespace rov_action_api {
          * Constructs a new RovResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_action_api.IRovResponse);
+        constructor(properties?: rov_actions_proto.IRovResponse);
 
         /** RovResponse BackendMetadata. */
-        public BackendMetadata?: (rov_action_api.IResponseBackendMetadata|null);
+        public BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
 
         /** RovResponse RovExchangeId. */
         public RovExchangeId: number;
 
         /** RovResponse Done. */
-        public Done?: (rov_action_api.IDoneResponse|null);
+        public Done?: (rov_actions_proto.IDoneResponse|null);
 
         /** RovResponse Error. */
-        public Error?: (rov_action_api.IErrorResponse|null);
+        public Error?: (rov_actions_proto.IErrorResponse|null);
 
         /** RovResponse Pong. */
-        public Pong?: (rov_action_api.IPongResponse|null);
+        public Pong?: (rov_actions_proto.IPongResponse|null);
 
         /** RovResponse ContinuedOutput. */
-        public ContinuedOutput?: (rov_action_api.IContinuedOutputResponse|null);
+        public ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse|null);
 
         /** RovResponse SensorUpdates. */
-        public SensorUpdates?: (rov_action_api.ISensorUpdatesResponse|null);
+        public SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse|null);
 
         /** RovResponse PasswordRequired. */
-        public PasswordRequired?: (rov_action_api.IPasswordRequiredResponse|null);
+        public PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse|null);
 
         /** RovResponse PasswordAccepted. */
-        public PasswordAccepted?: (rov_action_api.IPasswordAcceptedResponse|null);
+        public PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse|null);
 
         /** RovResponse PasswordInvalid. */
-        public PasswordInvalid?: (rov_action_api.IPasswordInvalidResponse|null);
+        public PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
 
         /** RovResponse DriverChanged. */
-        public DriverChanged?: (rov_action_api.IDriverChangedResponse|null);
+        public DriverChanged?: (rov_actions_proto.IDriverChangedResponse|null);
 
         /** RovResponse ClientConnected. */
-        public ClientConnected?: (rov_action_api.IClientConnectedResponse|null);
+        public ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
 
         /** RovResponse ClientDisconnected. */
-        public ClientDisconnected?: (rov_action_api.IClientDisconnectedResponse|null);
+        public ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse|null);
 
         /** RovResponse Heartbeat. */
-        public Heartbeat?: (rov_action_api.IHeartbeatResponse|null);
+        public Heartbeat?: (rov_actions_proto.IHeartbeatResponse|null);
 
         /** RovResponse Mavlink. */
-        public Mavlink?: (rov_action_api.IMavlinkResponse|null);
+        public Mavlink?: (rov_actions_proto.IMavlinkResponse|null);
 
         /** RovResponse SimplepeerSignal. */
-        public SimplepeerSignal?: (rov_action_api.ISimplepeerSignalResponse|null);
+        public SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalResponse|null);
 
         /** RovResponse Body. */
         public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal");
@@ -3947,23 +3944,23 @@ export namespace rov_action_api {
          * @param [properties] Properties to set
          * @returns RovResponse instance
          */
-        public static create(properties?: rov_action_api.IRovResponse): rov_action_api.RovResponse;
+        public static create(properties?: rov_actions_proto.IRovResponse): rov_actions_proto.RovResponse;
 
         /**
-         * Encodes the specified RovResponse message. Does not implicitly {@link rov_action_api.RovResponse.verify|verify} messages.
+         * Encodes the specified RovResponse message. Does not implicitly {@link rov_actions_proto.RovResponse.verify|verify} messages.
          * @param message RovResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_action_api.IRovResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IRovResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RovResponse message, length delimited. Does not implicitly {@link rov_action_api.RovResponse.verify|verify} messages.
+         * Encodes the specified RovResponse message, length delimited. Does not implicitly {@link rov_actions_proto.RovResponse.verify|verify} messages.
          * @param message RovResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_action_api.IRovResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IRovResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RovResponse message from the specified reader or buffer.
@@ -3973,7 +3970,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_action_api.RovResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovResponse;
 
         /**
          * Decodes a RovResponse message from the specified reader or buffer, length delimited.
@@ -3982,7 +3979,7 @@ export namespace rov_action_api {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_action_api.RovResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovResponse;
 
         /**
          * Verifies a RovResponse message.
@@ -3996,7 +3993,7 @@ export namespace rov_action_api {
          * @param object Plain object
          * @returns RovResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_action_api.RovResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RovResponse;
 
         /**
          * Creates a plain object from a RovResponse message. Also converts values to other types if specified.
@@ -4004,7 +4001,7 @@ export namespace rov_action_api {
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_action_api.RovResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.RovResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
          * Converts this RovResponse to JSON.

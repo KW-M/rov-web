@@ -1,9 +1,15 @@
 import asyncio
 import logging
-from sensors.pressure import pressure_temp_sensor
-from sensors.compass import fused_compass_sensor
+
 from config_reader import program_config
 from sensors.generic_sensor import GenericSensor
+from utilities import is_raspberry_pi
+
+all_possible_sensors: list[GenericSensor] = []
+if is_raspberry_pi():
+    from sensors.pressure import pressure_temp_sensor
+    from sensors.compass import fused_compass_sensor
+    all_possible_sensors = [fused_compass_sensor, pressure_temp_sensor]
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
@@ -11,13 +17,15 @@ log = logging.getLogger(__name__)
 
 class SensorController:
 
-    all_possible_sensors: list[GenericSensor] = [fused_compass_sensor, pressure_temp_sensor]
     connected_sensors: list[GenericSensor] = []
+
+    def init(self):
+        pass
 
     async def sensor_setup_loop(self):
         log.info("Setting Up Sensors...")
         enabledSensors = program_config.get("EnabledSensors", [])
-        self.connected_sensors = list(filter(lambda sensor: sensor.sensor_name in enabledSensors, self.all_possible_sensors))
+        self.connected_sensors = list(filter(lambda sensor: sensor.sensor_name in enabledSensors, all_possible_sensors))
         sensor_tasks = [sensor.start_sensor_loop() for sensor in self.connected_sensors]
         await asyncio.gather(*sensor_tasks)
 
@@ -87,3 +95,4 @@ class SensorController:
     #     if self.light_sensor:
     #         output_column_names.append('light')
     #     return output_column_names
+sensor_ctrl = SensorController()

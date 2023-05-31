@@ -7,36 +7,18 @@ const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const rov_action_api = $root.rov_action_api = (() => {
+export const rov_actions_proto = $root.rov_actions_proto = (() => {
 
     /**
-     * Namespace rov_action_api.
-     * @exports rov_action_api
+     * Namespace rov_actions_proto.
+     * @exports rov_actions_proto
      * @namespace
      */
-    const rov_action_api = {};
-
-    /**
-     * DataTransportMethod enum.
-     * @name rov_action_api.DataTransportMethod
-     * @enum {number}
-     * @property {number} LivekitReliable=0 LivekitReliable value
-     * @property {number} LivekitUnreliable=1 LivekitUnreliable value
-     * @property {number} DirectReliable=2 DirectReliable value
-     * @property {number} DirectUnreliable=3 DirectUnreliable value
-     */
-    rov_action_api.DataTransportMethod = (function() {
-        const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "LivekitReliable"] = 0;
-        values[valuesById[1] = "LivekitUnreliable"] = 1;
-        values[valuesById[2] = "DirectReliable"] = 2;
-        values[valuesById[3] = "DirectUnreliable"] = 3;
-        return values;
-    })();
+    const rov_actions_proto = {};
 
     /**
      * SensorMeasurmentTypes enum.
-     * @name rov_action_api.SensorMeasurmentTypes
+     * @name rov_actions_proto.SensorMeasurmentTypes
      * @enum {number}
      * @property {number} depth_meters=0 depth_meters value
      * @property {number} water_temp_celsius=1 water_temp_celsius value
@@ -51,7 +33,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * @property {number} battery_current_amps=10 battery_current_amps value
      * @property {number} internal_temp_celsius=11 internal_temp_celsius value
      */
-    rov_action_api.SensorMeasurmentTypes = (function() {
+    rov_actions_proto.SensorMeasurmentTypes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "depth_meters"] = 0;
         values[valuesById[1] = "water_temp_celsius"] = 1;
@@ -68,9 +50,323 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return values;
     })();
 
+    rov_actions_proto.Measurement = (function() {
+
+        /**
+         * Properties of a Measurement.
+         * @memberof rov_actions_proto
+         * @interface IMeasurement
+         * @property {rov_actions_proto.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
+         * @property {number|null} [Value] Measurement Value
+         */
+
+        /**
+         * Constructs a new Measurement.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a Measurement.
+         * @implements IMeasurement
+         * @constructor
+         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
+         */
+        function Measurement(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Measurement MeasurementType.
+         * @member {rov_actions_proto.SensorMeasurmentTypes} MeasurementType
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         */
+        Measurement.prototype.MeasurementType = 0;
+
+        /**
+         * Measurement Value.
+         * @member {number} Value
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         */
+        Measurement.prototype.Value = 0;
+
+        /**
+         * Creates a new Measurement instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
+         * @returns {rov_actions_proto.Measurement} Measurement instance
+         */
+        Measurement.create = function create(properties) {
+            return new Measurement(properties);
+        };
+
+        /**
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Measurement.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
+            if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
+                writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Measurement.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.Measurement} Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Measurement.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.Measurement();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.MeasurementType = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.Value = reader.float();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.Measurement} Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Measurement.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Measurement message.
+         * @function verify
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Measurement.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                switch (message.MeasurementType) {
+                default:
+                    return "MeasurementType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    break;
+                }
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                if (typeof message.Value !== "number")
+                    return "Value: number expected";
+            return null;
+        };
+
+        /**
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.Measurement} Measurement
+         */
+        Measurement.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.Measurement)
+                return object;
+            let message = new $root.rov_actions_proto.Measurement();
+            switch (object.MeasurementType) {
+            default:
+                if (typeof object.MeasurementType === "number") {
+                    message.MeasurementType = object.MeasurementType;
+                    break;
+                }
+                break;
+            case "depth_meters":
+            case 0:
+                message.MeasurementType = 0;
+                break;
+            case "water_temp_celsius":
+            case 1:
+                message.MeasurementType = 1;
+                break;
+            case "pressure_mbar":
+            case 2:
+                message.MeasurementType = 2;
+                break;
+            case "yaw_degrees":
+            case 3:
+                message.MeasurementType = 3;
+                break;
+            case "pitch_degrees":
+            case 4:
+                message.MeasurementType = 4;
+                break;
+            case "roll_degrees":
+            case 5:
+                message.MeasurementType = 5;
+                break;
+            case "x_acceleration_m_s2":
+            case 6:
+                message.MeasurementType = 6;
+                break;
+            case "y_acceleration_m_s2":
+            case 7:
+                message.MeasurementType = 7;
+                break;
+            case "z_acceleration_m_s2":
+            case 8:
+                message.MeasurementType = 8;
+                break;
+            case "battery_voltage":
+            case 9:
+                message.MeasurementType = 9;
+                break;
+            case "battery_current_amps":
+            case 10:
+                message.MeasurementType = 10;
+                break;
+            case "internal_temp_celsius":
+            case 11:
+                message.MeasurementType = 11;
+                break;
+            }
+            if (object.Value != null)
+                message.Value = Number(object.Value);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.Measurement} message Measurement
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Measurement.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.MeasurementType = options.enums === String ? "depth_meters" : 0;
+                object.Value = 0;
+            }
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                object.MeasurementType = options.enums === String ? $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
+            return object;
+        };
+
+        /**
+         * Converts this Measurement to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Measurement.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Measurement
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.Measurement";
+        };
+
+        return Measurement;
+    })();
+
+    /**
+     * DataTransportMethod enum.
+     * @name rov_actions_proto.DataTransportMethod
+     * @enum {number}
+     * @property {number} LivekitReliable=0 LivekitReliable value
+     * @property {number} LivekitUnreliable=1 LivekitUnreliable value
+     * @property {number} DirectReliable=2 DirectReliable value
+     * @property {number} DirectUnreliable=3 DirectUnreliable value
+     */
+    rov_actions_proto.DataTransportMethod = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "LivekitReliable"] = 0;
+        values[valuesById[1] = "LivekitUnreliable"] = 1;
+        values[valuesById[2] = "DirectReliable"] = 2;
+        values[valuesById[3] = "DirectUnreliable"] = 3;
+        return values;
+    })();
+
     /**
      * RovActionTypes enum.
-     * @name rov_action_api.RovActionTypes
+     * @name rov_actions_proto.RovActionTypes
      * @enum {number}
      * @property {number} ping=0 ping value
      * @property {number} password_attempt=1 password_attempt value
@@ -93,7 +389,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * @property {number} mavlink_action=18 mavlink_action value
      * @property {number} simplepeer_signal=19 simplepeer_signal value
      */
-    rov_action_api.RovActionTypes = (function() {
+    rov_actions_proto.RovActionTypes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "ping"] = 0;
         values[valuesById[1] = "password_attempt"] = 1;
@@ -118,22 +414,22 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return values;
     })();
 
-    rov_action_api.PingAction = (function() {
+    rov_actions_proto.PingAction = (function() {
 
         /**
          * Properties of a PingAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPingAction
          * @property {number|Long|null} [Time] PingAction Time
          */
 
         /**
          * Constructs a new PingAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PingAction.
          * @implements IPingAction
          * @constructor
-         * @param {rov_action_api.IPingAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IPingAction=} [properties] Properties to set
          */
         function PingAction(properties) {
             if (properties)
@@ -145,7 +441,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * PingAction Time.
          * @member {number|Long} Time
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @instance
          */
         PingAction.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
@@ -153,21 +449,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PingAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
-         * @param {rov_action_api.IPingAction=} [properties] Properties to set
-         * @returns {rov_action_api.PingAction} PingAction instance
+         * @param {rov_actions_proto.IPingAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.PingAction} PingAction instance
          */
         PingAction.create = function create(properties) {
             return new PingAction(properties);
         };
 
         /**
-         * Encodes the specified PingAction message. Does not implicitly {@link rov_action_api.PingAction.verify|verify} messages.
+         * Encodes the specified PingAction message. Does not implicitly {@link rov_actions_proto.PingAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
-         * @param {rov_action_api.IPingAction} message PingAction message or plain object to encode
+         * @param {rov_actions_proto.IPingAction} message PingAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -180,11 +476,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PingAction message, length delimited. Does not implicitly {@link rov_action_api.PingAction.verify|verify} messages.
+         * Encodes the specified PingAction message, length delimited. Does not implicitly {@link rov_actions_proto.PingAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
-         * @param {rov_action_api.IPingAction} message PingAction message or plain object to encode
+         * @param {rov_actions_proto.IPingAction} message PingAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -195,18 +491,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PingAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PingAction} PingAction
+         * @returns {rov_actions_proto.PingAction} PingAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PingAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PingAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PingAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -225,10 +521,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PingAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PingAction} PingAction
+         * @returns {rov_actions_proto.PingAction} PingAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -241,7 +537,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PingAction message.
          * @function verify
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -258,15 +554,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PingAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PingAction} PingAction
+         * @returns {rov_actions_proto.PingAction} PingAction
          */
         PingAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PingAction)
+            if (object instanceof $root.rov_actions_proto.PingAction)
                 return object;
-            let message = new $root.rov_action_api.PingAction();
+            let message = new $root.rov_actions_proto.PingAction();
             if (object.Time != null)
                 if ($util.Long)
                     (message.Time = $util.Long.fromValue(object.Time)).unsigned = false;
@@ -282,9 +578,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a PingAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
-         * @param {rov_action_api.PingAction} message PingAction
+         * @param {rov_actions_proto.PingAction} message PingAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -309,7 +605,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PingAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -320,7 +616,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PingAction
          * @function getTypeUrl
-         * @memberof rov_action_api.PingAction
+         * @memberof rov_actions_proto.PingAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -329,28 +625,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PingAction";
+            return typeUrlPrefix + "/rov_actions_proto.PingAction";
         };
 
         return PingAction;
     })();
 
-    rov_action_api.PasswordAttemptAction = (function() {
+    rov_actions_proto.PasswordAttemptAction = (function() {
 
         /**
          * Properties of a PasswordAttemptAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPasswordAttemptAction
          * @property {string|null} [Password] PasswordAttemptAction Password
          */
 
         /**
          * Constructs a new PasswordAttemptAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PasswordAttemptAction.
          * @implements IPasswordAttemptAction
          * @constructor
-         * @param {rov_action_api.IPasswordAttemptAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IPasswordAttemptAction=} [properties] Properties to set
          */
         function PasswordAttemptAction(properties) {
             if (properties)
@@ -362,7 +658,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * PasswordAttemptAction Password.
          * @member {string} Password
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @instance
          */
         PasswordAttemptAction.prototype.Password = "";
@@ -370,21 +666,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PasswordAttemptAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
-         * @param {rov_action_api.IPasswordAttemptAction=} [properties] Properties to set
-         * @returns {rov_action_api.PasswordAttemptAction} PasswordAttemptAction instance
+         * @param {rov_actions_proto.IPasswordAttemptAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.PasswordAttemptAction} PasswordAttemptAction instance
          */
         PasswordAttemptAction.create = function create(properties) {
             return new PasswordAttemptAction(properties);
         };
 
         /**
-         * Encodes the specified PasswordAttemptAction message. Does not implicitly {@link rov_action_api.PasswordAttemptAction.verify|verify} messages.
+         * Encodes the specified PasswordAttemptAction message. Does not implicitly {@link rov_actions_proto.PasswordAttemptAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
-         * @param {rov_action_api.IPasswordAttemptAction} message PasswordAttemptAction message or plain object to encode
+         * @param {rov_actions_proto.IPasswordAttemptAction} message PasswordAttemptAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -397,11 +693,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PasswordAttemptAction message, length delimited. Does not implicitly {@link rov_action_api.PasswordAttemptAction.verify|verify} messages.
+         * Encodes the specified PasswordAttemptAction message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordAttemptAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
-         * @param {rov_action_api.IPasswordAttemptAction} message PasswordAttemptAction message or plain object to encode
+         * @param {rov_actions_proto.IPasswordAttemptAction} message PasswordAttemptAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -412,18 +708,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordAttemptAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PasswordAttemptAction} PasswordAttemptAction
+         * @returns {rov_actions_proto.PasswordAttemptAction} PasswordAttemptAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PasswordAttemptAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PasswordAttemptAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PasswordAttemptAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -442,10 +738,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordAttemptAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PasswordAttemptAction} PasswordAttemptAction
+         * @returns {rov_actions_proto.PasswordAttemptAction} PasswordAttemptAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -458,7 +754,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PasswordAttemptAction message.
          * @function verify
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -475,15 +771,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PasswordAttemptAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PasswordAttemptAction} PasswordAttemptAction
+         * @returns {rov_actions_proto.PasswordAttemptAction} PasswordAttemptAction
          */
         PasswordAttemptAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PasswordAttemptAction)
+            if (object instanceof $root.rov_actions_proto.PasswordAttemptAction)
                 return object;
-            let message = new $root.rov_action_api.PasswordAttemptAction();
+            let message = new $root.rov_actions_proto.PasswordAttemptAction();
             if (object.Password != null)
                 message.Password = String(object.Password);
             return message;
@@ -492,9 +788,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a PasswordAttemptAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
-         * @param {rov_action_api.PasswordAttemptAction} message PasswordAttemptAction
+         * @param {rov_actions_proto.PasswordAttemptAction} message PasswordAttemptAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -512,7 +808,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PasswordAttemptAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -523,7 +819,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PasswordAttemptAction
          * @function getTypeUrl
-         * @memberof rov_action_api.PasswordAttemptAction
+         * @memberof rov_actions_proto.PasswordAttemptAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -532,28 +828,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PasswordAttemptAction";
+            return typeUrlPrefix + "/rov_actions_proto.PasswordAttemptAction";
         };
 
         return PasswordAttemptAction;
     })();
 
-    rov_action_api.AuthTokenAttemptAction = (function() {
+    rov_actions_proto.AuthTokenAttemptAction = (function() {
 
         /**
          * Properties of an AuthTokenAttemptAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IAuthTokenAttemptAction
          * @property {string|null} [Token] AuthTokenAttemptAction Token
          */
 
         /**
          * Constructs a new AuthTokenAttemptAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents an AuthTokenAttemptAction.
          * @implements IAuthTokenAttemptAction
          * @constructor
-         * @param {rov_action_api.IAuthTokenAttemptAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IAuthTokenAttemptAction=} [properties] Properties to set
          */
         function AuthTokenAttemptAction(properties) {
             if (properties)
@@ -565,7 +861,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * AuthTokenAttemptAction Token.
          * @member {string} Token
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @instance
          */
         AuthTokenAttemptAction.prototype.Token = "";
@@ -573,21 +869,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new AuthTokenAttemptAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
-         * @param {rov_action_api.IAuthTokenAttemptAction=} [properties] Properties to set
-         * @returns {rov_action_api.AuthTokenAttemptAction} AuthTokenAttemptAction instance
+         * @param {rov_actions_proto.IAuthTokenAttemptAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.AuthTokenAttemptAction} AuthTokenAttemptAction instance
          */
         AuthTokenAttemptAction.create = function create(properties) {
             return new AuthTokenAttemptAction(properties);
         };
 
         /**
-         * Encodes the specified AuthTokenAttemptAction message. Does not implicitly {@link rov_action_api.AuthTokenAttemptAction.verify|verify} messages.
+         * Encodes the specified AuthTokenAttemptAction message. Does not implicitly {@link rov_actions_proto.AuthTokenAttemptAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
-         * @param {rov_action_api.IAuthTokenAttemptAction} message AuthTokenAttemptAction message or plain object to encode
+         * @param {rov_actions_proto.IAuthTokenAttemptAction} message AuthTokenAttemptAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -600,11 +896,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified AuthTokenAttemptAction message, length delimited. Does not implicitly {@link rov_action_api.AuthTokenAttemptAction.verify|verify} messages.
+         * Encodes the specified AuthTokenAttemptAction message, length delimited. Does not implicitly {@link rov_actions_proto.AuthTokenAttemptAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
-         * @param {rov_action_api.IAuthTokenAttemptAction} message AuthTokenAttemptAction message or plain object to encode
+         * @param {rov_actions_proto.IAuthTokenAttemptAction} message AuthTokenAttemptAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -615,18 +911,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an AuthTokenAttemptAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.AuthTokenAttemptAction} AuthTokenAttemptAction
+         * @returns {rov_actions_proto.AuthTokenAttemptAction} AuthTokenAttemptAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         AuthTokenAttemptAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.AuthTokenAttemptAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.AuthTokenAttemptAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -645,10 +941,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an AuthTokenAttemptAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.AuthTokenAttemptAction} AuthTokenAttemptAction
+         * @returns {rov_actions_proto.AuthTokenAttemptAction} AuthTokenAttemptAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -661,7 +957,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies an AuthTokenAttemptAction message.
          * @function verify
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -678,15 +974,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates an AuthTokenAttemptAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.AuthTokenAttemptAction} AuthTokenAttemptAction
+         * @returns {rov_actions_proto.AuthTokenAttemptAction} AuthTokenAttemptAction
          */
         AuthTokenAttemptAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.AuthTokenAttemptAction)
+            if (object instanceof $root.rov_actions_proto.AuthTokenAttemptAction)
                 return object;
-            let message = new $root.rov_action_api.AuthTokenAttemptAction();
+            let message = new $root.rov_actions_proto.AuthTokenAttemptAction();
             if (object.Token != null)
                 message.Token = String(object.Token);
             return message;
@@ -695,9 +991,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from an AuthTokenAttemptAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
-         * @param {rov_action_api.AuthTokenAttemptAction} message AuthTokenAttemptAction
+         * @param {rov_actions_proto.AuthTokenAttemptAction} message AuthTokenAttemptAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -715,7 +1011,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this AuthTokenAttemptAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -726,7 +1022,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for AuthTokenAttemptAction
          * @function getTypeUrl
-         * @memberof rov_action_api.AuthTokenAttemptAction
+         * @memberof rov_actions_proto.AuthTokenAttemptAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -735,27 +1031,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.AuthTokenAttemptAction";
+            return typeUrlPrefix + "/rov_actions_proto.AuthTokenAttemptAction";
         };
 
         return AuthTokenAttemptAction;
     })();
 
-    rov_action_api.TakeControlAction = (function() {
+    rov_actions_proto.TakeControlAction = (function() {
 
         /**
          * Properties of a TakeControlAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface ITakeControlAction
          */
 
         /**
          * Constructs a new TakeControlAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a TakeControlAction.
          * @implements ITakeControlAction
          * @constructor
-         * @param {rov_action_api.ITakeControlAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ITakeControlAction=} [properties] Properties to set
          */
         function TakeControlAction(properties) {
             if (properties)
@@ -767,21 +1063,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new TakeControlAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
-         * @param {rov_action_api.ITakeControlAction=} [properties] Properties to set
-         * @returns {rov_action_api.TakeControlAction} TakeControlAction instance
+         * @param {rov_actions_proto.ITakeControlAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.TakeControlAction} TakeControlAction instance
          */
         TakeControlAction.create = function create(properties) {
             return new TakeControlAction(properties);
         };
 
         /**
-         * Encodes the specified TakeControlAction message. Does not implicitly {@link rov_action_api.TakeControlAction.verify|verify} messages.
+         * Encodes the specified TakeControlAction message. Does not implicitly {@link rov_actions_proto.TakeControlAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
-         * @param {rov_action_api.ITakeControlAction} message TakeControlAction message or plain object to encode
+         * @param {rov_actions_proto.ITakeControlAction} message TakeControlAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -792,11 +1088,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified TakeControlAction message, length delimited. Does not implicitly {@link rov_action_api.TakeControlAction.verify|verify} messages.
+         * Encodes the specified TakeControlAction message, length delimited. Does not implicitly {@link rov_actions_proto.TakeControlAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
-         * @param {rov_action_api.ITakeControlAction} message TakeControlAction message or plain object to encode
+         * @param {rov_actions_proto.ITakeControlAction} message TakeControlAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -807,18 +1103,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a TakeControlAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.TakeControlAction} TakeControlAction
+         * @returns {rov_actions_proto.TakeControlAction} TakeControlAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         TakeControlAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.TakeControlAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.TakeControlAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -833,10 +1129,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a TakeControlAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.TakeControlAction} TakeControlAction
+         * @returns {rov_actions_proto.TakeControlAction} TakeControlAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -849,7 +1145,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a TakeControlAction message.
          * @function verify
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -863,23 +1159,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a TakeControlAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.TakeControlAction} TakeControlAction
+         * @returns {rov_actions_proto.TakeControlAction} TakeControlAction
          */
         TakeControlAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.TakeControlAction)
+            if (object instanceof $root.rov_actions_proto.TakeControlAction)
                 return object;
-            return new $root.rov_action_api.TakeControlAction();
+            return new $root.rov_actions_proto.TakeControlAction();
         };
 
         /**
          * Creates a plain object from a TakeControlAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
-         * @param {rov_action_api.TakeControlAction} message TakeControlAction
+         * @param {rov_actions_proto.TakeControlAction} message TakeControlAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -890,7 +1186,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this TakeControlAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -901,7 +1197,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for TakeControlAction
          * @function getTypeUrl
-         * @memberof rov_action_api.TakeControlAction
+         * @memberof rov_actions_proto.TakeControlAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -910,17 +1206,17 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.TakeControlAction";
+            return typeUrlPrefix + "/rov_actions_proto.TakeControlAction";
         };
 
         return TakeControlAction;
     })();
 
-    rov_action_api.MoveAction = (function() {
+    rov_actions_proto.MoveAction = (function() {
 
         /**
          * Properties of a MoveAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IMoveAction
          * @property {number|null} [VelocityX] MoveAction VelocityX
          * @property {number|null} [VelocityY] MoveAction VelocityY
@@ -930,11 +1226,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * Constructs a new MoveAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a MoveAction.
          * @implements IMoveAction
          * @constructor
-         * @param {rov_action_api.IMoveAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IMoveAction=} [properties] Properties to set
          */
         function MoveAction(properties) {
             if (properties)
@@ -946,7 +1242,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MoveAction VelocityX.
          * @member {number} VelocityX
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @instance
          */
         MoveAction.prototype.VelocityX = 0;
@@ -954,7 +1250,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MoveAction VelocityY.
          * @member {number} VelocityY
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @instance
          */
         MoveAction.prototype.VelocityY = 0;
@@ -962,7 +1258,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MoveAction VelocityZ.
          * @member {number} VelocityZ
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @instance
          */
         MoveAction.prototype.VelocityZ = 0;
@@ -970,7 +1266,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MoveAction AngularVelocityYaw.
          * @member {number} AngularVelocityYaw
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @instance
          */
         MoveAction.prototype.AngularVelocityYaw = 0;
@@ -978,21 +1274,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new MoveAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
-         * @param {rov_action_api.IMoveAction=} [properties] Properties to set
-         * @returns {rov_action_api.MoveAction} MoveAction instance
+         * @param {rov_actions_proto.IMoveAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.MoveAction} MoveAction instance
          */
         MoveAction.create = function create(properties) {
             return new MoveAction(properties);
         };
 
         /**
-         * Encodes the specified MoveAction message. Does not implicitly {@link rov_action_api.MoveAction.verify|verify} messages.
+         * Encodes the specified MoveAction message. Does not implicitly {@link rov_actions_proto.MoveAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
-         * @param {rov_action_api.IMoveAction} message MoveAction message or plain object to encode
+         * @param {rov_actions_proto.IMoveAction} message MoveAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1011,11 +1307,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified MoveAction message, length delimited. Does not implicitly {@link rov_action_api.MoveAction.verify|verify} messages.
+         * Encodes the specified MoveAction message, length delimited. Does not implicitly {@link rov_actions_proto.MoveAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
-         * @param {rov_action_api.IMoveAction} message MoveAction message or plain object to encode
+         * @param {rov_actions_proto.IMoveAction} message MoveAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1026,18 +1322,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MoveAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.MoveAction} MoveAction
+         * @returns {rov_actions_proto.MoveAction} MoveAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         MoveAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.MoveAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.MoveAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1068,10 +1364,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MoveAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.MoveAction} MoveAction
+         * @returns {rov_actions_proto.MoveAction} MoveAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1084,7 +1380,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a MoveAction message.
          * @function verify
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -1110,15 +1406,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a MoveAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.MoveAction} MoveAction
+         * @returns {rov_actions_proto.MoveAction} MoveAction
          */
         MoveAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.MoveAction)
+            if (object instanceof $root.rov_actions_proto.MoveAction)
                 return object;
-            let message = new $root.rov_action_api.MoveAction();
+            let message = new $root.rov_actions_proto.MoveAction();
             if (object.VelocityX != null)
                 message.VelocityX = Number(object.VelocityX);
             if (object.VelocityY != null)
@@ -1133,9 +1429,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a MoveAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
-         * @param {rov_action_api.MoveAction} message MoveAction
+         * @param {rov_actions_proto.MoveAction} message MoveAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -1163,7 +1459,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this MoveAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -1174,7 +1470,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for MoveAction
          * @function getTypeUrl
-         * @memberof rov_action_api.MoveAction
+         * @memberof rov_actions_proto.MoveAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -1183,27 +1479,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.MoveAction";
+            return typeUrlPrefix + "/rov_actions_proto.MoveAction";
         };
 
         return MoveAction;
     })();
 
-    rov_action_api.BeginVideoStreamAction = (function() {
+    rov_actions_proto.BeginVideoStreamAction = (function() {
 
         /**
          * Properties of a BeginVideoStreamAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IBeginVideoStreamAction
          */
 
         /**
          * Constructs a new BeginVideoStreamAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a BeginVideoStreamAction.
          * @implements IBeginVideoStreamAction
          * @constructor
-         * @param {rov_action_api.IBeginVideoStreamAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IBeginVideoStreamAction=} [properties] Properties to set
          */
         function BeginVideoStreamAction(properties) {
             if (properties)
@@ -1215,21 +1511,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new BeginVideoStreamAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
-         * @param {rov_action_api.IBeginVideoStreamAction=} [properties] Properties to set
-         * @returns {rov_action_api.BeginVideoStreamAction} BeginVideoStreamAction instance
+         * @param {rov_actions_proto.IBeginVideoStreamAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction instance
          */
         BeginVideoStreamAction.create = function create(properties) {
             return new BeginVideoStreamAction(properties);
         };
 
         /**
-         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_action_api.BeginVideoStreamAction.verify|verify} messages.
+         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
-         * @param {rov_action_api.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
+         * @param {rov_actions_proto.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1240,11 +1536,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_action_api.BeginVideoStreamAction.verify|verify} messages.
+         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
-         * @param {rov_action_api.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
+         * @param {rov_actions_proto.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1255,18 +1551,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a BeginVideoStreamAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.BeginVideoStreamAction} BeginVideoStreamAction
+         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         BeginVideoStreamAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.BeginVideoStreamAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.BeginVideoStreamAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1281,10 +1577,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a BeginVideoStreamAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.BeginVideoStreamAction} BeginVideoStreamAction
+         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1297,7 +1593,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a BeginVideoStreamAction message.
          * @function verify
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -1311,23 +1607,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a BeginVideoStreamAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.BeginVideoStreamAction} BeginVideoStreamAction
+         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
          */
         BeginVideoStreamAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.BeginVideoStreamAction)
+            if (object instanceof $root.rov_actions_proto.BeginVideoStreamAction)
                 return object;
-            return new $root.rov_action_api.BeginVideoStreamAction();
+            return new $root.rov_actions_proto.BeginVideoStreamAction();
         };
 
         /**
          * Creates a plain object from a BeginVideoStreamAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
-         * @param {rov_action_api.BeginVideoStreamAction} message BeginVideoStreamAction
+         * @param {rov_actions_proto.BeginVideoStreamAction} message BeginVideoStreamAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -1338,7 +1634,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this BeginVideoStreamAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -1349,7 +1645,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for BeginVideoStreamAction
          * @function getTypeUrl
-         * @memberof rov_action_api.BeginVideoStreamAction
+         * @memberof rov_actions_proto.BeginVideoStreamAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -1358,27 +1654,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.BeginVideoStreamAction";
+            return typeUrlPrefix + "/rov_actions_proto.BeginVideoStreamAction";
         };
 
         return BeginVideoStreamAction;
     })();
 
-    rov_action_api.TakePhotoAction = (function() {
+    rov_actions_proto.TakePhotoAction = (function() {
 
         /**
          * Properties of a TakePhotoAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface ITakePhotoAction
          */
 
         /**
          * Constructs a new TakePhotoAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a TakePhotoAction.
          * @implements ITakePhotoAction
          * @constructor
-         * @param {rov_action_api.ITakePhotoAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ITakePhotoAction=} [properties] Properties to set
          */
         function TakePhotoAction(properties) {
             if (properties)
@@ -1390,21 +1686,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new TakePhotoAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
-         * @param {rov_action_api.ITakePhotoAction=} [properties] Properties to set
-         * @returns {rov_action_api.TakePhotoAction} TakePhotoAction instance
+         * @param {rov_actions_proto.ITakePhotoAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.TakePhotoAction} TakePhotoAction instance
          */
         TakePhotoAction.create = function create(properties) {
             return new TakePhotoAction(properties);
         };
 
         /**
-         * Encodes the specified TakePhotoAction message. Does not implicitly {@link rov_action_api.TakePhotoAction.verify|verify} messages.
+         * Encodes the specified TakePhotoAction message. Does not implicitly {@link rov_actions_proto.TakePhotoAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
-         * @param {rov_action_api.ITakePhotoAction} message TakePhotoAction message or plain object to encode
+         * @param {rov_actions_proto.ITakePhotoAction} message TakePhotoAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1415,11 +1711,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified TakePhotoAction message, length delimited. Does not implicitly {@link rov_action_api.TakePhotoAction.verify|verify} messages.
+         * Encodes the specified TakePhotoAction message, length delimited. Does not implicitly {@link rov_actions_proto.TakePhotoAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
-         * @param {rov_action_api.ITakePhotoAction} message TakePhotoAction message or plain object to encode
+         * @param {rov_actions_proto.ITakePhotoAction} message TakePhotoAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1430,18 +1726,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a TakePhotoAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.TakePhotoAction} TakePhotoAction
+         * @returns {rov_actions_proto.TakePhotoAction} TakePhotoAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         TakePhotoAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.TakePhotoAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.TakePhotoAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1456,10 +1752,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a TakePhotoAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.TakePhotoAction} TakePhotoAction
+         * @returns {rov_actions_proto.TakePhotoAction} TakePhotoAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1472,7 +1768,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a TakePhotoAction message.
          * @function verify
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -1486,23 +1782,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a TakePhotoAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.TakePhotoAction} TakePhotoAction
+         * @returns {rov_actions_proto.TakePhotoAction} TakePhotoAction
          */
         TakePhotoAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.TakePhotoAction)
+            if (object instanceof $root.rov_actions_proto.TakePhotoAction)
                 return object;
-            return new $root.rov_action_api.TakePhotoAction();
+            return new $root.rov_actions_proto.TakePhotoAction();
         };
 
         /**
          * Creates a plain object from a TakePhotoAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
-         * @param {rov_action_api.TakePhotoAction} message TakePhotoAction
+         * @param {rov_actions_proto.TakePhotoAction} message TakePhotoAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -1513,7 +1809,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this TakePhotoAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -1524,7 +1820,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for TakePhotoAction
          * @function getTypeUrl
-         * @memberof rov_action_api.TakePhotoAction
+         * @memberof rov_actions_proto.TakePhotoAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -1533,27 +1829,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.TakePhotoAction";
+            return typeUrlPrefix + "/rov_actions_proto.TakePhotoAction";
         };
 
         return TakePhotoAction;
     })();
 
-    rov_action_api.StartVideoRecAction = (function() {
+    rov_actions_proto.StartVideoRecAction = (function() {
 
         /**
          * Properties of a StartVideoRecAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IStartVideoRecAction
          */
 
         /**
          * Constructs a new StartVideoRecAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a StartVideoRecAction.
          * @implements IStartVideoRecAction
          * @constructor
-         * @param {rov_action_api.IStartVideoRecAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IStartVideoRecAction=} [properties] Properties to set
          */
         function StartVideoRecAction(properties) {
             if (properties)
@@ -1565,21 +1861,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new StartVideoRecAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
-         * @param {rov_action_api.IStartVideoRecAction=} [properties] Properties to set
-         * @returns {rov_action_api.StartVideoRecAction} StartVideoRecAction instance
+         * @param {rov_actions_proto.IStartVideoRecAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.StartVideoRecAction} StartVideoRecAction instance
          */
         StartVideoRecAction.create = function create(properties) {
             return new StartVideoRecAction(properties);
         };
 
         /**
-         * Encodes the specified StartVideoRecAction message. Does not implicitly {@link rov_action_api.StartVideoRecAction.verify|verify} messages.
+         * Encodes the specified StartVideoRecAction message. Does not implicitly {@link rov_actions_proto.StartVideoRecAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
-         * @param {rov_action_api.IStartVideoRecAction} message StartVideoRecAction message or plain object to encode
+         * @param {rov_actions_proto.IStartVideoRecAction} message StartVideoRecAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1590,11 +1886,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified StartVideoRecAction message, length delimited. Does not implicitly {@link rov_action_api.StartVideoRecAction.verify|verify} messages.
+         * Encodes the specified StartVideoRecAction message, length delimited. Does not implicitly {@link rov_actions_proto.StartVideoRecAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
-         * @param {rov_action_api.IStartVideoRecAction} message StartVideoRecAction message or plain object to encode
+         * @param {rov_actions_proto.IStartVideoRecAction} message StartVideoRecAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1605,18 +1901,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a StartVideoRecAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.StartVideoRecAction} StartVideoRecAction
+         * @returns {rov_actions_proto.StartVideoRecAction} StartVideoRecAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         StartVideoRecAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.StartVideoRecAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.StartVideoRecAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1631,10 +1927,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a StartVideoRecAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.StartVideoRecAction} StartVideoRecAction
+         * @returns {rov_actions_proto.StartVideoRecAction} StartVideoRecAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1647,7 +1943,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a StartVideoRecAction message.
          * @function verify
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -1661,23 +1957,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a StartVideoRecAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.StartVideoRecAction} StartVideoRecAction
+         * @returns {rov_actions_proto.StartVideoRecAction} StartVideoRecAction
          */
         StartVideoRecAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.StartVideoRecAction)
+            if (object instanceof $root.rov_actions_proto.StartVideoRecAction)
                 return object;
-            return new $root.rov_action_api.StartVideoRecAction();
+            return new $root.rov_actions_proto.StartVideoRecAction();
         };
 
         /**
          * Creates a plain object from a StartVideoRecAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
-         * @param {rov_action_api.StartVideoRecAction} message StartVideoRecAction
+         * @param {rov_actions_proto.StartVideoRecAction} message StartVideoRecAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -1688,7 +1984,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this StartVideoRecAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -1699,7 +1995,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for StartVideoRecAction
          * @function getTypeUrl
-         * @memberof rov_action_api.StartVideoRecAction
+         * @memberof rov_actions_proto.StartVideoRecAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -1708,27 +2004,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.StartVideoRecAction";
+            return typeUrlPrefix + "/rov_actions_proto.StartVideoRecAction";
         };
 
         return StartVideoRecAction;
     })();
 
-    rov_action_api.StopVideoRecAction = (function() {
+    rov_actions_proto.StopVideoRecAction = (function() {
 
         /**
          * Properties of a StopVideoRecAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IStopVideoRecAction
          */
 
         /**
          * Constructs a new StopVideoRecAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a StopVideoRecAction.
          * @implements IStopVideoRecAction
          * @constructor
-         * @param {rov_action_api.IStopVideoRecAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IStopVideoRecAction=} [properties] Properties to set
          */
         function StopVideoRecAction(properties) {
             if (properties)
@@ -1740,21 +2036,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new StopVideoRecAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
-         * @param {rov_action_api.IStopVideoRecAction=} [properties] Properties to set
-         * @returns {rov_action_api.StopVideoRecAction} StopVideoRecAction instance
+         * @param {rov_actions_proto.IStopVideoRecAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.StopVideoRecAction} StopVideoRecAction instance
          */
         StopVideoRecAction.create = function create(properties) {
             return new StopVideoRecAction(properties);
         };
 
         /**
-         * Encodes the specified StopVideoRecAction message. Does not implicitly {@link rov_action_api.StopVideoRecAction.verify|verify} messages.
+         * Encodes the specified StopVideoRecAction message. Does not implicitly {@link rov_actions_proto.StopVideoRecAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
-         * @param {rov_action_api.IStopVideoRecAction} message StopVideoRecAction message or plain object to encode
+         * @param {rov_actions_proto.IStopVideoRecAction} message StopVideoRecAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1765,11 +2061,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified StopVideoRecAction message, length delimited. Does not implicitly {@link rov_action_api.StopVideoRecAction.verify|verify} messages.
+         * Encodes the specified StopVideoRecAction message, length delimited. Does not implicitly {@link rov_actions_proto.StopVideoRecAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
-         * @param {rov_action_api.IStopVideoRecAction} message StopVideoRecAction message or plain object to encode
+         * @param {rov_actions_proto.IStopVideoRecAction} message StopVideoRecAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1780,18 +2076,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a StopVideoRecAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.StopVideoRecAction} StopVideoRecAction
+         * @returns {rov_actions_proto.StopVideoRecAction} StopVideoRecAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         StopVideoRecAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.StopVideoRecAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.StopVideoRecAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1806,10 +2102,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a StopVideoRecAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.StopVideoRecAction} StopVideoRecAction
+         * @returns {rov_actions_proto.StopVideoRecAction} StopVideoRecAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1822,7 +2118,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a StopVideoRecAction message.
          * @function verify
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -1836,23 +2132,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a StopVideoRecAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.StopVideoRecAction} StopVideoRecAction
+         * @returns {rov_actions_proto.StopVideoRecAction} StopVideoRecAction
          */
         StopVideoRecAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.StopVideoRecAction)
+            if (object instanceof $root.rov_actions_proto.StopVideoRecAction)
                 return object;
-            return new $root.rov_action_api.StopVideoRecAction();
+            return new $root.rov_actions_proto.StopVideoRecAction();
         };
 
         /**
          * Creates a plain object from a StopVideoRecAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
-         * @param {rov_action_api.StopVideoRecAction} message StopVideoRecAction
+         * @param {rov_actions_proto.StopVideoRecAction} message StopVideoRecAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -1863,7 +2159,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this StopVideoRecAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -1874,7 +2170,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for StopVideoRecAction
          * @function getTypeUrl
-         * @memberof rov_action_api.StopVideoRecAction
+         * @memberof rov_actions_proto.StopVideoRecAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -1883,27 +2179,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.StopVideoRecAction";
+            return typeUrlPrefix + "/rov_actions_proto.StopVideoRecAction";
         };
 
         return StopVideoRecAction;
     })();
 
-    rov_action_api.ToogleLightsAction = (function() {
+    rov_actions_proto.ToogleLightsAction = (function() {
 
         /**
          * Properties of a ToogleLightsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IToogleLightsAction
          */
 
         /**
          * Constructs a new ToogleLightsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ToogleLightsAction.
          * @implements IToogleLightsAction
          * @constructor
-         * @param {rov_action_api.IToogleLightsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IToogleLightsAction=} [properties] Properties to set
          */
         function ToogleLightsAction(properties) {
             if (properties)
@@ -1915,21 +2211,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ToogleLightsAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
-         * @param {rov_action_api.IToogleLightsAction=} [properties] Properties to set
-         * @returns {rov_action_api.ToogleLightsAction} ToogleLightsAction instance
+         * @param {rov_actions_proto.IToogleLightsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction instance
          */
         ToogleLightsAction.create = function create(properties) {
             return new ToogleLightsAction(properties);
         };
 
         /**
-         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_action_api.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
-         * @param {rov_action_api.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
+         * @param {rov_actions_proto.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1940,11 +2236,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_action_api.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
-         * @param {rov_action_api.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
+         * @param {rov_actions_proto.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -1955,18 +2251,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ToogleLightsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ToogleLightsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ToogleLightsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ToogleLightsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -1981,10 +2277,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ToogleLightsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -1997,7 +2293,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ToogleLightsAction message.
          * @function verify
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2011,23 +2307,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ToogleLightsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
          */
         ToogleLightsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ToogleLightsAction)
+            if (object instanceof $root.rov_actions_proto.ToogleLightsAction)
                 return object;
-            return new $root.rov_action_api.ToogleLightsAction();
+            return new $root.rov_actions_proto.ToogleLightsAction();
         };
 
         /**
          * Creates a plain object from a ToogleLightsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
-         * @param {rov_action_api.ToogleLightsAction} message ToogleLightsAction
+         * @param {rov_actions_proto.ToogleLightsAction} message ToogleLightsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2038,7 +2334,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ToogleLightsAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2049,7 +2345,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ToogleLightsAction
          * @function getTypeUrl
-         * @memberof rov_action_api.ToogleLightsAction
+         * @memberof rov_actions_proto.ToogleLightsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2058,27 +2354,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ToogleLightsAction";
+            return typeUrlPrefix + "/rov_actions_proto.ToogleLightsAction";
         };
 
         return ToogleLightsAction;
     })();
 
-    rov_action_api.ShutdownRovAction = (function() {
+    rov_actions_proto.ShutdownRovAction = (function() {
 
         /**
          * Properties of a ShutdownRovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IShutdownRovAction
          */
 
         /**
          * Constructs a new ShutdownRovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ShutdownRovAction.
          * @implements IShutdownRovAction
          * @constructor
-         * @param {rov_action_api.IShutdownRovAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IShutdownRovAction=} [properties] Properties to set
          */
         function ShutdownRovAction(properties) {
             if (properties)
@@ -2090,21 +2386,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ShutdownRovAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
-         * @param {rov_action_api.IShutdownRovAction=} [properties] Properties to set
-         * @returns {rov_action_api.ShutdownRovAction} ShutdownRovAction instance
+         * @param {rov_actions_proto.IShutdownRovAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.ShutdownRovAction} ShutdownRovAction instance
          */
         ShutdownRovAction.create = function create(properties) {
             return new ShutdownRovAction(properties);
         };
 
         /**
-         * Encodes the specified ShutdownRovAction message. Does not implicitly {@link rov_action_api.ShutdownRovAction.verify|verify} messages.
+         * Encodes the specified ShutdownRovAction message. Does not implicitly {@link rov_actions_proto.ShutdownRovAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
-         * @param {rov_action_api.IShutdownRovAction} message ShutdownRovAction message or plain object to encode
+         * @param {rov_actions_proto.IShutdownRovAction} message ShutdownRovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2115,11 +2411,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ShutdownRovAction message, length delimited. Does not implicitly {@link rov_action_api.ShutdownRovAction.verify|verify} messages.
+         * Encodes the specified ShutdownRovAction message, length delimited. Does not implicitly {@link rov_actions_proto.ShutdownRovAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
-         * @param {rov_action_api.IShutdownRovAction} message ShutdownRovAction message or plain object to encode
+         * @param {rov_actions_proto.IShutdownRovAction} message ShutdownRovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2130,18 +2426,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ShutdownRovAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ShutdownRovAction} ShutdownRovAction
+         * @returns {rov_actions_proto.ShutdownRovAction} ShutdownRovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ShutdownRovAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ShutdownRovAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ShutdownRovAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2156,10 +2452,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ShutdownRovAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ShutdownRovAction} ShutdownRovAction
+         * @returns {rov_actions_proto.ShutdownRovAction} ShutdownRovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -2172,7 +2468,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ShutdownRovAction message.
          * @function verify
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2186,23 +2482,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ShutdownRovAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ShutdownRovAction} ShutdownRovAction
+         * @returns {rov_actions_proto.ShutdownRovAction} ShutdownRovAction
          */
         ShutdownRovAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ShutdownRovAction)
+            if (object instanceof $root.rov_actions_proto.ShutdownRovAction)
                 return object;
-            return new $root.rov_action_api.ShutdownRovAction();
+            return new $root.rov_actions_proto.ShutdownRovAction();
         };
 
         /**
          * Creates a plain object from a ShutdownRovAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
-         * @param {rov_action_api.ShutdownRovAction} message ShutdownRovAction
+         * @param {rov_actions_proto.ShutdownRovAction} message ShutdownRovAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2213,7 +2509,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ShutdownRovAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2224,7 +2520,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ShutdownRovAction
          * @function getTypeUrl
-         * @memberof rov_action_api.ShutdownRovAction
+         * @memberof rov_actions_proto.ShutdownRovAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2233,27 +2529,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ShutdownRovAction";
+            return typeUrlPrefix + "/rov_actions_proto.ShutdownRovAction";
         };
 
         return ShutdownRovAction;
     })();
 
-    rov_action_api.RebootRovAction = (function() {
+    rov_actions_proto.RebootRovAction = (function() {
 
         /**
          * Properties of a RebootRovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRebootRovAction
          */
 
         /**
          * Constructs a new RebootRovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RebootRovAction.
          * @implements IRebootRovAction
          * @constructor
-         * @param {rov_action_api.IRebootRovAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRebootRovAction=} [properties] Properties to set
          */
         function RebootRovAction(properties) {
             if (properties)
@@ -2265,21 +2561,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RebootRovAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
-         * @param {rov_action_api.IRebootRovAction=} [properties] Properties to set
-         * @returns {rov_action_api.RebootRovAction} RebootRovAction instance
+         * @param {rov_actions_proto.IRebootRovAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RebootRovAction} RebootRovAction instance
          */
         RebootRovAction.create = function create(properties) {
             return new RebootRovAction(properties);
         };
 
         /**
-         * Encodes the specified RebootRovAction message. Does not implicitly {@link rov_action_api.RebootRovAction.verify|verify} messages.
+         * Encodes the specified RebootRovAction message. Does not implicitly {@link rov_actions_proto.RebootRovAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
-         * @param {rov_action_api.IRebootRovAction} message RebootRovAction message or plain object to encode
+         * @param {rov_actions_proto.IRebootRovAction} message RebootRovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2290,11 +2586,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified RebootRovAction message, length delimited. Does not implicitly {@link rov_action_api.RebootRovAction.verify|verify} messages.
+         * Encodes the specified RebootRovAction message, length delimited. Does not implicitly {@link rov_actions_proto.RebootRovAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
-         * @param {rov_action_api.IRebootRovAction} message RebootRovAction message or plain object to encode
+         * @param {rov_actions_proto.IRebootRovAction} message RebootRovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2305,18 +2601,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RebootRovAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RebootRovAction} RebootRovAction
+         * @returns {rov_actions_proto.RebootRovAction} RebootRovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RebootRovAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RebootRovAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RebootRovAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2331,10 +2627,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RebootRovAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RebootRovAction} RebootRovAction
+         * @returns {rov_actions_proto.RebootRovAction} RebootRovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -2347,7 +2643,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RebootRovAction message.
          * @function verify
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2361,23 +2657,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RebootRovAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RebootRovAction} RebootRovAction
+         * @returns {rov_actions_proto.RebootRovAction} RebootRovAction
          */
         RebootRovAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RebootRovAction)
+            if (object instanceof $root.rov_actions_proto.RebootRovAction)
                 return object;
-            return new $root.rov_action_api.RebootRovAction();
+            return new $root.rov_actions_proto.RebootRovAction();
         };
 
         /**
          * Creates a plain object from a RebootRovAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
-         * @param {rov_action_api.RebootRovAction} message RebootRovAction
+         * @param {rov_actions_proto.RebootRovAction} message RebootRovAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2388,7 +2684,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RebootRovAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2399,7 +2695,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RebootRovAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RebootRovAction
+         * @memberof rov_actions_proto.RebootRovAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2408,27 +2704,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RebootRovAction";
+            return typeUrlPrefix + "/rov_actions_proto.RebootRovAction";
         };
 
         return RebootRovAction;
     })();
 
-    rov_action_api.EnableWifiAction = (function() {
+    rov_actions_proto.EnableWifiAction = (function() {
 
         /**
          * Properties of an EnableWifiAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IEnableWifiAction
          */
 
         /**
          * Constructs a new EnableWifiAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents an EnableWifiAction.
          * @implements IEnableWifiAction
          * @constructor
-         * @param {rov_action_api.IEnableWifiAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IEnableWifiAction=} [properties] Properties to set
          */
         function EnableWifiAction(properties) {
             if (properties)
@@ -2440,21 +2736,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new EnableWifiAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
-         * @param {rov_action_api.IEnableWifiAction=} [properties] Properties to set
-         * @returns {rov_action_api.EnableWifiAction} EnableWifiAction instance
+         * @param {rov_actions_proto.IEnableWifiAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.EnableWifiAction} EnableWifiAction instance
          */
         EnableWifiAction.create = function create(properties) {
             return new EnableWifiAction(properties);
         };
 
         /**
-         * Encodes the specified EnableWifiAction message. Does not implicitly {@link rov_action_api.EnableWifiAction.verify|verify} messages.
+         * Encodes the specified EnableWifiAction message. Does not implicitly {@link rov_actions_proto.EnableWifiAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
-         * @param {rov_action_api.IEnableWifiAction} message EnableWifiAction message or plain object to encode
+         * @param {rov_actions_proto.IEnableWifiAction} message EnableWifiAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2465,11 +2761,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified EnableWifiAction message, length delimited. Does not implicitly {@link rov_action_api.EnableWifiAction.verify|verify} messages.
+         * Encodes the specified EnableWifiAction message, length delimited. Does not implicitly {@link rov_actions_proto.EnableWifiAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
-         * @param {rov_action_api.IEnableWifiAction} message EnableWifiAction message or plain object to encode
+         * @param {rov_actions_proto.IEnableWifiAction} message EnableWifiAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2480,18 +2776,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an EnableWifiAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.EnableWifiAction} EnableWifiAction
+         * @returns {rov_actions_proto.EnableWifiAction} EnableWifiAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         EnableWifiAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.EnableWifiAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.EnableWifiAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2506,10 +2802,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an EnableWifiAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.EnableWifiAction} EnableWifiAction
+         * @returns {rov_actions_proto.EnableWifiAction} EnableWifiAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -2522,7 +2818,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies an EnableWifiAction message.
          * @function verify
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2536,23 +2832,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates an EnableWifiAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.EnableWifiAction} EnableWifiAction
+         * @returns {rov_actions_proto.EnableWifiAction} EnableWifiAction
          */
         EnableWifiAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.EnableWifiAction)
+            if (object instanceof $root.rov_actions_proto.EnableWifiAction)
                 return object;
-            return new $root.rov_action_api.EnableWifiAction();
+            return new $root.rov_actions_proto.EnableWifiAction();
         };
 
         /**
          * Creates a plain object from an EnableWifiAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
-         * @param {rov_action_api.EnableWifiAction} message EnableWifiAction
+         * @param {rov_actions_proto.EnableWifiAction} message EnableWifiAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2563,7 +2859,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this EnableWifiAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2574,7 +2870,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for EnableWifiAction
          * @function getTypeUrl
-         * @memberof rov_action_api.EnableWifiAction
+         * @memberof rov_actions_proto.EnableWifiAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2583,27 +2879,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.EnableWifiAction";
+            return typeUrlPrefix + "/rov_actions_proto.EnableWifiAction";
         };
 
         return EnableWifiAction;
     })();
 
-    rov_action_api.DisableWifiAction = (function() {
+    rov_actions_proto.DisableWifiAction = (function() {
 
         /**
          * Properties of a DisableWifiAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IDisableWifiAction
          */
 
         /**
          * Constructs a new DisableWifiAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a DisableWifiAction.
          * @implements IDisableWifiAction
          * @constructor
-         * @param {rov_action_api.IDisableWifiAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IDisableWifiAction=} [properties] Properties to set
          */
         function DisableWifiAction(properties) {
             if (properties)
@@ -2615,21 +2911,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new DisableWifiAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
-         * @param {rov_action_api.IDisableWifiAction=} [properties] Properties to set
-         * @returns {rov_action_api.DisableWifiAction} DisableWifiAction instance
+         * @param {rov_actions_proto.IDisableWifiAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.DisableWifiAction} DisableWifiAction instance
          */
         DisableWifiAction.create = function create(properties) {
             return new DisableWifiAction(properties);
         };
 
         /**
-         * Encodes the specified DisableWifiAction message. Does not implicitly {@link rov_action_api.DisableWifiAction.verify|verify} messages.
+         * Encodes the specified DisableWifiAction message. Does not implicitly {@link rov_actions_proto.DisableWifiAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
-         * @param {rov_action_api.IDisableWifiAction} message DisableWifiAction message or plain object to encode
+         * @param {rov_actions_proto.IDisableWifiAction} message DisableWifiAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2640,11 +2936,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified DisableWifiAction message, length delimited. Does not implicitly {@link rov_action_api.DisableWifiAction.verify|verify} messages.
+         * Encodes the specified DisableWifiAction message, length delimited. Does not implicitly {@link rov_actions_proto.DisableWifiAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
-         * @param {rov_action_api.IDisableWifiAction} message DisableWifiAction message or plain object to encode
+         * @param {rov_actions_proto.IDisableWifiAction} message DisableWifiAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2655,18 +2951,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DisableWifiAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.DisableWifiAction} DisableWifiAction
+         * @returns {rov_actions_proto.DisableWifiAction} DisableWifiAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         DisableWifiAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.DisableWifiAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.DisableWifiAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2681,10 +2977,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DisableWifiAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.DisableWifiAction} DisableWifiAction
+         * @returns {rov_actions_proto.DisableWifiAction} DisableWifiAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -2697,7 +2993,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a DisableWifiAction message.
          * @function verify
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2711,23 +3007,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a DisableWifiAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.DisableWifiAction} DisableWifiAction
+         * @returns {rov_actions_proto.DisableWifiAction} DisableWifiAction
          */
         DisableWifiAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.DisableWifiAction)
+            if (object instanceof $root.rov_actions_proto.DisableWifiAction)
                 return object;
-            return new $root.rov_action_api.DisableWifiAction();
+            return new $root.rov_actions_proto.DisableWifiAction();
         };
 
         /**
          * Creates a plain object from a DisableWifiAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
-         * @param {rov_action_api.DisableWifiAction} message DisableWifiAction
+         * @param {rov_actions_proto.DisableWifiAction} message DisableWifiAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2738,7 +3034,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this DisableWifiAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2749,7 +3045,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for DisableWifiAction
          * @function getTypeUrl
-         * @memberof rov_action_api.DisableWifiAction
+         * @memberof rov_actions_proto.DisableWifiAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2758,27 +3054,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.DisableWifiAction";
+            return typeUrlPrefix + "/rov_actions_proto.DisableWifiAction";
         };
 
         return DisableWifiAction;
     })();
 
-    rov_action_api.RovStatusReportAction = (function() {
+    rov_actions_proto.RovStatusReportAction = (function() {
 
         /**
          * Properties of a RovStatusReportAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRovStatusReportAction
          */
 
         /**
          * Constructs a new RovStatusReportAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RovStatusReportAction.
          * @implements IRovStatusReportAction
          * @constructor
-         * @param {rov_action_api.IRovStatusReportAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRovStatusReportAction=} [properties] Properties to set
          */
         function RovStatusReportAction(properties) {
             if (properties)
@@ -2790,21 +3086,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RovStatusReportAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
-         * @param {rov_action_api.IRovStatusReportAction=} [properties] Properties to set
-         * @returns {rov_action_api.RovStatusReportAction} RovStatusReportAction instance
+         * @param {rov_actions_proto.IRovStatusReportAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RovStatusReportAction} RovStatusReportAction instance
          */
         RovStatusReportAction.create = function create(properties) {
             return new RovStatusReportAction(properties);
         };
 
         /**
-         * Encodes the specified RovStatusReportAction message. Does not implicitly {@link rov_action_api.RovStatusReportAction.verify|verify} messages.
+         * Encodes the specified RovStatusReportAction message. Does not implicitly {@link rov_actions_proto.RovStatusReportAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
-         * @param {rov_action_api.IRovStatusReportAction} message RovStatusReportAction message or plain object to encode
+         * @param {rov_actions_proto.IRovStatusReportAction} message RovStatusReportAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2815,11 +3111,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified RovStatusReportAction message, length delimited. Does not implicitly {@link rov_action_api.RovStatusReportAction.verify|verify} messages.
+         * Encodes the specified RovStatusReportAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovStatusReportAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
-         * @param {rov_action_api.IRovStatusReportAction} message RovStatusReportAction message or plain object to encode
+         * @param {rov_actions_proto.IRovStatusReportAction} message RovStatusReportAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2830,18 +3126,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovStatusReportAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RovStatusReportAction} RovStatusReportAction
+         * @returns {rov_actions_proto.RovStatusReportAction} RovStatusReportAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RovStatusReportAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RovStatusReportAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RovStatusReportAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2856,10 +3152,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovStatusReportAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RovStatusReportAction} RovStatusReportAction
+         * @returns {rov_actions_proto.RovStatusReportAction} RovStatusReportAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -2872,7 +3168,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RovStatusReportAction message.
          * @function verify
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -2886,23 +3182,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RovStatusReportAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RovStatusReportAction} RovStatusReportAction
+         * @returns {rov_actions_proto.RovStatusReportAction} RovStatusReportAction
          */
         RovStatusReportAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RovStatusReportAction)
+            if (object instanceof $root.rov_actions_proto.RovStatusReportAction)
                 return object;
-            return new $root.rov_action_api.RovStatusReportAction();
+            return new $root.rov_actions_proto.RovStatusReportAction();
         };
 
         /**
          * Creates a plain object from a RovStatusReportAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
-         * @param {rov_action_api.RovStatusReportAction} message RovStatusReportAction
+         * @param {rov_actions_proto.RovStatusReportAction} message RovStatusReportAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -2913,7 +3209,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RovStatusReportAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -2924,7 +3220,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RovStatusReportAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RovStatusReportAction
+         * @memberof rov_actions_proto.RovStatusReportAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -2933,27 +3229,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RovStatusReportAction";
+            return typeUrlPrefix + "/rov_actions_proto.RovStatusReportAction";
         };
 
         return RovStatusReportAction;
     })();
 
-    rov_action_api.RestartRovServicesAction = (function() {
+    rov_actions_proto.RestartRovServicesAction = (function() {
 
         /**
          * Properties of a RestartRovServicesAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRestartRovServicesAction
          */
 
         /**
          * Constructs a new RestartRovServicesAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RestartRovServicesAction.
          * @implements IRestartRovServicesAction
          * @constructor
-         * @param {rov_action_api.IRestartRovServicesAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRestartRovServicesAction=} [properties] Properties to set
          */
         function RestartRovServicesAction(properties) {
             if (properties)
@@ -2965,21 +3261,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RestartRovServicesAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
-         * @param {rov_action_api.IRestartRovServicesAction=} [properties] Properties to set
-         * @returns {rov_action_api.RestartRovServicesAction} RestartRovServicesAction instance
+         * @param {rov_actions_proto.IRestartRovServicesAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RestartRovServicesAction} RestartRovServicesAction instance
          */
         RestartRovServicesAction.create = function create(properties) {
             return new RestartRovServicesAction(properties);
         };
 
         /**
-         * Encodes the specified RestartRovServicesAction message. Does not implicitly {@link rov_action_api.RestartRovServicesAction.verify|verify} messages.
+         * Encodes the specified RestartRovServicesAction message. Does not implicitly {@link rov_actions_proto.RestartRovServicesAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
-         * @param {rov_action_api.IRestartRovServicesAction} message RestartRovServicesAction message or plain object to encode
+         * @param {rov_actions_proto.IRestartRovServicesAction} message RestartRovServicesAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -2990,11 +3286,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified RestartRovServicesAction message, length delimited. Does not implicitly {@link rov_action_api.RestartRovServicesAction.verify|verify} messages.
+         * Encodes the specified RestartRovServicesAction message, length delimited. Does not implicitly {@link rov_actions_proto.RestartRovServicesAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
-         * @param {rov_action_api.IRestartRovServicesAction} message RestartRovServicesAction message or plain object to encode
+         * @param {rov_actions_proto.IRestartRovServicesAction} message RestartRovServicesAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3005,18 +3301,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RestartRovServicesAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RestartRovServicesAction} RestartRovServicesAction
+         * @returns {rov_actions_proto.RestartRovServicesAction} RestartRovServicesAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RestartRovServicesAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RestartRovServicesAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RestartRovServicesAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3031,10 +3327,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RestartRovServicesAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RestartRovServicesAction} RestartRovServicesAction
+         * @returns {rov_actions_proto.RestartRovServicesAction} RestartRovServicesAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -3047,7 +3343,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RestartRovServicesAction message.
          * @function verify
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -3061,23 +3357,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RestartRovServicesAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RestartRovServicesAction} RestartRovServicesAction
+         * @returns {rov_actions_proto.RestartRovServicesAction} RestartRovServicesAction
          */
         RestartRovServicesAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RestartRovServicesAction)
+            if (object instanceof $root.rov_actions_proto.RestartRovServicesAction)
                 return object;
-            return new $root.rov_action_api.RestartRovServicesAction();
+            return new $root.rov_actions_proto.RestartRovServicesAction();
         };
 
         /**
          * Creates a plain object from a RestartRovServicesAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
-         * @param {rov_action_api.RestartRovServicesAction} message RestartRovServicesAction
+         * @param {rov_actions_proto.RestartRovServicesAction} message RestartRovServicesAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -3088,7 +3384,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RestartRovServicesAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -3099,7 +3395,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RestartRovServicesAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RestartRovServicesAction
+         * @memberof rov_actions_proto.RestartRovServicesAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -3108,27 +3404,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RestartRovServicesAction";
+            return typeUrlPrefix + "/rov_actions_proto.RestartRovServicesAction";
         };
 
         return RestartRovServicesAction;
     })();
 
-    rov_action_api.RovLogsAction = (function() {
+    rov_actions_proto.RovLogsAction = (function() {
 
         /**
          * Properties of a RovLogsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRovLogsAction
          */
 
         /**
          * Constructs a new RovLogsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RovLogsAction.
          * @implements IRovLogsAction
          * @constructor
-         * @param {rov_action_api.IRovLogsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRovLogsAction=} [properties] Properties to set
          */
         function RovLogsAction(properties) {
             if (properties)
@@ -3140,21 +3436,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RovLogsAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
-         * @param {rov_action_api.IRovLogsAction=} [properties] Properties to set
-         * @returns {rov_action_api.RovLogsAction} RovLogsAction instance
+         * @param {rov_actions_proto.IRovLogsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction instance
          */
         RovLogsAction.create = function create(properties) {
             return new RovLogsAction(properties);
         };
 
         /**
-         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_action_api.RovLogsAction.verify|verify} messages.
+         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
-         * @param {rov_action_api.IRovLogsAction} message RovLogsAction message or plain object to encode
+         * @param {rov_actions_proto.IRovLogsAction} message RovLogsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3165,11 +3461,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_action_api.RovLogsAction.verify|verify} messages.
+         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
-         * @param {rov_action_api.IRovLogsAction} message RovLogsAction message or plain object to encode
+         * @param {rov_actions_proto.IRovLogsAction} message RovLogsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3180,18 +3476,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovLogsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RovLogsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RovLogsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RovLogsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3206,10 +3502,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovLogsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -3222,7 +3518,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RovLogsAction message.
          * @function verify
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -3236,23 +3532,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RovLogsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
          */
         RovLogsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RovLogsAction)
+            if (object instanceof $root.rov_actions_proto.RovLogsAction)
                 return object;
-            return new $root.rov_action_api.RovLogsAction();
+            return new $root.rov_actions_proto.RovLogsAction();
         };
 
         /**
          * Creates a plain object from a RovLogsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
-         * @param {rov_action_api.RovLogsAction} message RovLogsAction
+         * @param {rov_actions_proto.RovLogsAction} message RovLogsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -3263,7 +3559,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RovLogsAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -3274,7 +3570,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RovLogsAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RovLogsAction
+         * @memberof rov_actions_proto.RovLogsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -3283,27 +3579,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RovLogsAction";
+            return typeUrlPrefix + "/rov_actions_proto.RovLogsAction";
         };
 
         return RovLogsAction;
     })();
 
-    rov_action_api.RefreshAllSensorsAction = (function() {
+    rov_actions_proto.RefreshAllSensorsAction = (function() {
 
         /**
          * Properties of a RefreshAllSensorsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRefreshAllSensorsAction
          */
 
         /**
          * Constructs a new RefreshAllSensorsAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RefreshAllSensorsAction.
          * @implements IRefreshAllSensorsAction
          * @constructor
-         * @param {rov_action_api.IRefreshAllSensorsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRefreshAllSensorsAction=} [properties] Properties to set
          */
         function RefreshAllSensorsAction(properties) {
             if (properties)
@@ -3315,21 +3611,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RefreshAllSensorsAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
-         * @param {rov_action_api.IRefreshAllSensorsAction=} [properties] Properties to set
-         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction instance
+         * @param {rov_actions_proto.IRefreshAllSensorsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RefreshAllSensorsAction} RefreshAllSensorsAction instance
          */
         RefreshAllSensorsAction.create = function create(properties) {
             return new RefreshAllSensorsAction(properties);
         };
 
         /**
-         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * Encodes the specified RefreshAllSensorsAction message. Does not implicitly {@link rov_actions_proto.RefreshAllSensorsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
-         * @param {rov_action_api.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
+         * @param {rov_actions_proto.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3340,11 +3636,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_action_api.RefreshAllSensorsAction.verify|verify} messages.
+         * Encodes the specified RefreshAllSensorsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RefreshAllSensorsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
-         * @param {rov_action_api.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
+         * @param {rov_actions_proto.IRefreshAllSensorsAction} message RefreshAllSensorsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3355,18 +3651,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RefreshAllSensorsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         * @returns {rov_actions_proto.RefreshAllSensorsAction} RefreshAllSensorsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RefreshAllSensorsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RefreshAllSensorsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RefreshAllSensorsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3381,10 +3677,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RefreshAllSensorsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         * @returns {rov_actions_proto.RefreshAllSensorsAction} RefreshAllSensorsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -3397,7 +3693,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RefreshAllSensorsAction message.
          * @function verify
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -3411,23 +3707,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RefreshAllSensorsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RefreshAllSensorsAction} RefreshAllSensorsAction
+         * @returns {rov_actions_proto.RefreshAllSensorsAction} RefreshAllSensorsAction
          */
         RefreshAllSensorsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RefreshAllSensorsAction)
+            if (object instanceof $root.rov_actions_proto.RefreshAllSensorsAction)
                 return object;
-            return new $root.rov_action_api.RefreshAllSensorsAction();
+            return new $root.rov_actions_proto.RefreshAllSensorsAction();
         };
 
         /**
          * Creates a plain object from a RefreshAllSensorsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
-         * @param {rov_action_api.RefreshAllSensorsAction} message RefreshAllSensorsAction
+         * @param {rov_actions_proto.RefreshAllSensorsAction} message RefreshAllSensorsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -3438,7 +3734,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RefreshAllSensorsAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -3449,7 +3745,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RefreshAllSensorsAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RefreshAllSensorsAction
+         * @memberof rov_actions_proto.RefreshAllSensorsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -3458,28 +3754,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RefreshAllSensorsAction";
+            return typeUrlPrefix + "/rov_actions_proto.RefreshAllSensorsAction";
         };
 
         return RefreshAllSensorsAction;
     })();
 
-    rov_action_api.MavlinkAction = (function() {
+    rov_actions_proto.MavlinkAction = (function() {
 
         /**
          * Properties of a MavlinkAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IMavlinkAction
          * @property {Uint8Array|null} [Message] MavlinkAction Message
          */
 
         /**
          * Constructs a new MavlinkAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a MavlinkAction.
          * @implements IMavlinkAction
          * @constructor
-         * @param {rov_action_api.IMavlinkAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IMavlinkAction=} [properties] Properties to set
          */
         function MavlinkAction(properties) {
             if (properties)
@@ -3491,7 +3787,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MavlinkAction Message.
          * @member {Uint8Array} Message
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @instance
          */
         MavlinkAction.prototype.Message = $util.newBuffer([]);
@@ -3499,21 +3795,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new MavlinkAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
-         * @param {rov_action_api.IMavlinkAction=} [properties] Properties to set
-         * @returns {rov_action_api.MavlinkAction} MavlinkAction instance
+         * @param {rov_actions_proto.IMavlinkAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction instance
          */
         MavlinkAction.create = function create(properties) {
             return new MavlinkAction(properties);
         };
 
         /**
-         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
-         * @param {rov_action_api.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {rov_actions_proto.IMavlinkAction} message MavlinkAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3526,11 +3822,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_action_api.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
-         * @param {rov_action_api.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {rov_actions_proto.IMavlinkAction} message MavlinkAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3541,18 +3837,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MavlinkAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         MavlinkAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.MavlinkAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.MavlinkAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3571,10 +3867,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -3587,7 +3883,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a MavlinkAction message.
          * @function verify
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -3604,15 +3900,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a MavlinkAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
          */
         MavlinkAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.MavlinkAction)
+            if (object instanceof $root.rov_actions_proto.MavlinkAction)
                 return object;
-            let message = new $root.rov_action_api.MavlinkAction();
+            let message = new $root.rov_actions_proto.MavlinkAction();
             if (object.Message != null)
                 if (typeof object.Message === "string")
                     $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
@@ -3624,9 +3920,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
-         * @param {rov_action_api.MavlinkAction} message MavlinkAction
+         * @param {rov_actions_proto.MavlinkAction} message MavlinkAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -3650,7 +3946,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this MavlinkAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -3661,7 +3957,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for MavlinkAction
          * @function getTypeUrl
-         * @memberof rov_action_api.MavlinkAction
+         * @memberof rov_actions_proto.MavlinkAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -3670,28 +3966,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.MavlinkAction";
+            return typeUrlPrefix + "/rov_actions_proto.MavlinkAction";
         };
 
         return MavlinkAction;
     })();
 
-    rov_action_api.SimplepeerSignalAction = (function() {
+    rov_actions_proto.SimplepeerSignalAction = (function() {
 
         /**
          * Properties of a SimplepeerSignalAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface ISimplepeerSignalAction
          * @property {Uint8Array|null} [Message] SimplepeerSignalAction Message
          */
 
         /**
          * Constructs a new SimplepeerSignalAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a SimplepeerSignalAction.
          * @implements ISimplepeerSignalAction
          * @constructor
-         * @param {rov_action_api.ISimplepeerSignalAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ISimplepeerSignalAction=} [properties] Properties to set
          */
         function SimplepeerSignalAction(properties) {
             if (properties)
@@ -3703,7 +3999,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * SimplepeerSignalAction Message.
          * @member {Uint8Array} Message
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @instance
          */
         SimplepeerSignalAction.prototype.Message = $util.newBuffer([]);
@@ -3711,21 +4007,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new SimplepeerSignalAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
-         * @param {rov_action_api.ISimplepeerSignalAction=} [properties] Properties to set
-         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction instance
+         * @param {rov_actions_proto.ISimplepeerSignalAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction instance
          */
         SimplepeerSignalAction.create = function create(properties) {
             return new SimplepeerSignalAction(properties);
         };
 
         /**
-         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
-         * @param {rov_action_api.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {rov_actions_proto.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3738,11 +4034,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
-         * @param {rov_action_api.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {rov_actions_proto.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3753,18 +4049,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         SimplepeerSignalAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SimplepeerSignalAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerSignalAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3783,10 +4079,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -3799,7 +4095,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a SimplepeerSignalAction message.
          * @function verify
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -3816,15 +4112,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a SimplepeerSignalAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
          */
         SimplepeerSignalAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.SimplepeerSignalAction)
+            if (object instanceof $root.rov_actions_proto.SimplepeerSignalAction)
                 return object;
-            let message = new $root.rov_action_api.SimplepeerSignalAction();
+            let message = new $root.rov_actions_proto.SimplepeerSignalAction();
             if (object.Message != null)
                 if (typeof object.Message === "string")
                     $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
@@ -3836,9 +4132,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
-         * @param {rov_action_api.SimplepeerSignalAction} message SimplepeerSignalAction
+         * @param {rov_actions_proto.SimplepeerSignalAction} message SimplepeerSignalAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -3862,7 +4158,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this SimplepeerSignalAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -3873,7 +4169,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for SimplepeerSignalAction
          * @function getTypeUrl
-         * @memberof rov_action_api.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplepeerSignalAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -3882,28 +4178,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.SimplepeerSignalAction";
+            return typeUrlPrefix + "/rov_actions_proto.SimplepeerSignalAction";
         };
 
         return SimplepeerSignalAction;
     })();
 
-    rov_action_api.ActionBackendMetadata = (function() {
+    rov_actions_proto.ActionBackendMetadata = (function() {
 
         /**
          * Properties of an ActionBackendMetadata.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IActionBackendMetadata
          * @property {string|null} [FromUserID] ActionBackendMetadata FromUserID
          */
 
         /**
          * Constructs a new ActionBackendMetadata.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents an ActionBackendMetadata.
          * @implements IActionBackendMetadata
          * @constructor
-         * @param {rov_action_api.IActionBackendMetadata=} [properties] Properties to set
+         * @param {rov_actions_proto.IActionBackendMetadata=} [properties] Properties to set
          */
         function ActionBackendMetadata(properties) {
             if (properties)
@@ -3915,7 +4211,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ActionBackendMetadata FromUserID.
          * @member {string} FromUserID
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @instance
          */
         ActionBackendMetadata.prototype.FromUserID = "";
@@ -3923,21 +4219,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ActionBackendMetadata instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
-         * @param {rov_action_api.IActionBackendMetadata=} [properties] Properties to set
-         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata instance
+         * @param {rov_actions_proto.IActionBackendMetadata=} [properties] Properties to set
+         * @returns {rov_actions_proto.ActionBackendMetadata} ActionBackendMetadata instance
          */
         ActionBackendMetadata.create = function create(properties) {
             return new ActionBackendMetadata(properties);
         };
 
         /**
-         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * Encodes the specified ActionBackendMetadata message. Does not implicitly {@link rov_actions_proto.ActionBackendMetadata.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
-         * @param {rov_action_api.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
+         * @param {rov_actions_proto.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3950,11 +4246,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ActionBackendMetadata.verify|verify} messages.
+         * Encodes the specified ActionBackendMetadata message, length delimited. Does not implicitly {@link rov_actions_proto.ActionBackendMetadata.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
-         * @param {rov_action_api.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
+         * @param {rov_actions_proto.IActionBackendMetadata} message ActionBackendMetadata message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -3965,18 +4261,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an ActionBackendMetadata message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         * @returns {rov_actions_proto.ActionBackendMetadata} ActionBackendMetadata
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ActionBackendMetadata.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ActionBackendMetadata();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ActionBackendMetadata();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3995,10 +4291,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an ActionBackendMetadata message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         * @returns {rov_actions_proto.ActionBackendMetadata} ActionBackendMetadata
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -4011,7 +4307,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies an ActionBackendMetadata message.
          * @function verify
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -4028,15 +4324,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates an ActionBackendMetadata message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ActionBackendMetadata} ActionBackendMetadata
+         * @returns {rov_actions_proto.ActionBackendMetadata} ActionBackendMetadata
          */
         ActionBackendMetadata.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ActionBackendMetadata)
+            if (object instanceof $root.rov_actions_proto.ActionBackendMetadata)
                 return object;
-            let message = new $root.rov_action_api.ActionBackendMetadata();
+            let message = new $root.rov_actions_proto.ActionBackendMetadata();
             if (object.FromUserID != null)
                 message.FromUserID = String(object.FromUserID);
             return message;
@@ -4045,9 +4341,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from an ActionBackendMetadata message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
-         * @param {rov_action_api.ActionBackendMetadata} message ActionBackendMetadata
+         * @param {rov_actions_proto.ActionBackendMetadata} message ActionBackendMetadata
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -4065,7 +4361,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ActionBackendMetadata to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -4076,7 +4372,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ActionBackendMetadata
          * @function getTypeUrl
-         * @memberof rov_action_api.ActionBackendMetadata
+         * @memberof rov_actions_proto.ActionBackendMetadata
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -4085,49 +4381,49 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ActionBackendMetadata";
+            return typeUrlPrefix + "/rov_actions_proto.ActionBackendMetadata";
         };
 
         return ActionBackendMetadata;
     })();
 
-    rov_action_api.RovAction = (function() {
+    rov_actions_proto.RovAction = (function() {
 
         /**
          * Properties of a RovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRovAction
-         * @property {rov_action_api.IActionBackendMetadata|null} [BackendMetadata] RovAction BackendMetadata
+         * @property {rov_actions_proto.IActionBackendMetadata|null} [BackendMetadata] RovAction BackendMetadata
          * @property {number|null} [RovExchangeId] RovAction RovExchangeId
-         * @property {rov_action_api.IPingAction|null} [Ping] RovAction Ping
-         * @property {rov_action_api.IPasswordAttemptAction|null} [PasswordAttempt] RovAction PasswordAttempt
-         * @property {rov_action_api.IAuthTokenAttemptAction|null} [AuthTokenAttempt] RovAction AuthTokenAttempt
-         * @property {rov_action_api.ITakeControlAction|null} [TakeControl] RovAction TakeControl
-         * @property {rov_action_api.IMoveAction|null} [Move] RovAction Move
-         * @property {rov_action_api.IBeginVideoStreamAction|null} [BeginVideoStream] RovAction BeginVideoStream
-         * @property {rov_action_api.ITakePhotoAction|null} [TakePhoto] RovAction TakePhoto
-         * @property {rov_action_api.IStartVideoRecAction|null} [StartVideoRec] RovAction StartVideoRec
-         * @property {rov_action_api.IStopVideoRecAction|null} [StopVideoRec] RovAction StopVideoRec
-         * @property {rov_action_api.IToogleLightsAction|null} [ToogleLights] RovAction ToogleLights
-         * @property {rov_action_api.IShutdownRovAction|null} [ShutdownRov] RovAction ShutdownRov
-         * @property {rov_action_api.IRebootRovAction|null} [RebootRov] RovAction RebootRov
-         * @property {rov_action_api.IEnableWifiAction|null} [EnableWifi] RovAction EnableWifi
-         * @property {rov_action_api.IDisableWifiAction|null} [DisableWifi] RovAction DisableWifi
-         * @property {rov_action_api.IRovStatusReportAction|null} [RovStatusReport] RovAction RovStatusReport
-         * @property {rov_action_api.IRestartRovServicesAction|null} [RestartRovServices] RovAction RestartRovServices
-         * @property {rov_action_api.IRovLogsAction|null} [RovLogs] RovAction RovLogs
-         * @property {rov_action_api.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
-         * @property {rov_action_api.IMavlinkAction|null} [Mavlink] RovAction Mavlink
-         * @property {rov_action_api.ISimplepeerSignalAction|null} [SimplepeerSignal] RovAction SimplepeerSignal
+         * @property {rov_actions_proto.IPingAction|null} [Ping] RovAction Ping
+         * @property {rov_actions_proto.IPasswordAttemptAction|null} [PasswordAttempt] RovAction PasswordAttempt
+         * @property {rov_actions_proto.IAuthTokenAttemptAction|null} [AuthTokenAttempt] RovAction AuthTokenAttempt
+         * @property {rov_actions_proto.ITakeControlAction|null} [TakeControl] RovAction TakeControl
+         * @property {rov_actions_proto.IMoveAction|null} [Move] RovAction Move
+         * @property {rov_actions_proto.IBeginVideoStreamAction|null} [BeginVideoStream] RovAction BeginVideoStream
+         * @property {rov_actions_proto.ITakePhotoAction|null} [TakePhoto] RovAction TakePhoto
+         * @property {rov_actions_proto.IStartVideoRecAction|null} [StartVideoRec] RovAction StartVideoRec
+         * @property {rov_actions_proto.IStopVideoRecAction|null} [StopVideoRec] RovAction StopVideoRec
+         * @property {rov_actions_proto.IToogleLightsAction|null} [ToogleLights] RovAction ToogleLights
+         * @property {rov_actions_proto.IShutdownRovAction|null} [ShutdownRov] RovAction ShutdownRov
+         * @property {rov_actions_proto.IRebootRovAction|null} [RebootRov] RovAction RebootRov
+         * @property {rov_actions_proto.IEnableWifiAction|null} [EnableWifi] RovAction EnableWifi
+         * @property {rov_actions_proto.IDisableWifiAction|null} [DisableWifi] RovAction DisableWifi
+         * @property {rov_actions_proto.IRovStatusReportAction|null} [RovStatusReport] RovAction RovStatusReport
+         * @property {rov_actions_proto.IRestartRovServicesAction|null} [RestartRovServices] RovAction RestartRovServices
+         * @property {rov_actions_proto.IRovLogsAction|null} [RovLogs] RovAction RovLogs
+         * @property {rov_actions_proto.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
+         * @property {rov_actions_proto.IMavlinkAction|null} [Mavlink] RovAction Mavlink
+         * @property {rov_actions_proto.ISimplepeerSignalAction|null} [SimplepeerSignal] RovAction SimplepeerSignal
          */
 
         /**
          * Constructs a new RovAction.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RovAction.
          * @implements IRovAction
          * @constructor
-         * @param {rov_action_api.IRovAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IRovAction=} [properties] Properties to set
          */
         function RovAction(properties) {
             if (properties)
@@ -4138,8 +4434,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * RovAction BackendMetadata.
-         * @member {rov_action_api.IActionBackendMetadata|null|undefined} BackendMetadata
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IActionBackendMetadata|null|undefined} BackendMetadata
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.BackendMetadata = null;
@@ -4147,167 +4443,167 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * RovAction RovExchangeId.
          * @member {number} RovExchangeId
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RovExchangeId = 0;
 
         /**
          * RovAction Ping.
-         * @member {rov_action_api.IPingAction|null|undefined} Ping
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IPingAction|null|undefined} Ping
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.Ping = null;
 
         /**
          * RovAction PasswordAttempt.
-         * @member {rov_action_api.IPasswordAttemptAction|null|undefined} PasswordAttempt
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IPasswordAttemptAction|null|undefined} PasswordAttempt
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.PasswordAttempt = null;
 
         /**
          * RovAction AuthTokenAttempt.
-         * @member {rov_action_api.IAuthTokenAttemptAction|null|undefined} AuthTokenAttempt
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IAuthTokenAttemptAction|null|undefined} AuthTokenAttempt
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.AuthTokenAttempt = null;
 
         /**
          * RovAction TakeControl.
-         * @member {rov_action_api.ITakeControlAction|null|undefined} TakeControl
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.ITakeControlAction|null|undefined} TakeControl
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.TakeControl = null;
 
         /**
          * RovAction Move.
-         * @member {rov_action_api.IMoveAction|null|undefined} Move
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IMoveAction|null|undefined} Move
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.Move = null;
 
         /**
          * RovAction BeginVideoStream.
-         * @member {rov_action_api.IBeginVideoStreamAction|null|undefined} BeginVideoStream
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IBeginVideoStreamAction|null|undefined} BeginVideoStream
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.BeginVideoStream = null;
 
         /**
          * RovAction TakePhoto.
-         * @member {rov_action_api.ITakePhotoAction|null|undefined} TakePhoto
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.ITakePhotoAction|null|undefined} TakePhoto
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.TakePhoto = null;
 
         /**
          * RovAction StartVideoRec.
-         * @member {rov_action_api.IStartVideoRecAction|null|undefined} StartVideoRec
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IStartVideoRecAction|null|undefined} StartVideoRec
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.StartVideoRec = null;
 
         /**
          * RovAction StopVideoRec.
-         * @member {rov_action_api.IStopVideoRecAction|null|undefined} StopVideoRec
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IStopVideoRecAction|null|undefined} StopVideoRec
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.StopVideoRec = null;
 
         /**
          * RovAction ToogleLights.
-         * @member {rov_action_api.IToogleLightsAction|null|undefined} ToogleLights
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IToogleLightsAction|null|undefined} ToogleLights
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.ToogleLights = null;
 
         /**
          * RovAction ShutdownRov.
-         * @member {rov_action_api.IShutdownRovAction|null|undefined} ShutdownRov
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IShutdownRovAction|null|undefined} ShutdownRov
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.ShutdownRov = null;
 
         /**
          * RovAction RebootRov.
-         * @member {rov_action_api.IRebootRovAction|null|undefined} RebootRov
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IRebootRovAction|null|undefined} RebootRov
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RebootRov = null;
 
         /**
          * RovAction EnableWifi.
-         * @member {rov_action_api.IEnableWifiAction|null|undefined} EnableWifi
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IEnableWifiAction|null|undefined} EnableWifi
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.EnableWifi = null;
 
         /**
          * RovAction DisableWifi.
-         * @member {rov_action_api.IDisableWifiAction|null|undefined} DisableWifi
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IDisableWifiAction|null|undefined} DisableWifi
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.DisableWifi = null;
 
         /**
          * RovAction RovStatusReport.
-         * @member {rov_action_api.IRovStatusReportAction|null|undefined} RovStatusReport
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IRovStatusReportAction|null|undefined} RovStatusReport
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RovStatusReport = null;
 
         /**
          * RovAction RestartRovServices.
-         * @member {rov_action_api.IRestartRovServicesAction|null|undefined} RestartRovServices
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IRestartRovServicesAction|null|undefined} RestartRovServices
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RestartRovServices = null;
 
         /**
          * RovAction RovLogs.
-         * @member {rov_action_api.IRovLogsAction|null|undefined} RovLogs
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IRovLogsAction|null|undefined} RovLogs
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RovLogs = null;
 
         /**
          * RovAction RefreshAllSensors.
-         * @member {rov_action_api.IRefreshAllSensorsAction|null|undefined} RefreshAllSensors
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IRefreshAllSensorsAction|null|undefined} RefreshAllSensors
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.RefreshAllSensors = null;
 
         /**
          * RovAction Mavlink.
-         * @member {rov_action_api.IMavlinkAction|null|undefined} Mavlink
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.IMavlinkAction|null|undefined} Mavlink
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.Mavlink = null;
 
         /**
          * RovAction SimplepeerSignal.
-         * @member {rov_action_api.ISimplepeerSignalAction|null|undefined} SimplepeerSignal
-         * @memberof rov_action_api.RovAction
+         * @member {rov_actions_proto.ISimplepeerSignalAction|null|undefined} SimplepeerSignal
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         RovAction.prototype.SimplepeerSignal = null;
@@ -4318,7 +4614,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * RovAction Body.
          * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal"|undefined} Body
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @instance
          */
         Object.defineProperty(RovAction.prototype, "Body", {
@@ -4329,21 +4625,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RovAction instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
-         * @param {rov_action_api.IRovAction=} [properties] Properties to set
-         * @returns {rov_action_api.RovAction} RovAction instance
+         * @param {rov_actions_proto.IRovAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.RovAction} RovAction instance
          */
         RovAction.create = function create(properties) {
             return new RovAction(properties);
         };
 
         /**
-         * Encodes the specified RovAction message. Does not implicitly {@link rov_action_api.RovAction.verify|verify} messages.
+         * Encodes the specified RovAction message. Does not implicitly {@link rov_actions_proto.RovAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
-         * @param {rov_action_api.IRovAction} message RovAction message or plain object to encode
+         * @param {rov_actions_proto.IRovAction} message RovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -4351,58 +4647,58 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!writer)
                 writer = $Writer.create();
             if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
-                $root.rov_action_api.ActionBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                $root.rov_actions_proto.ActionBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
             if (message.Ping != null && Object.hasOwnProperty.call(message, "Ping"))
-                $root.rov_action_api.PingAction.encode(message.Ping, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.rov_actions_proto.PingAction.encode(message.Ping, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.PasswordAttempt != null && Object.hasOwnProperty.call(message, "PasswordAttempt"))
-                $root.rov_action_api.PasswordAttemptAction.encode(message.PasswordAttempt, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.rov_actions_proto.PasswordAttemptAction.encode(message.PasswordAttempt, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.AuthTokenAttempt != null && Object.hasOwnProperty.call(message, "AuthTokenAttempt"))
-                $root.rov_action_api.AuthTokenAttemptAction.encode(message.AuthTokenAttempt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                $root.rov_actions_proto.AuthTokenAttemptAction.encode(message.AuthTokenAttempt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             if (message.TakeControl != null && Object.hasOwnProperty.call(message, "TakeControl"))
-                $root.rov_action_api.TakeControlAction.encode(message.TakeControl, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                $root.rov_actions_proto.TakeControlAction.encode(message.TakeControl, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             if (message.Move != null && Object.hasOwnProperty.call(message, "Move"))
-                $root.rov_action_api.MoveAction.encode(message.Move, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                $root.rov_actions_proto.MoveAction.encode(message.Move, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
             if (message.BeginVideoStream != null && Object.hasOwnProperty.call(message, "BeginVideoStream"))
-                $root.rov_action_api.BeginVideoStreamAction.encode(message.BeginVideoStream, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                $root.rov_actions_proto.BeginVideoStreamAction.encode(message.BeginVideoStream, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             if (message.TakePhoto != null && Object.hasOwnProperty.call(message, "TakePhoto"))
-                $root.rov_action_api.TakePhotoAction.encode(message.TakePhoto, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                $root.rov_actions_proto.TakePhotoAction.encode(message.TakePhoto, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
             if (message.StartVideoRec != null && Object.hasOwnProperty.call(message, "StartVideoRec"))
-                $root.rov_action_api.StartVideoRecAction.encode(message.StartVideoRec, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                $root.rov_actions_proto.StartVideoRecAction.encode(message.StartVideoRec, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
             if (message.StopVideoRec != null && Object.hasOwnProperty.call(message, "StopVideoRec"))
-                $root.rov_action_api.StopVideoRecAction.encode(message.StopVideoRec, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                $root.rov_actions_proto.StopVideoRecAction.encode(message.StopVideoRec, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
             if (message.ToogleLights != null && Object.hasOwnProperty.call(message, "ToogleLights"))
-                $root.rov_action_api.ToogleLightsAction.encode(message.ToogleLights, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                $root.rov_actions_proto.ToogleLightsAction.encode(message.ToogleLights, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
             if (message.ShutdownRov != null && Object.hasOwnProperty.call(message, "ShutdownRov"))
-                $root.rov_action_api.ShutdownRovAction.encode(message.ShutdownRov, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+                $root.rov_actions_proto.ShutdownRovAction.encode(message.ShutdownRov, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.RebootRov != null && Object.hasOwnProperty.call(message, "RebootRov"))
-                $root.rov_action_api.RebootRovAction.encode(message.RebootRov, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
+                $root.rov_actions_proto.RebootRovAction.encode(message.RebootRov, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
             if (message.EnableWifi != null && Object.hasOwnProperty.call(message, "EnableWifi"))
-                $root.rov_action_api.EnableWifiAction.encode(message.EnableWifi, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
+                $root.rov_actions_proto.EnableWifiAction.encode(message.EnableWifi, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
             if (message.DisableWifi != null && Object.hasOwnProperty.call(message, "DisableWifi"))
-                $root.rov_action_api.DisableWifiAction.encode(message.DisableWifi, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
+                $root.rov_actions_proto.DisableWifiAction.encode(message.DisableWifi, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.RovStatusReport != null && Object.hasOwnProperty.call(message, "RovStatusReport"))
-                $root.rov_action_api.RovStatusReportAction.encode(message.RovStatusReport, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+                $root.rov_actions_proto.RovStatusReportAction.encode(message.RovStatusReport, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
             if (message.RestartRovServices != null && Object.hasOwnProperty.call(message, "RestartRovServices"))
-                $root.rov_action_api.RestartRovServicesAction.encode(message.RestartRovServices, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+                $root.rov_actions_proto.RestartRovServicesAction.encode(message.RestartRovServices, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             if (message.RovLogs != null && Object.hasOwnProperty.call(message, "RovLogs"))
-                $root.rov_action_api.RovLogsAction.encode(message.RovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+                $root.rov_actions_proto.RovLogsAction.encode(message.RovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.RefreshAllSensors != null && Object.hasOwnProperty.call(message, "RefreshAllSensors"))
-                $root.rov_action_api.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                $root.rov_actions_proto.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
-                $root.rov_action_api.MavlinkAction.encode(message.Mavlink, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                $root.rov_actions_proto.MavlinkAction.encode(message.Mavlink, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
             if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
-                $root.rov_action_api.SimplepeerSignalAction.encode(message.SimplepeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                $root.rov_actions_proto.SimplepeerSignalAction.encode(message.SimplepeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified RovAction message, length delimited. Does not implicitly {@link rov_action_api.RovAction.verify|verify} messages.
+         * Encodes the specified RovAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
-         * @param {rov_action_api.IRovAction} message RovAction message or plain object to encode
+         * @param {rov_actions_proto.IRovAction} message RovAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -4413,23 +4709,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RovAction} RovAction
+         * @returns {rov_actions_proto.RovAction} RovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RovAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RovAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RovAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.decode(reader, reader.uint32());
+                        message.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.decode(reader, reader.uint32());
                         break;
                     }
                 case 2: {
@@ -4437,83 +4733,83 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         break;
                     }
                 case 3: {
-                        message.Ping = $root.rov_action_api.PingAction.decode(reader, reader.uint32());
+                        message.Ping = $root.rov_actions_proto.PingAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 4: {
-                        message.PasswordAttempt = $root.rov_action_api.PasswordAttemptAction.decode(reader, reader.uint32());
+                        message.PasswordAttempt = $root.rov_actions_proto.PasswordAttemptAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 5: {
-                        message.AuthTokenAttempt = $root.rov_action_api.AuthTokenAttemptAction.decode(reader, reader.uint32());
+                        message.AuthTokenAttempt = $root.rov_actions_proto.AuthTokenAttemptAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 6: {
-                        message.TakeControl = $root.rov_action_api.TakeControlAction.decode(reader, reader.uint32());
+                        message.TakeControl = $root.rov_actions_proto.TakeControlAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 7: {
-                        message.Move = $root.rov_action_api.MoveAction.decode(reader, reader.uint32());
+                        message.Move = $root.rov_actions_proto.MoveAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 8: {
-                        message.BeginVideoStream = $root.rov_action_api.BeginVideoStreamAction.decode(reader, reader.uint32());
+                        message.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 9: {
-                        message.TakePhoto = $root.rov_action_api.TakePhotoAction.decode(reader, reader.uint32());
+                        message.TakePhoto = $root.rov_actions_proto.TakePhotoAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 10: {
-                        message.StartVideoRec = $root.rov_action_api.StartVideoRecAction.decode(reader, reader.uint32());
+                        message.StartVideoRec = $root.rov_actions_proto.StartVideoRecAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 11: {
-                        message.StopVideoRec = $root.rov_action_api.StopVideoRecAction.decode(reader, reader.uint32());
+                        message.StopVideoRec = $root.rov_actions_proto.StopVideoRecAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 12: {
-                        message.ToogleLights = $root.rov_action_api.ToogleLightsAction.decode(reader, reader.uint32());
+                        message.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 13: {
-                        message.ShutdownRov = $root.rov_action_api.ShutdownRovAction.decode(reader, reader.uint32());
+                        message.ShutdownRov = $root.rov_actions_proto.ShutdownRovAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 14: {
-                        message.RebootRov = $root.rov_action_api.RebootRovAction.decode(reader, reader.uint32());
+                        message.RebootRov = $root.rov_actions_proto.RebootRovAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 15: {
-                        message.EnableWifi = $root.rov_action_api.EnableWifiAction.decode(reader, reader.uint32());
+                        message.EnableWifi = $root.rov_actions_proto.EnableWifiAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 16: {
-                        message.DisableWifi = $root.rov_action_api.DisableWifiAction.decode(reader, reader.uint32());
+                        message.DisableWifi = $root.rov_actions_proto.DisableWifiAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 17: {
-                        message.RovStatusReport = $root.rov_action_api.RovStatusReportAction.decode(reader, reader.uint32());
+                        message.RovStatusReport = $root.rov_actions_proto.RovStatusReportAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 18: {
-                        message.RestartRovServices = $root.rov_action_api.RestartRovServicesAction.decode(reader, reader.uint32());
+                        message.RestartRovServices = $root.rov_actions_proto.RestartRovServicesAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 19: {
-                        message.RovLogs = $root.rov_action_api.RovLogsAction.decode(reader, reader.uint32());
+                        message.RovLogs = $root.rov_actions_proto.RovLogsAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 20: {
-                        message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.decode(reader, reader.uint32());
+                        message.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 21: {
-                        message.Mavlink = $root.rov_action_api.MavlinkAction.decode(reader, reader.uint32());
+                        message.Mavlink = $root.rov_actions_proto.MavlinkAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 22: {
-                        message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.decode(reader, reader.uint32());
+                        message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -4527,10 +4823,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RovAction} RovAction
+         * @returns {rov_actions_proto.RovAction} RovAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -4543,7 +4839,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RovAction message.
          * @function verify
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -4553,7 +4849,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 return "object expected";
             let properties = {};
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                let error = $root.rov_action_api.ActionBackendMetadata.verify(message.BackendMetadata);
+                let error = $root.rov_actions_proto.ActionBackendMetadata.verify(message.BackendMetadata);
                 if (error)
                     return "BackendMetadata." + error;
             }
@@ -4563,7 +4859,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PingAction.verify(message.Ping);
+                    let error = $root.rov_actions_proto.PingAction.verify(message.Ping);
                     if (error)
                         return "Ping." + error;
                 }
@@ -4573,7 +4869,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PasswordAttemptAction.verify(message.PasswordAttempt);
+                    let error = $root.rov_actions_proto.PasswordAttemptAction.verify(message.PasswordAttempt);
                     if (error)
                         return "PasswordAttempt." + error;
                 }
@@ -4583,7 +4879,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.AuthTokenAttemptAction.verify(message.AuthTokenAttempt);
+                    let error = $root.rov_actions_proto.AuthTokenAttemptAction.verify(message.AuthTokenAttempt);
                     if (error)
                         return "AuthTokenAttempt." + error;
                 }
@@ -4593,7 +4889,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.TakeControlAction.verify(message.TakeControl);
+                    let error = $root.rov_actions_proto.TakeControlAction.verify(message.TakeControl);
                     if (error)
                         return "TakeControl." + error;
                 }
@@ -4603,7 +4899,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.MoveAction.verify(message.Move);
+                    let error = $root.rov_actions_proto.MoveAction.verify(message.Move);
                     if (error)
                         return "Move." + error;
                 }
@@ -4613,7 +4909,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.BeginVideoStreamAction.verify(message.BeginVideoStream);
+                    let error = $root.rov_actions_proto.BeginVideoStreamAction.verify(message.BeginVideoStream);
                     if (error)
                         return "BeginVideoStream." + error;
                 }
@@ -4623,7 +4919,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.TakePhotoAction.verify(message.TakePhoto);
+                    let error = $root.rov_actions_proto.TakePhotoAction.verify(message.TakePhoto);
                     if (error)
                         return "TakePhoto." + error;
                 }
@@ -4633,7 +4929,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.StartVideoRecAction.verify(message.StartVideoRec);
+                    let error = $root.rov_actions_proto.StartVideoRecAction.verify(message.StartVideoRec);
                     if (error)
                         return "StartVideoRec." + error;
                 }
@@ -4643,7 +4939,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.StopVideoRecAction.verify(message.StopVideoRec);
+                    let error = $root.rov_actions_proto.StopVideoRecAction.verify(message.StopVideoRec);
                     if (error)
                         return "StopVideoRec." + error;
                 }
@@ -4653,7 +4949,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ToogleLightsAction.verify(message.ToogleLights);
+                    let error = $root.rov_actions_proto.ToogleLightsAction.verify(message.ToogleLights);
                     if (error)
                         return "ToogleLights." + error;
                 }
@@ -4663,7 +4959,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ShutdownRovAction.verify(message.ShutdownRov);
+                    let error = $root.rov_actions_proto.ShutdownRovAction.verify(message.ShutdownRov);
                     if (error)
                         return "ShutdownRov." + error;
                 }
@@ -4673,7 +4969,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.RebootRovAction.verify(message.RebootRov);
+                    let error = $root.rov_actions_proto.RebootRovAction.verify(message.RebootRov);
                     if (error)
                         return "RebootRov." + error;
                 }
@@ -4683,7 +4979,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.EnableWifiAction.verify(message.EnableWifi);
+                    let error = $root.rov_actions_proto.EnableWifiAction.verify(message.EnableWifi);
                     if (error)
                         return "EnableWifi." + error;
                 }
@@ -4693,7 +4989,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.DisableWifiAction.verify(message.DisableWifi);
+                    let error = $root.rov_actions_proto.DisableWifiAction.verify(message.DisableWifi);
                     if (error)
                         return "DisableWifi." + error;
                 }
@@ -4703,7 +4999,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.RovStatusReportAction.verify(message.RovStatusReport);
+                    let error = $root.rov_actions_proto.RovStatusReportAction.verify(message.RovStatusReport);
                     if (error)
                         return "RovStatusReport." + error;
                 }
@@ -4713,7 +5009,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.RestartRovServicesAction.verify(message.RestartRovServices);
+                    let error = $root.rov_actions_proto.RestartRovServicesAction.verify(message.RestartRovServices);
                     if (error)
                         return "RestartRovServices." + error;
                 }
@@ -4723,7 +5019,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.RovLogsAction.verify(message.RovLogs);
+                    let error = $root.rov_actions_proto.RovLogsAction.verify(message.RovLogs);
                     if (error)
                         return "RovLogs." + error;
                 }
@@ -4733,7 +5029,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.RefreshAllSensorsAction.verify(message.RefreshAllSensors);
+                    let error = $root.rov_actions_proto.RefreshAllSensorsAction.verify(message.RefreshAllSensors);
                     if (error)
                         return "RefreshAllSensors." + error;
                 }
@@ -4743,7 +5039,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.MavlinkAction.verify(message.Mavlink);
+                    let error = $root.rov_actions_proto.MavlinkAction.verify(message.Mavlink);
                     if (error)
                         return "Mavlink." + error;
                 }
@@ -4753,7 +5049,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.SimplepeerSignalAction.verify(message.SimplepeerSignal);
+                    let error = $root.rov_actions_proto.SimplepeerSignalAction.verify(message.SimplepeerSignal);
                     if (error)
                         return "SimplepeerSignal." + error;
                 }
@@ -4764,121 +5060,121 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RovAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RovAction} RovAction
+         * @returns {rov_actions_proto.RovAction} RovAction
          */
         RovAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RovAction)
+            if (object instanceof $root.rov_actions_proto.RovAction)
                 return object;
-            let message = new $root.rov_action_api.RovAction();
+            let message = new $root.rov_actions_proto.RovAction();
             if (object.BackendMetadata != null) {
                 if (typeof object.BackendMetadata !== "object")
-                    throw TypeError(".rov_action_api.RovAction.BackendMetadata: object expected");
-                message.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.fromObject(object.BackendMetadata);
+                    throw TypeError(".rov_actions_proto.RovAction.BackendMetadata: object expected");
+                message.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.fromObject(object.BackendMetadata);
             }
             if (object.RovExchangeId != null)
                 message.RovExchangeId = object.RovExchangeId | 0;
             if (object.Ping != null) {
                 if (typeof object.Ping !== "object")
-                    throw TypeError(".rov_action_api.RovAction.Ping: object expected");
-                message.Ping = $root.rov_action_api.PingAction.fromObject(object.Ping);
+                    throw TypeError(".rov_actions_proto.RovAction.Ping: object expected");
+                message.Ping = $root.rov_actions_proto.PingAction.fromObject(object.Ping);
             }
             if (object.PasswordAttempt != null) {
                 if (typeof object.PasswordAttempt !== "object")
-                    throw TypeError(".rov_action_api.RovAction.PasswordAttempt: object expected");
-                message.PasswordAttempt = $root.rov_action_api.PasswordAttemptAction.fromObject(object.PasswordAttempt);
+                    throw TypeError(".rov_actions_proto.RovAction.PasswordAttempt: object expected");
+                message.PasswordAttempt = $root.rov_actions_proto.PasswordAttemptAction.fromObject(object.PasswordAttempt);
             }
             if (object.AuthTokenAttempt != null) {
                 if (typeof object.AuthTokenAttempt !== "object")
-                    throw TypeError(".rov_action_api.RovAction.AuthTokenAttempt: object expected");
-                message.AuthTokenAttempt = $root.rov_action_api.AuthTokenAttemptAction.fromObject(object.AuthTokenAttempt);
+                    throw TypeError(".rov_actions_proto.RovAction.AuthTokenAttempt: object expected");
+                message.AuthTokenAttempt = $root.rov_actions_proto.AuthTokenAttemptAction.fromObject(object.AuthTokenAttempt);
             }
             if (object.TakeControl != null) {
                 if (typeof object.TakeControl !== "object")
-                    throw TypeError(".rov_action_api.RovAction.TakeControl: object expected");
-                message.TakeControl = $root.rov_action_api.TakeControlAction.fromObject(object.TakeControl);
+                    throw TypeError(".rov_actions_proto.RovAction.TakeControl: object expected");
+                message.TakeControl = $root.rov_actions_proto.TakeControlAction.fromObject(object.TakeControl);
             }
             if (object.Move != null) {
                 if (typeof object.Move !== "object")
-                    throw TypeError(".rov_action_api.RovAction.Move: object expected");
-                message.Move = $root.rov_action_api.MoveAction.fromObject(object.Move);
+                    throw TypeError(".rov_actions_proto.RovAction.Move: object expected");
+                message.Move = $root.rov_actions_proto.MoveAction.fromObject(object.Move);
             }
             if (object.BeginVideoStream != null) {
                 if (typeof object.BeginVideoStream !== "object")
-                    throw TypeError(".rov_action_api.RovAction.BeginVideoStream: object expected");
-                message.BeginVideoStream = $root.rov_action_api.BeginVideoStreamAction.fromObject(object.BeginVideoStream);
+                    throw TypeError(".rov_actions_proto.RovAction.BeginVideoStream: object expected");
+                message.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.fromObject(object.BeginVideoStream);
             }
             if (object.TakePhoto != null) {
                 if (typeof object.TakePhoto !== "object")
-                    throw TypeError(".rov_action_api.RovAction.TakePhoto: object expected");
-                message.TakePhoto = $root.rov_action_api.TakePhotoAction.fromObject(object.TakePhoto);
+                    throw TypeError(".rov_actions_proto.RovAction.TakePhoto: object expected");
+                message.TakePhoto = $root.rov_actions_proto.TakePhotoAction.fromObject(object.TakePhoto);
             }
             if (object.StartVideoRec != null) {
                 if (typeof object.StartVideoRec !== "object")
-                    throw TypeError(".rov_action_api.RovAction.StartVideoRec: object expected");
-                message.StartVideoRec = $root.rov_action_api.StartVideoRecAction.fromObject(object.StartVideoRec);
+                    throw TypeError(".rov_actions_proto.RovAction.StartVideoRec: object expected");
+                message.StartVideoRec = $root.rov_actions_proto.StartVideoRecAction.fromObject(object.StartVideoRec);
             }
             if (object.StopVideoRec != null) {
                 if (typeof object.StopVideoRec !== "object")
-                    throw TypeError(".rov_action_api.RovAction.StopVideoRec: object expected");
-                message.StopVideoRec = $root.rov_action_api.StopVideoRecAction.fromObject(object.StopVideoRec);
+                    throw TypeError(".rov_actions_proto.RovAction.StopVideoRec: object expected");
+                message.StopVideoRec = $root.rov_actions_proto.StopVideoRecAction.fromObject(object.StopVideoRec);
             }
             if (object.ToogleLights != null) {
                 if (typeof object.ToogleLights !== "object")
-                    throw TypeError(".rov_action_api.RovAction.ToogleLights: object expected");
-                message.ToogleLights = $root.rov_action_api.ToogleLightsAction.fromObject(object.ToogleLights);
+                    throw TypeError(".rov_actions_proto.RovAction.ToogleLights: object expected");
+                message.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.fromObject(object.ToogleLights);
             }
             if (object.ShutdownRov != null) {
                 if (typeof object.ShutdownRov !== "object")
-                    throw TypeError(".rov_action_api.RovAction.ShutdownRov: object expected");
-                message.ShutdownRov = $root.rov_action_api.ShutdownRovAction.fromObject(object.ShutdownRov);
+                    throw TypeError(".rov_actions_proto.RovAction.ShutdownRov: object expected");
+                message.ShutdownRov = $root.rov_actions_proto.ShutdownRovAction.fromObject(object.ShutdownRov);
             }
             if (object.RebootRov != null) {
                 if (typeof object.RebootRov !== "object")
-                    throw TypeError(".rov_action_api.RovAction.RebootRov: object expected");
-                message.RebootRov = $root.rov_action_api.RebootRovAction.fromObject(object.RebootRov);
+                    throw TypeError(".rov_actions_proto.RovAction.RebootRov: object expected");
+                message.RebootRov = $root.rov_actions_proto.RebootRovAction.fromObject(object.RebootRov);
             }
             if (object.EnableWifi != null) {
                 if (typeof object.EnableWifi !== "object")
-                    throw TypeError(".rov_action_api.RovAction.EnableWifi: object expected");
-                message.EnableWifi = $root.rov_action_api.EnableWifiAction.fromObject(object.EnableWifi);
+                    throw TypeError(".rov_actions_proto.RovAction.EnableWifi: object expected");
+                message.EnableWifi = $root.rov_actions_proto.EnableWifiAction.fromObject(object.EnableWifi);
             }
             if (object.DisableWifi != null) {
                 if (typeof object.DisableWifi !== "object")
-                    throw TypeError(".rov_action_api.RovAction.DisableWifi: object expected");
-                message.DisableWifi = $root.rov_action_api.DisableWifiAction.fromObject(object.DisableWifi);
+                    throw TypeError(".rov_actions_proto.RovAction.DisableWifi: object expected");
+                message.DisableWifi = $root.rov_actions_proto.DisableWifiAction.fromObject(object.DisableWifi);
             }
             if (object.RovStatusReport != null) {
                 if (typeof object.RovStatusReport !== "object")
-                    throw TypeError(".rov_action_api.RovAction.RovStatusReport: object expected");
-                message.RovStatusReport = $root.rov_action_api.RovStatusReportAction.fromObject(object.RovStatusReport);
+                    throw TypeError(".rov_actions_proto.RovAction.RovStatusReport: object expected");
+                message.RovStatusReport = $root.rov_actions_proto.RovStatusReportAction.fromObject(object.RovStatusReport);
             }
             if (object.RestartRovServices != null) {
                 if (typeof object.RestartRovServices !== "object")
-                    throw TypeError(".rov_action_api.RovAction.RestartRovServices: object expected");
-                message.RestartRovServices = $root.rov_action_api.RestartRovServicesAction.fromObject(object.RestartRovServices);
+                    throw TypeError(".rov_actions_proto.RovAction.RestartRovServices: object expected");
+                message.RestartRovServices = $root.rov_actions_proto.RestartRovServicesAction.fromObject(object.RestartRovServices);
             }
             if (object.RovLogs != null) {
                 if (typeof object.RovLogs !== "object")
-                    throw TypeError(".rov_action_api.RovAction.RovLogs: object expected");
-                message.RovLogs = $root.rov_action_api.RovLogsAction.fromObject(object.RovLogs);
+                    throw TypeError(".rov_actions_proto.RovAction.RovLogs: object expected");
+                message.RovLogs = $root.rov_actions_proto.RovLogsAction.fromObject(object.RovLogs);
             }
             if (object.RefreshAllSensors != null) {
                 if (typeof object.RefreshAllSensors !== "object")
-                    throw TypeError(".rov_action_api.RovAction.RefreshAllSensors: object expected");
-                message.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.fromObject(object.RefreshAllSensors);
+                    throw TypeError(".rov_actions_proto.RovAction.RefreshAllSensors: object expected");
+                message.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.fromObject(object.RefreshAllSensors);
             }
             if (object.Mavlink != null) {
                 if (typeof object.Mavlink !== "object")
-                    throw TypeError(".rov_action_api.RovAction.Mavlink: object expected");
-                message.Mavlink = $root.rov_action_api.MavlinkAction.fromObject(object.Mavlink);
+                    throw TypeError(".rov_actions_proto.RovAction.Mavlink: object expected");
+                message.Mavlink = $root.rov_actions_proto.MavlinkAction.fromObject(object.Mavlink);
             }
             if (object.SimplepeerSignal != null) {
                 if (typeof object.SimplepeerSignal !== "object")
-                    throw TypeError(".rov_action_api.RovAction.SimplepeerSignal: object expected");
-                message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.fromObject(object.SimplepeerSignal);
+                    throw TypeError(".rov_actions_proto.RovAction.SimplepeerSignal: object expected");
+                message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.fromObject(object.SimplepeerSignal);
             }
             return message;
         };
@@ -4886,9 +5182,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a RovAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
-         * @param {rov_action_api.RovAction} message RovAction
+         * @param {rov_actions_proto.RovAction} message RovAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -4901,106 +5197,106 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 object.RovExchangeId = 0;
             }
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
-                object.BackendMetadata = $root.rov_action_api.ActionBackendMetadata.toObject(message.BackendMetadata, options);
+                object.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.toObject(message.BackendMetadata, options);
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
-                object.Ping = $root.rov_action_api.PingAction.toObject(message.Ping, options);
+                object.Ping = $root.rov_actions_proto.PingAction.toObject(message.Ping, options);
                 if (options.oneofs)
                     object.Body = "Ping";
             }
             if (message.PasswordAttempt != null && message.hasOwnProperty("PasswordAttempt")) {
-                object.PasswordAttempt = $root.rov_action_api.PasswordAttemptAction.toObject(message.PasswordAttempt, options);
+                object.PasswordAttempt = $root.rov_actions_proto.PasswordAttemptAction.toObject(message.PasswordAttempt, options);
                 if (options.oneofs)
                     object.Body = "PasswordAttempt";
             }
             if (message.AuthTokenAttempt != null && message.hasOwnProperty("AuthTokenAttempt")) {
-                object.AuthTokenAttempt = $root.rov_action_api.AuthTokenAttemptAction.toObject(message.AuthTokenAttempt, options);
+                object.AuthTokenAttempt = $root.rov_actions_proto.AuthTokenAttemptAction.toObject(message.AuthTokenAttempt, options);
                 if (options.oneofs)
                     object.Body = "AuthTokenAttempt";
             }
             if (message.TakeControl != null && message.hasOwnProperty("TakeControl")) {
-                object.TakeControl = $root.rov_action_api.TakeControlAction.toObject(message.TakeControl, options);
+                object.TakeControl = $root.rov_actions_proto.TakeControlAction.toObject(message.TakeControl, options);
                 if (options.oneofs)
                     object.Body = "TakeControl";
             }
             if (message.Move != null && message.hasOwnProperty("Move")) {
-                object.Move = $root.rov_action_api.MoveAction.toObject(message.Move, options);
+                object.Move = $root.rov_actions_proto.MoveAction.toObject(message.Move, options);
                 if (options.oneofs)
                     object.Body = "Move";
             }
             if (message.BeginVideoStream != null && message.hasOwnProperty("BeginVideoStream")) {
-                object.BeginVideoStream = $root.rov_action_api.BeginVideoStreamAction.toObject(message.BeginVideoStream, options);
+                object.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.toObject(message.BeginVideoStream, options);
                 if (options.oneofs)
                     object.Body = "BeginVideoStream";
             }
             if (message.TakePhoto != null && message.hasOwnProperty("TakePhoto")) {
-                object.TakePhoto = $root.rov_action_api.TakePhotoAction.toObject(message.TakePhoto, options);
+                object.TakePhoto = $root.rov_actions_proto.TakePhotoAction.toObject(message.TakePhoto, options);
                 if (options.oneofs)
                     object.Body = "TakePhoto";
             }
             if (message.StartVideoRec != null && message.hasOwnProperty("StartVideoRec")) {
-                object.StartVideoRec = $root.rov_action_api.StartVideoRecAction.toObject(message.StartVideoRec, options);
+                object.StartVideoRec = $root.rov_actions_proto.StartVideoRecAction.toObject(message.StartVideoRec, options);
                 if (options.oneofs)
                     object.Body = "StartVideoRec";
             }
             if (message.StopVideoRec != null && message.hasOwnProperty("StopVideoRec")) {
-                object.StopVideoRec = $root.rov_action_api.StopVideoRecAction.toObject(message.StopVideoRec, options);
+                object.StopVideoRec = $root.rov_actions_proto.StopVideoRecAction.toObject(message.StopVideoRec, options);
                 if (options.oneofs)
                     object.Body = "StopVideoRec";
             }
             if (message.ToogleLights != null && message.hasOwnProperty("ToogleLights")) {
-                object.ToogleLights = $root.rov_action_api.ToogleLightsAction.toObject(message.ToogleLights, options);
+                object.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.toObject(message.ToogleLights, options);
                 if (options.oneofs)
                     object.Body = "ToogleLights";
             }
             if (message.ShutdownRov != null && message.hasOwnProperty("ShutdownRov")) {
-                object.ShutdownRov = $root.rov_action_api.ShutdownRovAction.toObject(message.ShutdownRov, options);
+                object.ShutdownRov = $root.rov_actions_proto.ShutdownRovAction.toObject(message.ShutdownRov, options);
                 if (options.oneofs)
                     object.Body = "ShutdownRov";
             }
             if (message.RebootRov != null && message.hasOwnProperty("RebootRov")) {
-                object.RebootRov = $root.rov_action_api.RebootRovAction.toObject(message.RebootRov, options);
+                object.RebootRov = $root.rov_actions_proto.RebootRovAction.toObject(message.RebootRov, options);
                 if (options.oneofs)
                     object.Body = "RebootRov";
             }
             if (message.EnableWifi != null && message.hasOwnProperty("EnableWifi")) {
-                object.EnableWifi = $root.rov_action_api.EnableWifiAction.toObject(message.EnableWifi, options);
+                object.EnableWifi = $root.rov_actions_proto.EnableWifiAction.toObject(message.EnableWifi, options);
                 if (options.oneofs)
                     object.Body = "EnableWifi";
             }
             if (message.DisableWifi != null && message.hasOwnProperty("DisableWifi")) {
-                object.DisableWifi = $root.rov_action_api.DisableWifiAction.toObject(message.DisableWifi, options);
+                object.DisableWifi = $root.rov_actions_proto.DisableWifiAction.toObject(message.DisableWifi, options);
                 if (options.oneofs)
                     object.Body = "DisableWifi";
             }
             if (message.RovStatusReport != null && message.hasOwnProperty("RovStatusReport")) {
-                object.RovStatusReport = $root.rov_action_api.RovStatusReportAction.toObject(message.RovStatusReport, options);
+                object.RovStatusReport = $root.rov_actions_proto.RovStatusReportAction.toObject(message.RovStatusReport, options);
                 if (options.oneofs)
                     object.Body = "RovStatusReport";
             }
             if (message.RestartRovServices != null && message.hasOwnProperty("RestartRovServices")) {
-                object.RestartRovServices = $root.rov_action_api.RestartRovServicesAction.toObject(message.RestartRovServices, options);
+                object.RestartRovServices = $root.rov_actions_proto.RestartRovServicesAction.toObject(message.RestartRovServices, options);
                 if (options.oneofs)
                     object.Body = "RestartRovServices";
             }
             if (message.RovLogs != null && message.hasOwnProperty("RovLogs")) {
-                object.RovLogs = $root.rov_action_api.RovLogsAction.toObject(message.RovLogs, options);
+                object.RovLogs = $root.rov_actions_proto.RovLogsAction.toObject(message.RovLogs, options);
                 if (options.oneofs)
                     object.Body = "RovLogs";
             }
             if (message.RefreshAllSensors != null && message.hasOwnProperty("RefreshAllSensors")) {
-                object.RefreshAllSensors = $root.rov_action_api.RefreshAllSensorsAction.toObject(message.RefreshAllSensors, options);
+                object.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.toObject(message.RefreshAllSensors, options);
                 if (options.oneofs)
                     object.Body = "RefreshAllSensors";
             }
             if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
-                object.Mavlink = $root.rov_action_api.MavlinkAction.toObject(message.Mavlink, options);
+                object.Mavlink = $root.rov_actions_proto.MavlinkAction.toObject(message.Mavlink, options);
                 if (options.oneofs)
                     object.Body = "Mavlink";
             }
             if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
-                object.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalAction.toObject(message.SimplepeerSignal, options);
+                object.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.toObject(message.SimplepeerSignal, options);
                 if (options.oneofs)
                     object.Body = "SimplepeerSignal";
             }
@@ -5010,7 +5306,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RovAction to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -5021,7 +5317,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RovAction
          * @function getTypeUrl
-         * @memberof rov_action_api.RovAction
+         * @memberof rov_actions_proto.RovAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -5030,7 +5326,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RovAction";
+            return typeUrlPrefix + "/rov_actions_proto.RovAction";
         };
 
         return RovAction;
@@ -5038,7 +5334,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
     /**
      * RovResponseTypes enum.
-     * @name rov_action_api.RovResponseTypes
+     * @name rov_actions_proto.RovResponseTypes
      * @enum {number}
      * @property {number} done=0 done value
      * @property {number} error=1 error value
@@ -5058,7 +5354,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
      * @property {number} mavlink_response=15 mavlink_response value
      * @property {number} simplepeer_signalling=16 simplepeer_signalling value
      */
-    rov_action_api.RovResponseTypes = (function() {
+    rov_actions_proto.RovResponseTypes = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "done"] = 0;
         values[valuesById[1] = "error"] = 1;
@@ -5080,22 +5376,22 @@ export const rov_action_api = $root.rov_action_api = (() => {
         return values;
     })();
 
-    rov_action_api.DoneResponse = (function() {
+    rov_actions_proto.DoneResponse = (function() {
 
         /**
          * Properties of a DoneResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IDoneResponse
          * @property {string|null} [Message] DoneResponse Message
          */
 
         /**
          * Constructs a new DoneResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a DoneResponse.
          * @implements IDoneResponse
          * @constructor
-         * @param {rov_action_api.IDoneResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IDoneResponse=} [properties] Properties to set
          */
         function DoneResponse(properties) {
             if (properties)
@@ -5107,7 +5403,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * DoneResponse Message.
          * @member {string} Message
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @instance
          */
         DoneResponse.prototype.Message = "";
@@ -5115,21 +5411,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new DoneResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
-         * @param {rov_action_api.IDoneResponse=} [properties] Properties to set
-         * @returns {rov_action_api.DoneResponse} DoneResponse instance
+         * @param {rov_actions_proto.IDoneResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.DoneResponse} DoneResponse instance
          */
         DoneResponse.create = function create(properties) {
             return new DoneResponse(properties);
         };
 
         /**
-         * Encodes the specified DoneResponse message. Does not implicitly {@link rov_action_api.DoneResponse.verify|verify} messages.
+         * Encodes the specified DoneResponse message. Does not implicitly {@link rov_actions_proto.DoneResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
-         * @param {rov_action_api.IDoneResponse} message DoneResponse message or plain object to encode
+         * @param {rov_actions_proto.IDoneResponse} message DoneResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5142,11 +5438,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified DoneResponse message, length delimited. Does not implicitly {@link rov_action_api.DoneResponse.verify|verify} messages.
+         * Encodes the specified DoneResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DoneResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
-         * @param {rov_action_api.IDoneResponse} message DoneResponse message or plain object to encode
+         * @param {rov_actions_proto.IDoneResponse} message DoneResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5157,18 +5453,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DoneResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.DoneResponse} DoneResponse
+         * @returns {rov_actions_proto.DoneResponse} DoneResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         DoneResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.DoneResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.DoneResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -5187,10 +5483,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DoneResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.DoneResponse} DoneResponse
+         * @returns {rov_actions_proto.DoneResponse} DoneResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -5203,7 +5499,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a DoneResponse message.
          * @function verify
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -5220,15 +5516,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a DoneResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.DoneResponse} DoneResponse
+         * @returns {rov_actions_proto.DoneResponse} DoneResponse
          */
         DoneResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.DoneResponse)
+            if (object instanceof $root.rov_actions_proto.DoneResponse)
                 return object;
-            let message = new $root.rov_action_api.DoneResponse();
+            let message = new $root.rov_actions_proto.DoneResponse();
             if (object.Message != null)
                 message.Message = String(object.Message);
             return message;
@@ -5237,9 +5533,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a DoneResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
-         * @param {rov_action_api.DoneResponse} message DoneResponse
+         * @param {rov_actions_proto.DoneResponse} message DoneResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -5257,7 +5553,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this DoneResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -5268,7 +5564,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for DoneResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.DoneResponse
+         * @memberof rov_actions_proto.DoneResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -5277,28 +5573,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.DoneResponse";
+            return typeUrlPrefix + "/rov_actions_proto.DoneResponse";
         };
 
         return DoneResponse;
     })();
 
-    rov_action_api.ErrorResponse = (function() {
+    rov_actions_proto.ErrorResponse = (function() {
 
         /**
          * Properties of an ErrorResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IErrorResponse
          * @property {string|null} [Message] ErrorResponse Message
          */
 
         /**
          * Constructs a new ErrorResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents an ErrorResponse.
          * @implements IErrorResponse
          * @constructor
-         * @param {rov_action_api.IErrorResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IErrorResponse=} [properties] Properties to set
          */
         function ErrorResponse(properties) {
             if (properties)
@@ -5310,7 +5606,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ErrorResponse Message.
          * @member {string} Message
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @instance
          */
         ErrorResponse.prototype.Message = "";
@@ -5318,21 +5614,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ErrorResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
-         * @param {rov_action_api.IErrorResponse=} [properties] Properties to set
-         * @returns {rov_action_api.ErrorResponse} ErrorResponse instance
+         * @param {rov_actions_proto.IErrorResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.ErrorResponse} ErrorResponse instance
          */
         ErrorResponse.create = function create(properties) {
             return new ErrorResponse(properties);
         };
 
         /**
-         * Encodes the specified ErrorResponse message. Does not implicitly {@link rov_action_api.ErrorResponse.verify|verify} messages.
+         * Encodes the specified ErrorResponse message. Does not implicitly {@link rov_actions_proto.ErrorResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
-         * @param {rov_action_api.IErrorResponse} message ErrorResponse message or plain object to encode
+         * @param {rov_actions_proto.IErrorResponse} message ErrorResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5345,11 +5641,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link rov_action_api.ErrorResponse.verify|verify} messages.
+         * Encodes the specified ErrorResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ErrorResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
-         * @param {rov_action_api.IErrorResponse} message ErrorResponse message or plain object to encode
+         * @param {rov_actions_proto.IErrorResponse} message ErrorResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5360,18 +5656,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an ErrorResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ErrorResponse} ErrorResponse
+         * @returns {rov_actions_proto.ErrorResponse} ErrorResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ErrorResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ErrorResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ErrorResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -5390,10 +5686,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ErrorResponse} ErrorResponse
+         * @returns {rov_actions_proto.ErrorResponse} ErrorResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -5406,7 +5702,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies an ErrorResponse message.
          * @function verify
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -5423,15 +5719,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ErrorResponse} ErrorResponse
+         * @returns {rov_actions_proto.ErrorResponse} ErrorResponse
          */
         ErrorResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ErrorResponse)
+            if (object instanceof $root.rov_actions_proto.ErrorResponse)
                 return object;
-            let message = new $root.rov_action_api.ErrorResponse();
+            let message = new $root.rov_actions_proto.ErrorResponse();
             if (object.Message != null)
                 message.Message = String(object.Message);
             return message;
@@ -5440,9 +5736,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from an ErrorResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
-         * @param {rov_action_api.ErrorResponse} message ErrorResponse
+         * @param {rov_actions_proto.ErrorResponse} message ErrorResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -5460,7 +5756,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ErrorResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -5471,7 +5767,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ErrorResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.ErrorResponse
+         * @memberof rov_actions_proto.ErrorResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -5480,28 +5776,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ErrorResponse";
+            return typeUrlPrefix + "/rov_actions_proto.ErrorResponse";
         };
 
         return ErrorResponse;
     })();
 
-    rov_action_api.PongResponse = (function() {
+    rov_actions_proto.PongResponse = (function() {
 
         /**
          * Properties of a PongResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPongResponse
          * @property {number|Long|null} [Time] PongResponse Time
          */
 
         /**
          * Constructs a new PongResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PongResponse.
          * @implements IPongResponse
          * @constructor
-         * @param {rov_action_api.IPongResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IPongResponse=} [properties] Properties to set
          */
         function PongResponse(properties) {
             if (properties)
@@ -5513,7 +5809,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * PongResponse Time.
          * @member {number|Long} Time
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @instance
          */
         PongResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
@@ -5521,21 +5817,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PongResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
-         * @param {rov_action_api.IPongResponse=} [properties] Properties to set
-         * @returns {rov_action_api.PongResponse} PongResponse instance
+         * @param {rov_actions_proto.IPongResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.PongResponse} PongResponse instance
          */
         PongResponse.create = function create(properties) {
             return new PongResponse(properties);
         };
 
         /**
-         * Encodes the specified PongResponse message. Does not implicitly {@link rov_action_api.PongResponse.verify|verify} messages.
+         * Encodes the specified PongResponse message. Does not implicitly {@link rov_actions_proto.PongResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
-         * @param {rov_action_api.IPongResponse} message PongResponse message or plain object to encode
+         * @param {rov_actions_proto.IPongResponse} message PongResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5548,11 +5844,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PongResponse message, length delimited. Does not implicitly {@link rov_action_api.PongResponse.verify|verify} messages.
+         * Encodes the specified PongResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PongResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
-         * @param {rov_action_api.IPongResponse} message PongResponse message or plain object to encode
+         * @param {rov_actions_proto.IPongResponse} message PongResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5563,18 +5859,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PongResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PongResponse} PongResponse
+         * @returns {rov_actions_proto.PongResponse} PongResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PongResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PongResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PongResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -5593,10 +5889,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PongResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PongResponse} PongResponse
+         * @returns {rov_actions_proto.PongResponse} PongResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -5609,7 +5905,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PongResponse message.
          * @function verify
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -5626,15 +5922,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PongResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PongResponse} PongResponse
+         * @returns {rov_actions_proto.PongResponse} PongResponse
          */
         PongResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PongResponse)
+            if (object instanceof $root.rov_actions_proto.PongResponse)
                 return object;
-            let message = new $root.rov_action_api.PongResponse();
+            let message = new $root.rov_actions_proto.PongResponse();
             if (object.Time != null)
                 if ($util.Long)
                     (message.Time = $util.Long.fromValue(object.Time)).unsigned = false;
@@ -5650,9 +5946,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a PongResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
-         * @param {rov_action_api.PongResponse} message PongResponse
+         * @param {rov_actions_proto.PongResponse} message PongResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -5677,7 +5973,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PongResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -5688,7 +5984,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PongResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.PongResponse
+         * @memberof rov_actions_proto.PongResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -5697,28 +5993,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PongResponse";
+            return typeUrlPrefix + "/rov_actions_proto.PongResponse";
         };
 
         return PongResponse;
     })();
 
-    rov_action_api.SensorUpdatesResponse = (function() {
+    rov_actions_proto.SensorUpdatesResponse = (function() {
 
         /**
          * Properties of a SensorUpdatesResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface ISensorUpdatesResponse
-         * @property {Array.<rov_action_api.SensorUpdatesResponse.IMeasurement>|null} [MeasurementUpdates] SensorUpdatesResponse MeasurementUpdates
+         * @property {Array.<rov_actions_proto.IMeasurement>|null} [MeasurementUpdates] SensorUpdatesResponse MeasurementUpdates
          */
 
         /**
          * Constructs a new SensorUpdatesResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a SensorUpdatesResponse.
          * @implements ISensorUpdatesResponse
          * @constructor
-         * @param {rov_action_api.ISensorUpdatesResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.ISensorUpdatesResponse=} [properties] Properties to set
          */
         function SensorUpdatesResponse(properties) {
             this.MeasurementUpdates = [];
@@ -5730,8 +6026,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * SensorUpdatesResponse MeasurementUpdates.
-         * @member {Array.<rov_action_api.SensorUpdatesResponse.IMeasurement>} MeasurementUpdates
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @member {Array.<rov_actions_proto.IMeasurement>} MeasurementUpdates
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @instance
          */
         SensorUpdatesResponse.prototype.MeasurementUpdates = $util.emptyArray;
@@ -5739,21 +6035,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new SensorUpdatesResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
-         * @param {rov_action_api.ISensorUpdatesResponse=} [properties] Properties to set
-         * @returns {rov_action_api.SensorUpdatesResponse} SensorUpdatesResponse instance
+         * @param {rov_actions_proto.ISensorUpdatesResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.SensorUpdatesResponse} SensorUpdatesResponse instance
          */
         SensorUpdatesResponse.create = function create(properties) {
             return new SensorUpdatesResponse(properties);
         };
 
         /**
-         * Encodes the specified SensorUpdatesResponse message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.verify|verify} messages.
+         * Encodes the specified SensorUpdatesResponse message. Does not implicitly {@link rov_actions_proto.SensorUpdatesResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
-         * @param {rov_action_api.ISensorUpdatesResponse} message SensorUpdatesResponse message or plain object to encode
+         * @param {rov_actions_proto.ISensorUpdatesResponse} message SensorUpdatesResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5762,16 +6058,16 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 writer = $Writer.create();
             if (message.MeasurementUpdates != null && message.MeasurementUpdates.length)
                 for (let i = 0; i < message.MeasurementUpdates.length; ++i)
-                    $root.rov_action_api.SensorUpdatesResponse.Measurement.encode(message.MeasurementUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    $root.rov_actions_proto.Measurement.encode(message.MeasurementUpdates[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified SensorUpdatesResponse message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.verify|verify} messages.
+         * Encodes the specified SensorUpdatesResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SensorUpdatesResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
-         * @param {rov_action_api.ISensorUpdatesResponse} message SensorUpdatesResponse message or plain object to encode
+         * @param {rov_actions_proto.ISensorUpdatesResponse} message SensorUpdatesResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -5782,25 +6078,25 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SensorUpdatesResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.SensorUpdatesResponse} SensorUpdatesResponse
+         * @returns {rov_actions_proto.SensorUpdatesResponse} SensorUpdatesResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         SensorUpdatesResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SensorUpdatesResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SensorUpdatesResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
                         if (!(message.MeasurementUpdates && message.MeasurementUpdates.length))
                             message.MeasurementUpdates = [];
-                        message.MeasurementUpdates.push($root.rov_action_api.SensorUpdatesResponse.Measurement.decode(reader, reader.uint32()));
+                        message.MeasurementUpdates.push($root.rov_actions_proto.Measurement.decode(reader, reader.uint32()));
                         break;
                     }
                 default:
@@ -5814,10 +6110,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SensorUpdatesResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.SensorUpdatesResponse} SensorUpdatesResponse
+         * @returns {rov_actions_proto.SensorUpdatesResponse} SensorUpdatesResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -5830,7 +6126,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a SensorUpdatesResponse message.
          * @function verify
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -5842,7 +6138,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 if (!Array.isArray(message.MeasurementUpdates))
                     return "MeasurementUpdates: array expected";
                 for (let i = 0; i < message.MeasurementUpdates.length; ++i) {
-                    let error = $root.rov_action_api.SensorUpdatesResponse.Measurement.verify(message.MeasurementUpdates[i]);
+                    let error = $root.rov_actions_proto.Measurement.verify(message.MeasurementUpdates[i]);
                     if (error)
                         return "MeasurementUpdates." + error;
                 }
@@ -5853,23 +6149,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a SensorUpdatesResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.SensorUpdatesResponse} SensorUpdatesResponse
+         * @returns {rov_actions_proto.SensorUpdatesResponse} SensorUpdatesResponse
          */
         SensorUpdatesResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.SensorUpdatesResponse)
+            if (object instanceof $root.rov_actions_proto.SensorUpdatesResponse)
                 return object;
-            let message = new $root.rov_action_api.SensorUpdatesResponse();
+            let message = new $root.rov_actions_proto.SensorUpdatesResponse();
             if (object.MeasurementUpdates) {
                 if (!Array.isArray(object.MeasurementUpdates))
-                    throw TypeError(".rov_action_api.SensorUpdatesResponse.MeasurementUpdates: array expected");
+                    throw TypeError(".rov_actions_proto.SensorUpdatesResponse.MeasurementUpdates: array expected");
                 message.MeasurementUpdates = [];
                 for (let i = 0; i < object.MeasurementUpdates.length; ++i) {
                     if (typeof object.MeasurementUpdates[i] !== "object")
-                        throw TypeError(".rov_action_api.SensorUpdatesResponse.MeasurementUpdates: object expected");
-                    message.MeasurementUpdates[i] = $root.rov_action_api.SensorUpdatesResponse.Measurement.fromObject(object.MeasurementUpdates[i]);
+                        throw TypeError(".rov_actions_proto.SensorUpdatesResponse.MeasurementUpdates: object expected");
+                    message.MeasurementUpdates[i] = $root.rov_actions_proto.Measurement.fromObject(object.MeasurementUpdates[i]);
                 }
             }
             return message;
@@ -5878,9 +6174,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a SensorUpdatesResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
-         * @param {rov_action_api.SensorUpdatesResponse} message SensorUpdatesResponse
+         * @param {rov_actions_proto.SensorUpdatesResponse} message SensorUpdatesResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -5893,7 +6189,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (message.MeasurementUpdates && message.MeasurementUpdates.length) {
                 object.MeasurementUpdates = [];
                 for (let j = 0; j < message.MeasurementUpdates.length; ++j)
-                    object.MeasurementUpdates[j] = $root.rov_action_api.SensorUpdatesResponse.Measurement.toObject(message.MeasurementUpdates[j], options);
+                    object.MeasurementUpdates[j] = $root.rov_actions_proto.Measurement.toObject(message.MeasurementUpdates[j], options);
             }
             return object;
         };
@@ -5901,7 +6197,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this SensorUpdatesResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -5912,7 +6208,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for SensorUpdatesResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.SensorUpdatesResponse
+         * @memberof rov_actions_proto.SensorUpdatesResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -5921,324 +6217,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.SensorUpdatesResponse";
+            return typeUrlPrefix + "/rov_actions_proto.SensorUpdatesResponse";
         };
-
-        SensorUpdatesResponse.Measurement = (function() {
-
-            /**
-             * Properties of a Measurement.
-             * @memberof rov_action_api.SensorUpdatesResponse
-             * @interface IMeasurement
-             * @property {rov_action_api.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
-             * @property {number|null} [Value] Measurement Value
-             */
-
-            /**
-             * Constructs a new Measurement.
-             * @memberof rov_action_api.SensorUpdatesResponse
-             * @classdesc Represents a Measurement.
-             * @implements IMeasurement
-             * @constructor
-             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement=} [properties] Properties to set
-             */
-            function Measurement(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * Measurement MeasurementType.
-             * @member {rov_action_api.SensorMeasurmentTypes} MeasurementType
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @instance
-             */
-            Measurement.prototype.MeasurementType = 0;
-
-            /**
-             * Measurement Value.
-             * @member {number} Value
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @instance
-             */
-            Measurement.prototype.Value = 0;
-
-            /**
-             * Creates a new Measurement instance using the specified properties.
-             * @function create
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement=} [properties] Properties to set
-             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement instance
-             */
-            Measurement.create = function create(properties) {
-                return new Measurement(properties);
-            };
-
-            /**
-             * Encodes the specified Measurement message. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
-             * @function encode
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement} message Measurement message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Measurement.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
-                if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
-                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
-                return writer;
-            };
-
-            /**
-             * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_action_api.SensorUpdatesResponse.Measurement.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {rov_action_api.SensorUpdatesResponse.IMeasurement} message Measurement message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Measurement.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a Measurement message from the specified reader or buffer.
-             * @function decode
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Measurement.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SensorUpdatesResponse.Measurement();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1: {
-                            message.MeasurementType = reader.int32();
-                            break;
-                        }
-                    case 2: {
-                            message.Value = reader.float();
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a Measurement message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Measurement.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a Measurement message.
-             * @function verify
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            Measurement.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                    switch (message.MeasurementType) {
-                    default:
-                        return "MeasurementType: enum value expected";
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
-                    case 11:
-                        break;
-                    }
-                if (message.Value != null && message.hasOwnProperty("Value"))
-                    if (typeof message.Value !== "number")
-                        return "Value: number expected";
-                return null;
-            };
-
-            /**
-             * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rov_action_api.SensorUpdatesResponse.Measurement} Measurement
-             */
-            Measurement.fromObject = function fromObject(object) {
-                if (object instanceof $root.rov_action_api.SensorUpdatesResponse.Measurement)
-                    return object;
-                let message = new $root.rov_action_api.SensorUpdatesResponse.Measurement();
-                switch (object.MeasurementType) {
-                default:
-                    if (typeof object.MeasurementType === "number") {
-                        message.MeasurementType = object.MeasurementType;
-                        break;
-                    }
-                    break;
-                case "depth_meters":
-                case 0:
-                    message.MeasurementType = 0;
-                    break;
-                case "water_temp_celsius":
-                case 1:
-                    message.MeasurementType = 1;
-                    break;
-                case "pressure_mbar":
-                case 2:
-                    message.MeasurementType = 2;
-                    break;
-                case "yaw_degrees":
-                case 3:
-                    message.MeasurementType = 3;
-                    break;
-                case "pitch_degrees":
-                case 4:
-                    message.MeasurementType = 4;
-                    break;
-                case "roll_degrees":
-                case 5:
-                    message.MeasurementType = 5;
-                    break;
-                case "x_acceleration_m_s2":
-                case 6:
-                    message.MeasurementType = 6;
-                    break;
-                case "y_acceleration_m_s2":
-                case 7:
-                    message.MeasurementType = 7;
-                    break;
-                case "z_acceleration_m_s2":
-                case 8:
-                    message.MeasurementType = 8;
-                    break;
-                case "battery_voltage":
-                case 9:
-                    message.MeasurementType = 9;
-                    break;
-                case "battery_current_amps":
-                case 10:
-                    message.MeasurementType = 10;
-                    break;
-                case "internal_temp_celsius":
-                case 11:
-                    message.MeasurementType = 11;
-                    break;
-                }
-                if (object.Value != null)
-                    message.Value = Number(object.Value);
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {rov_action_api.SensorUpdatesResponse.Measurement} message Measurement
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            Measurement.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.defaults) {
-                    object.MeasurementType = options.enums === String ? "depth_meters" : 0;
-                    object.Value = 0;
-                }
-                if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                    object.MeasurementType = options.enums === String ? $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_action_api.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
-                if (message.Value != null && message.hasOwnProperty("Value"))
-                    object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
-                return object;
-            };
-
-            /**
-             * Converts this Measurement to JSON.
-             * @function toJSON
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            Measurement.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            /**
-             * Gets the default type url for Measurement
-             * @function getTypeUrl
-             * @memberof rov_action_api.SensorUpdatesResponse.Measurement
-             * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
-             */
-            Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/rov_action_api.SensorUpdatesResponse.Measurement";
-            };
-
-            return Measurement;
-        })();
 
         return SensorUpdatesResponse;
     })();
 
-    rov_action_api.PasswordRequiredResponse = (function() {
+    rov_actions_proto.PasswordRequiredResponse = (function() {
 
         /**
          * Properties of a PasswordRequiredResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPasswordRequiredResponse
          * @property {string|null} [RovId] PasswordRequiredResponse RovId
          */
 
         /**
          * Constructs a new PasswordRequiredResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PasswordRequiredResponse.
          * @implements IPasswordRequiredResponse
          * @constructor
-         * @param {rov_action_api.IPasswordRequiredResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IPasswordRequiredResponse=} [properties] Properties to set
          */
         function PasswordRequiredResponse(properties) {
             if (properties)
@@ -6250,7 +6250,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * PasswordRequiredResponse RovId.
          * @member {string} RovId
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @instance
          */
         PasswordRequiredResponse.prototype.RovId = "";
@@ -6258,21 +6258,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PasswordRequiredResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
-         * @param {rov_action_api.IPasswordRequiredResponse=} [properties] Properties to set
-         * @returns {rov_action_api.PasswordRequiredResponse} PasswordRequiredResponse instance
+         * @param {rov_actions_proto.IPasswordRequiredResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.PasswordRequiredResponse} PasswordRequiredResponse instance
          */
         PasswordRequiredResponse.create = function create(properties) {
             return new PasswordRequiredResponse(properties);
         };
 
         /**
-         * Encodes the specified PasswordRequiredResponse message. Does not implicitly {@link rov_action_api.PasswordRequiredResponse.verify|verify} messages.
+         * Encodes the specified PasswordRequiredResponse message. Does not implicitly {@link rov_actions_proto.PasswordRequiredResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
-         * @param {rov_action_api.IPasswordRequiredResponse} message PasswordRequiredResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordRequiredResponse} message PasswordRequiredResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6285,11 +6285,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PasswordRequiredResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordRequiredResponse.verify|verify} messages.
+         * Encodes the specified PasswordRequiredResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordRequiredResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
-         * @param {rov_action_api.IPasswordRequiredResponse} message PasswordRequiredResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordRequiredResponse} message PasswordRequiredResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6300,18 +6300,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordRequiredResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PasswordRequiredResponse} PasswordRequiredResponse
+         * @returns {rov_actions_proto.PasswordRequiredResponse} PasswordRequiredResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PasswordRequiredResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PasswordRequiredResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PasswordRequiredResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -6330,10 +6330,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordRequiredResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PasswordRequiredResponse} PasswordRequiredResponse
+         * @returns {rov_actions_proto.PasswordRequiredResponse} PasswordRequiredResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -6346,7 +6346,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PasswordRequiredResponse message.
          * @function verify
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -6363,15 +6363,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PasswordRequiredResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PasswordRequiredResponse} PasswordRequiredResponse
+         * @returns {rov_actions_proto.PasswordRequiredResponse} PasswordRequiredResponse
          */
         PasswordRequiredResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PasswordRequiredResponse)
+            if (object instanceof $root.rov_actions_proto.PasswordRequiredResponse)
                 return object;
-            let message = new $root.rov_action_api.PasswordRequiredResponse();
+            let message = new $root.rov_actions_proto.PasswordRequiredResponse();
             if (object.RovId != null)
                 message.RovId = String(object.RovId);
             return message;
@@ -6380,9 +6380,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a PasswordRequiredResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
-         * @param {rov_action_api.PasswordRequiredResponse} message PasswordRequiredResponse
+         * @param {rov_actions_proto.PasswordRequiredResponse} message PasswordRequiredResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -6400,7 +6400,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PasswordRequiredResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -6411,7 +6411,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PasswordRequiredResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.PasswordRequiredResponse
+         * @memberof rov_actions_proto.PasswordRequiredResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -6420,28 +6420,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PasswordRequiredResponse";
+            return typeUrlPrefix + "/rov_actions_proto.PasswordRequiredResponse";
         };
 
         return PasswordRequiredResponse;
     })();
 
-    rov_action_api.PasswordAcceptedResponse = (function() {
+    rov_actions_proto.PasswordAcceptedResponse = (function() {
 
         /**
          * Properties of a PasswordAcceptedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPasswordAcceptedResponse
          * @property {string|null} [AuthToken] PasswordAcceptedResponse AuthToken
          */
 
         /**
          * Constructs a new PasswordAcceptedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PasswordAcceptedResponse.
          * @implements IPasswordAcceptedResponse
          * @constructor
-         * @param {rov_action_api.IPasswordAcceptedResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IPasswordAcceptedResponse=} [properties] Properties to set
          */
         function PasswordAcceptedResponse(properties) {
             if (properties)
@@ -6453,7 +6453,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * PasswordAcceptedResponse AuthToken.
          * @member {string} AuthToken
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @instance
          */
         PasswordAcceptedResponse.prototype.AuthToken = "";
@@ -6461,21 +6461,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PasswordAcceptedResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
-         * @param {rov_action_api.IPasswordAcceptedResponse=} [properties] Properties to set
-         * @returns {rov_action_api.PasswordAcceptedResponse} PasswordAcceptedResponse instance
+         * @param {rov_actions_proto.IPasswordAcceptedResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.PasswordAcceptedResponse} PasswordAcceptedResponse instance
          */
         PasswordAcceptedResponse.create = function create(properties) {
             return new PasswordAcceptedResponse(properties);
         };
 
         /**
-         * Encodes the specified PasswordAcceptedResponse message. Does not implicitly {@link rov_action_api.PasswordAcceptedResponse.verify|verify} messages.
+         * Encodes the specified PasswordAcceptedResponse message. Does not implicitly {@link rov_actions_proto.PasswordAcceptedResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
-         * @param {rov_action_api.IPasswordAcceptedResponse} message PasswordAcceptedResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordAcceptedResponse} message PasswordAcceptedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6488,11 +6488,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PasswordAcceptedResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordAcceptedResponse.verify|verify} messages.
+         * Encodes the specified PasswordAcceptedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordAcceptedResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
-         * @param {rov_action_api.IPasswordAcceptedResponse} message PasswordAcceptedResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordAcceptedResponse} message PasswordAcceptedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6503,18 +6503,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordAcceptedResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PasswordAcceptedResponse} PasswordAcceptedResponse
+         * @returns {rov_actions_proto.PasswordAcceptedResponse} PasswordAcceptedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PasswordAcceptedResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PasswordAcceptedResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PasswordAcceptedResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -6533,10 +6533,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordAcceptedResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PasswordAcceptedResponse} PasswordAcceptedResponse
+         * @returns {rov_actions_proto.PasswordAcceptedResponse} PasswordAcceptedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -6549,7 +6549,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PasswordAcceptedResponse message.
          * @function verify
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -6566,15 +6566,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PasswordAcceptedResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PasswordAcceptedResponse} PasswordAcceptedResponse
+         * @returns {rov_actions_proto.PasswordAcceptedResponse} PasswordAcceptedResponse
          */
         PasswordAcceptedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PasswordAcceptedResponse)
+            if (object instanceof $root.rov_actions_proto.PasswordAcceptedResponse)
                 return object;
-            let message = new $root.rov_action_api.PasswordAcceptedResponse();
+            let message = new $root.rov_actions_proto.PasswordAcceptedResponse();
             if (object.AuthToken != null)
                 message.AuthToken = String(object.AuthToken);
             return message;
@@ -6583,9 +6583,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a PasswordAcceptedResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
-         * @param {rov_action_api.PasswordAcceptedResponse} message PasswordAcceptedResponse
+         * @param {rov_actions_proto.PasswordAcceptedResponse} message PasswordAcceptedResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -6603,7 +6603,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PasswordAcceptedResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -6614,7 +6614,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PasswordAcceptedResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.PasswordAcceptedResponse
+         * @memberof rov_actions_proto.PasswordAcceptedResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -6623,27 +6623,27 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PasswordAcceptedResponse";
+            return typeUrlPrefix + "/rov_actions_proto.PasswordAcceptedResponse";
         };
 
         return PasswordAcceptedResponse;
     })();
 
-    rov_action_api.PasswordInvalidResponse = (function() {
+    rov_actions_proto.PasswordInvalidResponse = (function() {
 
         /**
          * Properties of a PasswordInvalidResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IPasswordInvalidResponse
          */
 
         /**
          * Constructs a new PasswordInvalidResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a PasswordInvalidResponse.
          * @implements IPasswordInvalidResponse
          * @constructor
-         * @param {rov_action_api.IPasswordInvalidResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IPasswordInvalidResponse=} [properties] Properties to set
          */
         function PasswordInvalidResponse(properties) {
             if (properties)
@@ -6655,21 +6655,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new PasswordInvalidResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
-         * @param {rov_action_api.IPasswordInvalidResponse=} [properties] Properties to set
-         * @returns {rov_action_api.PasswordInvalidResponse} PasswordInvalidResponse instance
+         * @param {rov_actions_proto.IPasswordInvalidResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.PasswordInvalidResponse} PasswordInvalidResponse instance
          */
         PasswordInvalidResponse.create = function create(properties) {
             return new PasswordInvalidResponse(properties);
         };
 
         /**
-         * Encodes the specified PasswordInvalidResponse message. Does not implicitly {@link rov_action_api.PasswordInvalidResponse.verify|verify} messages.
+         * Encodes the specified PasswordInvalidResponse message. Does not implicitly {@link rov_actions_proto.PasswordInvalidResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
-         * @param {rov_action_api.IPasswordInvalidResponse} message PasswordInvalidResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordInvalidResponse} message PasswordInvalidResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6680,11 +6680,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified PasswordInvalidResponse message, length delimited. Does not implicitly {@link rov_action_api.PasswordInvalidResponse.verify|verify} messages.
+         * Encodes the specified PasswordInvalidResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PasswordInvalidResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
-         * @param {rov_action_api.IPasswordInvalidResponse} message PasswordInvalidResponse message or plain object to encode
+         * @param {rov_actions_proto.IPasswordInvalidResponse} message PasswordInvalidResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6695,18 +6695,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordInvalidResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.PasswordInvalidResponse} PasswordInvalidResponse
+         * @returns {rov_actions_proto.PasswordInvalidResponse} PasswordInvalidResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         PasswordInvalidResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.PasswordInvalidResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PasswordInvalidResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -6721,10 +6721,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a PasswordInvalidResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.PasswordInvalidResponse} PasswordInvalidResponse
+         * @returns {rov_actions_proto.PasswordInvalidResponse} PasswordInvalidResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -6737,7 +6737,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a PasswordInvalidResponse message.
          * @function verify
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -6751,23 +6751,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a PasswordInvalidResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.PasswordInvalidResponse} PasswordInvalidResponse
+         * @returns {rov_actions_proto.PasswordInvalidResponse} PasswordInvalidResponse
          */
         PasswordInvalidResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.PasswordInvalidResponse)
+            if (object instanceof $root.rov_actions_proto.PasswordInvalidResponse)
                 return object;
-            return new $root.rov_action_api.PasswordInvalidResponse();
+            return new $root.rov_actions_proto.PasswordInvalidResponse();
         };
 
         /**
          * Creates a plain object from a PasswordInvalidResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
-         * @param {rov_action_api.PasswordInvalidResponse} message PasswordInvalidResponse
+         * @param {rov_actions_proto.PasswordInvalidResponse} message PasswordInvalidResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -6778,7 +6778,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this PasswordInvalidResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -6789,7 +6789,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for PasswordInvalidResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.PasswordInvalidResponse
+         * @memberof rov_actions_proto.PasswordInvalidResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -6798,28 +6798,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.PasswordInvalidResponse";
+            return typeUrlPrefix + "/rov_actions_proto.PasswordInvalidResponse";
         };
 
         return PasswordInvalidResponse;
     })();
 
-    rov_action_api.DriverChangedResponse = (function() {
+    rov_actions_proto.DriverChangedResponse = (function() {
 
         /**
          * Properties of a DriverChangedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IDriverChangedResponse
          * @property {string|null} [DriverPeerId] DriverChangedResponse DriverPeerId
          */
 
         /**
          * Constructs a new DriverChangedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a DriverChangedResponse.
          * @implements IDriverChangedResponse
          * @constructor
-         * @param {rov_action_api.IDriverChangedResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IDriverChangedResponse=} [properties] Properties to set
          */
         function DriverChangedResponse(properties) {
             if (properties)
@@ -6831,7 +6831,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * DriverChangedResponse DriverPeerId.
          * @member {string} DriverPeerId
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @instance
          */
         DriverChangedResponse.prototype.DriverPeerId = "";
@@ -6839,21 +6839,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new DriverChangedResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
-         * @param {rov_action_api.IDriverChangedResponse=} [properties] Properties to set
-         * @returns {rov_action_api.DriverChangedResponse} DriverChangedResponse instance
+         * @param {rov_actions_proto.IDriverChangedResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse instance
          */
         DriverChangedResponse.create = function create(properties) {
             return new DriverChangedResponse(properties);
         };
 
         /**
-         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_action_api.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
-         * @param {rov_action_api.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
+         * @param {rov_actions_proto.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6866,11 +6866,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_action_api.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
-         * @param {rov_action_api.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
+         * @param {rov_actions_proto.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -6881,18 +6881,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DriverChangedResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         DriverChangedResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.DriverChangedResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.DriverChangedResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -6911,10 +6911,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a DriverChangedResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -6927,7 +6927,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a DriverChangedResponse message.
          * @function verify
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -6944,15 +6944,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a DriverChangedResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
          */
         DriverChangedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.DriverChangedResponse)
+            if (object instanceof $root.rov_actions_proto.DriverChangedResponse)
                 return object;
-            let message = new $root.rov_action_api.DriverChangedResponse();
+            let message = new $root.rov_actions_proto.DriverChangedResponse();
             if (object.DriverPeerId != null)
                 message.DriverPeerId = String(object.DriverPeerId);
             return message;
@@ -6961,9 +6961,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a DriverChangedResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
-         * @param {rov_action_api.DriverChangedResponse} message DriverChangedResponse
+         * @param {rov_actions_proto.DriverChangedResponse} message DriverChangedResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -6981,7 +6981,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this DriverChangedResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -6992,7 +6992,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for DriverChangedResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.DriverChangedResponse
+         * @memberof rov_actions_proto.DriverChangedResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -7001,28 +7001,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.DriverChangedResponse";
+            return typeUrlPrefix + "/rov_actions_proto.DriverChangedResponse";
         };
 
         return DriverChangedResponse;
     })();
 
-    rov_action_api.ClientConnectedResponse = (function() {
+    rov_actions_proto.ClientConnectedResponse = (function() {
 
         /**
          * Properties of a ClientConnectedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IClientConnectedResponse
          * @property {string|null} [ClientPeerId] ClientConnectedResponse ClientPeerId
          */
 
         /**
          * Constructs a new ClientConnectedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ClientConnectedResponse.
          * @implements IClientConnectedResponse
          * @constructor
-         * @param {rov_action_api.IClientConnectedResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IClientConnectedResponse=} [properties] Properties to set
          */
         function ClientConnectedResponse(properties) {
             if (properties)
@@ -7034,7 +7034,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ClientConnectedResponse ClientPeerId.
          * @member {string} ClientPeerId
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @instance
          */
         ClientConnectedResponse.prototype.ClientPeerId = "";
@@ -7042,21 +7042,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ClientConnectedResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
-         * @param {rov_action_api.IClientConnectedResponse=} [properties] Properties to set
-         * @returns {rov_action_api.ClientConnectedResponse} ClientConnectedResponse instance
+         * @param {rov_actions_proto.IClientConnectedResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.ClientConnectedResponse} ClientConnectedResponse instance
          */
         ClientConnectedResponse.create = function create(properties) {
             return new ClientConnectedResponse(properties);
         };
 
         /**
-         * Encodes the specified ClientConnectedResponse message. Does not implicitly {@link rov_action_api.ClientConnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientConnectedResponse message. Does not implicitly {@link rov_actions_proto.ClientConnectedResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
-         * @param {rov_action_api.IClientConnectedResponse} message ClientConnectedResponse message or plain object to encode
+         * @param {rov_actions_proto.IClientConnectedResponse} message ClientConnectedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7069,11 +7069,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ClientConnectedResponse message, length delimited. Does not implicitly {@link rov_action_api.ClientConnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientConnectedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ClientConnectedResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
-         * @param {rov_action_api.IClientConnectedResponse} message ClientConnectedResponse message or plain object to encode
+         * @param {rov_actions_proto.IClientConnectedResponse} message ClientConnectedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7084,18 +7084,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ClientConnectedResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ClientConnectedResponse} ClientConnectedResponse
+         * @returns {rov_actions_proto.ClientConnectedResponse} ClientConnectedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ClientConnectedResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ClientConnectedResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ClientConnectedResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -7114,10 +7114,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ClientConnectedResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ClientConnectedResponse} ClientConnectedResponse
+         * @returns {rov_actions_proto.ClientConnectedResponse} ClientConnectedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -7130,7 +7130,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ClientConnectedResponse message.
          * @function verify
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -7147,15 +7147,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ClientConnectedResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ClientConnectedResponse} ClientConnectedResponse
+         * @returns {rov_actions_proto.ClientConnectedResponse} ClientConnectedResponse
          */
         ClientConnectedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ClientConnectedResponse)
+            if (object instanceof $root.rov_actions_proto.ClientConnectedResponse)
                 return object;
-            let message = new $root.rov_action_api.ClientConnectedResponse();
+            let message = new $root.rov_actions_proto.ClientConnectedResponse();
             if (object.ClientPeerId != null)
                 message.ClientPeerId = String(object.ClientPeerId);
             return message;
@@ -7164,9 +7164,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a ClientConnectedResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
-         * @param {rov_action_api.ClientConnectedResponse} message ClientConnectedResponse
+         * @param {rov_actions_proto.ClientConnectedResponse} message ClientConnectedResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -7184,7 +7184,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ClientConnectedResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -7195,7 +7195,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ClientConnectedResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.ClientConnectedResponse
+         * @memberof rov_actions_proto.ClientConnectedResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -7204,28 +7204,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ClientConnectedResponse";
+            return typeUrlPrefix + "/rov_actions_proto.ClientConnectedResponse";
         };
 
         return ClientConnectedResponse;
     })();
 
-    rov_action_api.ClientDisconnectedResponse = (function() {
+    rov_actions_proto.ClientDisconnectedResponse = (function() {
 
         /**
          * Properties of a ClientDisconnectedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IClientDisconnectedResponse
          * @property {string|null} [ClientPeerId] ClientDisconnectedResponse ClientPeerId
          */
 
         /**
          * Constructs a new ClientDisconnectedResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ClientDisconnectedResponse.
          * @implements IClientDisconnectedResponse
          * @constructor
-         * @param {rov_action_api.IClientDisconnectedResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IClientDisconnectedResponse=} [properties] Properties to set
          */
         function ClientDisconnectedResponse(properties) {
             if (properties)
@@ -7237,7 +7237,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ClientDisconnectedResponse ClientPeerId.
          * @member {string} ClientPeerId
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @instance
          */
         ClientDisconnectedResponse.prototype.ClientPeerId = "";
@@ -7245,21 +7245,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ClientDisconnectedResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
-         * @param {rov_action_api.IClientDisconnectedResponse=} [properties] Properties to set
-         * @returns {rov_action_api.ClientDisconnectedResponse} ClientDisconnectedResponse instance
+         * @param {rov_actions_proto.IClientDisconnectedResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.ClientDisconnectedResponse} ClientDisconnectedResponse instance
          */
         ClientDisconnectedResponse.create = function create(properties) {
             return new ClientDisconnectedResponse(properties);
         };
 
         /**
-         * Encodes the specified ClientDisconnectedResponse message. Does not implicitly {@link rov_action_api.ClientDisconnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientDisconnectedResponse message. Does not implicitly {@link rov_actions_proto.ClientDisconnectedResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
-         * @param {rov_action_api.IClientDisconnectedResponse} message ClientDisconnectedResponse message or plain object to encode
+         * @param {rov_actions_proto.IClientDisconnectedResponse} message ClientDisconnectedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7272,11 +7272,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ClientDisconnectedResponse message, length delimited. Does not implicitly {@link rov_action_api.ClientDisconnectedResponse.verify|verify} messages.
+         * Encodes the specified ClientDisconnectedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ClientDisconnectedResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
-         * @param {rov_action_api.IClientDisconnectedResponse} message ClientDisconnectedResponse message or plain object to encode
+         * @param {rov_actions_proto.IClientDisconnectedResponse} message ClientDisconnectedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7287,18 +7287,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ClientDisconnectedResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ClientDisconnectedResponse} ClientDisconnectedResponse
+         * @returns {rov_actions_proto.ClientDisconnectedResponse} ClientDisconnectedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ClientDisconnectedResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ClientDisconnectedResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ClientDisconnectedResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -7317,10 +7317,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ClientDisconnectedResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ClientDisconnectedResponse} ClientDisconnectedResponse
+         * @returns {rov_actions_proto.ClientDisconnectedResponse} ClientDisconnectedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -7333,7 +7333,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ClientDisconnectedResponse message.
          * @function verify
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -7350,15 +7350,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ClientDisconnectedResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ClientDisconnectedResponse} ClientDisconnectedResponse
+         * @returns {rov_actions_proto.ClientDisconnectedResponse} ClientDisconnectedResponse
          */
         ClientDisconnectedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ClientDisconnectedResponse)
+            if (object instanceof $root.rov_actions_proto.ClientDisconnectedResponse)
                 return object;
-            let message = new $root.rov_action_api.ClientDisconnectedResponse();
+            let message = new $root.rov_actions_proto.ClientDisconnectedResponse();
             if (object.ClientPeerId != null)
                 message.ClientPeerId = String(object.ClientPeerId);
             return message;
@@ -7367,9 +7367,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a ClientDisconnectedResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
-         * @param {rov_action_api.ClientDisconnectedResponse} message ClientDisconnectedResponse
+         * @param {rov_actions_proto.ClientDisconnectedResponse} message ClientDisconnectedResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -7387,7 +7387,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ClientDisconnectedResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -7398,7 +7398,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ClientDisconnectedResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.ClientDisconnectedResponse
+         * @memberof rov_actions_proto.ClientDisconnectedResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -7407,28 +7407,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ClientDisconnectedResponse";
+            return typeUrlPrefix + "/rov_actions_proto.ClientDisconnectedResponse";
         };
 
         return ClientDisconnectedResponse;
     })();
 
-    rov_action_api.HeartbeatResponse = (function() {
+    rov_actions_proto.HeartbeatResponse = (function() {
 
         /**
          * Properties of a HeartbeatResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IHeartbeatResponse
          * @property {number|Long|null} [Time] HeartbeatResponse Time
          */
 
         /**
          * Constructs a new HeartbeatResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a HeartbeatResponse.
          * @implements IHeartbeatResponse
          * @constructor
-         * @param {rov_action_api.IHeartbeatResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IHeartbeatResponse=} [properties] Properties to set
          */
         function HeartbeatResponse(properties) {
             if (properties)
@@ -7440,7 +7440,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * HeartbeatResponse Time.
          * @member {number|Long} Time
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @instance
          */
         HeartbeatResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
@@ -7448,21 +7448,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new HeartbeatResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
-         * @param {rov_action_api.IHeartbeatResponse=} [properties] Properties to set
-         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse instance
+         * @param {rov_actions_proto.IHeartbeatResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.HeartbeatResponse} HeartbeatResponse instance
          */
         HeartbeatResponse.create = function create(properties) {
             return new HeartbeatResponse(properties);
         };
 
         /**
-         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * Encodes the specified HeartbeatResponse message. Does not implicitly {@link rov_actions_proto.HeartbeatResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
-         * @param {rov_action_api.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
+         * @param {rov_actions_proto.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7475,11 +7475,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_action_api.HeartbeatResponse.verify|verify} messages.
+         * Encodes the specified HeartbeatResponse message, length delimited. Does not implicitly {@link rov_actions_proto.HeartbeatResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
-         * @param {rov_action_api.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
+         * @param {rov_actions_proto.IHeartbeatResponse} message HeartbeatResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7490,18 +7490,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a HeartbeatResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         * @returns {rov_actions_proto.HeartbeatResponse} HeartbeatResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         HeartbeatResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.HeartbeatResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.HeartbeatResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -7520,10 +7520,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a HeartbeatResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         * @returns {rov_actions_proto.HeartbeatResponse} HeartbeatResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -7536,7 +7536,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a HeartbeatResponse message.
          * @function verify
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -7553,15 +7553,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a HeartbeatResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.HeartbeatResponse} HeartbeatResponse
+         * @returns {rov_actions_proto.HeartbeatResponse} HeartbeatResponse
          */
         HeartbeatResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.HeartbeatResponse)
+            if (object instanceof $root.rov_actions_proto.HeartbeatResponse)
                 return object;
-            let message = new $root.rov_action_api.HeartbeatResponse();
+            let message = new $root.rov_actions_proto.HeartbeatResponse();
             if (object.Time != null)
                 if ($util.Long)
                     (message.Time = $util.Long.fromValue(object.Time)).unsigned = false;
@@ -7577,9 +7577,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a HeartbeatResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
-         * @param {rov_action_api.HeartbeatResponse} message HeartbeatResponse
+         * @param {rov_actions_proto.HeartbeatResponse} message HeartbeatResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -7604,7 +7604,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this HeartbeatResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -7615,7 +7615,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for HeartbeatResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.HeartbeatResponse
+         * @memberof rov_actions_proto.HeartbeatResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -7624,28 +7624,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.HeartbeatResponse";
+            return typeUrlPrefix + "/rov_actions_proto.HeartbeatResponse";
         };
 
         return HeartbeatResponse;
     })();
 
-    rov_action_api.ContinuedOutputResponse = (function() {
+    rov_actions_proto.ContinuedOutputResponse = (function() {
 
         /**
          * Properties of a ContinuedOutputResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IContinuedOutputResponse
          * @property {string|null} [Message] ContinuedOutputResponse Message
          */
 
         /**
          * Constructs a new ContinuedOutputResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ContinuedOutputResponse.
          * @implements IContinuedOutputResponse
          * @constructor
-         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IContinuedOutputResponse=} [properties] Properties to set
          */
         function ContinuedOutputResponse(properties) {
             if (properties)
@@ -7657,7 +7657,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ContinuedOutputResponse Message.
          * @member {string} Message
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @instance
          */
         ContinuedOutputResponse.prototype.Message = "";
@@ -7665,21 +7665,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ContinuedOutputResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
-         * @param {rov_action_api.IContinuedOutputResponse=} [properties] Properties to set
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse instance
+         * @param {rov_actions_proto.IContinuedOutputResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.ContinuedOutputResponse} ContinuedOutputResponse instance
          */
         ContinuedOutputResponse.create = function create(properties) {
             return new ContinuedOutputResponse(properties);
         };
 
         /**
-         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * Encodes the specified ContinuedOutputResponse message. Does not implicitly {@link rov_actions_proto.ContinuedOutputResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
-         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
+         * @param {rov_actions_proto.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7692,11 +7692,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_action_api.ContinuedOutputResponse.verify|verify} messages.
+         * Encodes the specified ContinuedOutputResponse message, length delimited. Does not implicitly {@link rov_actions_proto.ContinuedOutputResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
-         * @param {rov_action_api.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
+         * @param {rov_actions_proto.IContinuedOutputResponse} message ContinuedOutputResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7707,18 +7707,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ContinuedOutputResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         * @returns {rov_actions_proto.ContinuedOutputResponse} ContinuedOutputResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ContinuedOutputResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ContinuedOutputResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ContinuedOutputResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -7737,10 +7737,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         * @returns {rov_actions_proto.ContinuedOutputResponse} ContinuedOutputResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -7753,7 +7753,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ContinuedOutputResponse message.
          * @function verify
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -7770,15 +7770,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ContinuedOutputResponse} ContinuedOutputResponse
+         * @returns {rov_actions_proto.ContinuedOutputResponse} ContinuedOutputResponse
          */
         ContinuedOutputResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ContinuedOutputResponse)
+            if (object instanceof $root.rov_actions_proto.ContinuedOutputResponse)
                 return object;
-            let message = new $root.rov_action_api.ContinuedOutputResponse();
+            let message = new $root.rov_actions_proto.ContinuedOutputResponse();
             if (object.Message != null)
                 message.Message = String(object.Message);
             return message;
@@ -7787,9 +7787,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a ContinuedOutputResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
-         * @param {rov_action_api.ContinuedOutputResponse} message ContinuedOutputResponse
+         * @param {rov_actions_proto.ContinuedOutputResponse} message ContinuedOutputResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -7807,7 +7807,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this ContinuedOutputResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -7818,7 +7818,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ContinuedOutputResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.ContinuedOutputResponse
+         * @memberof rov_actions_proto.ContinuedOutputResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -7827,28 +7827,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ContinuedOutputResponse";
+            return typeUrlPrefix + "/rov_actions_proto.ContinuedOutputResponse";
         };
 
         return ContinuedOutputResponse;
     })();
 
-    rov_action_api.MavlinkResponse = (function() {
+    rov_actions_proto.MavlinkResponse = (function() {
 
         /**
          * Properties of a MavlinkResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IMavlinkResponse
          * @property {Uint8Array|null} [Message] MavlinkResponse Message
          */
 
         /**
          * Constructs a new MavlinkResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a MavlinkResponse.
          * @implements IMavlinkResponse
          * @constructor
-         * @param {rov_action_api.IMavlinkResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IMavlinkResponse=} [properties] Properties to set
          */
         function MavlinkResponse(properties) {
             if (properties)
@@ -7860,7 +7860,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * MavlinkResponse Message.
          * @member {Uint8Array} Message
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @instance
          */
         MavlinkResponse.prototype.Message = $util.newBuffer([]);
@@ -7868,21 +7868,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new MavlinkResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
-         * @param {rov_action_api.IMavlinkResponse=} [properties] Properties to set
-         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse instance
+         * @param {rov_actions_proto.IMavlinkResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.MavlinkResponse} MavlinkResponse instance
          */
         MavlinkResponse.create = function create(properties) {
             return new MavlinkResponse(properties);
         };
 
         /**
-         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * Encodes the specified MavlinkResponse message. Does not implicitly {@link rov_actions_proto.MavlinkResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
-         * @param {rov_action_api.IMavlinkResponse} message MavlinkResponse message or plain object to encode
+         * @param {rov_actions_proto.IMavlinkResponse} message MavlinkResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7895,11 +7895,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_action_api.MavlinkResponse.verify|verify} messages.
+         * Encodes the specified MavlinkResponse message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
-         * @param {rov_action_api.IMavlinkResponse} message MavlinkResponse message or plain object to encode
+         * @param {rov_actions_proto.IMavlinkResponse} message MavlinkResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -7910,18 +7910,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MavlinkResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         * @returns {rov_actions_proto.MavlinkResponse} MavlinkResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         MavlinkResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.MavlinkResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.MavlinkResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -7940,10 +7940,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a MavlinkResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         * @returns {rov_actions_proto.MavlinkResponse} MavlinkResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -7956,7 +7956,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a MavlinkResponse message.
          * @function verify
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -7973,15 +7973,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a MavlinkResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.MavlinkResponse} MavlinkResponse
+         * @returns {rov_actions_proto.MavlinkResponse} MavlinkResponse
          */
         MavlinkResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.MavlinkResponse)
+            if (object instanceof $root.rov_actions_proto.MavlinkResponse)
                 return object;
-            let message = new $root.rov_action_api.MavlinkResponse();
+            let message = new $root.rov_actions_proto.MavlinkResponse();
             if (object.Message != null)
                 if (typeof object.Message === "string")
                     $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
@@ -7993,9 +7993,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a MavlinkResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
-         * @param {rov_action_api.MavlinkResponse} message MavlinkResponse
+         * @param {rov_actions_proto.MavlinkResponse} message MavlinkResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -8019,7 +8019,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this MavlinkResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -8030,7 +8030,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for MavlinkResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.MavlinkResponse
+         * @memberof rov_actions_proto.MavlinkResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -8039,28 +8039,28 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.MavlinkResponse";
+            return typeUrlPrefix + "/rov_actions_proto.MavlinkResponse";
         };
 
         return MavlinkResponse;
     })();
 
-    rov_action_api.SimplepeerSignalResponse = (function() {
+    rov_actions_proto.SimplepeerSignalResponse = (function() {
 
         /**
          * Properties of a SimplepeerSignalResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface ISimplepeerSignalResponse
          * @property {Uint8Array|null} [Message] SimplepeerSignalResponse Message
          */
 
         /**
          * Constructs a new SimplepeerSignalResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a SimplepeerSignalResponse.
          * @implements ISimplepeerSignalResponse
          * @constructor
-         * @param {rov_action_api.ISimplepeerSignalResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.ISimplepeerSignalResponse=} [properties] Properties to set
          */
         function SimplepeerSignalResponse(properties) {
             if (properties)
@@ -8072,7 +8072,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * SimplepeerSignalResponse Message.
          * @member {Uint8Array} Message
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @instance
          */
         SimplepeerSignalResponse.prototype.Message = $util.newBuffer([]);
@@ -8080,21 +8080,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new SimplepeerSignalResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
-         * @param {rov_action_api.ISimplepeerSignalResponse=} [properties] Properties to set
-         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse instance
+         * @param {rov_actions_proto.ISimplepeerSignalResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse instance
          */
         SimplepeerSignalResponse.create = function create(properties) {
             return new SimplepeerSignalResponse(properties);
         };
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
-         * @param {rov_action_api.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8107,11 +8107,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_action_api.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
-         * @param {rov_action_api.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8122,18 +8122,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         SimplepeerSignalResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.SimplepeerSignalResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerSignalResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -8152,10 +8152,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -8168,7 +8168,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a SimplepeerSignalResponse message.
          * @function verify
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -8185,15 +8185,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a SimplepeerSignalResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
          */
         SimplepeerSignalResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.SimplepeerSignalResponse)
+            if (object instanceof $root.rov_actions_proto.SimplepeerSignalResponse)
                 return object;
-            let message = new $root.rov_action_api.SimplepeerSignalResponse();
+            let message = new $root.rov_actions_proto.SimplepeerSignalResponse();
             if (object.Message != null)
                 if (typeof object.Message === "string")
                     $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
@@ -8205,9 +8205,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
-         * @param {rov_action_api.SimplepeerSignalResponse} message SimplepeerSignalResponse
+         * @param {rov_actions_proto.SimplepeerSignalResponse} message SimplepeerSignalResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -8231,7 +8231,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this SimplepeerSignalResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -8242,7 +8242,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for SimplepeerSignalResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplepeerSignalResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -8251,29 +8251,29 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.SimplepeerSignalResponse";
+            return typeUrlPrefix + "/rov_actions_proto.SimplepeerSignalResponse";
         };
 
         return SimplepeerSignalResponse;
     })();
 
-    rov_action_api.ResponseBackendMetadata = (function() {
+    rov_actions_proto.ResponseBackendMetadata = (function() {
 
         /**
          * Properties of a ResponseBackendMetadata.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IResponseBackendMetadata
          * @property {Array.<string>|null} [TargetUserIDs] ResponseBackendMetadata TargetUserIDs
-         * @property {rov_action_api.DataTransportMethod|null} [TransportMethod] ResponseBackendMetadata TransportMethod
+         * @property {rov_actions_proto.DataTransportMethod|null} [TransportMethod] ResponseBackendMetadata TransportMethod
          */
 
         /**
          * Constructs a new ResponseBackendMetadata.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a ResponseBackendMetadata.
          * @implements IResponseBackendMetadata
          * @constructor
-         * @param {rov_action_api.IResponseBackendMetadata=} [properties] Properties to set
+         * @param {rov_actions_proto.IResponseBackendMetadata=} [properties] Properties to set
          */
         function ResponseBackendMetadata(properties) {
             this.TargetUserIDs = [];
@@ -8286,15 +8286,15 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * ResponseBackendMetadata TargetUserIDs.
          * @member {Array.<string>} TargetUserIDs
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @instance
          */
         ResponseBackendMetadata.prototype.TargetUserIDs = $util.emptyArray;
 
         /**
          * ResponseBackendMetadata TransportMethod.
-         * @member {rov_action_api.DataTransportMethod} TransportMethod
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @member {rov_actions_proto.DataTransportMethod} TransportMethod
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @instance
          */
         ResponseBackendMetadata.prototype.TransportMethod = 0;
@@ -8302,21 +8302,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new ResponseBackendMetadata instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
-         * @param {rov_action_api.IResponseBackendMetadata=} [properties] Properties to set
-         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata instance
+         * @param {rov_actions_proto.IResponseBackendMetadata=} [properties] Properties to set
+         * @returns {rov_actions_proto.ResponseBackendMetadata} ResponseBackendMetadata instance
          */
         ResponseBackendMetadata.create = function create(properties) {
             return new ResponseBackendMetadata(properties);
         };
 
         /**
-         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * Encodes the specified ResponseBackendMetadata message. Does not implicitly {@link rov_actions_proto.ResponseBackendMetadata.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
-         * @param {rov_action_api.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
+         * @param {rov_actions_proto.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8332,11 +8332,11 @@ export const rov_action_api = $root.rov_action_api = (() => {
         };
 
         /**
-         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_action_api.ResponseBackendMetadata.verify|verify} messages.
+         * Encodes the specified ResponseBackendMetadata message, length delimited. Does not implicitly {@link rov_actions_proto.ResponseBackendMetadata.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
-         * @param {rov_action_api.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
+         * @param {rov_actions_proto.IResponseBackendMetadata} message ResponseBackendMetadata message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8347,18 +8347,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ResponseBackendMetadata message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         * @returns {rov_actions_proto.ResponseBackendMetadata} ResponseBackendMetadata
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         ResponseBackendMetadata.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.ResponseBackendMetadata();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ResponseBackendMetadata();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -8383,10 +8383,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a ResponseBackendMetadata message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         * @returns {rov_actions_proto.ResponseBackendMetadata} ResponseBackendMetadata
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -8399,7 +8399,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a ResponseBackendMetadata message.
          * @function verify
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -8430,18 +8430,18 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a ResponseBackendMetadata message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.ResponseBackendMetadata} ResponseBackendMetadata
+         * @returns {rov_actions_proto.ResponseBackendMetadata} ResponseBackendMetadata
          */
         ResponseBackendMetadata.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.ResponseBackendMetadata)
+            if (object instanceof $root.rov_actions_proto.ResponseBackendMetadata)
                 return object;
-            let message = new $root.rov_action_api.ResponseBackendMetadata();
+            let message = new $root.rov_actions_proto.ResponseBackendMetadata();
             if (object.TargetUserIDs) {
                 if (!Array.isArray(object.TargetUserIDs))
-                    throw TypeError(".rov_action_api.ResponseBackendMetadata.TargetUserIDs: array expected");
+                    throw TypeError(".rov_actions_proto.ResponseBackendMetadata.TargetUserIDs: array expected");
                 message.TargetUserIDs = [];
                 for (let i = 0; i < object.TargetUserIDs.length; ++i)
                     message.TargetUserIDs[i] = String(object.TargetUserIDs[i]);
@@ -8476,9 +8476,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a ResponseBackendMetadata message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
-         * @param {rov_action_api.ResponseBackendMetadata} message ResponseBackendMetadata
+         * @param {rov_actions_proto.ResponseBackendMetadata} message ResponseBackendMetadata
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -8496,14 +8496,14 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     object.TargetUserIDs[j] = message.TargetUserIDs[j];
             }
             if (message.TransportMethod != null && message.hasOwnProperty("TransportMethod"))
-                object.TransportMethod = options.enums === String ? $root.rov_action_api.DataTransportMethod[message.TransportMethod] === undefined ? message.TransportMethod : $root.rov_action_api.DataTransportMethod[message.TransportMethod] : message.TransportMethod;
+                object.TransportMethod = options.enums === String ? $root.rov_actions_proto.DataTransportMethod[message.TransportMethod] === undefined ? message.TransportMethod : $root.rov_actions_proto.DataTransportMethod[message.TransportMethod] : message.TransportMethod;
             return object;
         };
 
         /**
          * Converts this ResponseBackendMetadata to JSON.
          * @function toJSON
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -8514,7 +8514,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for ResponseBackendMetadata
          * @function getTypeUrl
-         * @memberof rov_action_api.ResponseBackendMetadata
+         * @memberof rov_actions_proto.ResponseBackendMetadata
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -8523,43 +8523,43 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.ResponseBackendMetadata";
+            return typeUrlPrefix + "/rov_actions_proto.ResponseBackendMetadata";
         };
 
         return ResponseBackendMetadata;
     })();
 
-    rov_action_api.RovResponse = (function() {
+    rov_actions_proto.RovResponse = (function() {
 
         /**
          * Properties of a RovResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @interface IRovResponse
-         * @property {rov_action_api.IResponseBackendMetadata|null} [BackendMetadata] RovResponse BackendMetadata
+         * @property {rov_actions_proto.IResponseBackendMetadata|null} [BackendMetadata] RovResponse BackendMetadata
          * @property {number|null} [RovExchangeId] RovResponse RovExchangeId
-         * @property {rov_action_api.IDoneResponse|null} [Done] RovResponse Done
-         * @property {rov_action_api.IErrorResponse|null} [Error] RovResponse Error
-         * @property {rov_action_api.IPongResponse|null} [Pong] RovResponse Pong
-         * @property {rov_action_api.IContinuedOutputResponse|null} [ContinuedOutput] RovResponse ContinuedOutput
-         * @property {rov_action_api.ISensorUpdatesResponse|null} [SensorUpdates] RovResponse SensorUpdates
-         * @property {rov_action_api.IPasswordRequiredResponse|null} [PasswordRequired] RovResponse PasswordRequired
-         * @property {rov_action_api.IPasswordAcceptedResponse|null} [PasswordAccepted] RovResponse PasswordAccepted
-         * @property {rov_action_api.IPasswordInvalidResponse|null} [PasswordInvalid] RovResponse PasswordInvalid
-         * @property {rov_action_api.IDriverChangedResponse|null} [DriverChanged] RovResponse DriverChanged
-         * @property {rov_action_api.IClientConnectedResponse|null} [ClientConnected] RovResponse ClientConnected
-         * @property {rov_action_api.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
-         * @property {rov_action_api.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
-         * @property {rov_action_api.IMavlinkResponse|null} [Mavlink] RovResponse Mavlink
-         * @property {rov_action_api.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
+         * @property {rov_actions_proto.IDoneResponse|null} [Done] RovResponse Done
+         * @property {rov_actions_proto.IErrorResponse|null} [Error] RovResponse Error
+         * @property {rov_actions_proto.IPongResponse|null} [Pong] RovResponse Pong
+         * @property {rov_actions_proto.IContinuedOutputResponse|null} [ContinuedOutput] RovResponse ContinuedOutput
+         * @property {rov_actions_proto.ISensorUpdatesResponse|null} [SensorUpdates] RovResponse SensorUpdates
+         * @property {rov_actions_proto.IPasswordRequiredResponse|null} [PasswordRequired] RovResponse PasswordRequired
+         * @property {rov_actions_proto.IPasswordAcceptedResponse|null} [PasswordAccepted] RovResponse PasswordAccepted
+         * @property {rov_actions_proto.IPasswordInvalidResponse|null} [PasswordInvalid] RovResponse PasswordInvalid
+         * @property {rov_actions_proto.IDriverChangedResponse|null} [DriverChanged] RovResponse DriverChanged
+         * @property {rov_actions_proto.IClientConnectedResponse|null} [ClientConnected] RovResponse ClientConnected
+         * @property {rov_actions_proto.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
+         * @property {rov_actions_proto.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
+         * @property {rov_actions_proto.IMavlinkResponse|null} [Mavlink] RovResponse Mavlink
+         * @property {rov_actions_proto.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
          */
 
         /**
          * Constructs a new RovResponse.
-         * @memberof rov_action_api
+         * @memberof rov_actions_proto
          * @classdesc Represents a RovResponse.
          * @implements IRovResponse
          * @constructor
-         * @param {rov_action_api.IRovResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IRovResponse=} [properties] Properties to set
          */
         function RovResponse(properties) {
             if (properties)
@@ -8570,8 +8570,8 @@ export const rov_action_api = $root.rov_action_api = (() => {
 
         /**
          * RovResponse BackendMetadata.
-         * @member {rov_action_api.IResponseBackendMetadata|null|undefined} BackendMetadata
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IResponseBackendMetadata|null|undefined} BackendMetadata
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.BackendMetadata = null;
@@ -8579,119 +8579,119 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * RovResponse RovExchangeId.
          * @member {number} RovExchangeId
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.RovExchangeId = 0;
 
         /**
          * RovResponse Done.
-         * @member {rov_action_api.IDoneResponse|null|undefined} Done
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IDoneResponse|null|undefined} Done
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.Done = null;
 
         /**
          * RovResponse Error.
-         * @member {rov_action_api.IErrorResponse|null|undefined} Error
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IErrorResponse|null|undefined} Error
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.Error = null;
 
         /**
          * RovResponse Pong.
-         * @member {rov_action_api.IPongResponse|null|undefined} Pong
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IPongResponse|null|undefined} Pong
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.Pong = null;
 
         /**
          * RovResponse ContinuedOutput.
-         * @member {rov_action_api.IContinuedOutputResponse|null|undefined} ContinuedOutput
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IContinuedOutputResponse|null|undefined} ContinuedOutput
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.ContinuedOutput = null;
 
         /**
          * RovResponse SensorUpdates.
-         * @member {rov_action_api.ISensorUpdatesResponse|null|undefined} SensorUpdates
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.ISensorUpdatesResponse|null|undefined} SensorUpdates
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.SensorUpdates = null;
 
         /**
          * RovResponse PasswordRequired.
-         * @member {rov_action_api.IPasswordRequiredResponse|null|undefined} PasswordRequired
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IPasswordRequiredResponse|null|undefined} PasswordRequired
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.PasswordRequired = null;
 
         /**
          * RovResponse PasswordAccepted.
-         * @member {rov_action_api.IPasswordAcceptedResponse|null|undefined} PasswordAccepted
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IPasswordAcceptedResponse|null|undefined} PasswordAccepted
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.PasswordAccepted = null;
 
         /**
          * RovResponse PasswordInvalid.
-         * @member {rov_action_api.IPasswordInvalidResponse|null|undefined} PasswordInvalid
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IPasswordInvalidResponse|null|undefined} PasswordInvalid
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.PasswordInvalid = null;
 
         /**
          * RovResponse DriverChanged.
-         * @member {rov_action_api.IDriverChangedResponse|null|undefined} DriverChanged
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IDriverChangedResponse|null|undefined} DriverChanged
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.DriverChanged = null;
 
         /**
          * RovResponse ClientConnected.
-         * @member {rov_action_api.IClientConnectedResponse|null|undefined} ClientConnected
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IClientConnectedResponse|null|undefined} ClientConnected
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.ClientConnected = null;
 
         /**
          * RovResponse ClientDisconnected.
-         * @member {rov_action_api.IClientDisconnectedResponse|null|undefined} ClientDisconnected
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IClientDisconnectedResponse|null|undefined} ClientDisconnected
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.ClientDisconnected = null;
 
         /**
          * RovResponse Heartbeat.
-         * @member {rov_action_api.IHeartbeatResponse|null|undefined} Heartbeat
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IHeartbeatResponse|null|undefined} Heartbeat
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.Heartbeat = null;
 
         /**
          * RovResponse Mavlink.
-         * @member {rov_action_api.IMavlinkResponse|null|undefined} Mavlink
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.IMavlinkResponse|null|undefined} Mavlink
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.Mavlink = null;
 
         /**
          * RovResponse SimplepeerSignal.
-         * @member {rov_action_api.ISimplepeerSignalResponse|null|undefined} SimplepeerSignal
-         * @memberof rov_action_api.RovResponse
+         * @member {rov_actions_proto.ISimplepeerSignalResponse|null|undefined} SimplepeerSignal
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         RovResponse.prototype.SimplepeerSignal = null;
@@ -8702,7 +8702,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * RovResponse Body.
          * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|undefined} Body
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
@@ -8713,21 +8713,21 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a new RovResponse instance using the specified properties.
          * @function create
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
-         * @param {rov_action_api.IRovResponse=} [properties] Properties to set
-         * @returns {rov_action_api.RovResponse} RovResponse instance
+         * @param {rov_actions_proto.IRovResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.RovResponse} RovResponse instance
          */
         RovResponse.create = function create(properties) {
             return new RovResponse(properties);
         };
 
         /**
-         * Encodes the specified RovResponse message. Does not implicitly {@link rov_action_api.RovResponse.verify|verify} messages.
+         * Encodes the specified RovResponse message. Does not implicitly {@link rov_actions_proto.RovResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
-         * @param {rov_action_api.IRovResponse} message RovResponse message or plain object to encode
+         * @param {rov_actions_proto.IRovResponse} message RovResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8735,46 +8735,46 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (!writer)
                 writer = $Writer.create();
             if (message.BackendMetadata != null && Object.hasOwnProperty.call(message, "BackendMetadata"))
-                $root.rov_action_api.ResponseBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                $root.rov_actions_proto.ResponseBackendMetadata.encode(message.BackendMetadata, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.RovExchangeId != null && Object.hasOwnProperty.call(message, "RovExchangeId"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.RovExchangeId);
             if (message.Done != null && Object.hasOwnProperty.call(message, "Done"))
-                $root.rov_action_api.DoneResponse.encode(message.Done, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                $root.rov_actions_proto.DoneResponse.encode(message.Done, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.Error != null && Object.hasOwnProperty.call(message, "Error"))
-                $root.rov_action_api.ErrorResponse.encode(message.Error, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                $root.rov_actions_proto.ErrorResponse.encode(message.Error, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.Pong != null && Object.hasOwnProperty.call(message, "Pong"))
-                $root.rov_action_api.PongResponse.encode(message.Pong, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                $root.rov_actions_proto.PongResponse.encode(message.Pong, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             if (message.ContinuedOutput != null && Object.hasOwnProperty.call(message, "ContinuedOutput"))
-                $root.rov_action_api.ContinuedOutputResponse.encode(message.ContinuedOutput, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                $root.rov_actions_proto.ContinuedOutputResponse.encode(message.ContinuedOutput, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             if (message.SensorUpdates != null && Object.hasOwnProperty.call(message, "SensorUpdates"))
-                $root.rov_action_api.SensorUpdatesResponse.encode(message.SensorUpdates, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                $root.rov_actions_proto.SensorUpdatesResponse.encode(message.SensorUpdates, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
             if (message.PasswordRequired != null && Object.hasOwnProperty.call(message, "PasswordRequired"))
-                $root.rov_action_api.PasswordRequiredResponse.encode(message.PasswordRequired, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                $root.rov_actions_proto.PasswordRequiredResponse.encode(message.PasswordRequired, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             if (message.PasswordAccepted != null && Object.hasOwnProperty.call(message, "PasswordAccepted"))
-                $root.rov_action_api.PasswordAcceptedResponse.encode(message.PasswordAccepted, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                $root.rov_actions_proto.PasswordAcceptedResponse.encode(message.PasswordAccepted, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
             if (message.PasswordInvalid != null && Object.hasOwnProperty.call(message, "PasswordInvalid"))
-                $root.rov_action_api.PasswordInvalidResponse.encode(message.PasswordInvalid, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                $root.rov_actions_proto.PasswordInvalidResponse.encode(message.PasswordInvalid, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
             if (message.DriverChanged != null && Object.hasOwnProperty.call(message, "DriverChanged"))
-                $root.rov_action_api.DriverChangedResponse.encode(message.DriverChanged, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+                $root.rov_actions_proto.DriverChangedResponse.encode(message.DriverChanged, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.ClientConnected != null && Object.hasOwnProperty.call(message, "ClientConnected"))
-                $root.rov_action_api.ClientConnectedResponse.encode(message.ClientConnected, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
+                $root.rov_actions_proto.ClientConnectedResponse.encode(message.ClientConnected, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
             if (message.ClientDisconnected != null && Object.hasOwnProperty.call(message, "ClientDisconnected"))
-                $root.rov_action_api.ClientDisconnectedResponse.encode(message.ClientDisconnected, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
+                $root.rov_actions_proto.ClientDisconnectedResponse.encode(message.ClientDisconnected, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
             if (message.Heartbeat != null && Object.hasOwnProperty.call(message, "Heartbeat"))
-                $root.rov_action_api.HeartbeatResponse.encode(message.Heartbeat, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
+                $root.rov_actions_proto.HeartbeatResponse.encode(message.Heartbeat, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
-                $root.rov_action_api.MavlinkResponse.encode(message.Mavlink, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+                $root.rov_actions_proto.MavlinkResponse.encode(message.Mavlink, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
             if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
-                $root.rov_action_api.SimplepeerSignalResponse.encode(message.SimplepeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+                $root.rov_actions_proto.SimplepeerSignalResponse.encode(message.SimplepeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Encodes the specified RovResponse message, length delimited. Does not implicitly {@link rov_action_api.RovResponse.verify|verify} messages.
+         * Encodes the specified RovResponse message, length delimited. Does not implicitly {@link rov_actions_proto.RovResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
-         * @param {rov_action_api.IRovResponse} message RovResponse message or plain object to encode
+         * @param {rov_actions_proto.IRovResponse} message RovResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
@@ -8785,23 +8785,23 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_action_api.RovResponse} RovResponse
+         * @returns {rov_actions_proto.RovResponse} RovResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         RovResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_action_api.RovResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RovResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.decode(reader, reader.uint32());
+                        message.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.decode(reader, reader.uint32());
                         break;
                     }
                 case 2: {
@@ -8809,59 +8809,59 @@ export const rov_action_api = $root.rov_action_api = (() => {
                         break;
                     }
                 case 3: {
-                        message.Done = $root.rov_action_api.DoneResponse.decode(reader, reader.uint32());
+                        message.Done = $root.rov_actions_proto.DoneResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 4: {
-                        message.Error = $root.rov_action_api.ErrorResponse.decode(reader, reader.uint32());
+                        message.Error = $root.rov_actions_proto.ErrorResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 5: {
-                        message.Pong = $root.rov_action_api.PongResponse.decode(reader, reader.uint32());
+                        message.Pong = $root.rov_actions_proto.PongResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 6: {
-                        message.ContinuedOutput = $root.rov_action_api.ContinuedOutputResponse.decode(reader, reader.uint32());
+                        message.ContinuedOutput = $root.rov_actions_proto.ContinuedOutputResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 7: {
-                        message.SensorUpdates = $root.rov_action_api.SensorUpdatesResponse.decode(reader, reader.uint32());
+                        message.SensorUpdates = $root.rov_actions_proto.SensorUpdatesResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 8: {
-                        message.PasswordRequired = $root.rov_action_api.PasswordRequiredResponse.decode(reader, reader.uint32());
+                        message.PasswordRequired = $root.rov_actions_proto.PasswordRequiredResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 9: {
-                        message.PasswordAccepted = $root.rov_action_api.PasswordAcceptedResponse.decode(reader, reader.uint32());
+                        message.PasswordAccepted = $root.rov_actions_proto.PasswordAcceptedResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 10: {
-                        message.PasswordInvalid = $root.rov_action_api.PasswordInvalidResponse.decode(reader, reader.uint32());
+                        message.PasswordInvalid = $root.rov_actions_proto.PasswordInvalidResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 13: {
-                        message.DriverChanged = $root.rov_action_api.DriverChangedResponse.decode(reader, reader.uint32());
+                        message.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 14: {
-                        message.ClientConnected = $root.rov_action_api.ClientConnectedResponse.decode(reader, reader.uint32());
+                        message.ClientConnected = $root.rov_actions_proto.ClientConnectedResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 15: {
-                        message.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.decode(reader, reader.uint32());
+                        message.ClientDisconnected = $root.rov_actions_proto.ClientDisconnectedResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 16: {
-                        message.Heartbeat = $root.rov_action_api.HeartbeatResponse.decode(reader, reader.uint32());
+                        message.Heartbeat = $root.rov_actions_proto.HeartbeatResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 17: {
-                        message.Mavlink = $root.rov_action_api.MavlinkResponse.decode(reader, reader.uint32());
+                        message.Mavlink = $root.rov_actions_proto.MavlinkResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 18: {
-                        message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.decode(reader, reader.uint32());
+                        message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -8875,10 +8875,10 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Decodes a RovResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_action_api.RovResponse} RovResponse
+         * @returns {rov_actions_proto.RovResponse} RovResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
@@ -8891,7 +8891,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Verifies a RovResponse message.
          * @function verify
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
@@ -8901,7 +8901,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 return "object expected";
             let properties = {};
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata")) {
-                let error = $root.rov_action_api.ResponseBackendMetadata.verify(message.BackendMetadata);
+                let error = $root.rov_actions_proto.ResponseBackendMetadata.verify(message.BackendMetadata);
                 if (error)
                     return "BackendMetadata." + error;
             }
@@ -8911,7 +8911,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (message.Done != null && message.hasOwnProperty("Done")) {
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.DoneResponse.verify(message.Done);
+                    let error = $root.rov_actions_proto.DoneResponse.verify(message.Done);
                     if (error)
                         return "Done." + error;
                 }
@@ -8921,7 +8921,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ErrorResponse.verify(message.Error);
+                    let error = $root.rov_actions_proto.ErrorResponse.verify(message.Error);
                     if (error)
                         return "Error." + error;
                 }
@@ -8931,7 +8931,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PongResponse.verify(message.Pong);
+                    let error = $root.rov_actions_proto.PongResponse.verify(message.Pong);
                     if (error)
                         return "Pong." + error;
                 }
@@ -8941,7 +8941,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ContinuedOutputResponse.verify(message.ContinuedOutput);
+                    let error = $root.rov_actions_proto.ContinuedOutputResponse.verify(message.ContinuedOutput);
                     if (error)
                         return "ContinuedOutput." + error;
                 }
@@ -8951,7 +8951,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.SensorUpdatesResponse.verify(message.SensorUpdates);
+                    let error = $root.rov_actions_proto.SensorUpdatesResponse.verify(message.SensorUpdates);
                     if (error)
                         return "SensorUpdates." + error;
                 }
@@ -8961,7 +8961,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PasswordRequiredResponse.verify(message.PasswordRequired);
+                    let error = $root.rov_actions_proto.PasswordRequiredResponse.verify(message.PasswordRequired);
                     if (error)
                         return "PasswordRequired." + error;
                 }
@@ -8971,7 +8971,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PasswordAcceptedResponse.verify(message.PasswordAccepted);
+                    let error = $root.rov_actions_proto.PasswordAcceptedResponse.verify(message.PasswordAccepted);
                     if (error)
                         return "PasswordAccepted." + error;
                 }
@@ -8981,7 +8981,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.PasswordInvalidResponse.verify(message.PasswordInvalid);
+                    let error = $root.rov_actions_proto.PasswordInvalidResponse.verify(message.PasswordInvalid);
                     if (error)
                         return "PasswordInvalid." + error;
                 }
@@ -8991,7 +8991,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.DriverChangedResponse.verify(message.DriverChanged);
+                    let error = $root.rov_actions_proto.DriverChangedResponse.verify(message.DriverChanged);
                     if (error)
                         return "DriverChanged." + error;
                 }
@@ -9001,7 +9001,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ClientConnectedResponse.verify(message.ClientConnected);
+                    let error = $root.rov_actions_proto.ClientConnectedResponse.verify(message.ClientConnected);
                     if (error)
                         return "ClientConnected." + error;
                 }
@@ -9011,7 +9011,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.ClientDisconnectedResponse.verify(message.ClientDisconnected);
+                    let error = $root.rov_actions_proto.ClientDisconnectedResponse.verify(message.ClientDisconnected);
                     if (error)
                         return "ClientDisconnected." + error;
                 }
@@ -9021,7 +9021,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.HeartbeatResponse.verify(message.Heartbeat);
+                    let error = $root.rov_actions_proto.HeartbeatResponse.verify(message.Heartbeat);
                     if (error)
                         return "Heartbeat." + error;
                 }
@@ -9031,7 +9031,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.MavlinkResponse.verify(message.Mavlink);
+                    let error = $root.rov_actions_proto.MavlinkResponse.verify(message.Mavlink);
                     if (error)
                         return "Mavlink." + error;
                 }
@@ -9041,7 +9041,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_action_api.SimplepeerSignalResponse.verify(message.SimplepeerSignal);
+                    let error = $root.rov_actions_proto.SimplepeerSignalResponse.verify(message.SimplepeerSignal);
                     if (error)
                         return "SimplepeerSignal." + error;
                 }
@@ -9052,91 +9052,91 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a RovResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_action_api.RovResponse} RovResponse
+         * @returns {rov_actions_proto.RovResponse} RovResponse
          */
         RovResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_action_api.RovResponse)
+            if (object instanceof $root.rov_actions_proto.RovResponse)
                 return object;
-            let message = new $root.rov_action_api.RovResponse();
+            let message = new $root.rov_actions_proto.RovResponse();
             if (object.BackendMetadata != null) {
                 if (typeof object.BackendMetadata !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.BackendMetadata: object expected");
-                message.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.fromObject(object.BackendMetadata);
+                    throw TypeError(".rov_actions_proto.RovResponse.BackendMetadata: object expected");
+                message.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.fromObject(object.BackendMetadata);
             }
             if (object.RovExchangeId != null)
                 message.RovExchangeId = object.RovExchangeId | 0;
             if (object.Done != null) {
                 if (typeof object.Done !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.Done: object expected");
-                message.Done = $root.rov_action_api.DoneResponse.fromObject(object.Done);
+                    throw TypeError(".rov_actions_proto.RovResponse.Done: object expected");
+                message.Done = $root.rov_actions_proto.DoneResponse.fromObject(object.Done);
             }
             if (object.Error != null) {
                 if (typeof object.Error !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.Error: object expected");
-                message.Error = $root.rov_action_api.ErrorResponse.fromObject(object.Error);
+                    throw TypeError(".rov_actions_proto.RovResponse.Error: object expected");
+                message.Error = $root.rov_actions_proto.ErrorResponse.fromObject(object.Error);
             }
             if (object.Pong != null) {
                 if (typeof object.Pong !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.Pong: object expected");
-                message.Pong = $root.rov_action_api.PongResponse.fromObject(object.Pong);
+                    throw TypeError(".rov_actions_proto.RovResponse.Pong: object expected");
+                message.Pong = $root.rov_actions_proto.PongResponse.fromObject(object.Pong);
             }
             if (object.ContinuedOutput != null) {
                 if (typeof object.ContinuedOutput !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.ContinuedOutput: object expected");
-                message.ContinuedOutput = $root.rov_action_api.ContinuedOutputResponse.fromObject(object.ContinuedOutput);
+                    throw TypeError(".rov_actions_proto.RovResponse.ContinuedOutput: object expected");
+                message.ContinuedOutput = $root.rov_actions_proto.ContinuedOutputResponse.fromObject(object.ContinuedOutput);
             }
             if (object.SensorUpdates != null) {
                 if (typeof object.SensorUpdates !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.SensorUpdates: object expected");
-                message.SensorUpdates = $root.rov_action_api.SensorUpdatesResponse.fromObject(object.SensorUpdates);
+                    throw TypeError(".rov_actions_proto.RovResponse.SensorUpdates: object expected");
+                message.SensorUpdates = $root.rov_actions_proto.SensorUpdatesResponse.fromObject(object.SensorUpdates);
             }
             if (object.PasswordRequired != null) {
                 if (typeof object.PasswordRequired !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.PasswordRequired: object expected");
-                message.PasswordRequired = $root.rov_action_api.PasswordRequiredResponse.fromObject(object.PasswordRequired);
+                    throw TypeError(".rov_actions_proto.RovResponse.PasswordRequired: object expected");
+                message.PasswordRequired = $root.rov_actions_proto.PasswordRequiredResponse.fromObject(object.PasswordRequired);
             }
             if (object.PasswordAccepted != null) {
                 if (typeof object.PasswordAccepted !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.PasswordAccepted: object expected");
-                message.PasswordAccepted = $root.rov_action_api.PasswordAcceptedResponse.fromObject(object.PasswordAccepted);
+                    throw TypeError(".rov_actions_proto.RovResponse.PasswordAccepted: object expected");
+                message.PasswordAccepted = $root.rov_actions_proto.PasswordAcceptedResponse.fromObject(object.PasswordAccepted);
             }
             if (object.PasswordInvalid != null) {
                 if (typeof object.PasswordInvalid !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.PasswordInvalid: object expected");
-                message.PasswordInvalid = $root.rov_action_api.PasswordInvalidResponse.fromObject(object.PasswordInvalid);
+                    throw TypeError(".rov_actions_proto.RovResponse.PasswordInvalid: object expected");
+                message.PasswordInvalid = $root.rov_actions_proto.PasswordInvalidResponse.fromObject(object.PasswordInvalid);
             }
             if (object.DriverChanged != null) {
                 if (typeof object.DriverChanged !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.DriverChanged: object expected");
-                message.DriverChanged = $root.rov_action_api.DriverChangedResponse.fromObject(object.DriverChanged);
+                    throw TypeError(".rov_actions_proto.RovResponse.DriverChanged: object expected");
+                message.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.fromObject(object.DriverChanged);
             }
             if (object.ClientConnected != null) {
                 if (typeof object.ClientConnected !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.ClientConnected: object expected");
-                message.ClientConnected = $root.rov_action_api.ClientConnectedResponse.fromObject(object.ClientConnected);
+                    throw TypeError(".rov_actions_proto.RovResponse.ClientConnected: object expected");
+                message.ClientConnected = $root.rov_actions_proto.ClientConnectedResponse.fromObject(object.ClientConnected);
             }
             if (object.ClientDisconnected != null) {
                 if (typeof object.ClientDisconnected !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.ClientDisconnected: object expected");
-                message.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.fromObject(object.ClientDisconnected);
+                    throw TypeError(".rov_actions_proto.RovResponse.ClientDisconnected: object expected");
+                message.ClientDisconnected = $root.rov_actions_proto.ClientDisconnectedResponse.fromObject(object.ClientDisconnected);
             }
             if (object.Heartbeat != null) {
                 if (typeof object.Heartbeat !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.Heartbeat: object expected");
-                message.Heartbeat = $root.rov_action_api.HeartbeatResponse.fromObject(object.Heartbeat);
+                    throw TypeError(".rov_actions_proto.RovResponse.Heartbeat: object expected");
+                message.Heartbeat = $root.rov_actions_proto.HeartbeatResponse.fromObject(object.Heartbeat);
             }
             if (object.Mavlink != null) {
                 if (typeof object.Mavlink !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.Mavlink: object expected");
-                message.Mavlink = $root.rov_action_api.MavlinkResponse.fromObject(object.Mavlink);
+                    throw TypeError(".rov_actions_proto.RovResponse.Mavlink: object expected");
+                message.Mavlink = $root.rov_actions_proto.MavlinkResponse.fromObject(object.Mavlink);
             }
             if (object.SimplepeerSignal != null) {
                 if (typeof object.SimplepeerSignal !== "object")
-                    throw TypeError(".rov_action_api.RovResponse.SimplepeerSignal: object expected");
-                message.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.fromObject(object.SimplepeerSignal);
+                    throw TypeError(".rov_actions_proto.RovResponse.SimplepeerSignal: object expected");
+                message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.fromObject(object.SimplepeerSignal);
             }
             return message;
         };
@@ -9144,9 +9144,9 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Creates a plain object from a RovResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
-         * @param {rov_action_api.RovResponse} message RovResponse
+         * @param {rov_actions_proto.RovResponse} message RovResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
@@ -9159,76 +9159,76 @@ export const rov_action_api = $root.rov_action_api = (() => {
                 object.RovExchangeId = 0;
             }
             if (message.BackendMetadata != null && message.hasOwnProperty("BackendMetadata"))
-                object.BackendMetadata = $root.rov_action_api.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
+                object.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.toObject(message.BackendMetadata, options);
             if (message.RovExchangeId != null && message.hasOwnProperty("RovExchangeId"))
                 object.RovExchangeId = message.RovExchangeId;
             if (message.Done != null && message.hasOwnProperty("Done")) {
-                object.Done = $root.rov_action_api.DoneResponse.toObject(message.Done, options);
+                object.Done = $root.rov_actions_proto.DoneResponse.toObject(message.Done, options);
                 if (options.oneofs)
                     object.Body = "Done";
             }
             if (message.Error != null && message.hasOwnProperty("Error")) {
-                object.Error = $root.rov_action_api.ErrorResponse.toObject(message.Error, options);
+                object.Error = $root.rov_actions_proto.ErrorResponse.toObject(message.Error, options);
                 if (options.oneofs)
                     object.Body = "Error";
             }
             if (message.Pong != null && message.hasOwnProperty("Pong")) {
-                object.Pong = $root.rov_action_api.PongResponse.toObject(message.Pong, options);
+                object.Pong = $root.rov_actions_proto.PongResponse.toObject(message.Pong, options);
                 if (options.oneofs)
                     object.Body = "Pong";
             }
             if (message.ContinuedOutput != null && message.hasOwnProperty("ContinuedOutput")) {
-                object.ContinuedOutput = $root.rov_action_api.ContinuedOutputResponse.toObject(message.ContinuedOutput, options);
+                object.ContinuedOutput = $root.rov_actions_proto.ContinuedOutputResponse.toObject(message.ContinuedOutput, options);
                 if (options.oneofs)
                     object.Body = "ContinuedOutput";
             }
             if (message.SensorUpdates != null && message.hasOwnProperty("SensorUpdates")) {
-                object.SensorUpdates = $root.rov_action_api.SensorUpdatesResponse.toObject(message.SensorUpdates, options);
+                object.SensorUpdates = $root.rov_actions_proto.SensorUpdatesResponse.toObject(message.SensorUpdates, options);
                 if (options.oneofs)
                     object.Body = "SensorUpdates";
             }
             if (message.PasswordRequired != null && message.hasOwnProperty("PasswordRequired")) {
-                object.PasswordRequired = $root.rov_action_api.PasswordRequiredResponse.toObject(message.PasswordRequired, options);
+                object.PasswordRequired = $root.rov_actions_proto.PasswordRequiredResponse.toObject(message.PasswordRequired, options);
                 if (options.oneofs)
                     object.Body = "PasswordRequired";
             }
             if (message.PasswordAccepted != null && message.hasOwnProperty("PasswordAccepted")) {
-                object.PasswordAccepted = $root.rov_action_api.PasswordAcceptedResponse.toObject(message.PasswordAccepted, options);
+                object.PasswordAccepted = $root.rov_actions_proto.PasswordAcceptedResponse.toObject(message.PasswordAccepted, options);
                 if (options.oneofs)
                     object.Body = "PasswordAccepted";
             }
             if (message.PasswordInvalid != null && message.hasOwnProperty("PasswordInvalid")) {
-                object.PasswordInvalid = $root.rov_action_api.PasswordInvalidResponse.toObject(message.PasswordInvalid, options);
+                object.PasswordInvalid = $root.rov_actions_proto.PasswordInvalidResponse.toObject(message.PasswordInvalid, options);
                 if (options.oneofs)
                     object.Body = "PasswordInvalid";
             }
             if (message.DriverChanged != null && message.hasOwnProperty("DriverChanged")) {
-                object.DriverChanged = $root.rov_action_api.DriverChangedResponse.toObject(message.DriverChanged, options);
+                object.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.toObject(message.DriverChanged, options);
                 if (options.oneofs)
                     object.Body = "DriverChanged";
             }
             if (message.ClientConnected != null && message.hasOwnProperty("ClientConnected")) {
-                object.ClientConnected = $root.rov_action_api.ClientConnectedResponse.toObject(message.ClientConnected, options);
+                object.ClientConnected = $root.rov_actions_proto.ClientConnectedResponse.toObject(message.ClientConnected, options);
                 if (options.oneofs)
                     object.Body = "ClientConnected";
             }
             if (message.ClientDisconnected != null && message.hasOwnProperty("ClientDisconnected")) {
-                object.ClientDisconnected = $root.rov_action_api.ClientDisconnectedResponse.toObject(message.ClientDisconnected, options);
+                object.ClientDisconnected = $root.rov_actions_proto.ClientDisconnectedResponse.toObject(message.ClientDisconnected, options);
                 if (options.oneofs)
                     object.Body = "ClientDisconnected";
             }
             if (message.Heartbeat != null && message.hasOwnProperty("Heartbeat")) {
-                object.Heartbeat = $root.rov_action_api.HeartbeatResponse.toObject(message.Heartbeat, options);
+                object.Heartbeat = $root.rov_actions_proto.HeartbeatResponse.toObject(message.Heartbeat, options);
                 if (options.oneofs)
                     object.Body = "Heartbeat";
             }
             if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
-                object.Mavlink = $root.rov_action_api.MavlinkResponse.toObject(message.Mavlink, options);
+                object.Mavlink = $root.rov_actions_proto.MavlinkResponse.toObject(message.Mavlink, options);
                 if (options.oneofs)
                     object.Body = "Mavlink";
             }
             if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
-                object.SimplepeerSignal = $root.rov_action_api.SimplepeerSignalResponse.toObject(message.SimplepeerSignal, options);
+                object.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.toObject(message.SimplepeerSignal, options);
                 if (options.oneofs)
                     object.Body = "SimplepeerSignal";
             }
@@ -9238,7 +9238,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Converts this RovResponse to JSON.
          * @function toJSON
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
@@ -9249,7 +9249,7 @@ export const rov_action_api = $root.rov_action_api = (() => {
         /**
          * Gets the default type url for RovResponse
          * @function getTypeUrl
-         * @memberof rov_action_api.RovResponse
+         * @memberof rov_actions_proto.RovResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
@@ -9258,13 +9258,13 @@ export const rov_action_api = $root.rov_action_api = (() => {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_action_api.RovResponse";
+            return typeUrlPrefix + "/rov_actions_proto.RovResponse";
         };
 
         return RovResponse;
     })();
 
-    return rov_action_api;
+    return rov_actions_proto;
 })();
 
 export { $root as default };

@@ -2,20 +2,20 @@ import asyncio
 import websockets
 
 class WebSocketServer:
-    def __init__(self, msgReceivedFn):
+
+    def init(self, msgReceivedFn):
         self.msgReceivedFn = msgReceivedFn
         self.connections = set()
 
-
     async def _register(self, websocket, path):
         self.connections.add(websocket)
-        print("Client connected to Web Socket Server: ", websocket) 
-        
+        print("Client connected to Web Socket Server: ", websocket)
+
         # While client is connected, await messages and process them
         # with the provided message-received-function
         async for message in websocket:
             self.msgReceivedFn(message, "Dummy") # For now, add dummy metadata. TODO extract with protobuf
-        
+
         print("Client disconnected from Web Socket Server: ", websocket)
         self.connections.remove(websocket)
 
@@ -31,8 +31,8 @@ class WebSocketServer:
 
     def is_connected(self):
         return len(self.connections) > 0
+websocket_server = WebSocketServer()
 
-# asyncio.run(main())
 
 """
 import asyncio

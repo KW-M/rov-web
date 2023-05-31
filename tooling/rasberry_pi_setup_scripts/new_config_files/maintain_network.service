@@ -11,7 +11,7 @@ Wants=network.target
 After=network-online.target
 
 [Service]
-ExecStart=/home/pi/rov-web/rasberry_pi_setup_scripts/maintain_network.sh
+ExecStart=/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/maintain_network.sh
 Restart=always
 TimeoutStopSec=10s
 RestartSec=5s
