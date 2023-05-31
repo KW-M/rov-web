@@ -91,21 +91,21 @@ class UserAuth():
 
         # If the password is incorrect, send a password invalid response:
         if msg_data.password_attempt.password != correct_password:
-            return (RovResponse(password_invalid=PasswordInvalidResponse(), rov_exchange_id=msg_data.rov_exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), False)
+            return (RovResponse(password_invalid=PasswordInvalidResponse(), exchange_id=msg_data.exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), False)
 
         # If the password is correct:
         # 1. generate and save an auth token for this peer
         auth_token = generateAuthToken()
         self.known_users[src_user_id].auth_token = auth_token
         # 3. Send a password accepted response with the auth token:
-        return (RovResponse(password_accepted=PasswordAcceptedResponse(auth_token=auth_token), rov_exchange_id=msg_data.rov_exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), True)
+        return (RovResponse(password_accepted=PasswordAcceptedResponse(auth_token=auth_token), exchange_id=msg_data.exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), True)
 
     async def handle_auth_token_attempt(self,src_user_id: str, msg_data: RovAction) -> tuple[RovResponse, bool]:
         """Checks if the given auth token is valid and if so, marks the peer as authenticated"""
         if check_token_validty(msg_data.auth_token_attempt.token):
             self.known_users[src_user_id].auth_token = msg_data.auth_token_attempt.token
-            return(RovResponse(password_accepted=PasswordAcceptedResponse(), rov_exchange_id=msg_data.rov_exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), True)
-        return (RovResponse(password_invalid=PasswordInvalidResponse(), rov_exchange_id=msg_data.rov_exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), False)
+            return(RovResponse(password_accepted=PasswordAcceptedResponse(), exchange_id=msg_data.exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), True)
+        return (RovResponse(password_invalid=PasswordInvalidResponse(), exchange_id=msg_data.exchange_id, backend_metadata=ResponseBackendMetadata(target_user_i_ds=[src_user_id])), False)
 
     async def handle_user_connected(self,src_user_id: str):
         """Respond to a peer connection webrtc-relay event"""

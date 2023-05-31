@@ -131,12 +131,12 @@ class MessageHandlerClass:
         elif action == "password_attempt":
             response,auth_ok = await user_auth.handle_password_attempt(src_user_id, msg_data)
             if auth_ok:
-                await self.replay_action(src_user_id, msg_data.rov_exchange_id)
+                await self.replay_action(src_user_id, msg_data.exchange_id)
 
         elif action == "auth_token_attempt":
             response,auth_ok = await user_auth.handle_auth_token_attempt(src_user_id, msg_data)
             if auth_ok:
-                await self.replay_action(src_user_id, msg_data.rov_exchange_id)
+                await self.replay_action(src_user_id, msg_data.exchange_id)
 
         elif action == "rov_status_report":
             response = await self.handle_rov_status_report(src_user_id, msg_data)
@@ -191,15 +191,15 @@ class MessageHandlerClass:
             # If the message was not handled by any of the above, send an error response:
             # includes action requests that are invalid (do not contain an action parameter or an unknon action param):
             err_msg = 'No action specified' if action == "" else 'Unknown action: ' + action
-            response = self.add_response_metadata(RovResponse(error=ErrorResponse(message=err_msg), rov_exchange_id=msg_data.rov_exchange_id), [])
+            response = self.add_response_metadata(RovResponse(error=ErrorResponse(message=err_msg), exchange_id=msg_data.exchange_id), [])
 
         # Send the response:
         if isinstance(response, RovResponse):
-            response.rov_exchange_id = msg_data.rov_exchange_id
+            response.exchange_id = msg_data.exchange_id
             await self.send_msg(response)
         elif isinstance(response, AsyncGenerator):
             async for single_response in response:
-                single_response.rov_exchange_id = msg_data.rov_exchange_id
+                single_response.exchange_id = msg_data.exchange_id
                 await self.send_msg(single_response)
         else:
             raise Exception("Unexpected response type: " + str(type(msg_data)))
@@ -211,17 +211,17 @@ class MessageHandlerClass:
     async def handle_ping_message(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Responds to a ping message with a pong message with the same timestamp"""
         # send back the same timestamp from the ping with a pong message
-        return self.add_response_metadata(RovResponse(pong=PongResponse(time=msg_data.ping.time), rov_exchange_id=msg_data.rov_exchange_id), [src_user_id])
+        return self.add_response_metadata(RovResponse(pong=PongResponse(time=msg_data.ping.time), exchange_id=msg_data.exchange_id), [src_user_id])
 
     async def handle_rov_status_report(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse,None]:
         """ Returns the generator of the status shell script"""
-        msg_generator = generate_cmd_continued_output_response(msg_data.rov_exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/rov_status_report.sh", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/rov_status_report.sh", cmd_timeout=20)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     async def handle_refresh_all_sensors(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Refreshes all sensors and returns the results"""
         measurement_data = sensor_ctrl.get_all_sensor_values()
-        return self.add_response_metadata(RovResponse(sensor_updates=SensorUpdatesResponse(measurement_updates=measurement_data), rov_exchange_id=msg_data.rov_exchange_id), [src_user_id])
+        return self.add_response_metadata(RovResponse(sensor_updates=SensorUpdatesResponse(measurement_updates=measurement_data), exchange_id=msg_data.exchange_id), [src_user_id])
 
     async def handle_begin_video_stream(self, src_user_id: str, msg_data: RovAction) -> None:
         """Begins streaming the video from the ROV's camera"""
@@ -288,13 +288,13 @@ class MessageHandlerClass:
     @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
     async def handle_rov_logs(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
         """Return a generator that continuously outputs new systemd log messages as they appear plus the last 500 lines of log."""
-        msg_generator = generate_cmd_continued_output_response(msg_data.rov_exchange_id, "journalctl --unit=rov_python_code --unit=rov_go_code --unit=maintain_network --unit=nginx --no-pager --follow -n 500", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "journalctl --unit=rov_python_code --unit=rov_go_code --unit=maintain_network --unit=nginx --no-pager --follow -n 500", cmd_timeout=20)
         await asyncio.sleep(1)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
     async def handle_restart_rov_services(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
-        msg_generator = generate_cmd_continued_output_response(msg_data.rov_exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh", cmd_timeout=20)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
@@ -357,16 +357,16 @@ class MessageHandlerClass:
 
 
     def set_replay_action(self,src_user_id: str, rov_action: RovAction):
-        """ Saves the action request for the given rov_exchange_id. """
-        if src_user_id in self.replay_actions and rov_action.rov_exchange_id is not None:
-            user_auth.known_users[src_user_id].replay_actions[rov_action.rov_exchange_id] = rov_action
+        """ Saves the action request for the given exchange_id. """
+        if src_user_id in self.replay_actions and rov_action.exchange_id is not None:
+            user_auth.known_users[src_user_id].replay_actions[rov_action.exchange_id] = rov_action
 
-    async def replay_action(self,src_user_id: str, rov_exchange_id: int):
-        """ Replays any action request with the given rov_exchange_id that was previously sent by a user """
+    async def replay_action(self,src_user_id: str, exchange_id: int):
+        """ Replays any action request with the given exchange_id that was previously sent by a user """
         if src_user_id in user_auth.known_users:
-            replay_action = user_auth.known_users[src_user_id].replay_actions.get(rov_exchange_id, None)
+            replay_action = user_auth.known_users[src_user_id].replay_actions.get(exchange_id, None)
             if replay_action is not None:
-                del user_auth.known_users[src_user_id].replay_actions[rov_exchange_id]
+                del user_auth.known_users[src_user_id].replay_actions[exchange_id]
                 await self.handle_incoming_msg(replay_action)
 
 message_handler = MessageHandlerClass()

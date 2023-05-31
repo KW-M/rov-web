@@ -51,7 +51,7 @@ async def read_cmd_output_async(shell_cmd, cmd_timeout=None):
             process.kill()
 
 
-async def generate_cmd_continued_output_response(rov_exchange_id, shell_command, cmd_timeout=None):
+async def generate_cmd_continued_output_response(exchange_id, shell_command, cmd_timeout=None):
     i = 0  # counter for the number of messages sent
     cmd_stdout_results = read_cmd_output_async(shell_command, cmd_timeout)
     async for line in cmd_stdout_results:
@@ -60,9 +60,9 @@ async def generate_cmd_continued_output_response(rov_exchange_id, shell_command,
             if "rov_logs..." in line:
                 continue  # avoid sending our own log messages to the client (which would cause message recursion)
 
-            yield RovResponse(rov_exchange_id=rov_exchange_id, continued_output=ContinuedOutputResponse(message=line))
+            yield RovResponse(exchange_id=exchange_id, continued_output=ContinuedOutputResponse(message=line))
         else:
             log.error("Unexpected type in generate_cmd_continued_output_response: %s", str(type(line)))
 
     # send done status to indicate that the command has finished
-    yield RovResponse(rov_exchange_id=rov_exchange_id, done=DoneResponse())
+    yield RovResponse(exchange_id=exchange_id, done=DoneResponse())
