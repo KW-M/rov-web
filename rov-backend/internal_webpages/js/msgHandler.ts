@@ -1,21 +1,25 @@
+import { rov_actions_proto } from "home/pi/rov-web/shared/js/protobufs/rovActionsProto";
 import { receiveProxiedMsg } from "../../../shared/js/proxyReciever";
-import { WebSocketRelay } from "../../../shared/js/websocketRelay";
-import { sendSignalingDataToSimplePeerPublisher } from "./simplePeerPub";
 import { iRovWebSocketRelay } from "./websocketRelay";
 
 /*
     Intended to handle messages coming FROM Livekit/The Internet
     TODO We wish to send this data to the iROV python code
 */
-export function backendHandleWebrtcMsgRcvd(msgBytes: ArrayBufferLike) {
+export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBufferLike) {
     let data = new Uint8Array(msgBytes)
     if (!data || data.length === 0) return;
     console.log("GOT DC DATA:", data);
 
-    // TODO do some protobuf here to properly package the data up for iROV
+    // Do some protobuf here to properly package the data up for iROV (stuff in the Sender Id)
+    const msgProto = rov_actions_proto.RovAction.decode(msgBytes)
+    msgProto.BackendMetadata.FromUserID = senderId
+    const newMessage = rov_actions_proto.RovAction.encode(msgProto).finish()
+
+
 
     // Send the packaged up message to the iROV via webSocketRelay
-    iRovWebSocketRelay.sendMessage(data)
+    iRovWebSocketRelay.sendMessage(newMessage)
 
     // sendSignalingDataToSimplePeerPublisher(data);
     // receiveProxiedMsg(msgBytes);

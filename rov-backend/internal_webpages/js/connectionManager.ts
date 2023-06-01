@@ -40,15 +40,15 @@ class ConnectionManager {
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
-        this._cloudLivekitConnection.latestRecivedDataMessage.subscribe((msg) => {
-            backendHandleWebrtcMsgRcvd(msg)
+        this._cloudLivekitConnection.latestRecivedDataMessage.subscribe(({senderId, msg}) => {
+            backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         this._cloudLivekitConnection.connectionState.subscribe((state) => {
             console.log("Cloud Conn State Changed: " + state)
         })
 
-        this._localLivekitConnection.latestRecivedDataMessage.subscribe((msg) => {
-            backendHandleWebrtcMsgRcvd(msg)
+        this._localLivekitConnection.latestRecivedDataMessage.subscribe(({senderId, msg}) => {
+            backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         this._localLivekitConnection.connectionState.subscribe((state) => {
             console.log("Local Conn State Changed: " + state)
@@ -102,6 +102,7 @@ class ConnectionManager {
             }
         }
     }
+
 
     private async _setupLivekitRoom(HostName: string, livekitSetup: LivekitSetupOptions, livekitConnection: LivekitPublisherConnection) {
         const cloudToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);

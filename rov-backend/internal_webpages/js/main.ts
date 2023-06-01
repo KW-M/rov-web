@@ -18,11 +18,14 @@ connectionManager.start(livekitConfig)
 iRovWebSocketRelay.start(function (messageEvent: MessageEvent<Uint8Array>) {
     // Callback to handle messages being received from the iROV python
 
-    // TODO we want to properly unpackage all the metadata from the protobu
+    // Unpackage needed metadata from the protobuf object
     const msgProto = rov_actions_proto.RovResponse.decode(messageEvent.data)
+    const targetUserIds = msgProto.BackendMetadata.TargetUserIDs
+    const transportMethod = msgProto.BackendMetadata.TransportMethod
+    const isReliable = transportMethod == rov_actions_proto.DataTransportMethod.LivekitReliable
 
     // send this stuff to livekit
-    connectionManager.sendMessage(msgProto, true, []) // TODO: REPLACE THIS WITH THE ACTUAL USER ID & Data trasport method
+    connectionManager.sendMessage(msgProto, isReliable, targetUserIds)
 });
 
 

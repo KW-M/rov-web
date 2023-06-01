@@ -15,7 +15,7 @@ import {
     type RoomConnectOptions,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
-import { appendLog, getWebsocketURL } from '../util';
+import { appendLog, getWebsocketURL, waitfor } from '../util';
 import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
 
 interface msgQueueItem {
@@ -43,7 +43,10 @@ export class LivekitGenericConnection {
     // subscribe to get updates on the state of the webrtc connection overall.
     connectionState: nStoreT<ConnectionStates>; // TODO
     // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
-    latestRecivedDataMessage: nStoreT<Uint8Array>;
+    latestRecivedDataMessage: nStoreT<{
+        senderId: string
+        msg: Uint8Array
+    }>;
     // subscribe to get notified when a participant joins or leaves the room.
     participantConnectionEvents: nStoreT<ParticipantConnectionEvent>;
 
@@ -66,7 +69,10 @@ export class LivekitGenericConnection {
 
         // setup reactive stores
         this.connectionState = nStore<ConnectionStates>(ConnectionStates.init)
-        this.latestRecivedDataMessage = nStore<Uint8Array>(new Uint8Array())
+        this.latestRecivedDataMessage = nStore<{
+            senderId: string
+            msg: Uint8Array
+        }>(null)
         this.participantConnectionEvents = nStore<ParticipantConnectionEvent>(null);
 
         // creates a new room object with options
@@ -78,7 +84,10 @@ export class LivekitGenericConnection {
                 if (participant && participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 appendLog(`Got dataReceived from ${!participant ? "SERVER" : participant.identity} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
                 this.lastMsgRecivedTimestamp = Date.now();
-                this.latestRecivedDataMessage.set(msg)
+                this.latestRecivedDataMessage.set({
+                    senderId: participant.identity,
+                    msg: msg
+                })
             })
             .on(RoomEvent.SignalConnected, async () => { // DIFF
                 appendLog(`signal connection established`);
@@ -192,7 +201,7 @@ export class LivekitGenericConnection {
         if (this._shouldReconnect == false) return;
         if (this._reconnectAttemptCount < this.config.reconnectAttempts) {
             const expBackoffDelay = this._reconnectAttemptCount * 800;
-            await sleep(expBackoffDelay)
+            await waitfor(expBackoffDelay)
             await this._connect();
         } else {
             this._fail();
