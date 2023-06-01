@@ -6,6 +6,29 @@ export function waitfor(millisec) {
     })
 }
 
+/**
+ * wrapper function that takes an async function and keeps retrying with exponential backoff if the wrapped function throws an error (ie the internal promise rejects)
+ * if the function fails after maxRetries, it throws an error to be handled by higher up functions.
+ */
+export function asyncExpBackoff<F extends (...args: any[]) => Promise<any>>(fn: F, thisArg: any = null, maxRetries: number = 5, initialDelay: number = 1000, rate: number = 2): F {
+    return async function (...args: any[]) {
+        let error;
+        let retries = 0;
+        while (retries < maxRetries) {
+            try {
+                return await fn.apply(thisArg, args)
+            } catch (err) {
+                error = err;
+                console.warn("err:", error)
+                await waitfor(initialDelay * Math.pow(rate, retries));
+                retries++;
+            }
+        }
+        throw new Error("asyncExpBackoff() func failed after " + retries + " retries. Error: " + error)
+    } as F
+}
+
+
 export function appendLog(...args: any[]) {
     console.log(...args)
     const txtElem = document.createElement('p');

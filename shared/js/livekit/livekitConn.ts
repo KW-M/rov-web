@@ -164,7 +164,7 @@ export class LivekitGenericConnection {
         const startTime = Date.now();
         appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         await this._connect();
-        appendLog(`Connected or Failed in ${Date.now() - startTime}ms`);
+        appendLog(`Connected or Failed in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
     }
 
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
