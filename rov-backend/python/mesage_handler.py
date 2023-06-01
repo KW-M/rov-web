@@ -317,7 +317,7 @@ class MessageHandlerClass:
 # Helper Functions
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    def add_response_metadata(self, msg: RovResponse, recipient_ids: list[str] = [], transport_method: DataTransportMethod = DataTransportMethod.DirectReliable) -> RovResponse:
+    def add_response_metadata(self, msg: RovResponse, recipient_ids: list[str] = [], transport_method: DataTransportMethod = DataTransportMethod.LivekitReliable) -> RovResponse:
         """ Add metadata to a message to be sent to one or more users.
         :param msg: the protobuf message to add metadata to
         :param recipient_ids: the list of livekit user IDs to send the message to (if empty, broadcast to ALL users)

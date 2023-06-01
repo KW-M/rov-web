@@ -1,7 +1,7 @@
 import { LivekitPublisherConnection } from "../../../shared/js/livekit/livekitConn"
 
 import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG } from '../../../shared/js/consts';
-import { appendLog, getWebsocketURL, waitfor } from '../../../shared/js/util';
+import { appendLog, asyncExpBackoff, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { getPublisherAccessToken } from '../../../shared/js/livekit/livekitTokens';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
 import { createLivekitRoom, listLivekitRooms, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from '../../../shared/js/livekit/adminActions';
@@ -54,9 +54,10 @@ class ConnectionManager {
             console.log("Local Conn State Changed: " + state)
         })
 
-        await this._setupLivekitRoom(LIVEKIT_CLOUD_ENDPOINT, livekitSetup, this._cloudLivekitConnection)
-        await this._setupLivekitRoom(LIVEKIT_LOCAL_ENDPOINT, livekitSetup, this._localLivekitConnection)
-        this._cameraMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        this._cameraMediaStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices)({ video: true, audio: false });
+        await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_CLOUD_ENDPOINT, livekitSetup, this._cloudLivekitConnection)
+        await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_LOCAL_ENDPOINT, livekitSetup, this._localLivekitConnection)
+        console.log("ConnectionManager Started")
     }
 
     public async startSimplePeerConnection(userId: string, firstSignallingMessage?: string) {

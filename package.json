@@ -13,7 +13,8 @@
     "dev": "vite --host",
     "build": "vite build --base=./",
     "preview": "vite preview --host --base=/rov-web/",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "run_py": "python3 rov-backend/python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.json"
   },
   "devDependencies": {
     "@rgossiaux/svelte-headlessui": "^1.0.2",
