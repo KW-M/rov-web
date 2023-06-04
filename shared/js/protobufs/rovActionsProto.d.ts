@@ -131,10 +131,11 @@ export namespace rov_actions_proto {
 
     /** InternalWebpageEvent enum. */
     enum InternalWebpageEvent {
-        RovConnected = 0,
-        RovDisconnected = 1,
-        UserConnected = 2,
-        UserDisconnected = 3
+        Nothing = 0,
+        RovConnected = 1,
+        RovDisconnected = 2,
+        UserConnected = 3,
+        UserDisconnected = 4
     }
 
     /** Properties of a PingAction. */

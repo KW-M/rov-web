@@ -1,4 +1,4 @@
-import { rov_actions_proto } from "home/pi/rov-web/shared/js/protobufs/rovActionsProto";
+import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { receiveProxiedMsg } from "../../../shared/js/proxyReciever";
 import { iRovWebSocketRelay } from "./websocketRelay";
 
@@ -12,11 +12,9 @@ export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBuff
     console.log("GOT DC DATA:", data);
 
     // Do some protobuf here to properly package the data up for iROV (stuff in the Sender Id)
-    const msgProto = rov_actions_proto.RovAction.decode(msgBytes)
+    const msgProto = rov_actions_proto.RovAction.decode(data)
     msgProto.BackendMetadata.FromUserID = senderId
     const newMessage = rov_actions_proto.RovAction.encode(msgProto).finish()
-
-
 
     // Send the packaged up message to the iROV via webSocketRelay
     iRovWebSocketRelay.sendMessage(newMessage)

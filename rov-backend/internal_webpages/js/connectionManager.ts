@@ -40,14 +40,14 @@ class ConnectionManager {
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
-        this._cloudLivekitConnection.latestRecivedDataMessage.subscribe(({senderId, msg}) => {
+        this._cloudLivekitConnection.latestRecivedDataMessage.subscribe(({ senderId, msg }) => {
             backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         this._cloudLivekitConnection.connectionState.subscribe((state) => {
             console.log("Cloud Conn State Changed: " + state)
         })
 
-        this._localLivekitConnection.latestRecivedDataMessage.subscribe(({senderId, msg}) => {
+        this._localLivekitConnection.latestRecivedDataMessage.subscribe(({ senderId, msg }) => {
             backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         this._localLivekitConnection.connectionState.subscribe((state) => {
@@ -67,7 +67,7 @@ class ConnectionManager {
         }
         const spConn = new SimplePeerConnection();
         spConn.latestRecivedDataMessage.subscribe((msg) => {
-            backendHandleWebrtcMsgRcvd(msg)
+            backendHandleWebrtcMsgRcvd(userId, msg)
         })
         spConn.outgoingSignalingMessages.subscribe((msg) => {
             this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])

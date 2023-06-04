@@ -366,17 +366,19 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * InternalWebpageEvent enum.
      * @name rov_actions_proto.InternalWebpageEvent
      * @enum {number}
-     * @property {number} RovConnected=0 RovConnected value
-     * @property {number} RovDisconnected=1 RovDisconnected value
-     * @property {number} UserConnected=2 UserConnected value
-     * @property {number} UserDisconnected=3 UserDisconnected value
+     * @property {number} Nothing=0 Nothing value
+     * @property {number} RovConnected=1 RovConnected value
+     * @property {number} RovDisconnected=2 RovDisconnected value
+     * @property {number} UserConnected=3 UserConnected value
+     * @property {number} UserDisconnected=4 UserDisconnected value
      */
     rov_actions_proto.InternalWebpageEvent = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "RovConnected"] = 0;
-        values[valuesById[1] = "RovDisconnected"] = 1;
-        values[valuesById[2] = "UserConnected"] = 2;
-        values[valuesById[3] = "UserDisconnected"] = 3;
+        values[valuesById[0] = "Nothing"] = 0;
+        values[valuesById[1] = "RovConnected"] = 1;
+        values[valuesById[2] = "RovDisconnected"] = 2;
+        values[valuesById[3] = "UserConnected"] = 3;
+        values[valuesById[4] = "UserDisconnected"] = 4;
         return values;
     })();
 
@@ -4298,6 +4300,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 case 1:
                 case 2:
                 case 3:
+                case 4:
                     break;
                 }
             return null;
@@ -4324,21 +4327,25 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     break;
                 }
                 break;
-            case "RovConnected":
+            case "Nothing":
             case 0:
                 message.InternalWebpageEvt = 0;
                 break;
-            case "RovDisconnected":
+            case "RovConnected":
             case 1:
                 message.InternalWebpageEvt = 1;
                 break;
-            case "UserConnected":
+            case "RovDisconnected":
             case 2:
                 message.InternalWebpageEvt = 2;
                 break;
-            case "UserDisconnected":
+            case "UserConnected":
             case 3:
                 message.InternalWebpageEvt = 3;
+                break;
+            case "UserDisconnected":
+            case 4:
+                message.InternalWebpageEvt = 4;
                 break;
             }
             return message;
@@ -4359,7 +4366,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             let object = {};
             if (options.defaults) {
                 object.FromUserID = "";
-                object.InternalWebpageEvt = options.enums === String ? "RovConnected" : 0;
+                object.InternalWebpageEvt = options.enums === String ? "Nothing" : 0;
             }
             if (message.FromUserID != null && message.hasOwnProperty("FromUserID"))
                 object.FromUserID = message.FromUserID;

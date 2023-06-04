@@ -45,16 +45,17 @@ class DataTransportMethod(betterproto.Enum):
 
 
 class InternalWebpageEvent(betterproto.Enum):
-    RovConnected = 0
+    Nothing = 0
+    RovConnected = 1
     """The rov has connected to at least one livekit server"""
 
-    RovDisconnected = 1
+    RovDisconnected = 2
     """The rov is disconnected from all livekit servers"""
 
-    UserConnected = 2
+    UserConnected = 3
     """A livekit user has connected to the rov"""
 
-    UserDisconnected = 3
+    UserDisconnected = 4
     """A livekit user has disconnected from the rov"""
 
 

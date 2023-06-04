@@ -61,39 +61,39 @@ class MessageHandlerClass:
 
             await asyncio.sleep(0.002)
 
-    # async def handle_relay_event(self, relay_event: RelayEventStream):
-    #     """
-    #     Handle grpc events recived from the webrtc-relay.
-    #     :param event: the event to handle
-    #     """
-    #     relay_exchange_id = relay_event.exchange_id
-    #     (event_type, event) = betterproto.which_one_of(relay_event, "event")
-    #     # print("PYTHON: Got GRPC Event: " + event_type)
-    #     if event_type == "msg_recived":
-    #         evto: MsgRecivedEvent = event  # type: ignore
-    #         await self.handle_incoming_msg(evto.payload, evto.src_user_id, evto.relay_peer_number, relay_exchange_id)
-    #     if event_type == "peer_connected":
-    #         evt: PeerConnectedEvent = event  # type: ignore
-    #         print("PYTHON: Got peerConnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #         await self.handle_peer_connected(src_user_id=evt.src_user_id)
-    #     if event_type == "peer_disconnected":
-    #         evt: PeerDisconnectedEvent = event  # type: ignore
-    #         print("PYTHON: Got peerDisconnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #         await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
-    #     if event_type == "peer_called":
-    #         evt: PeerCalledEvent = event  # type: ignore
-    #         print("PYTHON: Got peerCalled event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #     if event_type == "peer_hungup":
-    #         evt: PeerHungupEvent = event  # type: ignore
-    #         print("PYTHON: Got peerHungup event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #     if event_type == "peer_data_conn_error":
-    #         evt: PeerDataConnErrorEvent = event  # type: ignore
-    #         print("PYTHON: Got peerDataConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #         await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
-    #     if event_type == "peer_media_conn_error":
-    #         evt: PeerMediaConnErrorEvent = event  # type: ignore
-    #         print("PYTHON: Got peerMediaConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-    #         await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
+    async def handle_relay_event(self, relay_event: RelayEventStream):
+        """
+        Handle grpc events recived from the webrtc-relay.
+        :param event: the event to handle
+        """
+        relay_exchange_id = relay_event.exchange_id
+        (event_type, event) = betterproto.which_one_of(relay_event, "event")
+        # print("PYTHON: Got GRPC Event: " + event_type)
+        if event_type == "msg_recived":
+            evto: MsgRecivedEvent = event  # type: ignore
+            await self.handle_incoming_msg(evto.payload, evto.src_user_id, evto.relay_peer_number, relay_exchange_id)
+        if event_type == "peer_connected":
+            evt: PeerConnectedEvent = event  # type: ignore
+            print("PYTHON: Got peerConnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+            await self.handle_peer_connected(src_user_id=evt.src_user_id)
+        if event_type == "peer_disconnected":
+            evt: PeerDisconnectedEvent = event  # type: ignore
+            print("PYTHON: Got peerDisconnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
+        if event_type == "peer_called":
+            evt: PeerCalledEvent = event  # type: ignore
+            print("PYTHON: Got peerCalled event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+        if event_type == "peer_hungup":
+            evt: PeerHungupEvent = event  # type: ignore
+            print("PYTHON: Got peerHungup event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+        if event_type == "peer_data_conn_error":
+            evt: PeerDataConnErrorEvent = event  # type: ignore
+            print("PYTHON: Got peerDataConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
+        if event_type == "peer_media_conn_error":
+            evt: PeerMediaConnErrorEvent = event  # type: ignore
+            print("PYTHON: Got peerMediaConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
+            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Relay events (these are sent by the webrtc-relay when something happens)
@@ -109,100 +109,109 @@ class MessageHandlerClass:
         :param relay_peer_number: the number of the webrtc-relay relay peer that the message came through
         """
 
-        msg_data = self.parse_message(raw_msg)
-        if msg_data is None:
+        msg_proto = self.parse_message(raw_msg)
+        if msg_proto is None:
             return
-        src_user_id = msg_data.backend_metadata.from_user_i_d
+        src_user_id = msg_proto.backend_metadata.from_user_id
 
-        # Set the last_recived_msg_time for the peer:
-        reply = await user_auth.update_message_recived_stats(src_user_id)
-        if reply is not None:
-            await self.send_msg(reply)
+        # >> Internal webpage events: (these are sent by the internal webpage to the backend in response to events)
 
+        if(msg_proto.backend_metadata.internal_webpage_evt.RovConnected):
+            return
+        elif(msg_proto.backend_metadata.internal_webpage_evt.RovDisconnected):
+            return
+        elif(msg_proto.backend_metadata.internal_webpage_evt.UserConnected):
+            return await user_auth.handle_user_connected(src_user_id)
+        elif(msg_proto.backend_metadata.internal_webpage_evt.UserDisconnected):
+            return await user_auth.handle_user_disconnected(src_user_id)
 
         # >> Actions that can be done by any peer:
 
+        # Set the last_recived_msg_time for the peer:
+        response = await user_auth.update_message_recived_stats(src_user_id)
+        if response is not None:
+            await self.send_msg(response)
+
         # typechecking protobuf oneOf fields doesn't yet work: https://github.com/danielgtaylor/python-betterproto/issues/358
-        response = None
-        action, _ = betterproto.which_one_of(msg_data, "Body")
+        action, _ = betterproto.which_one_of(msg_proto, "Body")
         if action == "ping":
-            response = await self.handle_ping_message(src_user_id, msg_data)
+            response = await self.handle_ping_message(src_user_id, msg_proto)
 
         elif action == "password_attempt":
-            response,auth_ok = await user_auth.handle_password_attempt(src_user_id, msg_data)
+            response,auth_ok = await user_auth.handle_password_attempt(src_user_id, msg_proto)
             if auth_ok:
-                await self.replay_action(src_user_id, msg_data.exchange_id)
+                await self.replay_action(src_user_id, msg_proto.exchange_id)
 
         elif action == "auth_token_attempt":
-            response,auth_ok = await user_auth.handle_auth_token_attempt(src_user_id, msg_data)
+            response,auth_ok = await user_auth.handle_auth_token_attempt(src_user_id, msg_proto)
             if auth_ok:
-                await self.replay_action(src_user_id, msg_data.exchange_id)
+                await self.replay_action(src_user_id, msg_proto.exchange_id)
 
         elif action == "rov_status_report":
-            response = await self.handle_rov_status_report(src_user_id, msg_data)
+            response = await self.handle_rov_status_report(src_user_id, msg_proto)
 
         elif action == "refresh_all_sensors":
-            response = await self.handle_refresh_all_sensors(src_user_id, msg_data)
+            response = await self.handle_refresh_all_sensors(src_user_id, msg_proto)
 
         elif action == "begin_video_stream":
-            response = await self.handle_begin_video_stream(src_user_id, msg_data)
+            response = await self.handle_begin_video_stream(src_user_id, msg_proto)
 
         # >> Actions that require the sending peer to be authenticated (have correctly done a password or token challenge before)
 
         elif action == "take_control":
-            response = await self.handle_take_control(src_user_id, msg_data)
+            response = await self.handle_take_control(src_user_id, msg_proto)
 
         elif action == "take_photo":
-            response = await self.handle_take_photo(src_user_id, msg_data)
+            response = await self.handle_take_photo(src_user_id, msg_proto)
 
         elif action == "start_video_rec":
-            response = await self.handle_start_video_rec(src_user_id, msg_data)
+            response = await self.handle_start_video_rec(src_user_id, msg_proto)
 
         elif action == "stop_video_rec":
-            response = await self.handle_stop_video_rec(src_user_id, msg_data)
+            response = await self.handle_stop_video_rec(src_user_id, msg_proto)
 
         elif action == "shutdown_rov":
-            response = await self.handle_shutdown_rov(src_user_id, msg_data)
+            response = await self.handle_shutdown_rov(src_user_id, msg_proto)
 
         elif action == "reboot_rov":
-            response = await self.handle_reboot_rov(src_user_id, msg_data)
+            response = await self.handle_reboot_rov(src_user_id, msg_proto)
 
         elif action == "enable_wifi":
-            response = await self.handle_enable_wifi(src_user_id, msg_data)
+            response = await self.handle_enable_wifi(src_user_id, msg_proto)
 
         elif action == "disable_wifi":
-            response = await self.handle_disable_wifi(src_user_id, msg_data)
+            response = await self.handle_disable_wifi(src_user_id, msg_proto)
 
         elif action == "rov_logs":
-            response = await self.handle_rov_logs(src_user_id, msg_data)
+            response = await self.handle_rov_logs(src_user_id, msg_proto)
 
         elif action == "restart_rov_services":
-            response = await self.handle_restart_rov_services(src_user_id, msg_data)
+            response = await self.handle_restart_rov_services(src_user_id, msg_proto)
 
         # >> Actions that require the sending peer to be the designated driver:
 
         elif action == "move":
-            response = await self.handle_move(src_user_id, msg_data)
+            response = await self.handle_move(src_user_id, msg_proto)
 
         elif action == "toggle_lights":
-            response = await self.handle_toggle_lights(src_user_id, msg_data)
+            response = await self.handle_toggle_lights(src_user_id, msg_proto)
 
         else:
             # If the message was not handled by any of the above, send an error response:
             # includes action requests that are invalid (do not contain an action parameter or an unknon action param):
             err_msg = 'No action specified' if action == "" else 'Unknown action: ' + action
-            response = self.add_response_metadata(RovResponse(error=ErrorResponse(message=err_msg), exchange_id=msg_data.exchange_id), [])
+            response = self.add_response_metadata(RovResponse(error=ErrorResponse(message=err_msg), exchange_id=msg_proto.exchange_id), [])
 
         # Send the response:
         if isinstance(response, RovResponse):
-            response.exchange_id = msg_data.exchange_id
+            response.exchange_id = msg_proto.exchange_id
             await self.send_msg(response)
         elif isinstance(response, AsyncGenerator):
             async for single_response in response:
-                single_response.exchange_id = msg_data.exchange_id
+                single_response.exchange_id = msg_proto.exchange_id
                 await self.send_msg(single_response)
         else:
-            raise Exception("Unexpected response type: " + str(type(msg_data)))
+            raise Exception("Unexpected response type: " + str(type(msg_proto)))
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ROV Actions that can be done by anyone:

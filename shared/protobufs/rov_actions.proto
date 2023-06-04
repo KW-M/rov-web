@@ -36,14 +36,15 @@ enum DataTransportMethod {
 }
 
 enum InternalWebpageEvent {
+    Nothing = 0;
     // The rov has connected to at least one livekit server
-    RovConnected = 0;
+    RovConnected = 1;
     // The rov is disconnected from all livekit servers
-    RovDisconnected = 1;
+    RovDisconnected = 2;
     // A livekit user has connected to the rov
-    UserConnected = 2;
+    UserConnected = 3;
     // A livekit user has disconnected from the rov
-    UserDisconnected = 3;
+    UserDisconnected = 4;
 }
 
 message PingAction {
