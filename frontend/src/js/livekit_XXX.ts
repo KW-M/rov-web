@@ -22,13 +22,13 @@ import { DECODE_TXT, ENCODE_TXT, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_C
 import { appendLog, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { handleFrontendMsgRcvd } from './msgHandler';
 import { setSendProxyMessageCallback } from '../../../shared/js/proxy';
-import { enableFrameProxy } from "./frameProxy";
+import { enableFrameProxy } from "./iframeWsProxying";
 
 let videoContainerElem;
 
 declare global {
     interface Window {
-        LIVEKIT_TOKEN: string;
+        LIVEKIT_LIST_ONLY_TOKEN: string;
     }
 }
 
@@ -40,7 +40,7 @@ export async function listLivekitRooms(hostUrl: string) {
         body: JSON.stringify({}),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + window.LIVEKIT_TOKEN,
+            'Authorization': 'Bearer ' + window.LIVEKIT_LIST_ONLY_TOKEN,
         }
     }).then(response => response.json()).then(response => {
         const rooms = response.rooms;

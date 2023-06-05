@@ -2,7 +2,7 @@ import { VideoPresets, type RoomConnectOptions, DefaultReconnectPolicy, type Roo
 
 declare global {
     interface Window {
-        LIVEKIT_TOKEN: string
+        LIVEKIT_LIST_ONLY_TOKEN: string
     }
 }
 

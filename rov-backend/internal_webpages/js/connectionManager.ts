@@ -36,7 +36,6 @@ class ConnectionManager {
             roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
             roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
         })
-
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
@@ -72,7 +71,7 @@ class ConnectionManager {
         spConn.outgoingSignalingMessages.subscribe((msg) => {
             this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])
         })
-        spConn.start({
+        await spConn.start({
             initiator: false,
             trickle: false,
             streams: [this._cameraMediaStream]

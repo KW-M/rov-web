@@ -2,7 +2,7 @@ import { ConnectionState } from "./consts"
 import { DataConnectionMachine } from "./dataConnectionMachine"
 import { rovDataChannelConnState, rovVideoStreamConnState } from "./globalContext"
 import { MediaConnectionMachine } from "./mediaConnectionMachine"
-import type { OurPeerMachine } from "./ourPeerMachine"
+import type { OurPeerMachine } from "./ourPeerMachine_XXX"
 import { Queue } from "./util"
 
 type msgQueueItem = { msgBytes: Uint8Array, onSendCallback: (msgBytes: Uint8Array) => void }

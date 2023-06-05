@@ -8,7 +8,7 @@ export function enableFrameProxy() {
             window.parent.postMessage(data, "*")
         })
         window.addEventListener('message', (msg) => {
-            // if (msg.origin === origin) {
+            // if (msg.origin === origin) { // security check
             console.log("Got iframe parent message", msg)
             receiveProxiedMsg(msg.data)
             // }

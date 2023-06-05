@@ -3,7 +3,7 @@ import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { connectionManager } from "./connectionManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
-import { sendSignalingDataToSimplePeerSubscriber } from "./simplePeerSub";
+import { sendSignalingDataToSimplePeerSubscriber } from "./";
 
 let lastTimeRecvdPong = NaN;
 
