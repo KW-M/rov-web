@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
+import time
 # import socket
 # import httplib
 # from selenium.webdriver.remote.command import Command
@@ -42,6 +43,11 @@ class WebdriverManager:
         # Instantiate driver and navigate to appropriate webpage
         self.driver = webdriver.Chrome(driver_path, options=chrome_options)
         self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html") #TODO should point to appropriate website. (M) if it's static content couldn't we fetch it from the local file system?
+        
+        
+        # Ryan's testing link
+        # self.driver.get("http://192.168.86.22:5173/rov-backend/internal_webpages/index.html?ForceLocal=false&RovRoomName=ROV123&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&LocalAPIKey=NOTSET&LocalSecretKey=NOTSET")
+
 
     """This function will periodically check if the driver is alive while the manager is set to running
        if this isn't the case (which could maybe happen because the browser crashes or there's a network issue),
@@ -75,15 +81,46 @@ class WebdriverManager:
             return True
         except:
             return False
+        
+    def get_browser_log(self):
+        return self.driver.get_log("browser")
+
+    """Function that will continuously check the browser being driven for new js logs 
+        and print them to the console. This is good to use for debugging purposes.
+        Note this has the potential to really clutter your log output, so it's probably
+        best to run it in a separate terminal session.
+    """
+    def start_browser_logging_loop(self):
+        
+        L = 0 # Track Length of latest received log array
+
+        # Continuously check for new logs and print them.
+        while True:
+            logs = self.driver.get_log('browser')
+            for log in logs[L:len(logs)]: #only print new ones
+                print(log['message']+"\n")
+            L = len(logs)
+            time.sleep(1)  # Wait for 1 second before checking again
 
 
+# Singleton export pattern; anyone importing this module will be able to access this particular instance.
 rovWebdriverManager = WebdriverManager()
 
-# Testing scripts
+# Testing scripts. If you run this module as main, you'll get to see a
+# live output of the logs in the headless browser being controlled by the webdriver.
 if __name__=="__main__":
     rovWebdriverManager.init()
     rovWebdriverManager.start()
     rovWebdriverManager.test_fetch_title()
-    print("started manager, ", rovWebdriverManager.is_running())
-    rovWebdriverManager.stop()
-    print("stopped manager, ", rovWebdriverManager.is_running())
+    log = rovWebdriverManager.get_browser_log()
+
+    try:
+        rovWebdriverManager.start_browser_logging_loop()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        rovWebdriverManager.stop()
+
+    # print("started manager, ", rovWebdriverManager.is_running())
+    # rovWebdriverManager.stop()
+    # print("stopped manager, ", rovWebdriverManager.is_running())
