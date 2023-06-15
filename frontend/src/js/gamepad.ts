@@ -24,16 +24,18 @@ export class GamepadController {
     gpadUi: GamepadUi;
     gpadEmulator: GamepadEmulator;
     gpadApiWrapper: GamepadApiWrapper;
-    touchedGpadButtonCount: number;
-    throttleDelay: number;
+    touchedGpadButtonCount: number = 0;
+    throttleDelay: number = 10;
     onAxisChange: null | ((gamepad: Gamepad) => void);
     onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: boolean[]) => void);
 
-    constructor(throttleDelay = 10) {
+    constructor() {
         this.gpadUi = new GamepadUi();
         this.touchedGpadButtonCount = 0
-        this.throttleDelay = throttleDelay;
+    }
 
+    start() {
+        this.gpadUi.start();
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
         // the emulator will either use the real gamepad api if a gamepad is plugged in or it will inject the onscreen gamepad as if it were comming from the gamepad api.
         this.gpadEmulator = new GamepadEmulator(0.1);
@@ -94,7 +96,7 @@ export class GamepadController {
         const gamepads = navigator.getGamepads();
         var connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
         if (connectedGamepadCount != 0 && gamepads[0]["emulated"]) connectedGamepadCount -= 1;
-        this.gpadUi.showGamepadStatus(connectedGamepadCount);
+        // this.gpadUi.showGamepadStatus(connectedGamepadCount);
         if (connectedGamepadCount > 1) console.log("WARNING: More than one gamepad connected!", gamepads);
     }
 
@@ -341,10 +343,10 @@ export class GamepadController {
 
             // arrow keys to move the right stick (prevent default to prevent scrolling)
             else if (e.key === "ArrowLeft") {
-                // this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? -1 : 0);
+                this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? -1 : 0);
                 e.preventDefault();
             } else if (e.key === "ArrowRight") {
-                // this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? 1 : 0);
+                this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? 1 : 0);
                 e.preventDefault();
             } else if (e.key === "ArrowUp") {
                 this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_Y_AXIS_INDEX, keyDown ? -1 : 0);
@@ -382,4 +384,4 @@ export class GamepadController {
 }
 
 
-export const gpadCtrl = new GamepadController(10)
+export const gpadCtrl = new GamepadController()

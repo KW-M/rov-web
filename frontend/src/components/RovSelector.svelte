@@ -2,33 +2,26 @@
   // import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Transition } from "@rgossiaux/svelte-headlessui";
   import { Icon } from "@steeze-ui/svelte-icon";
   import { ChevronRight } from "@steeze-ui/heroicons";
-  import { ChevronLeft } from "@steeze-ui/heroicons";
   import { fade } from "svelte/transition";
-  import { ourPeerId, rovPeerIdEndNumber, rovDataChannelConnState, peerServerConnState, isRovDriver } from "../js/globalContext";
-  import { RovActions } from "../js/rovActions";
-  import { getROVName } from "../js/rovUtil";
-  import { ConnectionState } from "../js/consts";
-  import { addTooltip } from "./HelpTooltips.svelte";
-  import { LocationSearching } from "@steeze-ui/material-design-icons";
+  import { ourPeerId } from "../js/globalContext";
+  import { frontendConnMngr } from "../js/frontendConnManager";
+  import { ConnectionStates } from "../../../shared/js/consts";
 
-  $: collapsedMode = false; // $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
   export let selectedRov = "";
 
-  let rovNames = [];
-  setInterval(() => {
-    rovNames.push("rov-" + (Date.now() + 1));
-    rovNames = rovNames;
-  }, 2000);
+  const connectionState = frontendConnMngr.connectionState;
+  $: collapsedMode = $connectionState !== ConnectionStates.init && $connectionState !== ConnectionStates.disconnectedOk && $connectionState !== ConnectionStates.failed;
+
+  const availableRovNames = frontendConnMngr.openLivekitRoomNames;
+  $: rovNames = $availableRovNames;
 
   function connectToRov(rovName: string) {
-    collapsedMode = true;
     selectedRov = rovName;
-    RovActions.connectToRov();
+    frontendConnMngr.connectToLivekitRoom(rovName);
   }
 
   function disconnect() {
-    collapsedMode = false;
-    RovActions.disconnectFromRov();
+    frontendConnMngr.disconnectFromLivekitRoom();
   }
 </script>
 

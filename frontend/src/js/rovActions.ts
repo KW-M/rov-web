@@ -1,6 +1,7 @@
-import { connectionManager } from "./connectionManager";
+
+import type { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import { frontendConnMngr } from "./frontendConnManager";
 import { rovPeerIdEndNumber } from "./globalContext";
-import type { rov_actions_proto } from "./proto/rovActionsProto";
 import { RovMsgHandlerClass, rovMessageHandler } from "./rovMessageHandler"
 import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
 import { arraysEqual } from "./util";
@@ -14,15 +15,11 @@ class RovActionsClass {
         VelocityZ: 0,
         AngularVelocityYaw: 0
     };
-    rovMsgHandler: RovMsgHandlerClass = null;
-    constructor(rovMsgHandler: RovMsgHandlerClass) {
-        this.rovMsgHandler = rovMsgHandler;
-    }
 
     // ==== Helpers =====
 
     sendActionAndWaitForDone(msgData: rov_actions_proto.IRovAction, callback: (response: rov_actions_proto.RovResponse) => void) {
-        this.rovMsgHandler.sendRovMessage(msgData, (response: rov_actions_proto.RovResponse) => {
+        rovMessageHandler.sendRovMessage(msgData, (response: rov_actions_proto.RovResponse) => {
             if (callback && (response.Done || response.Error || response.ContinuedOutput)) {
                 callback(response);
             }
@@ -31,9 +28,9 @@ class RovActionsClass {
 
     startPingLoop() {
         if (this.pingLoopIntervalId) return;
-        this.pingLoopIntervalId = setInterval(() => {
-            this.rovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
-        }, 3000)
+        this.pingLoopIntervalId = Number(setInterval(() => {
+            rovMessageHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
+        }, 3000))
     }
 
     stopPingLoop() {
@@ -53,55 +50,25 @@ class RovActionsClass {
 
     // ======= Actions ========
 
-    connectToRov() {
-        connectionManager.connectToCurrentTargetRov();
-    }
-
-    disconnectFromRov() {
-        connectionManager.disconnectFromCurrentRov();
-    }
-
-    switchToNextRovPeerId() {
-        rovPeerIdEndNumber.update((n) => {
-            n++;
-            localStorage.setItem("rovPeerIdEndNumber", n.toString());
-            return n;
-        });
-        setCurrentRovName();
-        this.disconnectFromRov();
-    }
-
-    switchToPrevRovPeerId() {
-        rovPeerIdEndNumber.update((n) => {
-            n = Math.max(n - 1, 0);
-            localStorage.setItem("rovPeerIdEndNumber", n.toString());
-            return n;
-        });
-        setCurrentRovName();
-        this.disconnectFromRov();
-    }
-
     takeControl() {
         // attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized
-        this.rovMsgHandler.sendRovMessage({ TakeControl: {} }, null);
+        rovMessageHandler.sendRovMessage({ TakeControl: {} }, null);
     }
-
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
         if (VelocityX == this.lastMove.VelocityX && VelocityY == this.lastMove.VelocityY && VelocityZ == this.lastMove.VelocityZ && AngularVelocityYaw == this.lastMove.AngularVelocityYaw) return;
         const newMovement = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw }
-        this.rovMsgHandler.sendRovMessage({ Move: newMovement }, null);
+        rovMessageHandler.sendRovMessage({ Move: newMovement }, null);
         this.lastMove = newMovement;
     }
 
     refreshAllSensorData() {
-        this.rovMsgHandler.sendRovMessage({ RefreshAllSensors: {} }, null);
+        rovMessageHandler.sendRovMessage({ RefreshAllSensors: {} }, null);
     }
 
     toggleLights() {
-        this.rovMsgHandler.sendRovMessage({ ToogleLights: {} }, null);
+        rovMessageHandler.sendRovMessage({ ToogleLights: {} }, null);
     }
-
 
     shutdownRov = () => {
         showConfirmationMsg("Are you sure you want to shutdown the ROV?", (ok) => {
@@ -112,7 +79,7 @@ class RovActionsClass {
                 } else if (msgData.Done) {
                     showToastMessage("Please wait 20 seconds before unplugging")
                     showToastMessage("ROV: " + msgData.Done.Message)
-                    this.disconnectFromRov();
+                    frontendConnMngr.disconnectFromLivekitRoom();
                 }
             })
         })
@@ -127,7 +94,7 @@ class RovActionsClass {
                 } else if (msgData.Done) {
                     showToastMessage("Press Connect again in about 30 seconds")
                     showToastMessage("ROV: " + msgData.Done.Message)
-                    this.disconnectFromRov();
+                    frontendConnMngr.disconnectFromLivekitRoom();
                 }
             })
         })
@@ -136,18 +103,18 @@ class RovActionsClass {
     restartRovServices = () => {
         showConfirmationMsg("Are you sure you want to restart services? - The ROV will stop responding for about a minute and then you can re-connect.", () => {
             let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
-            this.rovMsgHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
+            rovMessageHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
         })
     }
 
     getRovStatusReport = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
-        this.rovMsgHandler.sendRovMessage({ RovStatusReport: {} }, responseHandler)
+        rovMessageHandler.sendRovMessage({ RovStatusReport: {} }, responseHandler)
     }
 
     getRovLogs = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Logs", "Sending Request (Please Wait)...\n", "\n\nDone.");
-        this.rovMsgHandler.sendRovMessage({ RovLogs: {} }, responseHandler)
+        rovMessageHandler.sendRovMessage({ RovLogs: {} }, responseHandler)
     }
 
     enableRovWifi = () => {
@@ -175,4 +142,4 @@ class RovActionsClass {
     }
 
 }
-export const RovActions = new RovActionsClass(rovMessageHandler);
+export const RovActions = new RovActionsClass();

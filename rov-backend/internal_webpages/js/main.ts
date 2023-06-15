@@ -6,12 +6,13 @@ import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminAction
 
 const urlParams = new URLSearchParams(location.search);
 const livekitConfig: LivekitSetupOptions = {
-    ForceLocal: (urlParams.get("ForceLocal") || "").toLowerCase() === 'true',
     RovRoomName: urlParams.get("RovRoomName"),
     CloudAPIKey: urlParams.get("CloudAPIKey"),
     CloudSecretKey: urlParams.get("CloudSecretKey"),
     LocalAPIKey: urlParams.get("LocalAPIKey") || "N/A",
     LocalSecretKey: urlParams.get("LocalSecretKey") || "N/A",
+    EnableLivekitLocal: (urlParams.get("ForceLocal") || "false").toLowerCase() === 'true',
+    EnableLivekitCloud: (urlParams.get("EnableCloud") || "true").toLowerCase() === 'true',
 }
 for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
 connectionManager.start(livekitConfig)

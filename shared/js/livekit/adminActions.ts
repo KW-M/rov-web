@@ -5,12 +5,14 @@ import { getFrontendAccessToken } from './livekitTokens';
 const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 export type LivekitSetupOptions = {
-    ForceLocal: boolean,
+
     RovRoomName: string,
     CloudSecretKey: string,
     CloudAPIKey: string,
     LocalSecretKey: string,
-    LocalAPIKey: string
+    LocalAPIKey: string,
+    EnableLivekitCloud: boolean,
+    EnableLivekitLocal: boolean,
 }
 
 export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
@@ -44,8 +46,20 @@ export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string
 
 // --- FUNCTIONS THAT DON'T USE THE OFFICAL LIVEKIT SDK: ---
 
-type LivekitRawRoom = {
-
+type LivekitRawRoomSDKResponse = {
+    "rooms": {
+        "sid": string,
+        "name": string,
+        "empty_timeout": number,
+        "max_participants": number,
+        "creation_time": number,
+        "turn_password": string,
+        "enabled_codecs": { 'mime': string, 'fmtp_line': string }[],
+        "metadata": string,
+        "num_participants": number,
+        "num_publishers": number,
+        "active_recording": false
+    }[]
 }
 export async function listLivekitRoomsSansSDK(hostUrl: string, livekitToken: string) {
     return await fetch(hostUrl + '/twirp/livekit.RoomService/ListRooms', {
@@ -57,11 +71,21 @@ export async function listLivekitRoomsSansSDK(hostUrl: string, livekitToken: str
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + livekitToken,
         }
-    }).then(response => response.json()).then((response) => {
+    }).then(response => response.json()).then((response: LivekitRawRoomSDKResponse) => {
         const rooms = response.rooms;
         if (!rooms || !Array.isArray(rooms)) throw new Error(`Error getting livekit room list from ${hostUrl} - ${JSON.stringify(response)}`)
-        return rooms.filter(room => room['num_participants'] > 0)
+        return rooms.filter(room => room.num_participants > 0)
     }).catch((e) => {
-        throw new Error(`Error getting livekit room list from  - ${hostUrl}`, e)
+        throw new Error(`Error getting livekit room list from  - ${hostUrl}: ${e}`)
     });
+}
+
+export function parseLivekitRoomMetadata(roomMetadata: string, tokenName: string = "accessToken"): string {
+    try {
+        const metadata = JSON.parse(roomMetadata);
+        return metadata[tokenName];
+    } catch (e) {
+        console.log("Error parsing livekit room metadata", e);
+        return "";
+    }
 }

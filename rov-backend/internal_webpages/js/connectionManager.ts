@@ -1,7 +1,6 @@
 import { LivekitPublisherConnection } from "../../../shared/js/livekit/livekitConn"
-
 import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG } from '../../../shared/js/consts';
-import { appendLog, asyncExpBackoff, getWebsocketURL, waitfor } from '../../../shared/js/util';
+import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { getPublisherAccessToken } from '../../../shared/js/livekit/livekitTokens';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
 import { createLivekitRoom, listLivekitRooms, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from '../../../shared/js/livekit/adminActions';
@@ -15,47 +14,52 @@ import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto"
  * outgoing messages to each user are sent through whichever connection to that user which was most recently active.
  */
 class ConnectionManager {
-    private _cloudLivekitConnection: LivekitPublisherConnection;
-    private _localLivekitConnection: LivekitPublisherConnection;
+    private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
+    private _localLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
     private _simplePeerConnections: { [userId: string]: SimplePeerConnection } = {};
     private _cameraMediaStream: MediaStream = null;
 
     constructor() {
-        this._cloudLivekitConnection = new LivekitPublisherConnection({
+        // Initlize (but don't start) the cloud livekit connection:
+        this._cloudLivekitConnection.init({
             hostUrl: LIVEKIT_CLOUD_ENDPOINT,
             publishVideo: true,
             reconnectAttempts: 300,
             roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
             roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
         })
+        changesSubscribe(this._cloudLivekitConnection.latestRecivedDataMessage, (msgObj) => {
+            if (!msgObj) return;
+            const { senderId, msg } = msgObj;
+            backendHandleWebrtcMsgRcvd(senderId, msg)
+        })
+        changesSubscribe(this._cloudLivekitConnection.connectionState, (state) => {
+            console.log("Cloud Conn State Changed: " + state)
+        })
 
-        this._localLivekitConnection = new LivekitPublisherConnection({
+        // Initlize (but don't start) the local livekit connection:
+        this._localLivekitConnection.init({
             hostUrl: LIVEKIT_LOCAL_ENDPOINT,
             publishVideo: true,
             reconnectAttempts: 300,
             roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
             roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
         })
+
+        changesSubscribe(this._localLivekitConnection.latestRecivedDataMessage, (msgObj) => {
+            if (!msgObj) return;
+            const { senderId, msg } = msgObj;
+            backendHandleWebrtcMsgRcvd(senderId, msg)
+        })
+        changesSubscribe(this._localLivekitConnection.connectionState, (state) => {
+            console.log("Local Conn State Changed: " + state)
+        })
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
-        this._cloudLivekitConnection.latestRecivedDataMessage.subscribe(({ senderId, msg }) => {
-            backendHandleWebrtcMsgRcvd(senderId, msg)
-        })
-        this._cloudLivekitConnection.connectionState.subscribe((state) => {
-            console.log("Cloud Conn State Changed: " + state)
-        })
-
-        this._localLivekitConnection.latestRecivedDataMessage.subscribe(({ senderId, msg }) => {
-            backendHandleWebrtcMsgRcvd(senderId, msg)
-        })
-        this._localLivekitConnection.connectionState.subscribe((state) => {
-            console.log("Local Conn State Changed: " + state)
-        })
-
+        if (livekitSetup.EnableLivekitCloud) await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_CLOUD_ENDPOINT, livekitSetup, this._cloudLivekitConnection)
+        if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_LOCAL_ENDPOINT, livekitSetup, this._localLivekitConnection)
         this._cameraMediaStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices)({ video: true, audio: false });
-        await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_CLOUD_ENDPOINT, livekitSetup, this._cloudLivekitConnection)
-        await asyncExpBackoff(this._setupLivekitRoom, this)(LIVEKIT_LOCAL_ENDPOINT, livekitSetup, this._localLivekitConnection)
         console.log("ConnectionManager Started")
     }
 
@@ -65,10 +69,10 @@ class ConnectionManager {
             delete this._simplePeerConnections[userId];
         }
         const spConn = new SimplePeerConnection();
-        spConn.latestRecivedDataMessage.subscribe((msg) => {
+        changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
             backendHandleWebrtcMsgRcvd(userId, msg)
         })
-        spConn.outgoingSignalingMessages.subscribe((msg) => {
+        changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
             this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])
         })
         await spConn.start({
@@ -84,6 +88,7 @@ class ConnectionManager {
     public async ingestSimplePeerSignallingMsg(userId: string, signallingMsg: string) {
         const spConn = this._simplePeerConnections[userId]
         if (spConn) spConn.ingestSignalingMsg(signallingMsg);
+        else await this.startSimplePeerConnection(userId, signallingMsg);
     }
 
     public async _sendMessageViaLivekit(msg: Uint8Array, reliable: boolean, toUserIds: string[]) {
@@ -101,7 +106,6 @@ class ConnectionManager {
             }
         }
     }
-
 
     private async _setupLivekitRoom(HostName: string, livekitSetup: LivekitSetupOptions, livekitConnection: LivekitPublisherConnection) {
         const cloudToken = getPublisherAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName);

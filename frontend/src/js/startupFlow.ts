@@ -1,39 +1,50 @@
-import { enableFrameProxy as enableIframeWebsocketProxying } from "./iframeWsProxying";
+import { enableIframeWebsocketProxying } from "./iframeWsProxying";
 import { waitfor } from "../../../shared/js/util";
-import { frontendConnMngr } from "./connectionManager";
+import { frontendConnMngr } from "./frontendConnManager";
 import { LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";
 
 
-export class FrontendStartupFlow {
+export class FrontendStartupFlowClass {
 
     async start() {
         await this.checkIfInIframe()
     }
 
     async checkIfInIframe() {
-        if (window.parent !== window) {
-            console.log("We are in an iframe");
-            enableIframeWebsocketProxying();
-            await frontendConnMngr.startUsingLocalLivekitConnection()
+        if (window.parent === window) {
+            console.log("We are not in an iframe, trying to connect to Livekit Cloud...");
+            try {
+                await frontendConnMngr.initUsingCloudLivekitConnection()
+            } catch (err) {
+                await this.failedToConnectToLivekitCloud(err)
+            }
         } else {
-            console.log("We are not in an iframe");
-            await this.tryToConnectToLivekitCloud()
+            console.log("We are in an iframe, enabling iframe proxying to local Livekit...");
+            try {
+                enableIframeWebsocketProxying();
+                await frontendConnMngr.initUsingLocalLivekitConnection()
+            } catch (err) {
+                await this.failedToConnectToLocalLivekit(err)
+            }
         }
     }
 
-    async tryToConnectToLivekitCloud() {
-        try {
-            await frontendConnMngr.startUsingCloudLivekitConnection()
-        } catch (e) {
-            console.error("Livekit Cloud Not Accessable", e)
-            await waitfor(2000)
-            this.navigateToROVLocalIframe()
-            throw new Error("Byeeeee!")
-        }
+    async failedToConnectToLivekitCloud(error: any) {
+        console.error("Livekit Cloud Not Accessable", error)
+        // await waitfor(2000)
+        // await this.navigateToROVLocalIframePage()
+        throw new Error("Byeeeee!")
     }
 
-    navigateToROVLocalIframe() {
+
+    async failedToConnectToLocalLivekit(error: any) {
+        console.error("Local Livekit Server Not Accessable: ", error)
+    }
+
+    async navigateToROVLocalIframePage() {
         window.location.href = LIVEKIT_LOCAL_ENDPOINT + "/offlineframe"
     }
 
 }
+
+export const frontendStartupFlow = new FrontendStartupFlowClass()

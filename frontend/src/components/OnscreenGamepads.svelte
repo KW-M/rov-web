@@ -1,13 +1,16 @@
 <script lang="ts">
   import { ConnectionState } from "../js/consts";
-  import { appReady, peerServerConnState, rovDataChannelConnState } from "../js/globalContext";
+  import { appReady } from "../js/globalContext";
   import GamepadLeftSvg from "../assets/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/optimized/display-gamepad-right.svg?raw";
   import { gpadCtrl } from "../js/gamepad";
+  import type { nStoreT } from "../../../shared/js/libraries/nStore";
+  import { oneShotSubscribe } from "../../../shared/js/util";
+  import { onMount } from "svelte";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;
-  $: collapsedMode = $rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
+  $: collapsedMode = true; //$rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
   export let visible: boolean = true;
   export let disabled: boolean = false;
@@ -18,12 +21,14 @@
   }
 
   // TODO? switch to onMount()?
-  const unSub = appReady.subscribe((ready) => {
-    if (ready) {
-      unSub();
-      gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
-    }
+  onMount(() => {
+    gpadCtrl.start();
+    gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
   });
+  // oneShotSubscribe(appReady, () => {
+  //   gpadCtrl.start();
+  //   gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
+  // });
 </script>
 
 <!-- hidden -->

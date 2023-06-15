@@ -8,6 +8,7 @@
 export class WebSocketRelay {
     
     socket: WebSocket
+    serverAddress: string
     msgReceivedFn: (msgEvent: MessageEvent<Uint8Array>) => void 
     isRunning: boolean
     isConnected: boolean
@@ -24,6 +25,7 @@ export class WebSocketRelay {
         this.isConnected = false
         this.isRunning = false
         this.connectionTimerId = 0
+        this.serverAddress = "ws://localhost:8765/"
     }
 
     /*
@@ -48,7 +50,7 @@ export class WebSocketRelay {
     */
     connect() {
         console.log("Attempting to connect to python websocket...")
-        this.socket = new WebSocket("ws://localhost:8765/");
+        this.socket = new WebSocket(this.serverAddress);
         this.isConnected = true
         this.socket.addEventListener('close', (event) => {
           console.log('WebSocket connection closed with code: ', event.code);
