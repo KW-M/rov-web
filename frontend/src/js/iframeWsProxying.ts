@@ -1,6 +1,6 @@
 import { setSendProxyMessageCallback, receiveProxiedMsg } from "../../../shared/js/proxy"
 
-export function enableFrameProxy() {
+export function enableIframeWebsocketProxying() {
     if (window.parent) {
         // const origin = window.parent.location.protocol.replace(":", "") + "://" + window.parent.location.host;
         setSendProxyMessageCallback((data) => {

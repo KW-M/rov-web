@@ -1,9 +1,8 @@
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { showPasswordPrompt, showToastMessage } from "./ui";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
-import { connectionManager } from "./connectionManager";
+import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
-import { sendSignalingDataToSimplePeerSubscriber } from "./";
 
 let lastTimeRecvdPong = NaN;
 
@@ -13,13 +12,6 @@ export class RovMsgHandlerClass {
     // replyContinuityCallbacks: keep track of functions to run when we get a reply to a message we sent with some ExchangeId
     // (index is the ExchangeId number of the sent message)
     replyContinuityCallbacks: ReplyExchangeData[] = [];
-
-    // sendMessageCallback: Function that will send the message to the rov peer.
-    // This callback should be set in the constructor below.
-    sendMessageCallback?: (msgData: Uint8Array) => boolean;
-    setSendMessageCallback = (callback: (msgData: Uint8Array) => boolean) => {
-        this.sendMessageCallback = callback;
-    }
 
     handleRecivedMessage(msgBytes: Uint8Array) {
         let rawData = new Uint8Array(msgBytes)
@@ -55,8 +47,7 @@ export class RovMsgHandlerClass {
         } else if (msgData.ClientDisconnected) {
             return this.handleClientDisconnectedMsgRecived(msgData.ExchangeId, msgData.ClientDisconnected);
         } else if (msgData.SimplepeerSignal) {
-            // Handle and reply
-            // sendSignalingDataToSimplePeerSubscriber(msgData.SimplepeerSignal.Message);
+            frontendConnMngr.ingestSimplePeerSignallingMsg(msgData.SimplepeerSignal.Message);
         }
     }
 
@@ -82,7 +73,7 @@ export class RovMsgHandlerClass {
 
     handleSensorUpdatesMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ISensorUpdatesResponse) {
         // console.log("SensorUpdates: ", msgData);
-        updateSensorValues(msgData.MeasurementUpdates);
+        updateSensorValues(msgData);
     }
 
     handlePasswordRequiredMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordRequiredResponse) {
@@ -113,9 +104,11 @@ export class RovMsgHandlerClass {
         this.handlePasswordRequiredMsgRecived(ExchangeId, msgData);
     }
 
+    // TODO:
     handleDriverChangedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IDriverChangedResponse) {
         console.info("Driver Changed: ", msgData);
-        let thisPeerId = connectionManager.getThisPeerId();
+        let thisPeerId = "wooooooo!"//'frontendConnMngr.getThisPeerId();
+        console.log("TODO: handleDriverChangedMsgRecived ", thisPeerId);
         if (msgData.DriverPeerId == thisPeerId) {
             showToastMessage("You are now the driver");
             isRovDriver.set(true);
@@ -136,9 +129,8 @@ export class RovMsgHandlerClass {
     sendRovMessage(msgData: rov_actions_proto.IRovAction, replyCallback: (replyMsgData: rov_actions_proto.RovResponse) => void = null) {
         if (!msgData.ExchangeId && replyCallback) msgData.ExchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random cid if none is provided
         if (!this.replyContinuityCallbacks[msgData.ExchangeId]) this.replyContinuityCallbacks[msgData.ExchangeId] = { callback: replyCallback, originalMsgData: msgData };
-        console.info("Sending RovMessage: ", msgData);
-        const msgBytes = rov_actions_proto.RovAction.encode(msgData).finish();
-        this.sendMessageCallback(msgBytes);
+        // const msgBytes = rov_actions_proto.RovAction.encode(msgData).finish();
+        frontendConnMngr.sendMessageToRov(msgData, true);
     }
 
     resendMessage(ExchangeId: number) {

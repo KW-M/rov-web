@@ -1,7 +1,6 @@
 <script context="module" lang="ts">
   import { LOADING_MESSAGE } from "../js/consts";
-  import nStore from "../js/libraries/nStore";
-  import type { nStoreT } from "../js/libraries/nStore";
+  import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
 
   let currentMsg: nStoreT<string> = nStore(null);
   let loadingStack = {};

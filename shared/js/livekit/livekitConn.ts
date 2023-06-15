@@ -13,11 +13,15 @@ import {
     DataPacket_Kind,
     type RoomOptions,
     type RoomConnectOptions,
+    RemoteTrack,
+    Track,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
-import { appendLog, getWebsocketURL, waitfor } from '../util';
+import { getWebsocketURL, waitfor } from '../util';
 import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
+import type { init } from 'svelte/internal';
 
+const appendLog = console.log;
 interface msgQueueItem {
     msgBytes: Uint8Array,
     onSendCallback: (msgBytes: Uint8Array) => void
@@ -63,8 +67,8 @@ export class LivekitGenericConnection {
     // the livekit room object
     _roomConn: Room;
 
-    constructor(config: LivekitConfig) {
-        this.config = config;
+    constructor() {
+        this.config = null;
         this._shouldReconnect = true;
 
         // setup reactive stores
@@ -74,21 +78,17 @@ export class LivekitGenericConnection {
             msg: Uint8Array
         }>(null)
         this.participantConnectionEvents = nStore<ParticipantConnectionEvent>(null);
+    }
+
+    async init(config: LivekitConfig) {
+        this.config = config;
+        this._shouldReconnect = true;
 
         // creates a new room object with options
         this._roomConn = new Room(config.roomConfig);
 
         // set up event listeners on the room
         this._roomConn
-            .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
-                if (participant && participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
-                appendLog(`Got dataReceived from ${!participant ? "SERVER" : participant.identity} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
-                this.lastMsgRecivedTimestamp = Date.now();
-                this.latestRecivedDataMessage.set({
-                    senderId: participant.identity,
-                    msg: msg
-                })
-            })
             .on(RoomEvent.SignalConnected, async () => { // DIFF
                 appendLog(`signal connection established`);
             })
@@ -166,6 +166,8 @@ export class LivekitGenericConnection {
 
     }
 
+
+
     async start(rovRoomName: string, accessToken: string) {
         this._rovRoomName = rovRoomName;
         this._accessToken = accessToken;
@@ -177,7 +179,7 @@ export class LivekitGenericConnection {
     }
 
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
-        console.log("sendMessage() to driver/spectator ", msgBytes)
+        console.log("sendMessage() to participant ", msgBytes, reliable, toUserIds)
         await this._roomConn.localParticipant.publishData(
             msgBytes,
             reliable ? DataPacket_Kind.RELIABLE : DataPacket_Kind.LOSSY,
@@ -187,8 +189,10 @@ export class LivekitGenericConnection {
 
     async close() {
         this._shouldReconnect = false;
-        console.info("Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
-        if (this._roomConn) await this._roomConn.disconnect(true);
+        if (this._roomConn) {
+            console.info("Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
+            await this._roomConn.disconnect(true);
+        }
     }
 
     async _connect() {
@@ -218,8 +222,13 @@ export class LivekitGenericConnection {
 export class LivekitPublisherConnection extends LivekitGenericConnection {
     camTrack: LocalTrackPublication | undefined;
 
-    constructor(config: LivekitConfig) {
-        super(config);
+    constructor() {
+        super();
+        this.camTrack = null;
+    }
+
+    async init(config: LivekitConfig) {
+        await super.init(config);
 
         // set up more specific event listeners for video publisher (the rov)
         this._roomConn
@@ -227,6 +236,15 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
                 while (!this.camTrack) {
                     this.camTrack = await this._roomConn.localParticipant.setCameraEnabled(true);
                 }
+            })
+            .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
+                const senderId = participant ? participant.identity : "SERVER";
+                appendLog(`Got dataReceived from ${senderId} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
+                this.lastMsgRecivedTimestamp = Date.now();
+                this.latestRecivedDataMessage.set({
+                    senderId: senderId,
+                    msg: msg
+                })
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
                 appendLog('subscribed to track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid, participant.identity, track.source);
@@ -238,18 +256,37 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
 }
 
 export class LivekitViewerConnection extends LivekitGenericConnection {
-    camTrack: LocalTrackPublication | undefined;
+    remoteVideoTrack: nStoreT<RemoteTrack>;
 
-    constructor(config: LivekitConfig) {
-        super(config);
+    constructor() {
+        super();
+        this.remoteVideoTrack = nStore(null);
+    }
+
+    async init(config: LivekitConfig) {
+        await super.init(config);
 
         // set up more specific event listeners for video publisher (the rov)
         this._roomConn
+            .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
+                const senderId = participant ? participant.identity : "SERVER";
+                appendLog(`Got dataReceived from ${senderId} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
+                if (participant && participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
+                this.lastMsgRecivedTimestamp = Date.now();
+                this.latestRecivedDataMessage.set({
+                    senderId: senderId,
+                    msg: msg
+                })
+            })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
-                appendLog('subscribed to track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid, participant.identity, track.source);
+                appendLog('subscribed to track!!!!!', pub.trackSid, participant.identity, track.source);
+                if (track.kind === Track.Kind.Video) {
+                    appendLog('subscribed to video track', track, pub, participant);
+                    this.remoteVideoTrack.set(track)
+                }
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
-                appendLog('unsubscribed from track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid);
+                appendLog('unsubscribed from track!!!!', pub.trackSid);
             })
     }
 }

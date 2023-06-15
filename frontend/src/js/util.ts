@@ -1,6 +1,7 @@
 import type { nStoreT } from './libraries/nStore';
 import { EMOJI_MAP } from "./consts";
 import { fullscreenOpen } from "./globalContext";
+import { changesSubscribe } from '../../../shared/js/util';
 
 declare global {
     interface Element {
@@ -38,9 +39,7 @@ declare global {
  */
 export function bindStringSvelteStoreToLocalStorage(label: string, store: nStoreT<string>, defaultValue?: string): void {
     store.set(localStorage.getItem(label) || store.get() || defaultValue);
-    store.subscribe((newVal) => {
-        localStorage.setItem(label, newVal);
-    });
+    changesSubscribe(store, (newVal: string) => localStorage.setItem(label, String(newVal)));
 }
 
 
@@ -52,9 +51,7 @@ export function bindStringSvelteStoreToLocalStorage(label: string, store: nStore
  */
 export function bindNumberSvelteStoreToLocalStorage(label: string, store: nStoreT<number>, defaultValue?: number): void {
     store.set(parseFloat(localStorage.getItem(label)) || store.get() || defaultValue);
-    store.subscribe((newVal) => {
-        localStorage.setItem(label, String(newVal));
-    });
+    changesSubscribe(store, (newVal: number) => localStorage.setItem(label, String(newVal)));
 }
 
 /** wrap the callback for a keyboard event so it only fires on Enter or Space.

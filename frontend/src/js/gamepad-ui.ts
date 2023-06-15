@@ -1,6 +1,5 @@
-import { createPopper, type Instance } from '@popperjs/core/lib/popper-lite';
-import flip from '@popperjs/core/lib/modifiers/flip';
 import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
+import { computePosition, autoUpdate, flip, shift } from '@floating-ui/dom';
 
 export class GamepadUi {
     gpadButtonHighlightElements: HTMLElement[];
@@ -15,9 +14,9 @@ export class GamepadUi {
     someAxiesNotCentered: boolean = false;
     someButtonsPressed: boolean = false;
     gamepadHelpVisible: boolean = false;
-    helpTooltip: Instance;
+    cleanupTooltip: () => void;
 
-    constructor() {
+    start() {
         this.gamepadContainer = document.getElementById("gamepad-container");
         this.gpadButtonHighlightElements = ONSCREEN_GPAD_BUTTON_LABELS.map((btnLabel) => document.getElementById(btnLabel + "_highlight"));
         this.gamepadHelpTooltip = document.querySelector('#gamepad-help-tooltip');
@@ -27,13 +26,22 @@ export class GamepadUi {
         this.tooManyGamepadsNotice = document.getElementById("too-many-gamepads-notice")
         this.currentPopperTarget = this.defaultTooltipTarget;
 
-        this.helpTooltip = createPopper({
-            getBoundingClientRect: () => this.currentPopperTarget.getBoundingClientRect(),
-            contextElement: document.body,
-        }, this.gamepadHelpTooltip, {
-            modifiers: [flip],
+        // When the floating element is open on the screen
+        // this.cleanupTooltip = autoUpdate(this.currentPopperTarget, this.gamepadHelpTooltip, () => {
+        //     this.updateTooltip();
+        // });
+    }
+
+    updateTooltip() {
+        computePosition(this.currentPopperTarget, this.gamepadHelpTooltip, {
+            middleware: [flip(), shift()],
             placement: 'right',
             strategy: 'absolute',
+        }).then(({ x, y }) => {
+            Object.assign(this.gamepadHelpTooltip.style, {
+                left: `${x}px`,
+                top: `${y}px`,
+            });
         });
     }
 
@@ -66,7 +74,7 @@ export class GamepadUi {
         }
 
         let count = 0;
-        var updateFunc = () => { this.helpTooltip.update(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
+        var updateFunc = () => { this.updateTooltip(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
         updateFunc();
     }
 
@@ -89,7 +97,7 @@ export class GamepadUi {
             this.gamepadHelpTooltipText.innerText = "Gamepad Help";
             this.gamepadHelpTooltip.style.opacity = "0.8";
         }
-        this.helpTooltip.update()
+        this.updateTooltip()
     }
 
     handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHelpThreshold) { //axisHoveredClass, axisMovedClass
