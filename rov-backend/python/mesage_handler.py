@@ -113,19 +113,25 @@ class MessageHandlerClass:
         if msg_proto is None:
             print("msg_proto was None. Maybe it wasn't parsed successfully? line 114 messag ehandler.")
             return
+        if msg_proto.backend_metadata is None:
+            print("msg_proto.backend_metadata is None!")
+
         print("Msg_proto=", msg_proto)
+
         src_user_id = msg_proto.backend_metadata.from_user_id
 
         # >> Internal webpage events: (these are sent by the internal webpage to the backend in response to events)
 
-        if(msg_proto.backend_metadata.internal_webpage_evt.RovConnected):
-            return
-        elif(msg_proto.backend_metadata.internal_webpage_evt.RovDisconnected):
-            return
-        elif(msg_proto.backend_metadata.internal_webpage_evt.UserConnected):
-            return await user_auth.handle_user_connected(src_user_id)
-        elif(msg_proto.backend_metadata.internal_webpage_evt.UserDisconnected):
-            return await user_auth.handle_user_disconnected(src_user_id)
+        if msg_proto.backend_metadata.internal_webpage_evt:
+            if(msg_proto.backend_metadata.internal_webpage_evt.RovConnected):
+                return
+            elif(msg_proto.backend_metadata.internal_webpage_evt.RovDisconnected):
+                return
+            elif(msg_proto.backend_metadata.internal_webpage_evt.UserConnected):
+                return await user_auth.handle_user_connected(src_user_id)
+            elif(msg_proto.backend_metadata.internal_webpage_evt.UserDisconnected):
+                return await user_auth.handle_user_disconnected(src_user_id)
+
 
         # >> Actions that can be done by any peer:
 
