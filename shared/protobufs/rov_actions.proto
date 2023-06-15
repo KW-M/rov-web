@@ -138,7 +138,7 @@ message ActionBackendMetadata {
     // The identity of the livekit user/client that sent the message or the message relates to.
     // !!!! This MUST get overwritten by the backend with the true origin user
     // before being sent to the python code for security.
-    string FromUserID = 1; // optional
+    string FromUserId = 1; // optional
     // If an event happens such as a user connection or disconnection this will be set:
     InternalWebpageEvent InternalWebpageEvt = 2; // optional
 }
@@ -278,7 +278,7 @@ message SimplepeerSignalResponse {
 message ResponseBackendMetadata {
     // The identiies of the livekit user/clients to sent this response to.
     // !!!! If empty, the message will be sent to ALL clients.
-    repeated string TargetUserIDs = 1;
+    repeated string TargetUserIds = 1;
     // How to send this response (reliable/unreliable):
     DataTransportMethod TransportMethod = 2;
 }
