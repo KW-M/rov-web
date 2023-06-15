@@ -53,11 +53,11 @@ class MessageHandlerClass:
 
             if len(sensor_updates) != 0:
                 # Measurements has some values, send them to all connected peers
-                await self.send_msg(RovResponse(sensor_updates=SensorUpdatesResponse(measurement_updates=sensor_updates),backend_metadata=ResponseBackendMetadata(target_user_i_ds=[])))
+                await self.send_msg(RovResponse(sensor_updates=SensorUpdatesResponse(measurement_updates=sensor_updates),backend_metadata=ResponseBackendMetadata(target_user_ids=[])))
             elif self.last_msg_send_time < time.time() - 1:
                 # otherwise send a heartbeat message to help the website clients know that the datachannel is still open
                 time_ms = int(time.time() * 1000)
-                await self.send_msg(RovResponse(heartbeat=HeartbeatResponse(time=time_ms),backend_metadata=ResponseBackendMetadata(target_user_i_ds=[])))
+                await self.send_msg(RovResponse(heartbeat=HeartbeatResponse(time=time_ms),backend_metadata=ResponseBackendMetadata(target_user_ids=[])))
 
             await asyncio.sleep(0.002)
 
@@ -340,7 +340,7 @@ class MessageHandlerClass:
         :param recipient_ids: the list of livekit user IDs to send the message to (if empty, broadcast to ALL users)
         :param transport_method: the transport method to use to send the message (default: DataTransportMethod.DirectReliable)
         """
-        msg.backend_metadata = ResponseBackendMetadata(target_user_i_ds=recipient_ids, transport_method=transport_method)
+        msg.backend_metadata = ResponseBackendMetadata(target_user_ids=recipient_ids, transport_method=transport_method)
         return msg
 
     async def send_msg(self, msg: RovResponse):

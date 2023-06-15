@@ -21,7 +21,7 @@ iRovWebSocketRelay.start(function (messageEvent: MessageEvent<Uint8Array>) {
 
     // Unpackage needed metadata from the protobuf object
     const msgProto = rov_actions_proto.RovResponse.decode(messageEvent.data)
-    const targetUserIds = msgProto.BackendMetadata.TargetUserIDs
+    const targetUserIds = msgProto.BackendMetadata.TargetUserIds
     const transportMethod = msgProto.BackendMetadata.TransportMethod
     const isReliable = transportMethod == rov_actions_proto.DataTransportMethod.LivekitReliable
 

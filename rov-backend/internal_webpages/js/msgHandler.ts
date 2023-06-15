@@ -22,7 +22,7 @@ export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBuff
     // Do some protobuf here to properly package the data up for iROV (stuff in the Sender Id)
     const msgProto = rov_actions_proto.RovAction.decode(data)
     msgProto.BackendMetadata = msgProto.BackendMetadata || new rov_actions_proto.ActionBackendMetadata()
-    msgProto.BackendMetadata.FromUserID = senderId
+    msgProto.BackendMetadata.FromUserId = senderId
     handleInternalWebpageActions(senderId, msgProto)
     const newMessage = rov_actions_proto.RovAction.encode(msgProto).finish()
 
