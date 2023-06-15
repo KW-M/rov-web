@@ -1,8 +1,4 @@
-import nStore from './libraries/nStore';
-import type { nStoreT } from './libraries/nStore';
-import type Peer from 'peerjs';
-import { ConnectionState } from './consts.js';
-import type { GamepadController } from './gamepad.js';
+import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
 
 export enum DIALOG_TYPE {
     Alert = 0,
@@ -50,11 +46,4 @@ export const attemptingNewRovPeerId: nStoreT<boolean> = nStore(false);
 export const isRovDriver: nStoreT<boolean> = nStore(false);
 export const ourPeerId: nStoreT<string> = nStore("No Peer Id");
 export const rovMainVideoTrack: nStoreT<MediaStreamTrack | null> = nStore(null);
-
-export const thisPeer: nStoreT<Peer | null> = nStore(null);
-export const gamepadController: nStoreT<GamepadController | null> = nStore(null);
-
-export const peerServerConnState: nStoreT<ConnectionState> = nStore(ConnectionState.disconnected);
-export const rovDataChannelConnState: nStoreT<ConnectionState> = nStore(ConnectionState.disconnected);
-export const rovVideoStreamConnState: nStoreT<ConnectionState> = nStore(ConnectionState.disconnected);
 export const rovVideoStream: nStoreT<MediaStream | null> = nStore(null);

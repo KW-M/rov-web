@@ -56,3 +56,18 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
         videoCodec: "h264",
     },
 }
+
+
+export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
+
+    // specify how offten to retry connection when it fails.
+    reconnectPolicy: new DefaultReconnectPolicy(),
+
+    // optimize publishing bandwidth and CPU for published tracks
+    dynacast: true,
+
+    disconnectOnPageLeave: true,
+
+    adaptiveStream: true,
+
+}

@@ -1,5 +1,6 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
+import nStore from './libraries/nStore';
 import './nodeShimsBundle'
 
 import type { Peer as SimplePeerType } from 'simple-peer';
@@ -44,7 +45,11 @@ export class SimplePeerConnection {
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
 
-    constructor() { }
+    constructor() {
+        this.outgoingSignalingMessages = nStore(null);
+        this.latestRecivedDataMessage = nStore(null);
+        this.connectionState = nStore(ConnectionStates.init);
+    }
 
     async start(simplePeerOpts: any) {
         this._p = new SimplePeer(simplePeerOpts);
@@ -111,7 +116,7 @@ export class SimplePeerConnection {
 
     stop() {
         this._shouldReconnect = false;
-        this._p.destroy();
+        if (this._p) this._p.destroy();
     }
 
     ingestSignalingMsg(signalingMsg: string) {

@@ -1,6 +1,6 @@
 import './app.css'
 import App from './App.svelte'
-import { connectionManager } from './js/connectionManager';
+import { frontendConnMngr } from './js/frontendConnManager';
 import { debugPageModeActive, fullscreenOpen } from './js/globalContext';
 import { getURLQueryStringVariable } from './js/util';
 
@@ -11,7 +11,7 @@ document.addEventListener('fullscreenchange', (e) => {
 });
 
 window.onbeforeunload = () => {
-  connectionManager.cleanup();
+  frontendConnMngr.disconnectFromLivekitRoom();
 }
 
 const app = new App({

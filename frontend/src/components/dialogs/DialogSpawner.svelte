@@ -3,8 +3,7 @@
   import PasswordDialog from "./PasswordDialog.svelte";
   import { DIALOG_TYPE, type dialogExtraDataType } from "../../js/globalContext";
   import ScrollingTextDialog from "./ScrollingTextDialog.svelte";
-  import nStore from "../../js/libraries/nStore";
-  import type { nStoreT } from "../../js/libraries/nStore";
+  import { default as nStore, type nStoreT } from "../../../../shared/js/libraries/nStore";
   import type { dialogInfoType } from "../../js/globalContext";
 
   let dialogStack: dialogInfoType[] = [];

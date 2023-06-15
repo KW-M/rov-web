@@ -1,3 +1,4 @@
+import type { nStoreT } from "./libraries/nStore";
 
 
 export function waitfor(millisec) {
@@ -26,6 +27,29 @@ export function asyncExpBackoff<F extends (...args: any[]) => Promise<any>>(fn: 
         }
         throw new Error("asyncExpBackoff() func failed after " + retries + " retries. Error: " + error)
     } as F
+}
+
+export function changesSubscribe<V>(store: nStoreT<V>, callback: (value: V) => void) {
+    let gotInitalValueFlag = false;
+    const unSub = store.subscribe((value) => {
+        if (gotInitalValueFlag == false) {
+            gotInitalValueFlag = true;
+            return;
+        }
+        callback(value);
+    });
+    return unSub;
+}
+
+export function oneShotSubscribe<V>(store: nStoreT<V>, callback: (value: V) => void) {
+    const unSub = store.subscribe((value) => {
+        if (!value) return;
+        setTimeout(() => {
+            unSub();
+            callback(value);
+        });
+    });
+    return unSub;
 }
 
 

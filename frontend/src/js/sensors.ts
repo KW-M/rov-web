@@ -1,5 +1,4 @@
-import type { nStoreT } from "./libraries/nStore";
-import nStore from "./libraries/nStore";
+import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 
 export const networkLatencyMs: nStoreT<number> = nStore(0);

@@ -3,12 +3,11 @@
   import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./js/consts";
-  import { appReady, ourPeerId, peerServerConnState, rovDataChannelConnState, rovPeerIdEndNumber } from "./js/globalContext";
+  import { appReady, ourPeerId, rovPeerIdEndNumber } from "./js/globalContext";
 
-  import { connectionManager } from "./js/connectionManager";
+  import { frontendConnMngr } from "./js/frontendConnManager";
   import { rovMessageHandler } from "./js/rovMessageHandler";
   import { RovActions } from "./js/rovActions";
-  import { runSiteInitMachine } from "./js/siteInit";
   import { showToastMessage } from "./js/ui";
   import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./js/util";
   import { getROVName } from "./js/rovUtil";
@@ -24,52 +23,56 @@
   import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
   import AhrsViz from "./components/sensors/AHRSViz.svelte";
   import DropdownRovSelector from "./components/unused/DropdownRovSelector.svelte";
+  import { gpadCtrl } from "./js/gamepad";
+  import { frontendStartupFlow } from "./js/startupFlow";
 
   // -- init svelte stores --
   bindNumberSvelteStoreToLocalStorage("rovPeerIdEndNumber", rovPeerIdEndNumber, 0);
   bindStringSvelteStoreToLocalStorage("ourPeerId", ourPeerId);
 
+  // start app:
+  frontendStartupFlow.start();
+
   // if (debugModeActive) { inspect({ iframe: false }); }
 
-  $: if ($appReady === true) {
-    if ($rovDataChannelConnState == ConnectionState.connecting) {
-      showLoadingUi(LOADING_MESSAGE.webrtcConnecting, "Searching for " + getROVName($rovPeerIdEndNumber));
-      RovActions.stopPingLoop();
-    } else if ($rovDataChannelConnState == ConnectionState.reconnecting) {
-      showLoadingUi(LOADING_MESSAGE.webrtcReconnecting, null);
-      RovActions.stopPingLoop();
-    } else if ($rovDataChannelConnState == ConnectionState.disconnected) {
-      hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
-      hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
-      RovActions.stopPingLoop();
-    } else if ($rovDataChannelConnState == ConnectionState.connected) {
-      showToastMessage("Connected to ROV!", 1000);
-      hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
-      hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
-      RovActions.startPingLoop();
-    }
+  // $: if ($appReady === true) {
+  //   if ($rovDataChannelConnState == ConnectionState.connecting) {
+  //     showLoadingUi(LOADING_MESSAGE.webrtcConnecting, "Searching for " + getROVName($rovPeerIdEndNumber));
+  //     RovActions.stopPingLoop();
+  //   } else if ($rovDataChannelConnState == ConnectionState.reconnecting) {
+  //     showLoadingUi(LOADING_MESSAGE.webrtcReconnecting, null);
+  //     RovActions.stopPingLoop();
+  //   } else if ($rovDataChannelConnState == ConnectionState.disconnected) {
+  //     hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
+  //     hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
+  //     RovActions.stopPingLoop();
+  //   } else if ($rovDataChannelConnState == ConnectionState.connected) {
+  //     showToastMessage("Connected to ROV!", 1000);
+  //     hideLoadingUi(LOADING_MESSAGE.webrtcReconnecting);
+  //     hideLoadingUi(LOADING_MESSAGE.webrtcConnecting);
+  //     RovActions.startPingLoop();
+  //   }
 
-    // as svelte reactive statement:
-    if ($peerServerConnState == ConnectionState.connecting) {
-      showLoadingUi(LOADING_MESSAGE.serverConnecting, null);
-    } else if ($peerServerConnState == ConnectionState.reconnecting) {
-      hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
-    } else if ($peerServerConnState == ConnectionState.disconnected || $peerServerConnState == ConnectionState.connected) {
-      hideLoadingUi(LOADING_MESSAGE.serverConnecting);
-      hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
-    }
-  }
+  //   // as svelte reactive statement:
+  //   if ($peerServerConnState == ConnectionState.connecting) {
+  //     showLoadingUi(LOADING_MESSAGE.serverConnecting, null);
+  //   } else if ($peerServerConnState == ConnectionState.reconnecting) {
+  //     hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
+  //   } else if ($peerServerConnState == ConnectionState.disconnected || $peerServerConnState == ConnectionState.connected) {
+  //     hideLoadingUi(LOADING_MESSAGE.serverConnecting);
+  //     hideLoadingUi(LOADING_MESSAGE.serverReconnecting);
+  //   }
+  // }
 
   onMount(() => {
     // const loading = loadingIndicator.get();
     appReady.set(true);
-    showLoadingUi(LOADING_MESSAGE.internetCheck, null);
-    runSiteInitMachine(() => {
-      hideLoadingUi(LOADING_MESSAGE.internetCheck);
-      rovMessageHandler.setSendMessageCallback(connectionManager.sendMessageToCurrentRov.bind(connectionManager));
-      connectionManager.start();
-      // connMngr.connectToCurrentTargetRov(); /// DON"T DO THIS HERE
-    });
+    // showLoadingUi(LOADING_MESSAGE.internetCheck, null);
+    // runSiteInitMachine(() => {
+    //   hideLoadingUi(LOADING_MESSAGE.internetCheck);
+    //   rovMessageHandler.setSendMessageCallback(frontendConnMngr.sendMessageToCurrentRov.bind(connectionManager));
+    //   // connMngr.connectToCurrentTargetRov(); /// DON"T DO THIS HERE
+    // });
   });
 
   onDestroy(() => {
@@ -91,7 +94,7 @@
 
   <!-- UI Layout -->
   <VideoPlayer />
-  <OnscreenGamepads disabled={$rovDataChannelConnState !== ConnectionState.connected} />
+  <OnscreenGamepads disabled={true} />
   <!-- <SensorDisplay /> -->
 
   <!-- <AhrsViz /> -->
