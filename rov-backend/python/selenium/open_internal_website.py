@@ -20,10 +20,10 @@ chrome_options.add_argument("--use-fake-ui-for-media-stream")
 
 driver = webdriver.Chrome(driver_path, options=chrome_options)
 
-driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
+# driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
 
 # This is useful for testing
-# driver.get("https://www.selenium.dev/selenium/web/web-form.html")
+driver.get("https://www.selenium.dev/selenium/web/web-form.html")
 
 
 

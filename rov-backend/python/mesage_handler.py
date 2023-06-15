@@ -111,7 +111,9 @@ class MessageHandlerClass:
 
         msg_proto = self.parse_message(raw_msg)
         if msg_proto is None:
+            print("msg_proto was None. Maybe it wasn't parsed successfully? line 114 messag ehandler.")
             return
+        print("Msg_proto=", msg_proto)
         src_user_id = msg_proto.backend_metadata.from_user_id
 
         # >> Internal webpage events: (these are sent by the internal webpage to the backend in response to events)

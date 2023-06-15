@@ -14,7 +14,7 @@ class WebSocketServer:
         # While client is connected, await messages and process them
         # with the provided message-received-function
         async for message in websocket:
-            self.msgReceivedFn(message, "Dummy") # For now, add dummy metadata. TODO extract with protobuf
+            await self.msgReceivedFn(message)
 
         print("Client disconnected from Web Socket Server: ", websocket)
         self.connections.remove(websocket)
