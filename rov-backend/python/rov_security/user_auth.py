@@ -24,10 +24,10 @@ class KnownUserMetadata():
     replay_actions: dict[int, RovAction]  # key is the exchange id, value is the message. Used to replay messages once a peer authenticates
 
     def __init__(self,is_connected=False, auth_token=None):
-        auth_token = auth_token
-        is_connected = is_connected
-        last_recived_msg_time = time.time()
-        replay_actions = {}
+        self.auth_token = auth_token
+        self.is_connected = is_connected
+        self.last_recived_msg_time = time.time()
+        self.replay_actions = {}
 
 class UserAuth():
 
@@ -145,6 +145,6 @@ class UserAuth():
         if new_driver_peer_id is not None and self.designated_driver_id != new_driver_peer_id:
             self.designated_driver_id = new_driver_peer_id
             # Let all connected peers know that the designated driver peer has changed:
-            return RovResponse(driver_changed=DriverChangedResponse(driver_peer_id=self.designated_driver_id),backend_metadata=ResponseBackendMetadata(target_user_ids=[src_user_id]))
+            return RovResponse(driver_changed=DriverChangedResponse(driver_peer_id=self.designated_driver_id),backend_metadata=ResponseBackendMetadata(target_user_ids=[]))
 
 user_auth = UserAuth()

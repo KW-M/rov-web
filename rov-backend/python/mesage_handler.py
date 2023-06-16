@@ -61,40 +61,6 @@ class MessageHandlerClass:
 
             await asyncio.sleep(0.002)
 
-    async def handle_relay_event(self, relay_event: RelayEventStream):
-        """
-        Handle grpc events recived from the webrtc-relay.
-        :param event: the event to handle
-        """
-        relay_exchange_id = relay_event.exchange_id
-        (event_type, event) = betterproto.which_one_of(relay_event, "event")
-        # print("PYTHON: Got GRPC Event: " + event_type)
-        if event_type == "msg_recived":
-            evto: MsgRecivedEvent = event  # type: ignore
-            await self.handle_incoming_msg(evto.payload, evto.src_user_id, evto.relay_peer_number, relay_exchange_id)
-        if event_type == "peer_connected":
-            evt: PeerConnectedEvent = event  # type: ignore
-            print("PYTHON: Got peerConnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-            await self.handle_peer_connected(src_user_id=evt.src_user_id)
-        if event_type == "peer_disconnected":
-            evt: PeerDisconnectedEvent = event  # type: ignore
-            print("PYTHON: Got peerDisconnected event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
-        if event_type == "peer_called":
-            evt: PeerCalledEvent = event  # type: ignore
-            print("PYTHON: Got peerCalled event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-        if event_type == "peer_hungup":
-            evt: PeerHungupEvent = event  # type: ignore
-            print("PYTHON: Got peerHungup event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-        if event_type == "peer_data_conn_error":
-            evt: PeerDataConnErrorEvent = event  # type: ignore
-            print("PYTHON: Got peerDataConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
-        if event_type == "peer_media_conn_error":
-            evt: PeerMediaConnErrorEvent = event  # type: ignore
-            print("PYTHON: Got peerMediaConnError event: " + str(evt) + " | exId: " + str(relay_exchange_id))
-            await self.handle_peer_disconnected(src_user_id=evt.src_user_id)
-
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Relay events (these are sent by the webrtc-relay when something happens)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
