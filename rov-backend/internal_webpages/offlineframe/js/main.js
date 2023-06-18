@@ -1,4 +1,4 @@
-import { receiveProxiedMsg, setSendProxyMessageCallback } from "../../../../shared/js/proxyReciever";
+import { receiveProxiedMsg, setSendProxyMessageCallback } from "../../../../shared/js/iframeWsProxyReceiver";
 const iframe = document.createElement('iframe');
 const iframeHost = window.location.protocol.replace(":", "") + '://' + window.location.host;
 // const iframeHost = 'http://10.0.0.48:5173'

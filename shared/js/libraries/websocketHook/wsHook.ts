@@ -73,7 +73,7 @@ const MakeMutableMessageEvent = (ev: MessageEvent) => {
   } as MutableMessageEvent
 }
 
-export const wsHook = {
+const wsHook = {
   triggerOnOpen: (wsObject: WebSocket, ev?: Event) => {
     ev = ev || new Event("open", { composed: false, bubbles: false, cancelable: false })
     wsObject._readyState = 1;
@@ -129,7 +129,20 @@ export const wsHook = {
   resetHooks: () => { }
 };
 
-(function () {
+/*
+!!! CALL hookWebsockets() BEFORE ANY WEBSOCKETS GET CREATED !!!
+Rewrites the native websocket object to intercept messages and
+allow external triggers through wsHook
+*/
+let monkeyPatchDone = false;
+export function hookWebsockets() {
+
+  // prevent double patching
+  if (monkeyPatchDone) {
+    console.warn("hookWebsockets() can only be called once!");
+    return wsHook;
+  }
+  monkeyPatchDone = true;
 
   // setup WSHook default functions
   const defaultWSHooks = Object.assign({}, wsHook) // make a copy of the default functions
@@ -137,9 +150,10 @@ export const wsHook = {
     Object.assign(wsHook, defaultWSHooks)
   }
 
-  // overwrite the default websocket
-  var _WS = WebSocket
-  // @ts-ignore
+  // Save the native websocket object:
+  const _WS = WebSocket
+
+  // @ts-ignore // Overwrite the native websocket:
   WebSocket = Object.assign(function (url: string | URL, protocols?: string | string[] | undefined): WebSocket {
     const allowRealSocket = wsHook.allowNewSocket(url.toString())
     url = wsHook.modifyUrl(url) || url
@@ -170,20 +184,7 @@ export const wsHook = {
     // Events needs to be proxied and bubbled down.
     WSObject._onopen = undefined;
     WSObject._onerror = undefined;
-    WSObject._addEventListener = WSObject.addEventListener || function () {
-      // console.log("fake addEventListener() called")
-      // const eventName = arguments[0];
-      // const userFunc = arguments[1];
-      // if (eventName === 'message') {
-      //   WSObject._onmessage = userFunc
-      // } else if (eventName === 'open') {
-      //   WSObject._onopen = userFunc
-      // } else if (eventName === 'error') {
-      //   WSObject._onerror = userFunc
-      // } else if (eventName === 'close') {
-      //   WSObject._onclose = userFunc
-      // }
-    };
+    WSObject._addEventListener = WSObject.addEventListener || function () { };
     WSObject.addEventListener = function () {
       const eventThis = this
       const eventName = arguments[0];
@@ -296,4 +297,8 @@ export const wsHook = {
     WSObject._readyState = _WS.OPEN;
     return WSObject
   }, _WS);
-})();
+
+  // Return the wsHook object to allow users to alter the hooks behaviour.
+  return wsHook;
+};
+export default hookWebsockets;

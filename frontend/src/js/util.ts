@@ -1,6 +1,5 @@
-import type { nStoreT } from './libraries/nStore';
+import type { nStoreT } from '../../../shared/js/libraries/nStore';
 import { EMOJI_MAP } from "./consts";
-import { fullscreenOpen } from "./globalContext";
 import { changesSubscribe } from '../../../shared/js/util';
 
 declare global {
@@ -124,23 +123,21 @@ export function hexToEmojiEncoding(hexString, itterCount) {
     return out
 }
 
-const adjectives = ["Ancient", "Dawn", "Small", "Broken", "Red", "Cold", "Wild", "Divine", "Empty", "Patient", "Holy", "Long", "Wispy", "White", "Delicate", "Bold", "Billowing", "Blue", "Crimson", "Aged", "Misty", "Snowy", "Withered", "Little", "Frosty", "Weathered", "Nameless", "Fragrant", "Lively", "Quiet", "Purple", "Proud", "Dry", "Bitter", "Dark", "Icy", "Twilight", "Wandering", "Solitary", "Morning", "Lingering", "Still", "Late", "Sparkling", "Restless", "Winter", "Silent", "Floral", "Young", "Green", "Cool", "Autumn", "Falling", "Spring", "Summer", "Polished", "Hidden", "Damp", "Muddy", "Black", "Old", "Rough"];
-const nouns = ["Pond", "Snow", "Glade", "Hill", "Voice", "River", "Sun", "Dawn", "Forest", "Frog", "Grass", "Shadow", "Dust", "Water", "Meadow", "Moon", "Thunder", "Sun", "Wildflower", "Snowflake", "Silence", "Haze", "Shape", "Pine", "Waterfall", "Sound", "Wood", "Tree", "Night", "Flower", "Dream", "Cherry", "Resonance", "Firefly", "Bush", "Star", "Darkness", "Lake", "Frost", "Paper", "Surf", "Fog", "Brook", "Mountain", "Field", "Bird", "Leaf", "Sea", "Water", "Sky", "Smoke", "Sunset", "Glitter", "Dew", "Butterfly", "Wind", "Fire", "Rain", "Morning", "Feather", "Cloud", "Breeze", "Violet", "Wave"];
+// const adjectives = ["Ancient", "Dawn", "Small", "Broken", "Red", "Cold", "Wild", "Divine", "Empty", "Patient", "Holy", "Long", "Wispy", "White", "Delicate", "Bold", "Billowing", "Blue", "Crimson", "Aged", "Misty", "Snowy", "Withered", "Little", "Frosty", "Weathered", "Nameless", "Fragrant", "Lively", "Quiet", "Purple", "Proud", "Dry", "Bitter", "Dark", "Icy", "Twilight", "Wandering", "Solitary", "Morning", "Lingering", "Still", "Late", "Sparkling", "Restless", "Winter", "Silent", "Floral", "Young", "Green", "Cool", "Autumn", "Falling", "Spring", "Summer", "Polished", "Hidden", "Damp", "Muddy", "Black", "Old", "Rough"];
+// const nouns = ["Pond", "Snow", "Glade", "Hill", "Voice", "River", "Sun", "Dawn", "Forest", "Frog", "Grass", "Shadow", "Dust", "Water", "Meadow", "Moon", "Thunder", "Sun", "Wildflower", "Snowflake", "Silence", "Haze", "Shape", "Pine", "Waterfall", "Sound", "Wood", "Tree", "Night", "Flower", "Dream", "Cherry", "Resonance", "Firefly", "Bush", "Star", "Darkness", "Lake", "Frost", "Paper", "Surf", "Fog", "Brook", "Mountain", "Field", "Bird", "Leaf", "Sea", "Water", "Sky", "Smoke", "Sunset", "Glitter", "Dew", "Butterfly", "Wind", "Fire", "Rain", "Morning", "Feather", "Cloud", "Breeze", "Violet", "Wave"];
+// export function getUniqueName(num, offset) {
+//     // https://james.darpinian.com/blog/integer-math-in-javascript
+//     let adjectivesLen = adjectives.length >>> 0
+//     let nounsLen = nouns.length >>> 0
+//     let maxLen = Math.max(adjectivesLen, nounsLen) >>> 0
 
+//     let numI = Math.max(1, (num + 1) % maxLen) >>> 0
+//     let offsetI = Math.max(1, (offset + 1) % maxLen) >>> 0
 
-export function getUniqueName(num, offset) {
-    // https://james.darpinian.com/blog/integer-math-in-javascript
-    let adjectivesLen = adjectives.length >>> 0
-    let nounsLen = nouns.length >>> 0
-    let maxLen = Math.max(adjectivesLen, nounsLen) >>> 0
-
-    let numI = Math.max(1, (num + 1) % maxLen) >>> 0
-    let offsetI = Math.max(1, (offset + 1) % maxLen) >>> 0
-
-    let adjective = adjectives[(numI + offsetI) % adjectivesLen]
-    let noun = nouns[(numI * offsetI) % nounsLen]
-    return adjective + "-" + noun
-}
+//     let adjective = adjectives[(numI + offsetI) % adjectivesLen]
+//     let noun = nouns[(numI * offsetI) % nounsLen]
+//     return adjective + "-" + noun
+// }
 
 /*
 // test cases

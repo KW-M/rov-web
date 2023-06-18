@@ -4,23 +4,29 @@ import { listLivekitRoomsSansSDK, parseLivekitRoomMetadata as getAuthTokenFromLi
 import { LivekitViewerConnection } from "../../../shared/js/livekit/livekitConn";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "../../../shared/js/simplePeer";
-import { changesSubscribe } from "../../../shared/js/util";
+import { changesSubscribe, waitfor } from "../../../shared/js/util";
 import { LIVEKIT_LIST_ONLY_TOKEN } from "./consts";
-import { rovMessageHandler } from "./rovMessageHandler";
+import { frontendRovMsgHandler } from "./rovMessageHandler";
 
 export class FrontendConnectionManager {
     connectionState: nStoreT<ConnectionStates> = nStore(ConnectionStates.init);
     livekitConnection: LivekitViewerConnection = new LivekitViewerConnection();
+    currentLivekitIdentity: nStoreT<string> = nStore("None");
     simplepeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
     openLivekitRoomNames: nStoreT<string[]> = nStore([]);
     livekitRoomAuthTokens: { [key: string]: string } = {}; // key is room name, value is room token
-    _unsubscribeConnStateFunc: () => void;
+    _cleanupFuncs: { [key: string]: () => void } = {};
 
     constructor() {
         this.simplepeerConnection = new SimplePeerConnection();
         changesSubscribe(this.simplepeerConnection.latestRecivedDataMessage, (msg) => {
-            rovMessageHandler.handleRecivedMessage(msg)
+            frontendRovMsgHandler.handleRecivedMessage(msg)
+        })
+        changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
+            const { senderId, msg } = msgInfo;
+            if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not rov)
+            frontendRovMsgHandler.handleRecivedMessage(msg)
         })
         changesSubscribe(this.simplepeerConnection.outgoingSignalingMessages, (msg) => {
             this.sendMessageToRov({ SimplepeerSignal: { Message: msg } }, true)
@@ -37,7 +43,6 @@ export class FrontendConnectionManager {
         const listOpenRooms = async () => {
             if (this.connectionState.get() === ConnectionStates.connected || this.connectionState.get() === ConnectionStates.reconnecting) return;
             const openRooms = await listLivekitRoomsSansSDK(hostName, LIVEKIT_LIST_ONLY_TOKEN)
-            console.log("openRooms: ", openRooms)
             const openRoomNames = openRooms.map(room => room.name)
             const openRoomTokens = openRooms.reduce((authTokens, room) => {
                 authTokens[room.name] = getAuthTokenFromLivekitRoomMetadata(room.metadata);
@@ -45,7 +50,7 @@ export class FrontendConnectionManager {
             }, this.livekitRoomAuthTokens)
             this.openLivekitRoomNames.set(openRoomNames)
             this.livekitRoomAuthTokens = openRoomTokens
-            console.log("openRoomNames: ", openRoomNames, "openRoomTokens: ", openRoomTokens, "raw:", openRooms)
+            // console.log("openRoomNames: ", openRoomNames, "openRoomTokens: ", openRoomTokens, "raw:", openRooms)
         }
         await listOpenRooms();
         this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 1000))
@@ -55,8 +60,8 @@ export class FrontendConnectionManager {
      * Keeps track of the connection state of both the livekit and simplepeer connections and aggriagates them into a single nStore called
      * this.connectionState. This is useful for the frontend to know if the connection is connected, connecting, disconnected, etc.
      */
-    async keepTrackOfConnectionState() {
-        if (this._unsubscribeConnStateFunc) this._unsubscribeConnStateFunc()
+    async _keepTrackOfConnectionState() {
+        if (this._cleanupFuncs['livekitConnState']) this._cleanupFuncs['livekitConnState']()
         const unsubA = changesSubscribe(this.livekitConnection.connectionState, (livekitState) => {
             if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
@@ -71,10 +76,7 @@ export class FrontendConnectionManager {
                 this.connectionState.set(simplepeerState)
             }
         })
-        this._unsubscribeConnStateFunc = () => {
-            unsubA();
-            unsubB();
-        }
+        this._cleanupFuncs['livekitConnState'] = () => { unsubA(); unsubB() }
     }
 
     /**
@@ -88,7 +90,6 @@ export class FrontendConnectionManager {
             this.livekitConnection.close();
         }
         this.pollForOpenLivekitRooms(LIVEKIT_CLOUD_ENDPOINT)
-        this.keepTrackOfConnectionState();
         await this.livekitConnection.init({
             hostUrl: LIVEKIT_CLOUD_ENDPOINT,
             publishVideo: false,
@@ -109,7 +110,6 @@ export class FrontendConnectionManager {
             this.livekitConnection.close();
         }
         this.pollForOpenLivekitRooms(LIVEKIT_LOCAL_ENDPOINT)
-        this.keepTrackOfConnectionState();
         await this.livekitConnection.init({
             hostUrl: LIVEKIT_LOCAL_ENDPOINT,
             publishVideo: false,
@@ -124,12 +124,20 @@ export class FrontendConnectionManager {
      * requires that the livekit connection is already initilized
      * and the room auth token is known.
      */
-    async connectToLivekitRoom(roomName: string) {
+    public async connectToLivekitRoom(roomName: string) {
         if (!this.livekitConnection) throw new Error("connectToLivekitRoom() called before livekitConnection was initilized")
+
         const authToken = this.livekitRoomAuthTokens[roomName]
         if (!authToken) throw new Error(`connectToLivekitRoom() called with roomName ${roomName} which is not in the list of known open rooms`)
+
+        this._keepTrackOfConnectionState();
         await this.livekitConnection.start(roomName, authToken);
-        await this.startSimplePeerConnection()
+        this.currentLivekitIdentity.set(this.livekitConnection.getLivekitIdentitiy())
+
+        // this._cleanupFuncs['simplePeerSetup'] = changesSubscribe(this.livekitConnection.latestRecivedDataMessage, () => {
+        //     this.startSimplePeerConnection();
+        //     this._cleanupFuncs['simplePeerSetup']()
+        // });
     }
 
     /**
@@ -179,6 +187,7 @@ export class FrontendConnectionManager {
     public async disconnectFromLivekitRoom() {
         if (this.simplepeerConnection) await this.simplepeerConnection.stop();
         if (this.livekitConnection) await this.livekitConnection.close();
+        for (const key in this._cleanupFuncs) this._cleanupFuncs[key]();
     }
 }
 

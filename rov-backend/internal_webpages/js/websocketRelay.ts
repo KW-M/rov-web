@@ -6,14 +6,14 @@
     the URL for the websocket server that the iROV python is expected to host is ws://localhost:8765/
 */
 export class WebSocketRelay {
-    
+
     socket: WebSocket
     serverAddress: string
-    msgReceivedFn: (msgEvent: MessageEvent<Uint8Array>) => void 
+    msgReceivedFn: (msg: Uint8Array) => void
     isRunning: boolean
     isConnected: boolean
     connectionTimerId // type is "a positive integer"
-    
+
     /*
         When instantiated, an arbitrary callback function is expected to handle incoming messages
         from the iROV. The boolean flag isConnected is used to keep track of the connection status
@@ -33,7 +33,7 @@ export class WebSocketRelay {
         After it is called, it will continue attempting to maintain connection unless stop()
         is invoked.
     */
-    start(msgReceivedFn: (msgEvent: MessageEvent<Uint8Array>) => void) {
+    start(msgReceivedFn: (msg: Uint8Array) => void) {
         this.msgReceivedFn = msgReceivedFn;
         this.isRunning = true
         this.connect()
@@ -51,21 +51,26 @@ export class WebSocketRelay {
     connect() {
         console.log("Attempting to connect to python websocket...")
         this.socket = new WebSocket(this.serverAddress);
+        this.socket.binaryType = "blob"
         this.isConnected = true
         this.socket.addEventListener('close', (event) => {
-          console.log('WebSocket connection closed with code: ', event.code);
-          this.isConnected = false
-          if(this.isRunning) this.queueConnect()
-        });
-      
-        this.socket.addEventListener('error', (error) => {
-          console.error('WebSocket error:', error);
-          this.isConnected = false
-          if(this.isRunning) this.queueConnect()
+            console.log('WebSocket connection closed with code: ', event.code);
+            this.isConnected = false
+            if (this.isRunning) this.queueConnect()
         });
 
-        this.socket.addEventListener("message", this.msgReceivedFn)
-      
+        this.socket.addEventListener('error', (error) => {
+            console.error('WebSocket error:', error);
+            this.isConnected = false
+            if (this.isRunning) this.queueConnect()
+        });
+
+        this.socket.addEventListener("message", (msgEvent: MessageEvent<Blob>) => {
+            msgEvent.data.arrayBuffer().then((arrayBuffer) => {
+                this.msgReceivedFn(new Uint8Array(arrayBuffer))
+            })
+        })
+
     }
 
     /*

@@ -1,5 +1,5 @@
-import { proxyInterchangeFormat, proxyMessageTypes } from "../../shared/js/proxy";
-import { DECODE_TXT, ENCODE_TXT } from "./consts";
+import { type proxyInterchangeFormat, proxyMessageTypes } from "./iframeWsProxy";
+import { DECODE_TXT, ENCODE_TXT } from "../consts";
 
 const openHttpConnections: { [key: string]: Promise<Response> } = {}
 const openWebsocketConnections: { [key: string]: WebSocket } = {}

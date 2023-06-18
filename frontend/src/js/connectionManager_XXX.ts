@@ -6,7 +6,7 @@ import { OurPeerMachine } from "./ourPeerMachine_XXX"
 import { getROVName } from "./rovUtil"
 import { showToastMessage } from "./ui"
 import { RovConnection } from "./rovConnection_XXX"
-import { rovMessageHandler } from "./rovMessageHandler"
+import { frontendRovMsgHandler } from "./rovMessageHandler"
 import { RovActions } from "./rovActions"
 
 
@@ -167,4 +167,4 @@ export class ConnectionManagerClass {
     }
 }
 
-export const connectionManager = new ConnectionManagerClass(rovMessageHandler.handleRecivedMessage.bind(rovMessageHandler));
+export const connectionManager = new ConnectionManagerClass(frontendRovMsgHandler.handleRecivedMessage.bind(frontendRovMsgHandler));

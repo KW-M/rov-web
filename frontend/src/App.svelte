@@ -6,7 +6,7 @@
   import { appReady, ourPeerId, rovPeerIdEndNumber } from "./js/globalContext";
 
   import { frontendConnMngr } from "./js/frontendConnManager";
-  import { rovMessageHandler } from "./js/rovMessageHandler";
+  import { frontendRovMsgHandler } from "./js/rovMessageHandler";
   import { RovActions } from "./js/rovActions";
   import { showToastMessage } from "./js/ui";
   import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./js/util";

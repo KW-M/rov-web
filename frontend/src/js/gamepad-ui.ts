@@ -7,7 +7,6 @@ export class GamepadUi {
     gamepadHelpTooltip: HTMLElement;
     gamepadHelpTooltipText: HTMLElement;
     defaultTooltipTarget: HTMLElement;
-    gamepadConnectNotice: HTMLElement;
     tooManyGamepadsNotice: HTMLElement;
     currentPopperTarget: HTMLElement;
     touchingButtonsCount: number = 0;
@@ -22,7 +21,6 @@ export class GamepadUi {
         this.gamepadHelpTooltip = document.querySelector('#gamepad-help-tooltip');
         this.gamepadHelpTooltipText = document.querySelector('#gamepad-help-text');
         this.defaultTooltipTarget = document.querySelector('#select_button');
-        this.gamepadConnectNotice = document.getElementById("gamepad-connect-notice");
         this.tooManyGamepadsNotice = document.getElementById("too-many-gamepads-notice")
         this.currentPopperTarget = this.defaultTooltipTarget;
 
@@ -43,24 +41,6 @@ export class GamepadUi {
                 top: `${y}px`,
             });
         });
-    }
-
-    showExtraniousGamepadsConnected(tooManyGamepads) {
-        this.tooManyGamepadsNotice.style.display = tooManyGamepads ? "block" : "none";
-    }
-
-
-    showGamepadConnected(show) {
-        if (show) {
-            this.gamepadContainer.classList.add("gamepad-connected");
-        } else {
-            this.gamepadContainer.classList.remove("gamepad-connected");
-        }
-    }
-
-
-    showNoGamepads(show) {
-        this.gamepadConnectNotice.style.display = show ? "block" : "none";
     }
 
 
