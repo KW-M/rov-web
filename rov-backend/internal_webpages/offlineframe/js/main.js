@@ -1,9 +1,9 @@
-import { receiveProxiedMsg, setSendProxyMessageCallback } from "../../../../shared/js/iframeWsProxyReceiver";
+import { receiveProxiedMsg, setSendProxyMessageCallback } from "../../../../shared/js/iframeWsProxy/iframeWsProxyReceiver";
 const iframe = document.createElement('iframe');
 const iframeHost = window.location.protocol.replace(":", "") + '://' + window.location.host;
 // const iframeHost = 'http://10.0.0.48:5173'
 iframe.src = iframeHost + '/frontend/index.html'
-iframe.sandbox = "allow-scripts"
+iframe.setAttribute("sandbox", "allow-scripts")
 iframe.onload = () => {
     console.info("iframe loaded")
 }
