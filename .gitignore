@@ -230,8 +230,7 @@ cython_debug/
 #.idea/
 
 # Protobufs
-rov-backend/python/protobufs/
+rov-backend/python/protobufs/*
 !rov-backend/python/protobufs/README.md
-shared/js/protobufs/
+shared/js/protobufs/*
 !shared/js/protobufs/README.md
-
