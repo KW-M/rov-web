@@ -1,5 +1,6 @@
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
-import { showPasswordPrompt, showToastMessage } from "./ui";
+import { showPasswordPrompt } from "./ui";
+import { showToastMessage } from "../components/ToastMessages.svelte";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";

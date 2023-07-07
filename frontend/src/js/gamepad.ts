@@ -1,17 +1,13 @@
 
-// import { startGamepadEventLoop, getGamepadsStandardized, gamepadApiSupported, onGamepadAxisValueChange, onGamepadButtonValueChange, onGamepadConnect, onGamepadDisconnect } from "./gamepad_mmk"
-// import { gamepadEmulator } from "./libraries/VirtualGamepad/gamepadEmulator"
+import { ONSCREEN_GPAD_BUTTON_LABELS } from './consts';
+import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton } from "virtual-gamepad-lib";
 import { GamepadUi } from "./gamepad-ui"
-// import { GamepadApiWrapper } from "./libraries/VirtualGamepad/gamepadApiWrapper";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
 import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
-import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton } from "virtual-gamepad-lib";
 import { addTooltip } from "../components/HelpTooltips.svelte";
-import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
-import { showToastMessage } from "./ui";
-
+import { showToastMessage } from "../components/ToastMessages.svelte";
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
@@ -84,7 +80,7 @@ export class GamepadController {
                 }
             },
             (gamepad) => {
-                var { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
+                const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
                 if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
                 RovActions.moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw);
             }
@@ -94,7 +90,7 @@ export class GamepadController {
 
     gamepadConnectDisconnectHandler() {
         const gamepads = navigator.getGamepads();
-        var connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
+        let connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
         if (connectedGamepadCount != 0 && gamepads[0]["emulated"]) connectedGamepadCount -= 1;
         // this.gpadUi.showGamepadStatus(connectedGamepadCount);
         if (connectedGamepadCount > 1) console.log("WARNING: More than one gamepad connected!", gamepads);

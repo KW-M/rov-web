@@ -1,33 +1,10 @@
-import { toast } from '@zerodevx/svelte-toast';
-import { LOADING_MESSAGE, ROV_PEERID_BASE } from './consts';
-import { DIALOG_TYPE, rovPeerIdEndNumber, type dialogExtraDataType } from './globalContext';
-import { hideLoadingUi, showLoadingUi } from '../components/LoadingIndicator.svelte';
-import { getROVName } from './rovUtil';
-import { openDialog } from '../components/dialogs/DialogSpawner.svelte';
+import { DIALOG_TYPE, type dialogExtraDataType } from './globalContext';
+import { openDialog } from '../components/dialogs/Dialogs.svelte';
 
 // -------------------------------------------------------------
 // ------ UI Stuff ---------------------------------------------
 // -------------------------------------------------------------
 
-// -----  Toast Notifications -----
-let toastDeduplicationCache = {}
-export function showToastMessage(message: string, durration: number = 2000, callback: () => void = null) {
-    let existingToast = toastDeduplicationCache[message];
-    if (existingToast) return;
-    let toastId = toast.push({
-        msg: message,
-        duration: durration,
-    });
-    toastDeduplicationCache[message] = toastId;
-    toast.subscribe((toastArray) => {
-        let ourToast = toastArray.find((toast) => { return toast.msg === message })
-        if (!ourToast) {
-            delete toastDeduplicationCache[message];
-            callback && callback();
-        }
-    });
-    return toastId
-}
 
 // -----  Dialogs -----
 export function showConfirmationMsg(msg, callback) {
@@ -62,58 +39,4 @@ export function showScrollableTextPopup(title: string, callback: (a: any) => voi
         });
     }
     return addTextToPopup
-}
-
-const connectBtn = document.getElementById('connect_btn');
-const connectBtnOptions = document.getElementById('connect_btn_options')
-const disconnectBtn = document.getElementById('disconnect_btn');
-const connectedRovLabel = document.getElementById('connected_rov_label');
-const rovConnectionBar = document.getElementById('rov_connection_bar');
-export function showROVDisconnectedUi() {
-    // connectBtnOptions.style.display = 'flex';
-    document.body.classList.remove("rov-connected");
-    hideLoadingUi("all");
-    // hideLivestreamUi();
-}
-
-export function showROVConnectingUi(rovPeerId) {
-    console.log("showROVConnectingUi", connectBtnOptions);
-    // connectBtnOptions.style.display = 'none';
-    document.body.classList.remove("rov-connected");
-}
-
-export function showROVConnectedUi() {
-    // connectBtnOptions.style.display = 'none';
-    // disconnectBtn.style.display = 'block';
-    document.body.classList.add("rov-connected");
-    hideLoadingUi("webrtc-connecting")
-    hideLoadingUi("webrtc-reconnecting")
-}
-
-export function showReloadingWebsiteUi() {
-    connectBtn.style.display = 'none';
-    // disconnectBtn.style.display = 'none';
-    showLoadingUi(LOADING_MESSAGE.reloadingSite);
-}
-
-export function setCurrentRovName() {
-    let index = rovPeerIdEndNumber.get();
-    let name = getROVName(index);
-    let uiName = "ROV " + index + " (" + name.replace(ROV_PEERID_BASE, "") + ")";
-    connectBtn.innerText = "Connect to " + uiName;
-    connectedRovLabel.innerText = uiName
-}
-
-export function setupConnectBtnClickHandler(callback) {
-    connectBtn.addEventListener('click', callback);
-    return () => { // cleanup function
-        connectBtn.removeEventListener('click', callback);
-    }
-}
-
-export function setupDisconnectBtnClickHandler(callback) {
-    disconnectBtn.addEventListener('click', callback);
-    return () => { // cleanup function
-        disconnectBtn.removeEventListener('click', callback);
-    }
 }

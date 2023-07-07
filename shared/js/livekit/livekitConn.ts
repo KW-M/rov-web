@@ -205,11 +205,14 @@ export class LivekitGenericConnection {
         const startTime = Date.now();
         appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         try {
+            // setup timeout in case of connection hang
+            const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}`); this._reconnect() }, 8000);
             await this._connect();
+            clearTimeout(timeout);
             appendLog(`Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
         } catch (err) {
-            appendLog(`TODO:Reconnect ? Error connecting to ${this.config.hostUrl}`, err);
-            // this._reconnect();
+            appendLog(`Error connecting to ${this.config.hostUrl}`, err);
+            this._reconnect();
         }
     }
 
@@ -313,13 +316,11 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
 
 
     async startRoom(rovRoomName: string, livekitApiKey: string, livekitSecretKey: string) {
-        console.log(this)
         this._livekitApiKey = livekitApiKey;
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
         await createLivekitRoom(this._livekitAdmin, rovRoomName);
         await refreshMetadata(this._livekitAdmin, livekitApiKey, livekitSecretKey, rovRoomName);
-
         const accessToken = getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
         await super.start(rovRoomName, accessToken);
     }

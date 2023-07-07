@@ -26,7 +26,7 @@ export const PROXY_PREFIX = 'proxy:';
 
 export const LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: false,
-    maxRetries: 1000,
+    maxRetries: 2,
     peerConnectionTimeout: 45_000, // miliseconds
 }
 

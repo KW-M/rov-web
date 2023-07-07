@@ -1,10 +1,9 @@
 
 import type { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { frontendConnMngr } from "./frontendConnManager";
-import { rovPeerIdEndNumber } from "./globalContext";
-import { FrontendRovMsgHandlerClass, frontendRovMsgHandler } from "./rovMessageHandler"
-import { setCurrentRovName, showConfirmationMsg, showScrollableTextPopup, showToastMessage } from "./ui"
-import { arraysEqual } from "./util";
+import { frontendRovMsgHandler } from "./rovMessageHandler"
+import { showConfirmationMsg, showScrollableTextPopup } from "./ui"
+import { showToastMessage } from "../components/ToastMessages.svelte";
 
 class RovActionsClass {
 

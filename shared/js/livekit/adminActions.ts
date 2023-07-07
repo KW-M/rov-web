@@ -88,7 +88,7 @@ export function parseLivekitRoomMetadata(roomMetadata: string, tokenName: string
         const metadata = JSON.parse(roomMetadata);
         return metadata[tokenName];
     } catch (e) {
-        console.log("Error parsing livekit room metadata", e);
+        console.log("Error parsing livekit room metadata", e, roomMetadata);
         return "";
     }
 }

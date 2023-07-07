@@ -173,7 +173,7 @@ export function hookWebsockets() {
     }
 
     // Hook the websocket send function
-    var _send = WSObject.send
+    let _send = WSObject.send
     WSObject.send = function (data) {
       console.log("hook send")
       arguments[0] = wsHook.beforeSend(data, WSObject.url, this) || null;
@@ -232,10 +232,10 @@ export function hookWebsockets() {
 
     Object.defineProperty(WSObject, 'onmessage', {
       'set': function () {
-        var eventThis = this
-        var userFunc = arguments[0]
+        let eventThis = this
+        let userFunc = arguments[0]
         WSObject._onmessage = userFunc
-        var onMessageHandler = userFunc ? function () {
+        let onMessageHandler = userFunc ? function () {
           if (!WSObject.isReal) console.log('onMessageHandler', arguments)
           arguments[0] = wsHook.afterRecive(MakeMutableMessageEvent(arguments[0]), WSObject.url, WSObject)
           if (arguments[0] === null) return
@@ -249,10 +249,10 @@ export function hookWebsockets() {
 
     Object.defineProperty(WSObject, 'onopen', {
       'set': function () {
-        var eventThis = this
-        var userFunc = arguments[0]
+        let eventThis = this
+        let userFunc = arguments[0]
         WSObject._onopen = userFunc
-        var onOpenHandler = userFunc ? function () {
+        let onOpenHandler = userFunc ? function () {
           if (!WSObject.isReal) console.log('onOpenHandler', arguments)
           arguments[0] = wsHook.beforeOpen(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return
@@ -265,10 +265,10 @@ export function hookWebsockets() {
 
     Object.defineProperty(WSObject, 'onerror', {
       'set': function () {
-        var eventThis = this
-        var userFunc = arguments[0]
+        let eventThis = this
+        let userFunc = arguments[0]
         WSObject._onerror = userFunc
-        var onErrorHandler = userFunc ? function () {
+        let onErrorHandler = userFunc ? function () {
           if (!WSObject.isReal) console.log('onErrorHandler', arguments)
           arguments[0] = wsHook.beforeError(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return
@@ -280,10 +280,10 @@ export function hookWebsockets() {
 
     Object.defineProperty(WSObject, 'onclose', {
       'set': function () {
-        var eventThis = this
-        var userFunc = arguments[0]
+        let eventThis = this
+        let userFunc = arguments[0]
         WSObject._onclose = userFunc
-        var onCloseHandler = userFunc ? function () {
+        let onCloseHandler = userFunc ? function () {
           if (!WSObject.isReal) console.log('onCloseHandler', arguments)
           arguments[0] = wsHook.beforeClose(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return

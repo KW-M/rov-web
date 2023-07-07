@@ -6,6 +6,7 @@ from typing import (
     Optional,
     Union,
 )
+from functools import wraps
 
 import time
 import logging
@@ -19,11 +20,27 @@ from shell_cmd_utils import generate_cmd_continued_output_response, run_shell_cm
 from protobufs.rov_actions_proto import DataTransportMethod, ResponseBackendMetadata, betterproto, RovAction, SensorUpdatesResponse, RovResponse, DoneResponse, DriverChangedResponse, HeartbeatResponse, ErrorResponse, PasswordAcceptedResponse, PasswordInvalidResponse, PasswordRequiredResponse, PongResponse
 from utilities import map_for_async_generator
 from websocket_server import websocket_server
-VERIFY_AUTHORIZATION = user_auth.verify_authorization
 
 ############################
 ###### setup logging #######
 log = logging.getLogger(__name__)
+
+def verify_authorization(require_password: bool, require_is_driver: bool):
+    """ Decorator to verify that the sending user is authorized to perform the wrapped action handler function."""
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            src_participant_id: str = kwargs['src_participant_id'] if 'src_peer_id' in kwargs else args[1]
+            msg_data: RovAction = kwargs['msg_data'] if 'msg_data' in kwargs else args[2]
+            resp = user_auth.check_authorization(src_participant_id,msg_data,require_password,require_is_driver)
+            if resp is not None:
+                message_handler.set_replay_action(src_participant_id, msg_data)
+                return resp
+            else:
+                return await func(src_participant_id, msg_data)
+        return wrapper
+    return decorator
+VERIFY_AUTHORIZATION = verify_authorization
 
 class MessageHandlerClass:
     """ Handles all incoming and outgoing messages to the rov and events from the webrtc-relay."""
@@ -272,7 +289,6 @@ class MessageHandlerClass:
     async def handle_rov_logs(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
         """Return a generator that continuously outputs new systemd log messages as they appear plus the last 500 lines of log."""
         msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "journalctl --unit=rov_python_code --unit=rov_go_code --unit=maintain_network --unit=nginx --no-pager --follow -n 500", cmd_timeout=20)
-        await asyncio.sleep(1)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)

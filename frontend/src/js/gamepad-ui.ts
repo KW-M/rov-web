@@ -54,7 +54,7 @@ export class GamepadUi {
         }
 
         let count = 0;
-        var updateFunc = () => { this.updateTooltip(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
+        let updateFunc = () => { this.updateTooltip(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
         updateFunc();
     }
 
@@ -83,10 +83,10 @@ export class GamepadUi {
     handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHelpThreshold) { //axisHoveredClass, axisMovedClass
         axiesMaping.forEach((axisMap) => {
             // if (axisValue > 0 || axisValue < 0) {
-            var thumbstick = axisMap.thumbStickElement;
-            var axisRange = axisMap.axisRange;
-            var xValue = axisMap.xValue || 0;
-            var yValue = axisMap.yValue || 0;
+            let thumbstick = axisMap.thumbStickElement;
+            let axisRange = axisMap.axisRange;
+            let xValue = axisMap.xValue || 0;
+            let yValue = axisMap.yValue || 0;
             thumbstick.style.transform = `rotateY(${-xValue * 30}deg) rotateX(${yValue * 30}deg) translate(${xValue * axisRange}px,${yValue * axisRange}px)`;
 
             if (this.gamepadHelpVisible) {
@@ -156,8 +156,8 @@ export class GamepadUi {
     }
 
     setGamepadButtonClass(btnIndx, gamepadButtonStates) {
-        var gpadButton = gamepadButtonStates[btnIndx];
-        var btnElem = this.gpadButtonHighlightElements[btnIndx];
+        let gpadButton = gamepadButtonStates[btnIndx];
+        let btnElem = this.gpadButtonHighlightElements[btnIndx];
         if (!gpadButton || !btnElem) return;
 
         if (gpadButton.touched) {
@@ -175,7 +175,7 @@ export class GamepadUi {
 
     handleGamepadVisualFeedbackButtonEvents(gamepadButtonStates) {
         let pressedBtnCount = 0;
-        for (var btnIndx = 0; btnIndx < gamepadButtonStates.length; btnIndx++) {
+        for (let btnIndx = 0; btnIndx < gamepadButtonStates.length; btnIndx++) {
             this.setGamepadButtonClass(btnIndx, gamepadButtonStates);
             pressedBtnCount += gamepadButtonStates[btnIndx].pressed ? 1 : 0;
         }
@@ -190,11 +190,11 @@ export class GamepadUi {
     }
 
     handleGamepadVisualFeedbackVariableTriggerButtonEvents(gamepadButtonStates, triggerConfigs) { //axisHoveredClass, axisMovedClass
-        for (var i = 0; i < triggerConfigs.length; i++) {
+        for (let i = 0; i < triggerConfigs.length; i++) {
             const triggerConfig = triggerConfigs[i];
             const btnIndx = triggerConfig.buttonIndex;
             this.setGamepadButtonClass(btnIndx, gamepadButtonStates);
-            var yValue = gamepadButtonStates[btnIndx] ? gamepadButtonStates[btnIndx].value : 0;
+            let yValue = gamepadButtonStates[btnIndx] ? gamepadButtonStates[btnIndx].value : 0;
             triggerConfig.buttonElement.style.transform = `rotateX(${yValue * 30}deg) translateY(${yValue * triggerConfig.axisRange}px)`;
         }
     }

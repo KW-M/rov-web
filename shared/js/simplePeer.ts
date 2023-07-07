@@ -77,7 +77,7 @@ export class SimplePeerConnection {
         this._p.on('stream', stream => {
             // got remote video stream, now let's show it in a video tag
             console.info('SIMPLEPEER: got video stream: ', stream)
-            var video = document.getElementById('direct_video') as HTMLVideoElement;
+            let video = document.getElementById('direct_video') as HTMLVideoElement;
             if ('srcObject' in video) {
                 video.srcObject = stream
             } else {

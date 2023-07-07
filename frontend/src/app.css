@@ -59,10 +59,6 @@ body {
   border-style: solid;
 } */
 
-.toast-msg>div {
-  border-radius: 6px;
-}
-
 
 .btn-shadow {
   box-shadow: 0 3px 6px -1px #0000001f, 0 10px 36px -4px #4d60e84d;
