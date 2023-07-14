@@ -54,7 +54,7 @@ backupThenOverwrite(){
 echo "Pulling any changes to the rov static web page from github"
 exe "cd ~/rov-web"
 exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
-exe "git checkout gh-pages"
+# exe "git checkout gh-pages"
 exe "git pull --rebase"
 
 echoBlue "Pulling any updates to webrtc-relay from github"
@@ -98,11 +98,14 @@ if [ ! -e "$HOME/rov-config.json" ]; then
 	backupThenOverwrite "$FOLDER_CONTAINING_THIS_SCRIPT/new_config_files/rov-config.json" "$HOME/rov-config.json"
 fi;
 
-echoBlue "Copying over rov_go_code startup service file..."
-backupThenOverwrite "rov_go_code.service" "/lib/systemd/system/rov_go_code.service"
+# echoBlue "Copying over rov_go_code startup service file..."
+# backupThenOverwrite "rov_go_code.service" "/lib/systemd/system/rov_go_code.service"
 
 echoBlue "Copying over rov_python_code startup service file..."
 backupThenOverwrite "rov_python_code.service" "/lib/systemd/system/rov_python_code.service"
+
+echoBlue "Copying over rov_internal_website startup service file..."
+backupThenOverwrite "rov_internal_website.service" "/lib/systemd/system/rov_internal_website.service"
 
 echoBlue "Copying over nginx config file to /etc/nginx.conf"
 backupThenOverwrite "nginx.conf" "/etc/nginx/nginx.conf"
@@ -118,6 +121,7 @@ exe "sudo systemctl daemon-reload"
 exe "sudo systemctl restart pigpiod.service"
 exe "sudo systemctl restart rov_go_code.service"
 exe "sudo systemctl restart rov_python_code.service"
+exe "sudo systemctl restart rov_internal_website.service"
 exe "sudo systemctl restart maintain_network.service"
 exe "sudo systemctl restart nginx.service"
 
