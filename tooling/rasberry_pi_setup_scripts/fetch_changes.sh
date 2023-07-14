@@ -54,25 +54,7 @@ backupThenOverwrite(){
 echo "Pulling any changes to the rov static web page from github"
 exe "cd ~/rov-web"
 exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
-# exe "git checkout gh-pages"
-exe "git pull --rebase"
 
-echoBlue "Pulling any updates to webrtc-relay from github"
-exe "cd ~/webrtc-relay"
-exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
-changes=$(git pull --rebase)
-echoBlue "changes: $changes"
-if ! echo "$changes" | grep "Already up to date"; then
-	echoBlue "Installing webrtc-relay"
-	go install .
-fi
-
-# ------------------------------------------------------------------------------
-
-echoBlue "Pulling any changes to the rov backend from github"
-exe "cd '$FOLDER_CONTAINING_THIS_SCRIPT'"
-exe "cd ../"
-exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
 changes=$(git pull --rebase)
 echoBlue "changes: $changes"
 
@@ -98,8 +80,7 @@ if [ ! -e "$HOME/rov-config.json" ]; then
 	backupThenOverwrite "$FOLDER_CONTAINING_THIS_SCRIPT/new_config_files/rov-config.json" "$HOME/rov-config.json"
 fi;
 
-# echoBlue "Copying over rov_go_code startup service file..."
-# backupThenOverwrite "rov_go_code.service" "/lib/systemd/system/rov_go_code.service"
+# echoBlue "Copying over rov_ startup service file..."
 
 echoBlue "Copying over rov_python_code startup service file..."
 backupThenOverwrite "rov_python_code.service" "/lib/systemd/system/rov_python_code.service"
@@ -110,8 +91,8 @@ backupThenOverwrite "rov_internal_website.service" "/lib/systemd/system/rov_inte
 echoBlue "Copying over nginx config file to /etc/nginx.conf"
 backupThenOverwrite "nginx.conf" "/etc/nginx/nginx.conf"
 
-echoBlue "Copying over maintain_network.service startup service file..."
-backupThenOverwrite "maintain_network.service" "/etc/systemd/system/maintain_network.service"
+# echoBlue "Copying over maintain_network.service startup service file..."
+# backupThenOverwrite "maintain_network.service" "/etc/systemd/system/maintain_network.service"
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -119,10 +100,9 @@ echoBlue "Restarting systemd (systemctl) Services..."
 # daemon-reload makes the system load any new/changed services in the /lib/systemd/system/ directory
 exe "sudo systemctl daemon-reload"
 exe "sudo systemctl restart pigpiod.service"
-exe "sudo systemctl restart rov_go_code.service"
 exe "sudo systemctl restart rov_python_code.service"
 exe "sudo systemctl restart rov_internal_website.service"
-exe "sudo systemctl restart maintain_network.service"
+# exe "sudo systemctl restart maintain_network.service"
 exe "sudo systemctl restart nginx.service"
 
 # The above lines restart systemd "services" running when this rasberry pi boots.
