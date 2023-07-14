@@ -22,8 +22,8 @@ document.addEventListener("visibilitychange", function logData() {
 // };
 
 
-// var uglyHax = function () {
-//     var done = function () {
+// let uglyHax = function () {
+//     let done = function () {
 //         console.log("cb", iframe.contentWindow.location, iframe.contentWindow.document.readyState);
 //         uglyHax();
 //     };
@@ -45,10 +45,10 @@ document.addEventListener("visibilitychange", function logData() {
 // uglyHax();
 
 function iframeURLChange(iframe, callback) {
-    var lastDispatched = null;
+    let lastDispatched = null;
 
-    var dispatchChange = function () {
-        var newHref = iframe.contentWindow.location.href;
+    let dispatchChange = function () {
+        let newHref = iframe.contentWindow.location.href;
 
         if (newHref !== lastDispatched) {
             callback(newHref);
@@ -56,7 +56,7 @@ function iframeURLChange(iframe, callback) {
         }
     };
 
-    var unloadHandler = function () {
+    let unloadHandler = function () {
         // Timeout needed because the URL changes immediately after
         // the `unload` event is dispatched.
         setTimeout(dispatchChange, 0);

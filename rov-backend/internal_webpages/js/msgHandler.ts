@@ -1,13 +1,13 @@
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
-import { receiveProxiedMsg } from "../../../shared/js/proxyReciever";
-import { connectionManager } from "./connectionManager";
+import { internalConnManager } from "./internalConnManager";
 import { iRovWebSocketRelay } from "./websocketRelay";
 
 
 function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_proto.RovAction) {
     if (msgProto.SimplepeerSignal) {
-        connectionManager.ingestSimplePeerSignallingMsg(senderId, msgProto.SimplepeerSignal.Message)
-    }
+        internalConnManager.ingestSimplePeerSignallingMsg(senderId, msgProto.SimplepeerSignal.Message)
+        return true;
+    } else return false;
 }
 
 /*
@@ -17,18 +17,17 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
 export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBufferLike) {
     let data = new Uint8Array(msgBytes)
     if (!data || data.length === 0) return;
-    console.log("GOT DC DATA:", data);
+    console.error("GOT DC DATA:", data, senderId);
 
-    // Do some protobuf here to properly package the data up for iROV (stuff in the Sender Id)
+    // Decode the protobuf object from bytes
     const msgProto = rov_actions_proto.RovAction.decode(data)
+    if (handleInternalWebpageActions(senderId, msgProto)) return;
+
+    // Stuff the protobuff object with metadata
     msgProto.BackendMetadata = msgProto.BackendMetadata || new rov_actions_proto.ActionBackendMetadata()
     msgProto.BackendMetadata.FromUserId = senderId
-    handleInternalWebpageActions(senderId, msgProto)
     const newMessage = rov_actions_proto.RovAction.encode(msgProto).finish()
 
-    // Send the packaged up message to the iROV via webSocketRelay
+    // Send the re-packaged up message bytes to the iROV python via webSocketRelay
     if (iRovWebSocketRelay.isConnected) iRovWebSocketRelay.sendMessage(newMessage)
-
-    // sendSignalingDataToSimplePeerPublisher(data);
-    // receiveProxiedMsg(msgBytes);
 }

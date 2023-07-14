@@ -1,30 +1,25 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  import { inspect } from "@xstate/inspect";
 
   import { ConnectionState, LOADING_MESSAGE } from "./js/consts";
   import { appReady, ourPeerId, rovPeerIdEndNumber } from "./js/globalContext";
-
-  import { frontendConnMngr } from "./js/frontendConnManager";
-  import { rovMessageHandler } from "./js/rovMessageHandler";
-  import { RovActions } from "./js/rovActions";
-  import { showToastMessage } from "./js/ui";
   import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from "./js/util";
-  import { getROVName } from "./js/rovUtil";
 
-  import { SvelteToast } from "@zerodevx/svelte-toast";
-  import DialogSpawner from "./components/dialogs/DialogSpawner.svelte";
-  import RovSelector from "./components/RovSelector.svelte";
-  import TopBar from "./components/TopBar.svelte";
-  import OnscreenGamepads from "./components/OnscreenGamepads.svelte";
-  import LoadingIndicator, { showLoadingUi, hideLoadingUi } from "./components/LoadingIndicator.svelte";
-  import VideoPlayer from "./components/VideoPlayer.svelte";
-  import SensorDisplay from "./components/sensors/SensorDisplay.svelte";
-  import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
-  import AhrsViz from "./components/sensors/AHRSViz.svelte";
-  import DropdownRovSelector from "./components/unused/DropdownRovSelector.svelte";
   import { gpadCtrl } from "./js/gamepad";
   import { frontendStartupFlow } from "./js/startupFlow";
+  import { RovActions } from "./js/rovActions";
+
+  // [ Component Imports ]
+  import TopBar from "./components/TopBar.svelte";
+  import AhrsViz from "./components/sensors/AHRSViz.svelte";
+  import RovSelector from "./components/RovSelector.svelte";
+  import VideoPlayer from "./components/VideoPlayer.svelte";
+  import OnscreenGamepads from "./components/OnscreenGamepads.svelte";
+  import SensorDisplay from "./components/sensors/SensorDisplay.svelte";
+  import Dialogs from "./components/dialogs/Dialogs.svelte";
+  import LoadingIndicator, { showLoadingUi, hideLoadingUi } from "./components/LoadingIndicator.svelte";
+  import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
+  import ToastMessages, { showToastMessage } from "./components/ToastMessages.svelte";
 
   // -- init svelte stores --
   bindNumberSvelteStoreToLocalStorage("rovPeerIdEndNumber", rovPeerIdEndNumber, 0);
@@ -85,9 +80,9 @@
 
 <main>
   <!-- UI Spawners -->
-  <SvelteToast options={{ reversed: true, intro: { y: 192 }, pausable: true, classes: ["toast-msg"] }} />
+  <ToastMessages />
   <HelpTooltips />
-  <DialogSpawner />
+  <Dialogs />
   <LoadingIndicator />
 
   <VideoPlayer />
@@ -95,9 +90,9 @@
   <!-- UI Layout -->
   <VideoPlayer />
   <OnscreenGamepads disabled={true} />
-  <!-- <SensorDisplay /> -->
+  <SensorDisplay />
 
-  <!-- <AhrsViz /> -->
+  <AhrsViz />
   <TopBar />
   <RovSelector />
 

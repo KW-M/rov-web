@@ -1,4 +1,4 @@
-import { enableIframeWebsocketProxying } from "./iframeWsProxying";
+import { enableIframeWebsocketProxying } from "../../../shared/js/iframeWsProxy/iframeWsProxy";
 import { waitfor } from "../../../shared/js/util";
 import { frontendConnMngr } from "./frontendConnManager";
 import { LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";

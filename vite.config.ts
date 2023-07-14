@@ -17,6 +17,9 @@ export default defineConfig({
       "serviceworker.ts": "shared/js/serviceworker/serviceworker.ts"
     }),
   ],
+  server: {
+    hmr: true,
+  },
   // css: {
   //   postcss: {
   //     plugins: [

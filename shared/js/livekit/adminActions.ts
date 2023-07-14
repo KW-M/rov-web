@@ -2,10 +2,10 @@
 import '../../../shared/js/nodeShimsBundle'
 import type * as livekitServerSDKTypes from 'livekit-server-sdk';
 import { getFrontendAccessToken } from './livekitTokens';
+import { getHumanReadableId, getUniqueNumber } from '../util';
 const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 export type LivekitSetupOptions = {
-
     RovRoomName: string,
     CloudSecretKey: string,
     CloudAPIKey: string,
@@ -13,6 +13,7 @@ export type LivekitSetupOptions = {
     LocalAPIKey: string,
     EnableLivekitCloud: boolean,
     EnableLivekitLocal: boolean,
+    EnableBackendWebsocket: boolean,
 }
 
 export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
@@ -23,18 +24,20 @@ export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServic
     })
 }
 
-export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.RoomServiceClient, roomName: string, metadata: string) {
-    return await client.updateRoomMetadata(roomName, metadata)
-}
-
 export async function listLivekitRooms(client: livekitServerSDKTypes.RoomServiceClient): Promise<livekitServerSDKTypes.Room[]> {
     const rooms = await client.listRooms();
     return rooms.filter(room => room.numParticipants > 0)
 }
 
-export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, livekitSetup: LivekitSetupOptions) {
-    const frontendAccessToken = getFrontendAccessToken(livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey, livekitSetup.RovRoomName, "PERSON" + Date.now().toString());
-    await updateLivekitRoomMetadata(cloudRoomClient, livekitSetup.RovRoomName, JSON.stringify({
+
+export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.RoomServiceClient, roomName: string, metadata: string) {
+    return await client.updateRoomMetadata(roomName, metadata)
+}
+
+export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName) {
+    const userName = getHumanReadableId(getUniqueNumber());
+    const frontendAccessToken = getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
+    await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
         accessToken: frontendAccessToken,
     }));
 }
@@ -85,7 +88,7 @@ export function parseLivekitRoomMetadata(roomMetadata: string, tokenName: string
         const metadata = JSON.parse(roomMetadata);
         return metadata[tokenName];
     } catch (e) {
-        console.log("Error parsing livekit room metadata", e);
+        console.log("Error parsing livekit room metadata", e, roomMetadata);
         return "";
     }
 }

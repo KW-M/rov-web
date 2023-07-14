@@ -4,7 +4,6 @@ from typing import AsyncGenerator, Optional
 import time
 import logging
 import asyncio
-from functools import wraps
 
 from config_reader import program_config
 from protobufs.rov_actions_proto import DriverChangedResponse, PasswordAcceptedResponse, PasswordInvalidResponse, ResponseBackendMetadata, RovAction, PasswordRequiredResponse, ErrorResponse, RovResponse
@@ -61,21 +60,13 @@ class UserAuth():
                 return livekit_id
         return None
 
-    def verify_authorization(self,require_password: bool, require_is_driver: bool):
+    def check_authorization(self, src_peer_id:str, msg_data: RovAction, require_password: bool = True, require_is_driver: bool = True):
         """ Decorator to verify that the sending user is authorized to perform the wrapped action handler function."""
-        def decorator(func):
-            @wraps(func)
-            async def wrapper(src_peer_id: str, msg_data: RovAction):
-                if require_password and not self.check_if_peer_is_authenticated(src_peer_id):
-                    self.set_replay_action(src_peer_id, msg_data)
-                    return (RovResponse(password_required=PasswordRequiredResponse()), [src_peer_id])
-                if require_is_driver and self.designated_driver_id != src_peer_id:
-                    return (RovResponse(error=ErrorResponse(message="To be the designated rov driver, click drive")), [src_peer_id])
-                return await func(src_peer_id, msg_data)
-
-            return wrapper
-
-        return decorator
+        if require_password and not self.check_if_peer_is_authenticated(src_peer_id):
+            return (RovResponse(password_required=PasswordRequiredResponse()), [src_peer_id])
+        if require_is_driver and self.designated_driver_id != src_peer_id:
+            return (RovResponse(error=ErrorResponse(message="To be the designated rov driver, click drive")), [src_peer_id])
+        return None
 
     async def update_message_recived_stats(self,src_user_id):
         """Update the last_recived_msg_time for the given user. If the user is not known, add them to the self.known_users dict."""

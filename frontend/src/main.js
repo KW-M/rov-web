@@ -4,6 +4,10 @@ import { frontendConnMngr } from './js/frontendConnManager';
 import { debugPageModeActive, fullscreenOpen } from './js/globalContext';
 import { getURLQueryStringVariable } from './js/util';
 
+// DISABLE VITE HOT MOUDLE RELOADING:
+if (import.meta.hot)
+  import.meta.hot.accept(() => import.meta.hot.invalidate())
+
 debugPageModeActive.set(getURLQueryStringVariable("debug") != undefined);
 
 document.addEventListener('fullscreenchange', (e) => {

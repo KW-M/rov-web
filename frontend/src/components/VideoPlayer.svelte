@@ -6,7 +6,7 @@
   let trackId = null;
   import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
   import { onDestroy } from "svelte";
-  import { showToastMessage } from "../js/ui";
+  import { showToastMessage } from "./ToastMessages.svelte";
   import { changesSubscribe } from "../../../shared/js/util";
   import { frontendConnMngr } from "../js/frontendConnManager";
   let currentVideoStream = null;

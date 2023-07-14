@@ -1,7 +1,17 @@
-import { waitfor } from "./util";
-import { wsHook } from "./wsHook";
+import hookWebsockets from "./wsHook";
 
+function waitfor(millisec) {
+    return new Promise(resolve => setTimeout(() => { resolve('') }, millisec))
+}
+
+/**
+ * Test the functions of the wsHook library
+ */
 export function testWsHook() {
+
+    // !important!  hookWebsockets() must be called before any websockets are created (EG: new Websocket(url))
+    const wsHook = hookWebsockets();
+
     async function testTriggers(wsObject: WebSocket) {
         await waitfor(1000);
         console.log("Triggering Open")

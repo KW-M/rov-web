@@ -1,5 +1,6 @@
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
-import { showPasswordPrompt, showToastMessage } from "./ui";
+import { showPasswordPrompt } from "./ui";
+import { showToastMessage } from "../components/ToastMessages.svelte";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
@@ -8,12 +9,13 @@ let lastTimeRecvdPong = NaN;
 
 type ReplyExchangeData = { callback: (replyMsgData: rov_actions_proto.RovResponse) => void, originalMsgData: rov_actions_proto.IRovAction };
 
-export class RovMsgHandlerClass {
+export class FrontendRovMsgHandlerClass {
     // replyContinuityCallbacks: keep track of functions to run when we get a reply to a message we sent with some ExchangeId
     // (index is the ExchangeId number of the sent message)
     replyContinuityCallbacks: ReplyExchangeData[] = [];
 
-    handleRecivedMessage(msgBytes: Uint8Array) {
+    handleRecivedMessage(msgBytes: ArrayBufferLike) {
+
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
         console.log("GOT DC DATA:", rawData);
@@ -153,4 +155,4 @@ export class RovMsgHandlerClass {
         }
     }
 }
-export const rovMessageHandler = new RovMsgHandlerClass();
+export const frontendRovMsgHandler = new FrontendRovMsgHandlerClass();
