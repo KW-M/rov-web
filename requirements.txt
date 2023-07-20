@@ -1,5 +1,5 @@
 numpy==1.24.3
-aiohttp==3.8.4
+aiohttp==3.8.5
 aiostream==0.4.4
 websockets==11.0.3
 async-timeout==4.0.2
