@@ -14,7 +14,7 @@ WIFI_FOUND=0
 
 while true
 do
-
+    sleep 10
 done
 
 # CODE BELOW WAS SOMEWHAT BUGGY. DON'T UNCOMMENT IF YOU DON'T HAVE A Good way to connect to the pi

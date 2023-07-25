@@ -39,7 +39,7 @@ class WebdriverManager:
         chrome_options.binary_location=browser_binary_path
         # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--use-fake-ui-for-media-stream")
-        chrome_options.set_capability("loggingPrefs", {'browser': 'ALL'})
+        # chrome_options.set_capability("loggingPrefs", {'browser': 'ALL'})
         chrome_options.set_capability("goog:loggingPrefs", {'browser': 'ALL'})
 
         # Instantiate driver and navigate to appropriate webpage
