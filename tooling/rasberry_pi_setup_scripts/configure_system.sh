@@ -128,8 +128,8 @@ fi
 JOURNALCTL_CONFIG_LINE1="SystemMaxUse=100M"
 JOURNALCTL_CONFIG_LINE2="SystemKeepFree=1G"
 if ! grep "$JOURNALCTL_CONFIG_LINE1" /etc/systemd/journald.conf; then
-	exc "echo '$JOURNALCTL_CONFIG_LINE1' | sudo tee -a /etc/systemd/journald.conf"
-	exc "echo '$JOURNALCTL_CONFIG_LINE2' | sudo tee -a /etc/systemd/journald.conf"
+	exe "echo '$JOURNALCTL_CONFIG_LINE1' | sudo tee -a /etc/systemd/journald.conf"
+	exe "echo '$JOURNALCTL_CONFIG_LINE2' | sudo tee -a /etc/systemd/journald.conf"
 fi
 
 # --------- Setup System Logs to Be stored to a temporary filesystem in ram (tmpfs) ---------
