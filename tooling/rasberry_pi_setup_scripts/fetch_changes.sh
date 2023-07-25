@@ -42,7 +42,7 @@ tracked_files=$(git ls-files)
 
 echoBlue "Downloading both rov-web release from Github"
 exe "mkdir -p ~/temp/rov-web-download"
-exe "cd ~/tmp/rov-web-download"
+exe "cd ~/temp/rov-web-download"
 exe "wget 'https://github.com/KW-M/rov-web/releases/latest/download/project.zip' -O project.zip"
 exe "unzip project.zip -x '$tracked_files .git/*' && rm project.zip"
 exe "cp -f ~/temp/rov-web-download/* ~/rov-web/"

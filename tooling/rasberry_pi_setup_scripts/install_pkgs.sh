@@ -31,6 +31,15 @@ exe() { echo -e "$Black$> $@ $Color_Off" >&2; eval "$@" ; }
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+# setup the rov-web folder to be a git repo inline with github
+exe "cd '$HOME/rov-web/'"
+exe "git init"
+exe "git remote add origin 'https://github.com/KW-M/rov-web.git'"
+exe "git branch -m main"
+exe "git branch --set-upstream-to=origin/main main"
+exe "git reset --hard origin/main"
+
+
 # --------- Update System Packages ------------
 # From: https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi
 echoBlue "Making sure all system & package updates are installed... "

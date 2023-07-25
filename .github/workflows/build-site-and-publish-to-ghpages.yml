@@ -73,7 +73,7 @@ jobs:
           with:
             type: 'zip'
             filename: 'project.zip'
-            exclusions: '/*node_modules/* .editorconfig' #*.git*
+            exclusions: '/*node_modules/* .editorconfig *.git*'
 
         - name: Upload Release
           uses: ncipollo/release-action@v1.12.0
