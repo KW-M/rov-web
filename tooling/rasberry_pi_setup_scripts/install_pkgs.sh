@@ -40,7 +40,7 @@ exe 'sudo apt-get install -y wget unzip' || true
 { # try
     exe 'cd ~/' &&
     exe 'rm -rf rov-web' && false || # remove any old version of rov-web
-    exe 'git clone -b gh-pages --single-branch https://github.com/kw-m/rov-web.git'
+    exe 'wget https://github.com/KW-M/rov-web/releases/latest/download/project.zip'
 } || { # catch
     echoRed "Failed to download the current release of the rov-web repo from github.com"
     echoRed "Download & Install the latest release manually: see https://github.com/kw-m/rov-web/releases "
