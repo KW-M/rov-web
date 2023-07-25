@@ -24,12 +24,29 @@ echoBlue() { echo -e "$Blue $@ $Color_Off" >&2;}
 echoGreen() { echoBlue " $@ $Color_Off" >&2; }
 echoRed() { echo -e "$Red $@ $Color_Off" >&2; }
 
-# Function to display commands in Black before running them
-exe() { echo -e "$Black> $@ $Color_Off" >&2; eval "$@" ; }
+# Function to display input shell command in Black and then run the command
+exe() { echo -e "$Black$> $@ $Color_Off" >&2; eval "$@" ; }
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
+
+# --------- Install basic packages ------------
+
+exe 'sudo apt-get install -y git wget' || true
+
+# ----------- DOWNLOAD ROV CODE --------------
+
+{ # try
+    exe 'cd ~/' &&
+    exe 'rm -rf rov-web' && false || # remove any old version of rov-web
+    exe 'git clone -b gh-pages --single-branch https://github.com/kw-m/rov-web.git'
+} || { # catch
+    echoRed "Failed to download rov-web repo from github.com"
+    echoRed "Download & Install it manually: see https://github.com/kw-m/rov-web "
+    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+    exit 1
+}
 
 # --------- Update System Packages ------------
 # From: https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi
@@ -40,123 +57,109 @@ exe 'sudo apt-get -y dist-upgrade --fix-missing' || true
 exe 'sudo apt-get -y update --fix-missing' || true
 exe 'sudo apt-get install -y git wget' || true
 
-
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
-{ # try
-    cd ~/
-    exe 'sudo apt-get install -y libx264-dev libvpx-dev ffmpeg'
+# { # try
+#     cd ~/
+#     exe sudo apt-get install -y libx264-dev libvpx-dev ffmpeg
 
-    # TO MANUALLY INSTALL libvpx, uncomment these lines, and comment out the one above.
-    # exe 'rm -rf libvpx' && false || # remove any old version of libvpx
-    # exe 'git clone https://chromium.googlesource.com/webm/libvpx' &&
-    # exe 'cd libvpx/' &&
-    # exe './configure --enable-pic --disable-examples --disable-tools --disable-unit_tests --disable-docs --enable-static' &&
-    # exe 'make' &&
-    # exe 'sudo make install' &&
-    # exe 'cd ../' &&
-    # exe 'rm -rf libvpx'
-} || { # catch
-    echoRed "Failed to install libvpx, libx264, and/or ffmpeg"
-    echoRed "Install it manually: see instructions around line number $LINENO in this script ($PATH_TO_THIS_SCRIPT) or google 'install libvpx on debian or raspberry pi' "
-    exit 1
-}
+#     # TO MANUALLY INSTALL libvpx, uncomment these lines, and comment out the one above.
+#     # exe 'rm -rf libvpx' && false || # remove any old version of libvpx
+#     # exe 'git clone https://chromium.googlesource.com/webm/libvpx' &&
+#     # exe 'cd libvpx/' &&
+#     # exe './configure --enable-pic --disable-examples --disable-tools --disable-unit_tests --disable-docs --enable-static' &&
+#     # exe 'make' &&
+#     # exe 'sudo make install' &&
+#     # exe 'cd ../' &&
+#     # exe 'rm -rf libvpx'
+# } || { # catch
+#     echoRed "Failed to install libvpx, libx264, and/or ffmpeg"
+#     echoRed "Install it manually: see instructions around line number $LINENO in this script ($PATH_TO_THIS_SCRIPT) or google 'install libvpx on debian or raspberry pi' "
+#     exit 1
+# }
 
 # ------- Install Arducam Low Light Camera Driver --------------------------------------------------------------------------------------
 # from: https://docs.arducam.com/Raspberry-Pi-Camera/Pivariety-Camera/Quick-Start-Guide/
-if ! dmesg | grep arducam; then
-    { # try
-        cd ~/
-        exe 'sudo sed -i.bak '/dtoverlay=arducam/d' /boot/config.txt' && false || # remove existing refernces to arducam
-        exe 'sudo sed -i.bak '/dtoverlay=arducam-pivariety/d' /boot/config.txt' && false || # remove existing refernces to arducam
+# if ! dmesg | grep arducam; then
+#     { # try
+#         cd ~/
+#         exe 'sudo sed -i.bak '/dtoverlay=arducam/d' /boot/config.txt' && false || # remove existing refernces to arducam
+#         exe 'sudo sed -i.bak '/dtoverlay=arducam-pivariety/d' /boot/config.txt' && false || # remove existing refernces to arducam
 
-        echoBlue "Installing arducam pivariety camera driver" &&
-        exe 'mkdir -p camera_drivers' &&
-        exe 'cd camera_drivers' &&
-        exe 'wget -c --timeout=10 --waitretry=4 --tries=5 -O install_pivariety_pkgs.sh https://github.com/ArduCAM/Arducam-Pivariety-V4L2-Driver/releases/download/install_script/install_pivariety_pkgs.sh' &&
-        exe 'chmod +x install_pivariety_pkgs.sh' &&
+#         echoBlue "Installing arducam pivariety camera driver" &&
+#         exe 'mkdir -p camera_drivers' &&
+#         exe 'cd camera_drivers' &&
+#         exe 'wget -c --timeout=10 --waitretry=4 --tries=5 -O install_pivariety_pkgs.sh https://github.com/ArduCAM/Arducam-Pivariety-V4L2-Driver/releases/download/install_script/install_pivariety_pkgs.sh' &&
+#         exe 'chmod +x install_pivariety_pkgs.sh' &&
 
-        # exe './install_pivariety_pkgs.sh -p kernel_driver' && # this comes with the kernel by default on raspberrypi os, so not needed anymore
-        exe './install_pivariety_pkgs.sh -p libcamera_dev' &&
-        exe './install_pivariety_pkgs.sh -p libcamera_apps' &&
+#         # exe './install_pivariety_pkgs.sh -p kernel_driver' && # this comes with the kernel by default on raspberrypi os, so not needed anymore
+#         exe './install_pivariety_pkgs.sh -p libcamera_dev' &&
+#         exe './install_pivariety_pkgs.sh -p libcamera_apps' &&
 
-        echoBlue "Adding dtoverlay=arducam-pivariety to /boot/config.txt" &&
-        exe 'echo 'dtoverlay=arducam-pivariety' | sudo tee -a /boot/config.txt' && # add arducam to config.txt
+#         echoBlue "Adding dtoverlay=arducam-pivariety to /boot/config.txt" &&
+#         exe 'echo 'dtoverlay=arducam-pivariety' | sudo tee -a /boot/config.txt' && # add arducam to config.txt
 
-        exe 'cd ../' &&
-        exe 'rm -rf camera_drivers'
-    } || { # catch
-        echoRed "Failed to install arducam pivariety camera driver "
-        echoRed "Install them manually using this link: https://docs.arducam.com/Raspberry-Pi-Camera/Pivariety-Camera/Quick-Start-Guide/ "
-        echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-        exit 1
-    }
-fi
+#         exe 'cd ../' &&
+#         exe 'rm -rf camera_drivers'
+#     } || { # catch
+#         echoRed "Failed to install arducam pivariety camera driver "
+#         echoRed "Install them manually using this link: https://docs.arducam.com/Raspberry-Pi-Camera/Pivariety-Camera/Quick-Start-Guide/ "
+#         echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+#         exit 1
+#     }
+# fi
 
 # ---- Install GO Language ----
 # From: https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/
 # check if we have already added words "GOPATH=" to the  ~/.profile file:
-if ! grep "GOPATH=" ~/.profile; then
-    { # try
-        exe 'cd ~/'
-        echoBlue "Installing GO and adding GOPATH to ~/.profile " &&
-        exe 'sudo rm -rf /usr/local/go' && false || # remove any old version of go
-        exe 'sudo sed -i.bak '/go\\/bin/d' ~/.profile ' && false || # remove existing refernces to go
-        exe 'sudo sed -i.bak '/GOPATH/d' ~/.profile' && false ||  # remove existing refernces to GOPATH
+# if ! grep "GOPATH=" ~/.profile; then
+#     { # try
+#         exe 'cd ~/'
+#         echoBlue "Installing GO and adding GOPATH to ~/.profile " &&
+#         exe 'sudo rm -rf /usr/local/go' && false || # remove any old version of go
+#         exe 'sudo sed -i.bak '/go\\/bin/d' ~/.profile ' && false || # remove existing refernces to go
+#         exe 'sudo sed -i.bak '/GOPATH/d' ~/.profile' && false ||  # remove existing refernces to GOPATH
 
-        exe 'wget -c --timeout=10 --waitretry=4 --tries=5 https://go.dev/dl/go1.20.1.linux-arm64.tar.gz -O goinstall.tar.gz' &&
-        exe 'sudo tar -C /usr/local -xzf goinstall.tar.gz' &&
-        exe 'rm goinstall.tar.gz' &&
-        exe 'echo 'PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin' | sudo tee -a ~/.profile' &&
-        exe 'echo 'GOPATH=\$HOME/golang' | sudo tee -a ~/.profile' &&
-        exe 'source ~/.profile'
-    } || { # catch
-        echoRed "Failed to install GO Lang "
-        echoRed "Install it manually using this link: https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/ "
-        echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-        exit 1
-    }
-fi
+#         exe 'wget -c --timeout=10 --waitretry=4 --tries=5 https://go.dev/dl/go1.20.1.linux-arm64.tar.gz -O goinstall.tar.gz' &&
+#         exe 'sudo tar -C /usr/local -xzf goinstall.tar.gz' &&
+#         exe 'rm goinstall.tar.gz' &&
+#         exe 'echo 'PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin' | sudo tee -a ~/.profile' &&
+#         exe 'echo 'GOPATH=\$HOME/golang' | sudo tee -a ~/.profile' &&
+#         exe 'source ~/.profile'
+#     } || { # catch
+#         echoRed "Failed to install GO Lang "
+#         echoRed "Install it manually using this link: https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/ "
+#         echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+#         exit 1
+#     }
+# fi
 
 
 # ------ Install NGROK -------
-{ # try
-    echoBlue "Downloading and updating Ngrok" &&
-    echoBlue "This download url might break, so if it does just copy the link for the latest armv7 version from https://ngrok.com/download, and run the following command with that link instead" &&
-    exe 'curl -sSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-arm.tgz | sudo tar xzf - -C "/usr/local/bin" --wildcards --no-anchored "ngrok*" ' &&
-    exe 'ngrok update'
-    echoBlue "Ngrok installed. Remember to set the ngrok authtoken when this script is done."
-} || { # catch
-    echoRed "Failed to install Ngrok "
-    echoRed "Install it manually using this link: https://ngrok.com/download "
-    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-}
+# { # try
+#     echoBlue "Downloading and updating Ngrok" &&
+#     echoBlue "This download url might break, so if it does just copy the link for the latest armv7 version from https://ngrok.com/download, and run the following command with that link instead" &&
+#     exe 'curl -sSL https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-arm.tgz | sudo tar xzf - -C "/usr/local/bin" --wildcards --no-anchored "ngrok*" ' &&
+#     exe 'ngrok update'
+#     echoBlue "Ngrok installed. Remember to set the ngrok authtoken when this script is done."
+# } || { # catch
+#     echoRed "Failed to install Ngrok "
+#     echoRed "Install it manually using this link: https://ngrok.com/download "
+#     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+# }
 
 # # ---- INSTALL GO WEBRTC-RELAY ----
-{ # try
-    exe 'cd ~/'
-    exe 'rm -rf webrtc-relay' && false || # remove any old version of webrtc-relay
-    exe 'git clone https://github.com/kw-m/webrtc-relay.git' &&
-    exe 'cd webrtc-relay' &&
-    exe 'go install ./ '
-} || { # catch
-    echoRed "Failed to install webrtc-relay "
-    echoRed "Download & Install it manually: see https://github.com/kw-m/webrtc-relay "
-    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-    exit 1
-}
-
-# # ---- DOWNLOAD STATIC ROV FRONTEND WEB PAGE ----
-
-{ # try
-    exe 'cd ~/'
-    exe 'rm -rf rov-web' && false || # remove any old version of rov-web
-    exe 'git clone -b gh-pages --single-branch https://github.com/kw-m/rov-web.git'
-} || { # catch
-    echoRed "Failed to download rov-web "
-    echoRed "Download & Install it manually: see https://github.com/kw-m/rov-web "
-    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-    exit 1
-}
+# { # try
+#     exe 'cd ~/'
+#     exe 'rm -rf webrtc-relay' && false || # remove any old version of webrtc-relay
+#     exe 'git clone https://github.com/kw-m/webrtc-relay.git' &&
+#     exe 'cd webrtc-relay' &&
+#     exe 'go install ./ '
+# } || { # catch
+#     echoRed "Failed to install webrtc-relay "
+#     echoRed "Download & Install it manually: see https://github.com/kw-m/webrtc-relay "
+#     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+#     exit 1
+# }
 
 # # ---- Install USB Teathering suport for iPhone (From: https://www.youtube.com/watch?v=Q-m4i7LFxLA)
 { # try
@@ -220,7 +223,7 @@ fi
     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
     exit 1
 }
-# sudo apt-get install gstreamer1.0-liba
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 { # try

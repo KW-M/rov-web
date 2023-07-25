@@ -3,7 +3,7 @@ set -e # exit on error
 set -u # exit on undefined variable
 
 echo "This script sets up a Raspberry Pi as an Internet ROV"
-echo " - Should ideally be run on a fresh copy of Raspberry Pi OS (Buster or later)"
+echo " - Should ideally be run on a fresh copy of Raspberry Pi OS (Ideally 64Bit Buster or later)"
 echo " - It *should* be fine if this script gets run twice or more."
 echo " - Make sure the pi has a good power source & internet connection."
 echo " - It will take around 1 hour to run."

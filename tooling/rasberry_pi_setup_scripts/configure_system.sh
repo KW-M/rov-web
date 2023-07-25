@@ -74,13 +74,14 @@ echoBlue  "Enabling Camera "
 exe "sudo raspi-config nonint do_camera 0" || true # zero here means "enable"
 echoBlue  "Disabling VNC remote desktop "
 exe "sudo raspi-config nonint do_vnc 1"  || true # 1 here means "disable"
+echoGreen  "Disabling Bluetooth... "
+exe "sudo raspi-config nonint do_bluetooth 1" || true
+exe "sudo raspi-config nonint do_bluetooth_discoverable 1" || true
 # echoBlue  "Setting the pi to automatically login and boot to the desktop (can also be set manually by running sudo raspi-config then, go to System, then Auto Boot / Login. "
 # exe "sudo raspi-config nonint do_boot_behaviour B4" || true
 # echoBlue  "Setting the pi GPU Memory amount to 128mb (can also be set manually by running sudo raspi-config then, go to Performance, then GPU Memory. "
 # exe "sudo raspi-config nonint do_memory_split 128"  || true
-# echoGreen  "Disabling Bluetooth... "
-# exe "sudo raspi-config nonint do_bluetooth 1" || true
-# exe "sudo raspi-config nonint do_bluetooth_discoverable 1" || true
+
 
 # # from: https://raspberrypi.stackexchange.com/questions/63930/remove-uv4l-software-by-http-linux-project-org-watermark
 # # https://www.raspberrypi.org/forums/viewtopic.php?t=62364
@@ -93,11 +94,11 @@ exe "sudo raspi-config nonint do_vnc 1"  || true # 1 here means "disable"
 # ----------------------------------------------------------------------------------------------------------------------
 
 # from: https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/i2c-clock-stretching
-if grep "i2c_arm_baudrate" "/boot/config.txt"; then
-	echoGreen "Enabling I2C clock stretching (slowing down i2c protocol for older sensors) "
-	echoBlue  "Adding i2c_arm_baudrate=10000 (10khz) to /boot/config.txt "
-	echo "i2c_arm_baudrate=10000" | sudo tee -a /boot/config.txt
-fi
+# if grep "i2c_arm_baudrate" "/boot/config.txt"; then
+# 	echoGreen "Enabling I2C clock stretching (slowing down i2c protocol for older sensors) "
+# 	echoBlue  "Adding i2c_arm_baudrate=10000 (10khz) to /boot/config.txt "
+# 	echo "i2c_arm_baudrate=10000" | sudo tee -a /boot/config.txt
+# fi
 
 # ------ Enable newer graphics driver for better video encoding ------
 # https://www.systutorials.com/how-to-delete-a-specific-line-from-a-text-file-in-command-line-on-linux/
@@ -121,21 +122,24 @@ if ! grep "$CHRON_ROTATE_LINE" /etc/crontab; then
 	# from: https://stackoverflow.com/questions/20162176/centos-linux-setting-logrotate-to-maximum-file-size-for-all-logs
 	echoGreen  "Setting Logrotate to run and trim system log files every 30 minutes in /etc/crontab "
 	exe "echo '$CHRON_ROTATE_LINE' | sudo tee -a /etc/crontab"
-	echoGreen "Setting the max size of all system log files to 100kb (times x number of kept log rotations)"
-	exe "echo 'size 100k' | sudo tee -a /etc/logrotate.conf"
-	# also add "size 100k" to the begining of the file logrotate.conf, becuz I'm not sure which side of the included configs takes priority:
-	exe "echo 'size 100k' | cat - /etc/logrotate.conf | sudo tee /etc/logrotate.conf"
-	# echo 'size 100k\n$(cat /etc/logrotate.conf)' | sudo tee /etc/logrotate.conf
+fi
+
+#https://andreaskaris.github.io/blog/linux/setting-journalctl-limits/
+JOURNALCTL_CONFIG_LINE1="SystemMaxUse=100M"
+JOURNALCTL_CONFIG_LINE2="SystemKeepFree=1G"
+if ! grep "$JOURNALCTL_CONFIG_LINE1" /etc/systemd/journald.conf; then
+	exc "echo '$JOURNALCTL_CONFIG_LINE1' | sudo tee -a /etc/systemd/journald.conf"
+	exc "echo '$JOURNALCTL_CONFIG_LINE2' | sudo tee -a /etc/systemd/journald.conf"
 fi
 
 # --------- Setup System Logs to Be stored to a temporary filesystem in ram (tmpfs) ---------
 # this is to save the sd card from unneccesary writes, that could kill it.
 # from: https://www.zdnet.com/article/raspberry-pi-extending-the-life-of-the-sd-card/
 # and: https://durdle.com/2017/01/04/how-not-to-kill-your-pis-sd-card/
-if ! grep "tmpfs /var/log" /etc/fstab; then
-	echoGreen "Setting up in memory filesystem for system log file folder /var/log"
-	exe "echo 'tmpfs /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=30m    0 0' | sudo tee -a /etc/fstab"
-fi
+# if ! grep "tmpfs /var/log" /etc/fstab; then
+# 	echoGreen "Setting up in memory filesystem for system log file folder /var/log"
+# 	exe "echo 'tmpfs /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=30m    0 0' | sudo tee -a /etc/fstab"
+# fi
 
 # -------------------- Done ------------------------
 
