@@ -56,7 +56,7 @@ changes=$1 || ""
 # Check if the requirements.txt file has been modified recently, if so, install the python dependencies:
 if echo "$changes" | grep "requirements.txt"; then
 	echoBlue "Installing python dependencies"
-	exe "python3 -m pip install -r $HOME/rov-web/rov-backend/python/requirements.txt"
+	exe "python3 -m pip install -r $HOME/rov-web/requirements.txt"
 fi
 
 # Check if the cython_modules folder has been modified recently, if so, recompile the cython modules:

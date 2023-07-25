@@ -4,8 +4,11 @@ aiostream==0.4.4
 websockets==11.0.3
 async-timeout==4.0.2
 pigpio==1.78
-# ms5803py==1.0.0
+ms5803py==1.0.0
 betterproto==2.0.0b5
 cython==3.0.0a11
 AHRS==0.3.1
-# smbus==1.1.post2
+smbus==1.1.post2
+selenium==4.10.0
+pyvirtualdisplay==3.0
+sparkfun-qwiic-icm20948==0.0.1

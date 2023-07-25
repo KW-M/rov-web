@@ -49,6 +49,9 @@ exe 'sudo apt-get -y dist-upgrade --fix-missing' || true
 exe 'sudo apt-get -y update --fix-missing' || true
 exe 'sudo apt-get install -y git wget' || true
 
+echoBlue "Installing chromium chromedriver for selinium"
+exe "sudo apt-get install chromium-chromedriver"
+
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
 # { # try
 #     cd ~/
