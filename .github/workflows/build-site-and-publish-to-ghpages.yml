@@ -32,14 +32,23 @@ jobs:
           with:
             submodules: recursive
 
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v2.2.4
+        # with:
+        #   version: 8.5.1
+        #   dest: ./internal_website
+        #   run_install: |
+        #     - recursive: false
+        #     - cwd: ./internal_website
+
+        - name: Setup Protocol Buffer Compiler
+          uses: arduino/setup-protoc@v2
+
         - name: Setup Python
           uses: actions/setup-python@v4
           with:
             python-version: '3.10'
             cache: 'pip' # caching pip dependencies
-
-        - name: Setup Protocol Buffer Compiler
-          uses: arduino/setup-protoc@v2
 
         - name: Install Betterproto
           run: pip install "betterproto[compiler]"
@@ -47,22 +56,32 @@ jobs:
         - name: Install Cython
           run: pip install Cython
 
-        - name: Setup pnpm
-          uses: pnpm/action-setup@v2.2.4
-          # with:
-          #   version: 8.5.1
-          #   dest: ./internal_website
-          #   run_install: |
-          #     - recursive: false
-          #     - cwd: ./internal_website
+
 
         - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
           run: |
             pnpm install
             pnpm run compile:proto
+            pnpm run compile:cython
             pnpm run build
 
-        - name: Deploy 🚀
+        - name: Zip Repo to share as a Github Release
+          uses: thedoctor0/zip-release@0.7.1
+          with:
+            type: 'zip'
+            filename: 'project.zip'
+            exclusions: '*.git* /*node_modules/* .editorconfig'
+
+        - name: Upload Release
+          uses: ncipollo/release-action@v1.12.0
+          with:
+            artifacts: "project.zip"
+            commit: ${{ github.sha }}
+            token: ${{ secrets.GITHUB_TOKEN }}
+            makeLatest: true
+            allowUpdates: true
+
+        - name: Deploy Site to Github Pages Website Hosting 🚀
           uses: JamesIves/github-pages-deploy-action@v4.3.4
           with:
             folder: dist # The folder the action should deploy.
