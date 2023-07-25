@@ -110,6 +110,7 @@ export class LivekitGenericConnection {
                     reconnect = false
                 } else if (reason === DisconnectReason.CLIENT_INITIATED) {
                     console.log('disconnected from room, client initiated')
+                    reconnect = false
                 } else if (reason === DisconnectReason.SERVER_SHUTDOWN) {
                     console.log('disconnected from room, server shutdown')
                     reconnect = false
@@ -149,19 +150,9 @@ export class LivekitGenericConnection {
             .on(RoomEvent.ParticipantConnected, async (participant: Participant) => {
                 appendLog('participant', participant.identity, 'connected', participant.metadata);
                 this.participantConnectionEvents.set({ id: participant.identity, joined: true })
-                participant
-                    .on(ParticipantEvent.TrackMuted, (pub: TrackPublication) => {
-                        appendLog('track was muted', pub.trackSid, participant.identity);
-                    })
-                    .on(ParticipantEvent.TrackUnmuted, (pub: TrackPublication) => {
-                        appendLog('track was unmuted', pub.trackSid, participant.identity);
-                    })
-                    .on(ParticipantEvent.IsSpeakingChanged, () => {
-                        appendLog('ParticipantEvent.IsSpeakingChanged', participant.isSpeaking);
-                    })
-                    .on(ParticipantEvent.ConnectionQualityChanged, () => {
-                        appendLog('ParticipantEvent.ConnectionQualityChanged', participant.connectionQuality);
-                    });
+                participant.on(ParticipantEvent.ConnectionQualityChanged, () => {
+                    appendLog('ParticipantEvent.ConnectionQualityChanged', participant.connectionQuality);
+                });
             })
             .on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
                 appendLog('participant', participant.sid, 'disconnected');
@@ -170,7 +161,7 @@ export class LivekitGenericConnection {
             .on(RoomEvent.MediaDevicesError, (e: Error) => {
                 const failure = MediaDeviceFailure.getFailure(e);
                 appendLog('media device failure', failure);
-                this._reconnect();
+                // this._reconnect();
             })
             .on(RoomEvent.ConnectionQualityChanged, (quality: ConnectionQuality, participant?: Participant) => {
                 appendLog(`connection quality for ${participant ? participant.identity : "[no identity]"} changed to ${quality}`);
@@ -206,7 +197,7 @@ export class LivekitGenericConnection {
         appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         try {
             // setup timeout in case of connection hang
-            const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}`); this._reconnect() }, 8000);
+            const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}`); this._reconnect() }, 16000);
             await this._connect();
             clearTimeout(timeout);
             appendLog(`Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
@@ -334,6 +325,14 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
         this.remoteVideoTrack = nStore(null);
     }
 
+    subscribeToTracks(participant: RemoteParticipant) {
+        if (this._rovRoomName === participant.identity) {
+            participant.tracks.forEach((pub) => {
+                pub.setSubscribed(true)
+            })
+        }
+    }
+
     async init(config: LivekitConfig) {
         await super.init(config);
 
@@ -350,11 +349,34 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
                     msg: msg
                 })
             })
+            .on(RoomEvent.Connected, () => {
+                this._roomConn.participants.forEach(this.subscribeToTracks.bind(this))
+            })
+            .on(RoomEvent.ParticipantConnected, (participant) => {
+                this.subscribeToTracks(participant)
+            })
+            .on(RoomEvent.TrackPublished, (pub, participant) => {
+                this.subscribeToTracks(participant)
+            })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
-                appendLog('subscribed to track!!!!!', pub.trackSid, participant.identity, track.source);
                 if (track.kind === Track.Kind.Video) {
-                    appendLog('subscribed to video track', track, pub, participant);
+                    if (this.remoteVideoTrack.get()) {
+                        console.warn("Livekit: already subscribed to video track, unsubscribing from old track", this.remoteVideoTrack.get())
+                        this.remoteVideoTrack.get().startMonitor
+                    }
+                    appendLog('Livekit: subscribed to video', track.source);
                     this.remoteVideoTrack.set(track)
+                    track.on('upstreamPaused', () => {
+                        console.log('livekit: video upstream paused')
+                    })
+                    track.on('muted', () => {
+                        console.log('livekit: video muted')
+                    })
+                    track.on('ended', () => {
+                        console.log('livekit: video ended')
+                    })
+                } else {
+                    appendLog('Livekit: subscribed to unknown track kind', track.kind, track.source);
                 }
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {

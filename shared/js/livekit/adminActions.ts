@@ -16,7 +16,17 @@ export type LivekitSetupOptions = {
     EnableBackendWebsocket: boolean,
 }
 
+export async function deleteLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
+    try {
+        return await client.deleteRoom(roomName)
+    } catch (e) {
+        console.warn("Failed to delete room: " + roomName, e)
+    }
+}
+
+
 export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
+    // await deleteLivekitRoom(client, roomName)
     return await client.createRoom({
         name: roomName,
         maxParticipants: 12,
@@ -83,7 +93,7 @@ export async function listLivekitRoomsSansSDK(hostUrl: string, livekitToken: str
     });
 }
 
-export function parseLivekitRoomMetadata(roomMetadata: string, tokenName: string = "accessToken"): string {
+export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokenName: string = "accessToken"): string {
     try {
         const metadata = JSON.parse(roomMetadata);
         return metadata[tokenName];

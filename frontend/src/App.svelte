@@ -92,7 +92,7 @@
   <OnscreenGamepads disabled={true} />
   <SensorDisplay />
 
-  <AhrsViz />
+  <!-- <AhrsViz /> -->
   <TopBar />
   <RovSelector />
 

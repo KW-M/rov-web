@@ -27,11 +27,11 @@ export const PROXY_PREFIX = 'proxy:';
 export const LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: false,
     maxRetries: 2,
-    peerConnectionTimeout: 45_000, // miliseconds
+    peerConnectionTimeout: 30_000, // miliseconds
 }
 
 export const LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
-    autoSubscribe: true,
+    autoSubscribe: false,
     maxRetries: 6,
     peerConnectionTimeout: 15_000, // miliseconds
 }

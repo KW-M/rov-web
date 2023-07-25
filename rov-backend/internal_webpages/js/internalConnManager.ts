@@ -1,5 +1,5 @@
 import { LivekitPublisherConnection } from "../../../shared/js/livekit/livekitConn"
-import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG } from '../../../shared/js/consts';
+import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates } from '../../../shared/js/consts';
 import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor } from '../../../shared/js/util';
 import { getPublisherAccessToken } from '../../../shared/js/livekit/livekitTokens';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
@@ -62,11 +62,17 @@ class InternalConnectionManager {
         })
     }
 
+    private async cameraReady(stream: MediaStream) {
+        this._cameraMediaStream = stream;
+        if (this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._cloudLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
+        if (this._localLivekitConnection && this._localLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._localLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
+    }
+
     public async start(livekitSetup: LivekitSetupOptions) {
         if (livekitSetup.EnableLivekitCloud) await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
         if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
-        this._cameraMediaStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices)({ video: true, audio: false });
-        console.log("ConnectionManager Started")
+        asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 30)({ video: true, audio: false }).then(this.cameraReady.bind(this));
+        console.info("Connection Manager Started")
     }
 
     public async startSimplePeerConnection(userId: string, firstSignallingMessage?: string) {

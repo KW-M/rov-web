@@ -1,6 +1,6 @@
 import { ConnectionStates, LIVEKIT_BACKEND_ROOM_CONFIG, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";
 import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-import { listLivekitRoomsSansSDK, parseLivekitRoomMetadata as getAuthTokenFromLivekitRoomMetadata } from "../../../shared/js/livekit/adminActions";
+import { listLivekitRoomsSansSDK, getAuthTokenFromLivekitRoomMetadata } from "../../../shared/js/livekit/adminActions";
 import { LivekitViewerConnection } from "../../../shared/js/livekit/livekitConn";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "../../../shared/js/simplePeer";
