@@ -3,7 +3,6 @@ import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 import time
 # import socket
@@ -35,27 +34,21 @@ class WebdriverManager:
 
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)
-        chrome_options = Options()
+        chrome_options = webdriver.ChromeOptions()
         # chrome_options.add_experimental_option("detach", True)
         chrome_options.binary_location=browser_binary_path
         # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--use-fake-ui-for-media-stream")
-
-        caps = webdriver.DesiredCapabilities.CHROME.copy()
-        caps['goog:loggingPrefs'] = { 'browser':'ALL' }
-
-
-
-        service = Service(executable_path=driver_path)
+        chrome_options.set_capability("loggingPrefs", {'browser': 'ALL'})
+        chrome_options.set_capability("goog:loggingPrefs", {'browser': 'ALL'})
 
         # Instantiate driver and navigate to appropriate webpage
-        self.driver = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)
-        # self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html") #TODO should point to appropriate website. (M) if it's static content couldn't we fetch it from the local file system?
+        service = Service(executable_path=driver_path)
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
 
-
-        # Ryan's testing link
+        #TODO should point to appropriate website (DONE). (M) if it's static content couldn't we fetch it from the local file system? - yes but we should pass it the  url query parameters at runtime / not hard-coded like it is now.
+        # self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
         self.driver.get("http://localhost:80/internal/index.html?ForceLocal=false&RovRoomName=ROV123&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&LocalAPIKey=NOTSET&LocalSecretKey=NOTSET")
-        #self.driver.get("http://localhost:5173/backend/index.html?ForceLocal=false&RovRoomName=ROV77&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG")
 
 
     """This function will periodically check if the driver is alive while the manager is set to running
