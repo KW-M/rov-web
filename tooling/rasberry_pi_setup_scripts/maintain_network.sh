@@ -12,6 +12,11 @@ sudo rfkill unblock wifi
 START_TIME=$(date +%s) # Unix epoch time in seconds
 WIFI_FOUND=0
 
+while true
+do
+
+done
+
 # CODE BELOW WAS SOMEWHAT BUGGY. DON'T UNCOMMENT IF YOU DON'T HAVE A Good way to connect to the pi
 
 # # check if wifi is already connected

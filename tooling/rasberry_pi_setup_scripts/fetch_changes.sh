@@ -47,7 +47,7 @@ exe "wget 'https://github.com/KW-M/rov-web/releases/latest/download/project.zip'
 exe "unzip project.zip -x '$tracked_files .git/*' && rm project.zip"
 exe "cp -rf ~/temp/rov-web-download/* ~/rov-web/"
 exe "rm -rf ~/temp"
-exe "~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"
+exe "bash ~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"
 
 # -------------------- Done ------------------------
 

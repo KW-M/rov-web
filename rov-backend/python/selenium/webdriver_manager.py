@@ -2,6 +2,7 @@
 import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from pyvirtualdisplay import Display
 import time
@@ -15,12 +16,12 @@ import time
 
 
 class WebdriverManager:
-	
+
     def init(self):
         self.running = False
 
-    
-    def start(self):     
+
+    def start(self):
         self.running = True
 
         # necessary to make virtual display to run graphical applications in headless mode
@@ -29,8 +30,8 @@ class WebdriverManager:
 
         # WARNING: these hardcoded paths must be correct
         # TODO these URLs should be accepted as parameters in some way.q
-        browser_binary_path = '/usr/bin/chromium-browser'
-        driver_path = '/usr/lib/chromium-browser/chromedriver'
+        browser_binary_path = r'/usr/bin/chromium-browser'
+        driver_path = r'/usr/lib/chromium-browser/chromedriver'
 
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)
@@ -43,11 +44,15 @@ class WebdriverManager:
         caps = webdriver.DesiredCapabilities.CHROME.copy()
         caps['goog:loggingPrefs'] = { 'browser':'ALL' }
 
+
+
+        service = Service(executable_path=driver_path)
+
         # Instantiate driver and navigate to appropriate webpage
-        self.driver = webdriver.Chrome(driver_path, options=chrome_options, desired_capabilities=caps)
+        self.driver = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)
         # self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html") #TODO should point to appropriate website. (M) if it's static content couldn't we fetch it from the local file system?
-        
-        
+
+
         # Ryan's testing link
         self.driver.get("http://localhost:80/internal/index.html?ForceLocal=false&RovRoomName=ROV123&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&LocalAPIKey=NOTSET&LocalSecretKey=NOTSET")
         #self.driver.get("http://localhost:5173/backend/index.html?ForceLocal=false&RovRoomName=ROV77&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG")
@@ -66,7 +71,7 @@ class WebdriverManager:
     #             print("We have a problem, for some reason the webdriver is supposed to be running but it's not. Maybe the browser has crashed? or there's a network issue? Attempting to restart webdriver.")
     #             self.stop()
     #             self.start()
-            
+
 
     def stop(self):
         self.running = False
@@ -85,17 +90,17 @@ class WebdriverManager:
             return True
         except:
             return False
-        
+
     def get_browser_log(self):
         return self.driver.get_log("browser")
 
-    """Function that will continuously check the browser being driven for new js logs 
+    """Function that will continuously check the browser being driven for new js logs
         and print them to the console. This is good to use for debugging purposes.
         Note this has the potential to really clutter your log output, so it's probably
         best to run it in a separate terminal session.
     """
     def start_browser_logging_loop(self):
-        
+
         L = 0 # Track Length of latest received log array
 
         # Continuously check for new logs and print them.
