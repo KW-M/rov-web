@@ -33,7 +33,7 @@ exe() { echo -e "$Black$> $@ $Color_Off" >&2; eval "$@" ; }
 
 # --------- Install basic packages ------------
 
-exe 'sudo apt-get install -y git wget' || true
+exe 'sudo apt-get install -y wget unzip' || true
 
 # ----------- DOWNLOAD ROV CODE --------------
 
@@ -42,8 +42,8 @@ exe 'sudo apt-get install -y git wget' || true
     exe 'rm -rf rov-web' && false || # remove any old version of rov-web
     exe 'git clone -b gh-pages --single-branch https://github.com/kw-m/rov-web.git'
 } || { # catch
-    echoRed "Failed to download rov-web repo from github.com"
-    echoRed "Download & Install it manually: see https://github.com/kw-m/rov-web "
+    echoRed "Failed to download the current release of the rov-web repo from github.com"
+    echoRed "Download & Install the latest release manually: see https://github.com/kw-m/rov-web/releases "
     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
     exit 1
 }
