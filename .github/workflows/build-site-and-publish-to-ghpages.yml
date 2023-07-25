@@ -81,7 +81,8 @@ jobs:
           uses: ncipollo/release-action@v1.12.0
           with:
             artifacts: "project.zip"
-            tag: ${{ github.ref }} - ${{ github.sha }}
+            tag: ${{ github.ref }}-${{ github.sha }}
+            commit: ${{ github.sha }}
             token: ${{ secrets.GITHUB_TOKEN }}
             makeLatest: true
             allowUpdates: true
