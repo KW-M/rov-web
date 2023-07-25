@@ -59,10 +59,8 @@ jobs:
         - name: Install Betterproto
           run: pip install "betterproto[compiler]"
 
-        - name: Install Cython
-          run: pip install Cython
-
-
+        # - name: Install Cython
+        #   run: pip install Cython
 
         - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
           run: |
@@ -75,7 +73,7 @@ jobs:
           with:
             type: 'zip'
             filename: 'project.zip'
-            exclusions: '*.git* /*node_modules/* .editorconfig'
+            exclusions: '/*node_modules/* .editorconfig' #*.git*
 
         - name: Upload Release
           uses: ncipollo/release-action@v1.12.0

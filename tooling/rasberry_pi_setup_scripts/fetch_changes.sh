@@ -28,100 +28,26 @@ echoRed() { echo -e "$Red $@ $Color_Off" >&2; }
 # Function to display commands in Black before running them
 exe() { echo -e "$Black> $@ $Color_Off" >&2; eval "$@" ; }
 
-# This function is used in the main body of this script:
-backupThenOverwrite(){
-	REPLACEMENT_FILE=$1
-	ORIGINAL_FILE_PATH=$2
-	ORIGINAL_FILE_NAME=$(basename "$ORIGINAL_FILE_PATH")
-	ORIGINAL_FOLDER_PATH=${ORIGINAL_FILE_PATH%/*}
-
-	# make folder to hold backups
-	mkdir -p "$HOME/original_config_file_backups/"
-	# Copy the original file into the backups folder
-	if [ -e "$ORIGINAL_FILE_PATH" ] && [ ! -e "$HOME/original_config_file_backups/$ORIGINAL_FILE_NAME" ]; then
-	   # if the original file (Usually the originally installed file exists AND a backup of that file doesn't exist in original_config_file_backups/, then)
-	  exe "sudo cp '$ORIGINAL_FILE_PATH' '$HOME/original_config_file_backups/'" || true;
-	fi;
-	# copy the replacement file into the original file's location
-	exe "sudo mkdir -p '$ORIGINAL_FOLDER_PATH' && sudo cp -T '$REPLACEMENT_FILE' '$ORIGINAL_FILE_PATH'" || true
-	exe "sudo chown '$USER' '$ORIGINAL_FILE_PATH'" # make sure we can still read & write it from the pi user.
-};
-
 # --------------------------------------------
 # ------------ Main Script Body -------------
 # --------------------------------------------
 
-echo "Pulling any changes to the rov static web page from github"
+
+echoBlue "Pulling changes to rov-web from Github"
 exe "cd ~/rov-web"
 exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
-
 changes=$(git pull --rebase)
 echoBlue "changes: $changes"
+tracked_files=$(git ls-files)
 
-# Check if the requirements.txt file has been modified recently, if so, install the python dependencies:
-if echo "$changes" | grep "requirements.txt"; then
-	echoBlue "Installing python dependencies"
-	exe "python3 -m pip install -r rov-backend/python/requirements.txt"
-fi
-
-# Check if the cython_modules folder has been modified recently, if so, recompile the cython modules:
-if echo "$changes" | grep "cython_modules"; then
-	echoBlue "Compiling cython modules"
-	exe "python3 rov-backend/python/cython_modules/setup.py build_ext --inplace"
-fi
-
-# ------------------------------------------------------------------------------
-
-exe "cd '$FOLDER_CONTAINING_THIS_SCRIPT/new_config_files'"
-
-# Check if the rov-config.json file exists, if not copy it over from the new_config_files folder:
-if [ ! -e "$HOME/rov-config.json" ]; then
-	echo "Copying over rov-config.json file..."
-	backupThenOverwrite "$FOLDER_CONTAINING_THIS_SCRIPT/new_config_files/rov-config.json" "$HOME/rov-config.json"
-fi;
-
-# echoBlue "Copying over rov_ startup service file..."
-
-echoBlue "Copying over rov_python_code startup service file..."
-backupThenOverwrite "rov_python_code.service" "/lib/systemd/system/rov_python_code.service"
-
-echoBlue "Copying over rov_internal_website startup service file..."
-backupThenOverwrite "rov_internal_website.service" "/lib/systemd/system/rov_internal_website.service"
-
-echoBlue "Copying over nginx config file to /etc/nginx.conf"
-backupThenOverwrite "nginx.conf" "/etc/nginx/nginx.conf"
-
-# echoBlue "Copying over maintain_network.service startup service file..."
-# backupThenOverwrite "maintain_network.service" "/etc/systemd/system/maintain_network.service"
-
-#-----------------------------------------------------------------------------------------------------------------------
-
-echoBlue "Restarting systemd (systemctl) Services..."
-# daemon-reload makes the system load any new/changed services in the /lib/systemd/system/ directory
-exe "sudo systemctl daemon-reload"
-exe "sudo systemctl restart pigpiod.service"
-exe "sudo systemctl restart rov_python_code.service"
-exe "sudo systemctl restart rov_internal_website.service"
-# exe "sudo systemctl restart maintain_network.service"
-exe "sudo systemctl restart nginx.service"
-
-# The above lines restart systemd "services" running when this rasberry pi boots.
-# for more about these files: https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files
-
-### to stop a service:
-# sudo systemctl stop the_service_name
-
-### To Stop the service forcefully
-# sudo killall the_service_name
-
-### to stop a service from launching at raspi boot:
-# sudo systemctl disable the_service_name
-
-### to start a service launching at raspi boot:
-# sudo systemctl enable the_service_name
-
-### to check if a service is running and show logs / status:
-# sudo systemctl status the_service_name
+echoBlue "Downloading both rov-web release from Github"
+exe "mkdir -p ~/temp/rov-web-download"
+exe "cd ~/tmp/rov-web-download"
+exe "wget 'https://github.com/KW-M/rov-web/releases/latest/download/project.zip' -O project.zip"
+exe "unzip project.zip -x '$tracked_files .git/*' && rm project.zip"
+exe "cp -f ~/temp/rov-web-download/* ~/rov-web/"
+exe "rm -rf ~/temp"
+exe "~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"
 
 # -------------------- Done ------------------------
 

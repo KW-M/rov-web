@@ -31,23 +31,6 @@ exe() { echo -e "$Black$> $@ $Color_Off" >&2; eval "$@" ; }
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-# --------- Install basic packages ------------
-
-exe 'sudo apt-get install -y wget unzip' || true
-
-# ----------- DOWNLOAD ROV CODE --------------
-
-{ # try
-    exe 'cd ~/' &&
-    exe 'rm -rf rov-web' && false || # remove any old version of rov-web
-    exe 'wget https://github.com/KW-M/rov-web/releases/latest/download/project.zip'
-} || { # catch
-    echoRed "Failed to download the current release of the rov-web repo from github.com"
-    echoRed "Download & Install the latest release manually: see https://github.com/kw-m/rov-web/releases "
-    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
-    exit 1
-}
-
 # --------- Update System Packages ------------
 # From: https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi
 echoBlue "Making sure all system & package updates are installed... "
@@ -219,7 +202,7 @@ exe 'sudo apt-get install -y git wget' || true
     exe 'python3 python/cython_modules/setup.py build_ext --inplace'
 } || { # catch
     echoRed "Failed to install python packages or compile cython"
-    echoRed "Install them manually, see the python/requirements.txt file and python/cython_modules/setup.py file in this rov-web/ folder. Also this cython tutorial may be helpful: https://ron.sh/compiling-python-code-with-cython/"
+    echoRed "Install them manually, see the python/requirements.txt file and python/cython_modules/setup.py file in this rov-web folder. Also this cython tutorial may be helpful: https://ron.sh/compiling-python-code-with-cython/"
     echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
     exit 1
 }
