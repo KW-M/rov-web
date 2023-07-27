@@ -29,15 +29,15 @@ def verify_authorization(require_password: bool, require_is_driver: bool):
     """ Decorator to verify that the sending user is authorized to perform the wrapped action handler function."""
     def decorator(func):
         @wraps(func)
-        async def wrapper(*args, **kwargs):
-            src_participant_id: str = kwargs['src_participant_id'] if 'src_peer_id' in kwargs else args[1]
+        async def wrapper(self, *args, **kwargs):
+            src_participant_id: str = kwargs['src_participant_id'] if 'src_participant_id' in kwargs else args[1]
             msg_data: RovAction = kwargs['msg_data'] if 'msg_data' in kwargs else args[2]
             resp = user_auth.check_authorization(src_participant_id,msg_data,require_password,require_is_driver)
             if resp is not None:
                 message_handler.set_replay_action(src_participant_id, msg_data)
                 return resp
             else:
-                return await func(src_participant_id, msg_data)
+                return await func(self, src_participant_id, msg_data)
         return wrapper
     return decorator
 VERIFY_AUTHORIZATION = verify_authorization
