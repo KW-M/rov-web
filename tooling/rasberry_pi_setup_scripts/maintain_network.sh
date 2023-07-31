@@ -8,7 +8,7 @@
 
 # Enable wifi:
 echo "enabling wifi"
-sudo rfkill unblock wifi
+sudo rfkill unblock wlan
 START_TIME=$(date +%s) # Unix epoch time in seconds
 WIFI_FOUND=0
 
