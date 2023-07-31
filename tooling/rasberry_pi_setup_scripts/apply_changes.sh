@@ -85,7 +85,7 @@ echoBlue "Copying over nginx config file to /etc/nginx.conf"
 backupThenOverwrite "nginx.conf" "/etc/nginx/nginx.conf"
 
 echoBlue "Copying over maintain_network.service startup service file..."
-backupThenOverwrite "maintain_network.service" "/etc/systemd/system/maintain_network.service"
+backupThenOverwrite "maintain_network.service" "/lib/systemd/system/maintain_network.service"
 
 #-----------------------------------------------------------------------------------------------------------------------
 
