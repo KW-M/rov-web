@@ -6,16 +6,13 @@
 # Runs the rov-web/new_config_files/maintain_network.sh IP Change Monitor script that adds the static ip 10.0.99.88 to any new network
 
 [Unit]
-Description=Add Fixed IP Address on Network Change
-Wants=network.target
-After=network-online.target
+Description=RFKill-Unblock WiFi Devices
 
 [Service]
-ExecStart=/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/maintain_network.sh
-Restart=always
-TimeoutStopSec=10s
-RestartSec=5s
-Type=simple
+Type=oneshot
+ExecStart=rfkill unblock all
+ExecStop=
+RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target default.target
+WantedBy=multi-user.target
