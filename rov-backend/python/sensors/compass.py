@@ -52,6 +52,8 @@ class FusedCompassSensor(GenericSensor):
 
     async def read_sensor(self) -> tuple[list[float], float]:
         quat, quat_accuracy, temp_c = self.imu.read_sensor()
+        if quat == [0.0, 0.0, 0.0, 0.0]:
+            return ([0.0, 0.0, 0.0, 0.0], self.sensor_read_interval)
         angles = Quaternion(quat).to_angles()
         roll, pitch, yaw = angles
         pitch /= 3.14159 / 180

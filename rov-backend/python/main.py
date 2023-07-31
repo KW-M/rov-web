@@ -42,14 +42,13 @@ async def main():
     status_led_ctrl.on()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
-    # TODO init the webdriver manager, then start it as normal.
     motion_ctrl.init()
     sensor_ctrl.init()
     # sensor_log.start(sensors.all_sensors)
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(
-        # sensor_ctrl.sensor_setup_loop(), #TEMP DISABLED TODO
+        sensor_ctrl.sensor_setup_loop(),
         motion_ctrl.motor_setup_loop(),
         websocket_server.start_wss(),
         message_handler.status_broadcast_loop(),

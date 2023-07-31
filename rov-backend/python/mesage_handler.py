@@ -30,8 +30,8 @@ def verify_authorization(require_password: bool, require_is_driver: bool):
     def decorator(func):
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
-            src_participant_id: str = kwargs['src_participant_id'] if 'src_participant_id' in kwargs else args[1]
-            msg_data: RovAction = kwargs['msg_data'] if 'msg_data' in kwargs else args[2]
+            src_participant_id: str = kwargs['src_participant_id'] if 'src_participant_id' in kwargs else args[0]
+            msg_data: RovAction = kwargs['msg_data'] if 'msg_data' in kwargs else args[1]
             resp = user_auth.check_authorization(src_participant_id,msg_data,require_password,require_is_driver)
             if resp is not None:
                 message_handler.set_replay_action(src_participant_id, msg_data)
@@ -193,7 +193,9 @@ class MessageHandlerClass:
             err_msg = 'No action specified' if action == "" else 'Unknown action: ' + action
             response = self.add_response_metadata(RovResponse(error=ErrorResponse(message=err_msg), exchange_id=msg_proto.exchange_id), [])
 
-        # Send the response:
+        # Send the response (if any):
+        if not response:
+            return
         if isinstance(response, RovResponse):
             response.exchange_id = msg_proto.exchange_id
             await self.send_msg(response)
@@ -202,7 +204,7 @@ class MessageHandlerClass:
                 single_response.exchange_id = msg_proto.exchange_id
                 await self.send_msg(single_response)
         else:
-            raise Exception("Unexpected response type: " + str(type(msg_proto)))
+            raise Exception("Unexpected response type: " + str(type(response)))
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ROV Actions that can be done by anyone:
