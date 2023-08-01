@@ -198,8 +198,7 @@ exe "sudo apt-get install chromium-chromedriver"
 # exe 'rm -rf ./Python-${python_version_to_install}' &&
 
 { # try
-    exe "cd '$FOLDER_CONTAINING_THIS_SCRIPT' " &&
-    exe 'cd ../' &&
+    exe "cd ~/rov-web' " &&
 
     echoBlue "Installing python3-pip & pigpiod" &&
     exe 'echo "PATH=\$PATH:/home/pi/.local/bin" | sudo tee -a ~/.profile' &&
@@ -207,10 +206,10 @@ exe "sudo apt-get install chromium-chromedriver"
     exe 'python3 -m pip install --upgrade setuptools' &&
 
     echoBlue "Installing required python packages" &&
-    exe 'python3 -m pip install -r python/requirements.txt' &&
+    exe 'python3 -m pip install -r requirements.txt' &&
 
     echoBlue "Compiling cython modules" &&
-    exe 'python3 python/cython_modules/setup.py build_ext --inplace'
+    exe 'python3 rov-backend/python/cython_modules/setup.py build_ext --inplace'
 } || { # catch
     echoRed "Failed to install python packages or compile cython"
     echoRed "Install them manually, see the python/requirements.txt file and python/cython_modules/setup.py file in this rov-web folder. Also this cython tutorial may be helpful: https://ron.sh/compiling-python-code-with-cython/"
@@ -222,16 +221,19 @@ exe "sudo apt-get install chromium-chromedriver"
 
 { # try
     echoBlue "Running the rasberry_pi_setup_scripts/fetch_changes.sh script in this folder. " &&
-    exe '/bin/bash $FOLDER_CONTAINING_THIS_SCRIPT/fetch_changes.sh' && # run the update config files script in this folder.
+    exe "/bin/bash $FOLDER_CONTAINING_THIS_SCRIPT/fetch_changes.sh" && # run the update config files script in this folder.
 
     echoBlue "Enabling systemd (systemctl) services so they start at boot (or whenever configured too)... " &&
-    exe 'sudo systemctl enable pigpiod.service' &&
-    exe 'sudo systemctl enable rov_python_code.service' && # enable the new rov_python_code service
-    exe 'sudo systemctl enable rov_go_code.service' && # enable the new rov_python_code service
     exe 'sudo systemctl enable nginx.service' &&
-    exe 'sudo systemctl enable maintain_network.service'
+    exe 'sudo systemctl enable pigpiod.service' &&
+    exe 'sudo systemctl enable maintain_network.service' &&
+    exe 'sudo systemctl enable rov_python_code.service' &&
+    exe 'sudo systemctl enable rov_internal_web_browser.service'
+
 } || { # catch
     echoRed "Failed to enable some systemd services. See the above output for more info."
+    echoRed "[Script Failed somewhere before line number $LINENO in this script: $PATH_TO_THIS_SCRIPT]"
+    exit 1
 }
 
 echoBlue "cleaning up any packages that were installed to aid installing anything else, but are no longer needed"

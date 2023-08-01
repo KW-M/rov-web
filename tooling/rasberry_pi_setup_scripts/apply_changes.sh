@@ -51,7 +51,12 @@ backupThenOverwrite(){
 # ------------ Main Script Body -------------
 # --------------------------------------------
 
-changes=$1 || ""
+changes=""
+if [ $# -eq 0 ]; then
+	changes="requirements.txt \n cython_modules"
+else
+	changes=$@
+fi
 
 # Check if the requirements.txt file has been modified recently, if so, install the python dependencies:
 if echo "$changes" | grep "requirements.txt"; then
