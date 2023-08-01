@@ -33,18 +33,20 @@ exe() { echo -e "$Black> $@ $Color_Off" >&2; eval "$@" ; }
 # --------------------------------------------
 
 
-echoBlue "Pulling changes to rov-web from Github"
+echoBlue "~~ Pulling changes to rov-web from Github ~~"
 exe "cd ~/rov-web"
 exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the web page before overwriting them
 changes=$(git pull --rebase)
-echoBlue "changes: $changes"
 tracked_files=$(git ls-files)
+echoBlue "changes: $changes"
+echoBlue "tracked_files: $tracked_files"
 
-echoBlue "Downloading both rov-web release from Github"
+echoBlue "~~ Downloading built rov-web release from Github ~~"
 exe "mkdir -p ~/temp/rov-web-download"
 exe "cd ~/temp/rov-web-download"
 exe "wget 'https://github.com/KW-M/rov-web/releases/latest/download/project.zip' -O project.zip"
-exe "unzip project.zip -x '$tracked_files .git/*' && rm project.zip"
+exe "unzip project.zip -x '.git/*' && rm project.zip"
+echo $tracked_files | xargs rm
 exe "cp -rf ~/temp/rov-web-download/* ~/rov-web/"
 exe "rm -rf ~/temp"
 exe "bash ~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"

@@ -39,15 +39,14 @@ exe "git branch -m main"
 exe "git branch --set-upstream-to=origin/main main"
 exe "git reset --hard origin/main"
 
-
 # --------- Update System Packages ------------
 # From: https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi
 echoBlue "Making sure all system & package updates are installed... "
 exe 'sudo apt-get update --fix-missing' || true
 exe 'sudo apt-get -y full-upgrade --fix-missing' || true
 exe 'sudo apt-get -y dist-upgrade --fix-missing' || true
-exe 'sudo apt-get -y update --fix-missing' || true
-exe 'sudo apt-get install -y git wget' || true
+exe 'sudo apt-get -y update' || true
+exe 'sudo apt-get install -y git wget unzip' || true
 
 echoBlue "Installing chromium chromedriver for selinium"
 exe "sudo apt-get install chromium-chromedriver"

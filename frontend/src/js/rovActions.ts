@@ -16,8 +16,9 @@ class RovActionsClass {
         VelocityX: 0,
         VelocityY: 0,
         VelocityZ: 0,
-        AngularVelocityYaw: 0
+        AngularVelocityYaw: 0,
     };
+    lastMovementTime = 0;
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
 
@@ -84,10 +85,12 @@ class RovActionsClass {
     }
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
-        if (VelocityX == this.lastMove.VelocityX && VelocityY == this.lastMove.VelocityY && VelocityZ == this.lastMove.VelocityZ && AngularVelocityYaw == this.lastMove.AngularVelocityYaw) return;
-        const newMovement = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw }
-        frontendRovMsgHandler.sendRovMessage({ Move: newMovement }, null);
-        this.lastMove = newMovement;
+        const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
+        const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
+        if (movementDelta < 0.1 && timeSinceLastMoveCmd < 800) return;
+        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } }, null);
+        this.lastMove = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw };
+        this.lastMovementTime = Date.now();
     }
 
     refreshAllSensorData() {
