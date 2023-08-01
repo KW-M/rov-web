@@ -108,10 +108,8 @@ export class FrontendRovMsgHandlerClass {
 
     // TODO:
     handleDriverChangedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IDriverChangedResponse) {
-        console.info("Driver Changed: ", msgData);
-        let thisPeerId = "wooooooo!"//'frontendConnMngr.getThisPeerId();
-        console.log("TODO: handleDriverChangedMsgRecived ", thisPeerId);
-        if (msgData.DriverPeerId == thisPeerId) {
+        let ourLivekitIdentity = frontendConnMngr.currentLivekitIdentity.get();
+        if (msgData.DriverPeerId == ourLivekitIdentity) {
             showToastMessage("You are now the driver");
             isRovDriver.set(true);
         } else {
@@ -128,11 +126,10 @@ export class FrontendRovMsgHandlerClass {
         showToastMessage(msgData.ClientPeerId + " Disconnected from ROV", 1500, null);
     }
 
-    sendRovMessage(msgData: rov_actions_proto.IRovAction, replyCallback: (replyMsgData: rov_actions_proto.RovResponse) => void = null) {
-        if (!msgData.ExchangeId && replyCallback) msgData.ExchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random cid if none is provided
-        if (!this.replyContinuityCallbacks[msgData.ExchangeId]) this.replyContinuityCallbacks[msgData.ExchangeId] = { callback: replyCallback, originalMsgData: msgData };
-        // const msgBytes = rov_actions_proto.RovAction.encode(msgData).finish();
-        frontendConnMngr.sendMessageToRov(msgData, true);
+    sendRovMessage(msg: rov_actions_proto.IRovAction, replyCallback: (replyMsgData: rov_actions_proto.RovResponse) => void = null) {
+        if (!msg.ExchangeId) msg.ExchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random exchange id if none is provided
+        if (!this.replyContinuityCallbacks[msg.ExchangeId]) this.replyContinuityCallbacks[msg.ExchangeId] = { callback: replyCallback, originalMsgData: msg };
+        frontendConnMngr.sendMessageToRov(msg, false);
     }
 
     resendMessage(ExchangeId: number) {

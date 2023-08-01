@@ -1,6 +1,6 @@
 
 import { ONSCREEN_GPAD_BUTTON_LABELS } from './consts';
-import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton } from "virtual-gamepad-lib";
+import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton, type buttonChangeDetails } from "virtual-gamepad-lib";
 import { GamepadUi } from "./gamepad-ui"
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
 import { throttle } from "./util";
@@ -8,6 +8,7 @@ import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
 import { addTooltip } from "../components/HelpTooltips.svelte";
 import { showToastMessage } from "../components/ToastMessages.svelte";
+import { frontendConnMngr } from './frontendConnManager';
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
@@ -23,14 +24,14 @@ export class GamepadController {
     touchedGpadButtonCount: number = 0;
     throttleDelay: number = 10;
     onAxisChange: null | ((gamepad: Gamepad) => void);
-    onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: boolean[]) => void);
+    onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void);
 
     constructor() {
         this.gpadUi = new GamepadUi();
         this.touchedGpadButtonCount = 0
     }
 
-    start() {
+    start(onAxisChange: null | ((gamepad: Gamepad) => void), onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void), throttleDelay: number) {
         this.gpadUi.start();
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
         // the emulator will either use the real gamepad api if a gamepad is plugged in or it will inject the onscreen gamepad as if it were comming from the gamepad api.
@@ -42,13 +43,9 @@ export class GamepadController {
             buttonConfigs: []//GAME_CONTROLLER_BUTTON_CONFIG,
         });
         if (!this.gpadApiWrapper.gamepadApiSupported()) this.gpadUi.showNotSupported();
-
-        // setup gpadApiWrapper gamepad events.
-        this.gpadApiWrapper.onGamepadConnect(this.gamepadConnectDisconnectHandler.bind(this));
-        this.gpadApiWrapper.onGamepadDisconnect(this.gamepadConnectDisconnectHandler.bind(this));
-        this.gpadApiWrapper.onGamepadAxisChange(this.handleAxisChange.bind(this));
-        this.gpadApiWrapper.onGamepadButtonChange(this.handleButtonChange.bind(this));
-        this.setupGamepadEvents(this.throttleDelay);
+        this.onAxisChange = onAxisChange;
+        this.onButtonChange = onButtonChange;
+        this.setupGamepadEvents(throttleDelay);
     }
 
     setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER) {
@@ -61,33 +58,6 @@ export class GamepadController {
         this.addHelpTooltips();
     }
 
-    setupGamepadEvents(throttle) {
-        showToastMessage("gamepad throttle delay: " + throttle);
-        this.throttleDelay = throttle;
-        this.clearExternalEventListenerCallbacks();
-        this.setupExternalEventListenerCallbacks(
-            (gamepad, buttonsChangedMask) => {
-                if (gamepad.buttons[12].pressed) {
-                    let delay = this.throttleDelay + 1;
-                    this.setupGamepadEvents(delay);
-                } else if (gamepad.buttons[13].pressed) {
-                    let delay = Math.max(this.throttleDelay - 1, 1);
-                    this.setupGamepadEvents(delay);
-                } else if (gamepad.buttons[14].pressed) {
-                    this.setupGamepadEvents(10);
-                } else if (gamepad.buttons[15].pressed) {
-                    this.setupGamepadEvents(100);
-                }
-            },
-            (gamepad) => {
-                const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
-                if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
-                RovActions.moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw);
-            }
-        );
-
-    };
-
     gamepadConnectDisconnectHandler() {
         const gamepads = navigator.getGamepads();
         let connectedGamepadCount = gamepads.reduce((acc, gpad) => gpad ? acc + 1 : acc, 0);
@@ -96,14 +66,17 @@ export class GamepadController {
         if (connectedGamepadCount > 1) console.log("WARNING: More than one gamepad connected!", gamepads);
     }
 
-    setupExternalEventListenerCallbacks(onButtonChange, onAxisChange) {
-        this.onButtonChange = throttle(onButtonChange, this.throttleDelay, { trailing: true, leading: true });
-        this.onAxisChange = throttle(onAxisChange, this.throttleDelay, { trailing: true, leading: true });
+    setInputThrottle(throttleDelay) {
+        this.throttleDelay = throttleDelay;
+        this.gpadApiWrapper.onGamepadAxisChange(throttle(this.handleAxisChange.bind(this), this.throttleDelay, { trailing: true, leading: true }));
+        this.gpadApiWrapper.onGamepadButtonChange(throttle(this.handleButtonChange.bind(this), this.throttleDelay, { trailing: true, leading: true }));
     }
 
-    clearExternalEventListenerCallbacks() {
-        this.onButtonChange = null;
-        this.onAxisChange = null;
+    setupGamepadEvents(throttleDelay) {
+        // setup gpadApiWrapper gamepad events.
+        this.gpadApiWrapper.onGamepadConnect(this.gamepadConnectDisconnectHandler.bind(this));
+        this.gpadApiWrapper.onGamepadDisconnect(this.gamepadConnectDisconnectHandler.bind(this));
+        this.setInputThrottle(throttleDelay);
     }
 
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
@@ -168,8 +141,8 @@ export class GamepadController {
     setupGamepadDisplay(gpadIndex, GPAD_DISPLAY_CONTAINER) {
         // Set the transform origins of the display joysticks to their centers:
         GPAD_DISPLAY_CONTAINER.querySelectorAll("#stick_right, #stick_left").forEach((element) => {
-            CenterTransformOrigin(/** @type {SVGGraphicsElement}*/(element)); // useful if you want to visually transform the joystick with rotation and scaling
-            // CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
+            CenterTransformOrigin(element as SVGGraphicsElement); // useful if you want to visually transform the joystick with rotation and scaling
+            CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
         });
 
         /* ----- SETUP BUTTON DISPLAY ----- */

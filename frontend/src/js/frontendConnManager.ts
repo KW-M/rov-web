@@ -4,13 +4,15 @@ import { listLivekitRoomsSansSDK, getAuthTokenFromLivekitRoomMetadata } from "..
 import { LivekitViewerConnection } from "../../../shared/js/livekit/livekitConn";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "../../../shared/js/simplePeer";
-import { changesSubscribe, waitfor } from "../../../shared/js/util";
+import { changesSubscribe, oneShotSubscribe, waitfor } from "../../../shared/js/util";
+import { showToastMessage } from "../components/ToastMessages.svelte";
 import { LIVEKIT_LIST_ONLY_TOKEN } from "./consts";
 import { frontendRovMsgHandler } from "./rovMessageHandler";
 
 export class FrontendConnectionManager {
     connectionState: nStoreT<ConnectionStates> = nStore(ConnectionStates.init);
     livekitConnection: LivekitViewerConnection = new LivekitViewerConnection();
+    mainVideoStream: nStoreT<MediaStream> = nStore(null);
     currentLivekitIdentity: nStoreT<string> = nStore("None");
     simplepeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
@@ -20,17 +22,37 @@ export class FrontendConnectionManager {
 
     constructor() {
         this.simplepeerConnection = new SimplePeerConnection();
-        changesSubscribe(this.simplepeerConnection.latestRecivedDataMessage, (msg) => {
-            frontendRovMsgHandler.handleRecivedMessage(msg)
-        })
         changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
             const { senderId, msg } = msgInfo;
             if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not rov)
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
+        changesSubscribe(this.simplepeerConnection.latestRecivedDataMessage, (msg) => {
+            frontendRovMsgHandler.handleRecivedMessage(msg)
+        })
         changesSubscribe(this.simplepeerConnection.outgoingSignalingMessages, (msg) => {
             this.sendMessageToRov({ SimplepeerSignal: { Message: msg } }, true)
         })
+        changesSubscribe(this.simplepeerConnection.currentVideoStream, () => this.updateVideoStream())
+        changesSubscribe(this.livekitConnection.remoteVideoTrack, () => this.updateVideoStream())
+    }
+
+    private updateVideoStream() {
+        const livekitVideoStream = this.livekitConnection.remoteVideoTrack.get()
+        const simplepeerVideoStream = this.simplepeerConnection.currentVideoStream.get()
+        setTimeout(() => {
+            if (simplepeerVideoStream && simplepeerVideoStream.getVideoTracks().length > 0 && !simplepeerVideoStream.getVideoTracks()[0].muted) {
+                showToastMessage("Using Direct Video")
+                livekitVideoStream.stop();
+                this.mainVideoStream.set(simplepeerVideoStream)
+            } else if (livekitVideoStream) {
+                showToastMessage("Using Livekit Video")
+                livekitVideoStream.start();
+                this.mainVideoStream.set(livekitVideoStream.mediaStream)
+            } else {
+                showToastMessage("No Video")
+            }
+        }, 100)
     }
 
     /**
@@ -134,10 +156,7 @@ export class FrontendConnectionManager {
         await this.livekitConnection.start(roomName, authToken);
         this.currentLivekitIdentity.set(this.livekitConnection.getLivekitIdentitiy())
 
-        // this._cleanupFuncs['simplePeerSetup'] = changesSubscribe(this.livekitConnection.latestRecivedDataMessage, () => {
-        //     this.startSimplePeerConnection();
-        //     this._cleanupFuncs['simplePeerSetup']()
-        // });
+        // oneShotSubscribe(this.livekitConnection.latestRecivedDataMessage, () => this.startSimplePeerConnection())
     }
 
     /**
@@ -162,6 +181,16 @@ export class FrontendConnectionManager {
         const spConn = this.simplepeerConnection;
         if (spConn) spConn.ingestSignalingMsg(signallingMsg);
         else throw new Error("ingestSimplePeerSignallingMsg() called when simplepeerConnection was not initilized!")
+    }
+
+    public async toggleSimplePeerConnection() {
+        if (!this.simplepeerConnection) throw new Error("toggleSimplePeerConnection() called without simplepeerConnection in class!")
+        const state = this.simplepeerConnection.connectionState.get();
+        if ([ConnectionStates.disconnectedOk, ConnectionStates.failed, ConnectionStates.init].includes(state)) {
+            this.startSimplePeerConnection();
+        } else {
+            this.simplepeerConnection.stop();
+        }
     }
 
     /**

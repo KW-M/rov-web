@@ -27,6 +27,8 @@
 
   // start app:
   frontendStartupFlow.start();
+  gpadCtrl.start(RovActions.gamepadAxisTriggers.bind(RovActions), RovActions.gamepadButtonTriggers.bind(RovActions), 10);
+  RovActions.startPingLoop();
 
   // if (debugModeActive) { inspect({ iframe: false }); }
 

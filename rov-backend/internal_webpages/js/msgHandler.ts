@@ -17,7 +17,6 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
 export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBufferLike) {
     let data = new Uint8Array(msgBytes)
     if (!data || data.length === 0) return;
-    console.error("GOT DC DATA:", data, senderId);
 
     // Decode the protobuf object from bytes
     const msgProto = rov_actions_proto.RovAction.decode(data)

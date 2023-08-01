@@ -98,9 +98,12 @@ class InternalConnectionManager {
     }
 
     public async ingestSimplePeerSignallingMsg(userId: string, signallingMsg: string) {
-        // const spConn = this._simplePeerConnections[userId]
-        // if (spConn) spConn.ingestSignalingMsg(signallingMsg);
-        // else await this.startSimplePeerConnection(userId, signallingMsg);
+        const spConn = this._simplePeerConnections[userId]
+        if (spConn) {
+            if ([ConnectionStates.failed, ConnectionStates.disconnectedOk, ConnectionStates.init].includes(spConn.connectionState.get())) {
+                await this.startSimplePeerConnection(userId, signallingMsg);
+            } else spConn.ingestSignalingMsg(signallingMsg);
+        } else await this.startSimplePeerConnection(userId, signallingMsg);
     }
 
     public async _sendMessageViaLivekit(msg: Uint8Array, reliable: boolean, toUserIds: string[]) {
@@ -111,13 +114,20 @@ class InternalConnectionManager {
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
         console.log("Sending WEBRTC Message to: [" + toUserIds.join(", ") + "] reliable: " + reliable, msg)
         const msgBytes = rov_actions_proto.RovResponse.encode(msg).finish();
-        await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
-        // await this._localLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
-        // for (const userId of toUserIds) {
-        //     if (this._simplePeerConnections[userId]) {
-        //         await this._simplePeerConnections[userId].sendMessage(msgBytes);
+        // let sentToParticpants = [];
+        // if (!reliable) {
+        //     for (const userId of toUserIds) {
+        //         const spConn = this._simplePeerConnections[userId]
+        //         if (spConn && spConn.connectionState.get() == ConnectionStates.connected) {
+        //             await this._simplePeerConnections[userId].sendMessage(msgBytes);
+        //             sentToParticpants.push(userId);
+        //         }
         //     }
+        //     if (sentToParticpants.length == toUserIds.length) return;
         // }
+        const notSentPeers = toUserIds; //toUserIds.filter((userId) => !sentToParticpants.includes(userId));
+        await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
+        await this._localLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
     }
 
 }

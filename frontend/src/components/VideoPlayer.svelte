@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ConnectionState, LOADING_MESSAGE } from "../js/consts";
   import videoPlaceholderUrl from "../assets/video-placeholder.jpg";
-  import { appReady, fullscreenOpen, rovMainVideoTrack, rovVideoStream } from "../js/globalContext";
+  import { appReady, fullscreenOpen } from "../js/globalContext";
   let videoContainerElement = null;
   let trackId = null;
   import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
@@ -12,26 +12,6 @@
   let currentVideoStream = null;
 
   $: if ($appReady === true) {
-    // if ($rovVideoStreamConnState == ConnectionState.connecting) {
-    //   showLoadingUi(LOADING_MESSAGE.awaitingVideoCall, null);
-    // } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
-    //   showLoadingUi(LOADING_MESSAGE.awaitingVideoCall, null);
-    // } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
-    //   hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
-    // } else if ($rovVideoStreamConnState == ConnectionState.connected) {
-    //   hideLoadingUi(LOADING_MESSAGE.awaitingVideoCall);
-    // }
-    // $: if ($rovVideoStreamConnState == ConnectionState.connecting) {
-    //   loading.showLoadingUi(LOADING_MESSAGE.videoConnecting);
-    // } else if ($rovVideoStreamConnState == ConnectionState.reconnecting) {
-    //   loading.showLoadingUi(LOADING_MESSAGE.videoReconnecting);
-    // } else if ($rovVideoStreamConnState == ConnectionState.disconnected) {
-    //   loading.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
-    //   loading.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
-    // } else if ($rovVideoStreamConnState == ConnectionState.connected) {
-    //   loading.hideLoadingUi(LOADING_MESSAGE.videoConnecting);
-    //   loading.hideLoadingUi(LOADING_MESSAGE.videoReconnecting);
-    // }
   }
 
   let vidElem = null;
@@ -46,7 +26,6 @@
     vidElem.autoplay = true;
     vidElem.controls = false;
     vidElem.srcObject = stream;
-    // vidElem.setAttribute("poster", videoPlaceholderUrl);
     vidElem.setAttribute("tabindex", "-1");
     videoContainerElement.innerHTML = "";
     videoContainerElement.appendChild(vidElem);
@@ -62,9 +41,9 @@
     }, 150); // for some reason firefox complains if you play too soon.
   };
 
-  const unsub = changesSubscribe(frontendConnMngr.livekitConnection.remoteVideoTrack, (track) => {
-    if (track) {
-      setVideo(track.mediaStream);
+  const unsub = changesSubscribe(frontendConnMngr.mainVideoStream, (stream) => {
+    if (stream) {
+      setVideo(stream);
     } else {
       setVideo(null);
     }

@@ -143,6 +143,7 @@ export class LivekitGenericConnection {
                     'Successfully reconnected. server',
                     await this._roomConn.engine.getConnectedServerAddress(),
                 );
+                this.connectionState.set(ConnectionStates.connected)
             })
             .on(RoomEvent.ParticipantMetadataChanged, (a) => {
                 appendLog('ParticipantMetadataChanged', a);

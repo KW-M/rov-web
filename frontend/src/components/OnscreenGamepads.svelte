@@ -14,15 +14,14 @@
 
   export let visible: boolean = true;
   export let disabled: boolean = false;
-  $: if (visible && !disabled) {
-    gpadCtrl.clearExternalEventListenerCallbacks();
-  } else {
-    gpadCtrl.setupGamepadEvents(10);
-  }
+  // $: if (visible && !disabled) {
+  //   gpadCtrl.clearExternalEventListenerCallbacks();
+  // } else {
+  //   gpadCtrl.setupGamepadEvents(10);
+  // }
 
   // TODO? switch to onMount()?
   onMount(() => {
-    gpadCtrl.start();
     gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
   });
   // oneShotSubscribe(appReady, () => {

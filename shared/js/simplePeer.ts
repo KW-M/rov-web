@@ -34,7 +34,8 @@ export class SimplePeerConnection {
     // subscribe to get notified when the simplepeer connection is sending out a new signaling message to establish or maintain a connection.
     // thses messages should be sent to the other party via a already established side channel like a livekit or websocket data connection.
     outgoingSignalingMessages: nStoreT<string>;
-
+    // the current video track being sent/recived through simplepeer.
+    currentVideoStream: nStoreT<MediaStream>;
 
     // the simplepeer instance used for this connection.
     _p: SimplePeerType.Instance;
@@ -46,6 +47,7 @@ export class SimplePeerConnection {
     _shouldReconnect: boolean;
 
     constructor() {
+        this.currentVideoStream = nStore(null);
         this.outgoingSignalingMessages = nStore(null);
         this.latestRecivedDataMessage = nStore(null);
         this.connectionState = nStore(ConnectionStates.init);
@@ -74,23 +76,24 @@ export class SimplePeerConnection {
             this.latestRecivedDataMessage.set(data);
         })
 
-        this._p.on('stream', stream => {
+        this._p.on('stream', (stream: MediaStream) => {
             // got remote video stream, now let's show it in a video tag
             console.info('SIMPLEPEER: got video stream: ', stream)
-            let video = document.getElementById('direct_video') as HTMLVideoElement;
-            if ('srcObject' in video) {
-                video.srcObject = stream
-            } else {
-                // @ts-ignore
-                video.src = window.URL.createObjectURL(stream) // for older browsers
+            this.currentVideoStream.set(stream);
+            for (let track of stream.getTracks()) {
+                if (track.kind === 'video') {
+                    track.onmute = () => this.currentVideoStream.set(null);
+                    track.onunmute = () => this.currentVideoStream.set(stream);
+                    track.onended = () => this.currentVideoStream.set(null);
+                    break;
+                }
             }
-
-            video.play()
         })
 
         // Called when the peer connection has closed.
         this._p.on('close', () => {
             console.log('SIMPLEPEER: connection closed')
+            this.currentVideoStream.set(null);
             if (!this._shouldReconnect) {
                 this.connectionState.set(ConnectionStates.disconnectedOk);
             }
@@ -100,6 +103,7 @@ export class SimplePeerConnection {
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
             console.error('SIMPLEPEER: error: ', err)
+            this.currentVideoStream.set(null);
             if (this._shouldReconnect) {
                 this.connectionState.set(ConnectionStates.reconnecting);
                 this._reconnectAttemptCount++;
@@ -115,6 +119,7 @@ export class SimplePeerConnection {
     }
 
     stop() {
+        this.currentVideoStream.set(null);
         this._shouldReconnect = false;
         if (this._p) this._p.destroy();
     }

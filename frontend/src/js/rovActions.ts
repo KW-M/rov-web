@@ -4,6 +4,10 @@ import { frontendConnMngr } from "./frontendConnManager";
 import { frontendRovMsgHandler } from "./rovMessageHandler"
 import { showConfirmationMsg, showScrollableTextPopup } from "./ui"
 import { showToastMessage } from "../components/ToastMessages.svelte";
+import { calculateDesiredMotion } from "./rovUtil";
+import { gpadCtrl } from "./gamepad";
+import type { buttonChangeDetails } from "virtual-gamepad-lib";
+import { ConnectionStates } from "../../../shared/js/consts";
 
 class RovActionsClass {
 
@@ -14,6 +18,30 @@ class RovActionsClass {
         VelocityZ: 0,
         AngularVelocityYaw: 0
     };
+
+    gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
+
+        if (gamepad.buttons[0].pressed) {
+            frontendConnMngr.toggleSimplePeerConnection();
+        }
+        // else if (gamepad.buttons[12].pressed) {
+        //     let delay = gpadCtrl.throttleDelay + 1;
+        //     // this.setInputThrottle(delay);
+        // } else if (gamepad.buttons[13].pressed) {
+        //     let delay = Math.max(this.throttleDelay - 1, 1);
+        //     this.setInputThrottle(delay);
+        // } else if (gamepad.buttons[14].pressed) {
+        //     this.setInputThrottle(10);
+        // } else if (gamepad.buttons[15].pressed) {
+        //     this.setInputThrottle(100);
+        // }
+    }
+
+    gamepadAxisTriggers(gamepad: Gamepad) {
+        const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
+        if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
+        this.moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw);
+    }
 
     // ==== Helpers =====
 
@@ -28,6 +56,7 @@ class RovActionsClass {
     startPingLoop() {
         if (this.pingLoopIntervalId) return;
         this.pingLoopIntervalId = Number(setInterval(() => {
+            if (frontendConnMngr.connectionState.get() != ConnectionStates.connected) return;
             frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
         }, 3000))
     }
