@@ -2,6 +2,7 @@ import { internalConnManager } from "./internalConnManager"
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
+import { TwitchStream } from "./twitchStream";
 
 // DISABLE VITE HOT MOUDLE RELOADING:
 if (import.meta.hot)
@@ -14,14 +15,23 @@ const livekitConfig: LivekitSetupOptions = {
     CloudSecretKey: urlParams.get("CloudSecretKey"),
     LocalAPIKey: urlParams.get("LocalAPIKey") || "N/A",
     LocalSecretKey: urlParams.get("LocalSecretKey") || "N/A",
+    TwitchStreamKey: urlParams.get("TwitchStreamKey"), // Twitch Stream Key (For Streaming, duh)
     EnableLivekitLocal: (urlParams.get("ForceLocal") || "false").toLowerCase() === 'true',
     EnableLivekitCloud: (urlParams.get("EnableCloud") || "true").toLowerCase() === 'true',
     EnableBackendWebsocket: (urlParams.get("EnableBackendWebsocket") || "true").toLowerCase() === 'true',
 }
 for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
 
+// Initialize Twitch Stream
+var twitchStreaming = new TwitchStream(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.CloudAPIKey, livekitConfig.CloudSecretKey)
+
 // Start Livekit
 internalConnManager.start(livekitConfig)
+
+// Start Twitch Livestream
+twitchStreaming.startStream()
+
+window.onbeforeunload = () => { twitchStreaming.stopStream() } // Stop Twitch Stream when page is closed
 
 // Start Backend/Python Websocket Communication
 if (livekitConfig.EnableBackendWebsocket) iRovWebSocketRelay.start((msgBytes: Uint8Array) => {

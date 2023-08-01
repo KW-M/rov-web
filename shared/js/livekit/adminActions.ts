@@ -11,6 +11,7 @@ export type LivekitSetupOptions = {
     CloudAPIKey: string,
     LocalSecretKey: string,
     LocalAPIKey: string,
+    TwitchStreamKey: string,
     EnableLivekitCloud: boolean,
     EnableLivekitLocal: boolean,
     EnableBackendWebsocket: boolean,
