@@ -200,7 +200,7 @@ exe "sudo apt-get install chromium-chromedriver"
 # exe 'rm -rf ./Python-${python_version_to_install}' &&
 
 { # try
-    exe "cd ~/rov-web' " &&
+    exe "cd ~/rov-web" &&
 
     echoBlue "Installing python3-pip & pigpiod" &&
     exe 'echo "PATH=\$PATH:/home/pi/.local/bin" | sudo tee -a ~/.profile' &&

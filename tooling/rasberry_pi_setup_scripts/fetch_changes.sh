@@ -42,6 +42,7 @@ echoBlue "changes: $changes"
 echoBlue "tracked_files: $tracked_files"
 
 echoBlue "~~ Downloading built rov-web release from Github ~~"
+exe "rm -rf ~/temp"
 exe "mkdir -p ~/temp/rov-web-download"
 exe "cd ~/temp/rov-web-download"
 exe "wget 'https://github.com/KW-M/rov-web/releases/latest/download/project.zip' -O project.zip"
