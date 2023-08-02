@@ -3,13 +3,13 @@ import * as livekitServerSDKTypes from 'livekit-server-sdk';
 const EgressClient = globalThis.livekitServerSDK.EgressClient as typeof livekitServerSDKTypes.EgressClient
 const StreamProtocol = globalThis.livekitServerSDK.StreamProtocol as typeof livekitServerSDKTypes.StreamProtocol
 
-export class TwitchStream {
+class TwitchStream {
     private _twitchStreamKey: string = null;
     private _egressClient: livekitServerSDKTypes.EgressClient = null;
     private roomName: string = null;
     private streamEgressID: string = null;
 
-    constructor(twitchStreamKey: string, roomName: string, apiKey: string, secretKey: string) {
+    innit(twitchStreamKey: string, roomName: string, apiKey: string, secretKey: string) {
         this._twitchStreamKey = twitchStreamKey;
         this.roomName = roomName;
         this._egressClient = new EgressClient('https://rov-web.livekit.cloud', apiKey, secretKey);
@@ -29,3 +29,5 @@ export class TwitchStream {
     }
 
 }
+
+export const twitchStream = new TwitchStream();
