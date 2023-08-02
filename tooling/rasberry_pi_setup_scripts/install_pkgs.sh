@@ -18,6 +18,7 @@ PI_CPU_ARCHITECTURE=$(arch)
 Green="\033[37;42;1m"  # Green color code for console text
 Blue="\033[37;44;1m"   # Blue color code for console text
 Black="\033[37;40;1m" # Black color code for console text
+Magenta="\033[37;45;1m" # Magenta color code for console text
 Red="\033[37;41;1m"    # Red color code for console text
 Color_Off="\033[0m" # Text color Reset code for console text
 echoBlue() { echo -e "$Blue $@ $Color_Off" >&2;}
@@ -25,7 +26,7 @@ echoGreen() { echoBlue " $@ $Color_Off" >&2; }
 echoRed() { echo -e "$Red $@ $Color_Off" >&2; }
 
 # Function to display input shell command in Black and then run the command
-exe() { echo -e "$Black$> $@ $Color_Off" >&2; eval "$@" ; }
+exe() { echo -e "$Magenta> $@ $Color_Off" >&2; eval "$@" ; }
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ exe 'sudo apt-get -y update' || true
 exe 'sudo apt-get install -y git wget unzip' || true
 
 echoBlue "Installing chromium chromedriver for selinium"
-exe "sudo apt-get install chromium-chromedriver"
+exe "sudo apt-get install -y chromium-chromedriver xvfb "
 
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
 # { # try
