@@ -2,7 +2,7 @@ import { internalConnManager } from "./internalConnManager"
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
-import { TwitchStream } from "./twitchStream";
+import { twitchStream } from "./twitchStream";
 
 // DISABLE VITE HOT MOUDLE RELOADING:
 if (import.meta.hot)
@@ -23,15 +23,12 @@ const livekitConfig: LivekitSetupOptions = {
 for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
 
 // Initialize Twitch Stream
-var twitchStreaming = new TwitchStream(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.CloudAPIKey, livekitConfig.CloudSecretKey)
+twitchStream.innit(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.CloudAPIKey, livekitConfig.CloudSecretKey)
 
 // Start Livekit
 internalConnManager.start(livekitConfig)
 
-// Start Twitch Livestream
-twitchStreaming.startStream()
-
-window.onbeforeunload = () => { twitchStreaming.stopStream() } // Stop Twitch Stream when page is closed
+window.onbeforeunload = () => { twitchStream.stopStream() } // Stop Twitch Stream when page is closed
 
 // Start Backend/Python Websocket Communication
 if (livekitConfig.EnableBackendWebsocket) iRovWebSocketRelay.start((msgBytes: Uint8Array) => {

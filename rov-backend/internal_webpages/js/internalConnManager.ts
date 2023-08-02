@@ -7,6 +7,7 @@ import { createLivekitRoom, listLivekitRooms, newLivekitAdminSDKRoomServiceClien
 import { SimplePeerConnection } from "../../../shared/js/simplePeer"
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import { twitchStream } from "./twitchStream";
 
 /** InternalConnectionManager
  * consolidates all the internet-facing connections of the internal webpage into one place
@@ -35,6 +36,9 @@ class InternalConnectionManager {
         })
         changesSubscribe(this._cloudLivekitConnection.connectionState, (state) => {
             console.log("Cloud Conn State Changed: " + state)
+            if (state == ConnectionStates.connected) {
+                twitchStream.startStream()
+            }
         })
         changesSubscribe(this._cloudLivekitConnection.participantConnectionEvents, (evt) => {
             console.log("Cloud Conn Participant Event: ", evt)
