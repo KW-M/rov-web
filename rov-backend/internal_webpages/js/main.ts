@@ -11,11 +11,9 @@ if (import.meta.hot)
 const urlParams = new URLSearchParams(location.search);
 const livekitConfig: LivekitSetupOptions = {
     RovRoomName: urlParams.get("RovRoomName"),
-    CloudAPIKey: urlParams.get("CloudAPIKey"),
-    CloudSecretKey: urlParams.get("CloudSecretKey"),
-    LocalAPIKey: urlParams.get("LocalAPIKey") || "N/A",
-    LocalSecretKey: urlParams.get("LocalSecretKey") || "N/A",
-    TwitchStreamKey: urlParams.get("TwitchStreamKey"), // Twitch Stream Key (For Streaming, duh)
+    LivekitAPIKey: urlParams.get("LivekitApiKey"),
+    LivekitSecretKey: urlParams.get("LivekitSecretKey"),
+    TwitchStreamKey: urlParams.get("TwitchStreamKey") || "None", // Twitch Stream Key (For Streaming, duh)
     EnableLivekitLocal: (urlParams.get("ForceLocal") || "false").toLowerCase() === 'true',
     EnableLivekitCloud: (urlParams.get("EnableCloud") || "true").toLowerCase() === 'true',
     EnableBackendWebsocket: (urlParams.get("EnableBackendWebsocket") || "true").toLowerCase() === 'true',
@@ -23,8 +21,9 @@ const livekitConfig: LivekitSetupOptions = {
 for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
 
 // Initialize Twitch Stream
-twitchStream.innit(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.CloudAPIKey, livekitConfig.CloudSecretKey)
-
+if (livekitConfig.TwitchStreamKey !== "None") {
+    twitchStream.innit(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.LivekitAPIKey, livekitConfig.LivekitSecretKey)
+}
 // Start Livekit
 internalConnManager.start(livekitConfig)
 
@@ -52,7 +51,7 @@ if (livekitConfig.EnableBackendWebsocket) iRovWebSocketRelay.start((msgBytes: Ui
 
 
 
-// console.log(getFrontendAccessToken(urlParams.get("CloudAPIKey"), urlParams.get("CloudSecretKey"), "PERSON" + Date.now().toString()))
+// console.log(getFrontendAccessToken(urlParams.get("LivekitApiKey"), urlParams.get("LivekitSecretKey"), "PERSON" + Date.now().toString()))
 
 
 

@@ -73,8 +73,8 @@ class InternalConnectionManager {
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
-        if (livekitSetup.EnableLivekitCloud) await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
-        if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.CloudAPIKey, livekitSetup.CloudSecretKey)
+        if (livekitSetup.EnableLivekitCloud) await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey)
+        if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection)(livekitSetup.RovRoomName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey)
         asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 30)({ video: true, audio: false }).then(this.cameraReady.bind(this));
         console.info("Connection Manager Started")
     }

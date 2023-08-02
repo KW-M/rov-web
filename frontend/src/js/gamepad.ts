@@ -82,9 +82,9 @@ export class GamepadController {
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
         if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
-        if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
-            this.gpadUi.toggleGamepadHelpScreen();
-        }
+        // if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
+        //     this.gpadUi.toggleGamepadHelpScreen();
+        // }
 
         let noGamepadButtonTouched = true;
         for (let i = 0; i < buttonsChangedMask.length; i++) {

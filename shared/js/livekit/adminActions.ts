@@ -7,10 +7,8 @@ const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeo
 
 export type LivekitSetupOptions = {
     RovRoomName: string,
-    CloudSecretKey: string,
-    CloudAPIKey: string,
-    LocalSecretKey: string,
-    LocalAPIKey: string,
+    LivekitSecretKey: string,
+    LivekitAPIKey: string,
     TwitchStreamKey: string,
     EnableLivekitCloud: boolean,
     EnableLivekitLocal: boolean,

@@ -16,8 +16,9 @@ class TwitchStream {
     }
 
     async startStream() {
+        if (!this._twitchStreamKey) return console.warn("startStream() err: Twitch stream key not set!");
         const output = {
-            protocol:  StreamProtocol.RTMP,
+            protocol: StreamProtocol.RTMP,
             urls: ['rtmp://live.twitch.tv/app/' + this._twitchStreamKey]
         };
         var info = await this._egressClient.startRoomCompositeEgress(this.roomName, output);
@@ -25,6 +26,7 @@ class TwitchStream {
     }
 
     async stopStream() {
+        if (!this.streamEgressID) return console.warn("stopStream() err: Twitch Stream not started!");
         const info = await this._egressClient.stopEgress(this.streamEgressID);
     }
 
