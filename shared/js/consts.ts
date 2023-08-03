@@ -47,7 +47,11 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
 
     // default capture settings
     videoCaptureDefaults: {
-        resolution: VideoPresets.h1080.resolution,
+        resolution: {
+            width: 800,
+            height: 600,
+            frameRate: 15,
+        },
         // facingMode: 'environment',
         // deviceId: //get device id beforehand
     },
@@ -59,15 +63,11 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
 
 
 export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
-
     // specify how offten to retry connection when it fails.
     reconnectPolicy: new DefaultReconnectPolicy(),
-
     // optimize publishing bandwidth and CPU for published tracks
     dynacast: true,
-
     disconnectOnPageLeave: true,
-
     adaptiveStream: true,
 
 }
