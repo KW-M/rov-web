@@ -9,6 +9,6 @@ betterproto==2.0.0b6
 cython==3.0.0
 AHRS==0.3.1
 smbus==1.1.post2
-selenium==4.11.2
+selenium==4.10.0
 pyvirtualdisplay==3.0
 sparkfun-qwiic-icm20948==0.0.1

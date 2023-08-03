@@ -2,17 +2,10 @@
 import asyncio
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from pyvirtualdisplay import Display
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
-# import socket
-# import httplib
-# from selenium.webdriver.remote.command import Command
-
-
-
-
-
 
 class WebdriverManager:
 
@@ -35,20 +28,23 @@ class WebdriverManager:
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_experimental_option("detach", True)
         chrome_options.binary_location=browser_binary_path
-        # chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--use-fake-ui-for-media-stream")
-        # chrome_options.set_capability("loggingPrefs", {'browser': 'ALL'})
         chrome_options.set_capability("goog:loggingPrefs", {'browser': 'ALL'})
+        chrome_options.add_argument("--use-fake-ui-for-media-stream")
+        chrome_options.add_argument("--enable-logging")
+        chrome_options.add_argument("--v=1")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--remote-debugging-port=9222")
+        chrome_options.add_argument("--remote-debugging-address=0.0.0.0")
+        # chrome_options.add_experimental_option("detach", True)
 
         # Instantiate driver and navigate to appropriate webpage
-        service = Service(executable_path=driver_path)
+        service = ChromeService(executable_path=driver_path)
         self.driver = webdriver.Chrome(service=service, options=chrome_options)
 
         #TODO should point to appropriate website (DONE). (M) if it's static content couldn't we fetch it from the local file system? - yes but we should pass it the  url query parameters at runtime / not hard-coded like it is now.
         # self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
-        self.driver.get("http://localhost:80/internal/index.html?ForceLocal=false&RovRoomName=ROV123&CloudAPIKey=APIkoE7m3Zqd5dJ&CloudSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&LocalAPIKey=NOTSET&LocalSecretKey=NOTSET")
+        self.driver.get("http://localhost:80/internal/index.html?ForceLocal=false&RovRoomName=ROV123&LivekitApiKey=APIkoE7m3Zqd5dJ&LivekitSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&TwitchStreamKey=live_939208839_kQZt1fjuh3ZRwseCSFOResk96G4QsF")
 
 
     """This function will periodically check if the driver is alive while the manager is set to running
