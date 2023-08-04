@@ -20,6 +20,7 @@ from shell_cmd_utils import generate_cmd_continued_output_response, run_shell_cm
 from protobufs.rov_actions_proto import DataTransportMethod, ResponseBackendMetadata, betterproto, RovAction, SensorUpdatesResponse, RovResponse, DoneResponse, DriverChangedResponse, HeartbeatResponse, ErrorResponse, PasswordAcceptedResponse, PasswordInvalidResponse, PasswordRequiredResponse, PongResponse
 from utilities import map_for_async_generator
 from websocket_server import websocket_server
+from datetime import datetime
 
 ############################
 ###### setup logging #######
@@ -252,27 +253,27 @@ class MessageHandlerClass:
 # Actions that require the sending peer to be authenticated (have correctly done a password or token challenge before)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_take_control(self, src_user_id: str, msg_data: RovAction) -> RovResponse | None:
         """Changes the designated driver to the message sender"""
         # if the authenticated peer is trying to take control of the ROV, set their peer id to be the designated driver peer id.
         # Let all connected peers know that the designated driver has changed:
         return user_auth.change_driver(src_user_id)
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_shutdown_rov(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Shuts down the PI after a delay."""
         print("Shutting down...")
         await run_shell_cmd_async("sleep 4; sudo poweroff")
         return self.add_response_metadata(RovResponse(done=DoneResponse(message="OK: Shutting Down...")), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_reboot_rov(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Reboots the PI after a delay."""
         await run_shell_cmd_async("sleep 4; sudo reboot")
         return self.add_response_metadata(RovResponse(done=DoneResponse(message="OK: Rebooting...")), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_enable_wifi(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Enable WiFi by unblocking the wlan interface."""
         (cmd_out, cmd_err, status_code) = await read_full_cmd_output("sudo rfkill unblock wlan", cmd_timeout=5)
@@ -280,7 +281,7 @@ class MessageHandlerClass:
             return self.add_response_metadata(RovResponse(done=DoneResponse(message="OK: WiFi Enabled...")), [src_user_id])
         return self.add_response_metadata(RovResponse(error=ErrorResponse(message="ERROR: WiFi Enable Failed: " + cmd_out + cmd_err)), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_disable_wifi(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         """Disable WiFi by blocking the wlan interface."""
         (cmd_out, cmd_err, status_code) = await read_full_cmd_output("sudo rfkill block wlan", cmd_timeout=5)
@@ -288,28 +289,34 @@ class MessageHandlerClass:
             return self.add_response_metadata(RovResponse(done=DoneResponse(message="OK: WiFi Disabled...")), [src_user_id])
         return self.add_response_metadata(RovResponse(error=ErrorResponse(message="ERROR: WiFi Disable Failed: " + cmd_out + cmd_err)), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_rov_logs(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
         """Return a generator that continuously outputs new systemd log messages as they appear plus the last 500 lines of log."""
-        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "journalctl --unit=rov_python_code --unit=rov_go_code --unit=maintain_network --unit=nginx --no-pager --follow -n 500", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "journalctl --no-pager --follow -n 200", cmd_timeout=20) #--unit=rov_python_code --unit=rov_internal_web_browser --unit=maintain_network --unit=nginx
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_restart_rov_services(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
         msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh", cmd_timeout=20)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_take_photo(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
-        # TODO: implement take_photo action"
-        return self.add_response_metadata(RovResponse(done=DoneResponse("(TODO!!!) Photo NOT Captured!")), [src_user_id])
+        # ffmpeg -hide_banner -f video4linux2 -i /dev/video0 test2.mp4
+        (cmd_out, cmd_err, status_code) = await read_full_cmd_output(f'ffmpeg -hide_banner -f video4linux2 -i /dev/video0 -vframes 1 -y ~/ROV-photo-{datetime.now().isoformat()}.jpg', cmd_timeout=5)
+        if status_code == 0:
+            return self.add_response_metadata(RovResponse(done=DoneResponse(message="Picture Taken")), [src_user_id])
+        return self.add_response_metadata(RovResponse(error=ErrorResponse(message="picture ERROR: " + cmd_out + cmd_err)), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_start_video_rec(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
-        # TODO: implement start_video_rec action"
-        return self.add_response_metadata(RovResponse(done=DoneResponse("(TODO!!!) Video NOT Recording!")), [src_user_id])
+        # ffmpeg -hide_banner -f video4linux2 -i /dev/video0 test2.mp4
+        (cmd_out, cmd_err, status_code) = await read_full_cmd_output(f'ffmpeg -hide_banner -f video4linux2 -i /dev/video0 -y ~/ROV-video-{datetime.now().isoformat()}.mp4', cmd_timeout=20)
+        if status_code == 0:
+            return self.add_response_metadata(RovResponse(done=DoneResponse(message="Video Finished Recording")), [src_user_id])
+        return self.add_response_metadata(RovResponse(error=ErrorResponse(message="Video ERROR: " + cmd_out + cmd_err)), [src_user_id])
 
-    @VERIFY_AUTHORIZATION(require_password=True, require_is_driver=False)
+    @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_stop_video_rec(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
         # TODO: implement stop_video_rec action"
         return self.add_response_metadata(RovResponse(done=DoneResponse("(TODO!!!) Video NOT Stopped!")), [src_user_id])
