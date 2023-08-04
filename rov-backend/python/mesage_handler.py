@@ -34,8 +34,7 @@ def verify_authorization(require_password: bool, require_is_driver: bool):
             src_participant_id: str = kwargs['src_participant_id'] if 'src_participant_id' in kwargs else args[0]
             msg_data: RovAction = kwargs['msg_data'] if 'msg_data' in kwargs else args[1]
             resp = user_auth.check_authorization(src_participant_id,msg_data,require_password,require_is_driver)
-            #if resp is not None: # TODO re-enable when authentication works
-            if False:             # TODO delete and replace w/ above
+            if resp is not None:
                 message_handler.set_replay_action(src_participant_id, msg_data)
                 return resp[0] # only the first element of the tuple is the RovResponse
             else:
