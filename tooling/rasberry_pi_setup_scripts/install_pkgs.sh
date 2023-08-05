@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e # exit on error
 set -u # exit on undefined variable
+set -o pipefail # exit if any command in a pipe fails
 
 # ------------------------------------------------------------------------------
 # ---- Helpful Variables -------------------------------------------------------
@@ -38,7 +39,7 @@ exe() { echo -e "$Magenta> $@ $Color_Off" >&2; eval "$@" ; }
 mkdir -p "$HOME/setup-cache"
 
 # Save Rov Name
-if [ -ne "$HOME/setup-cache/ROV_NAME"  ]
+if [ ! -e "$HOME/setup-cache/ROV_NAME"  ]
 then
     echo "Please enter a name for this ROV:"
     read ROV_NAME
@@ -48,7 +49,7 @@ else
 fi
 
 # Save Rov Control Password
-if [ -ne "$HOME/setup-cache/ROV_CONTROL_PASSWORD"  ]
+if [ ! -e "$HOME/setup-cache/ROV_CONTROL_PASSWORD"  ]
 then
     echo "Please enter a password for this ROV:"
     read ROV_CONTROL_PASSWORD
@@ -58,7 +59,7 @@ else
 fi
 
 # Save Livekit Server URL
-if [ -ne "$HOME/setup-cache/LIVEKIT_CLOUD_URL"  ]
+if [ ! -e "$HOME/setup-cache/LIVEKIT_CLOUD_URL"  ]
 then
     echo "Please enter your Livekit Cloud Server URL:"
     read LIVEKIT_CLOUD_URL
@@ -68,7 +69,7 @@ else
 fi
 
 # Save Livekit API Key
-if [ -ne "$HOME/setup-cache/LIVEKIT_API_KEY"  ]
+if [ ! -e "$HOME/setup-cache/LIVEKIT_API_KEY"  ]
 then
     echo "Please enter your Livekit Cloud API Key:"
     read LIVEKIT_API_KEY
@@ -78,7 +79,7 @@ else
 fi
 
 # Save Livekit Secret Key
-if [ -ne "$HOME/setup-cache/LIVEKIT_SECRET_KEY"  ]
+if [ ! -e "$HOME/setup-cache/LIVEKIT_SECRET_KEY"  ]
 then
     echo "Please enter your Livekit Cloud Secret Key:"
     read LIVEKIT_SECRET_KEY
@@ -88,7 +89,7 @@ else
 fi
 
 # Save Twitch Stream Key
-if [ -ne "$HOME/setup-cache/TWITCH_STREAM_KEY"  ]
+if [ ! -e "$HOME/setup-cache/TWITCH_STREAM_KEY"  ]
 then
     echo "Please enter your Twitch Stream Key (Enter 'None' to disable twitch streaming):"
     read TWITCH_STREAM_KEY

@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e # exit on error
 set -u # exit on undefined variable
+set -o pipefail # exit if any command in a pipe fails
 
 # ------------------------------------------------------------------------------
 # ---- Helpful Variables -------------------------------------------------------
