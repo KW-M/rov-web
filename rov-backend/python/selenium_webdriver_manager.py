@@ -37,8 +37,8 @@ class WebdriverManager:
         chrome_options.add_argument("--enable-logging")
         chrome_options.add_argument("--v=1")
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--remote-debugging-port=9222")
-        chrome_options.add_argument("--remote-debugging-address=0.0.0.0")
+        # chrome_options.add_argument("--remote-debugging-port=9222") # Breaks chrome driver
+        # chrome_options.add_argument("--remote-debugging-address=0.0.0.0")
         # chrome_options.add_experimental_option("detach", True)
 
         # Instantiate driver and navigate to appropriate webpage
