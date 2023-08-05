@@ -61,8 +61,8 @@ fi
 # Save Livekit Server URL
 if [ ! -e "$HOME/setup-cache/LIVEKIT_CLOUD_URL"  ]
 then
-    echo "Please enter your Livekit Cloud Server URL:"
-    read LIVEKIT_CLOUD_URL
+    echo "Please enter your Livekit Cloud Server URL (starting with https://):"
+    read LIVEKIT_SERVER_URL
     echo "$LIVEKIT_SERVER_URL" > "$HOME/setup-cache/LIVEKIT_CLOUD_URL"
 else
     LIVEKIT_SERVER_URL=$(cat "$HOME/setup-cache/LIVEKIT_CLOUD_URL")
