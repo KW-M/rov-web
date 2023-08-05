@@ -3,7 +3,7 @@ import pigpio
 
 from utilities import is_raspberry_pi
 
-class GPIOController:
+class Pigpio_GPIO_Controller:
 
     def init(self):
         self.pigpio_instance = pigpio.pi()
@@ -38,7 +38,7 @@ class GPIOController:
         self.stopped = True
         self.pigpio_instance.stop()
 
-class Mock_GPIOController:
+class Mock_GPIO_Controller:
 
     def init(self):
         pass
@@ -69,6 +69,6 @@ class Mock_GPIOController:
 OUTPUT_PIN_MODE = pigpio.OUTPUT
 INPUT_PIN_MODE = pigpio.INPUT
 if is_raspberry_pi():
-    GPIO_ctrl = GPIOController()
+    GPIO_ctrl = Pigpio_GPIO_Controller()
 else:
-    GPIO_ctrl = Mock_GPIOController()
+    GPIO_ctrl = Mock_GPIO_Controller()
