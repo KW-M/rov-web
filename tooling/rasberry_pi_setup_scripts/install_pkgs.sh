@@ -100,12 +100,12 @@ fi
 
 # ------- setup rov-config.json file: -------
 exe "cp '$HOME/rov-web/tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json' '$HOME/rov-config.json'"
-exe "sed -i 's/== ROV_NAME_NOT_SET ==/$ROV_NAME/g' '$HOME/rov-config.json'"
-exe "sed -i 's/== Put ROV Control Password Here ==/$ROV_CONTROL_PASSWORD/g' '$HOME/rov-config.json'"
-exe "sed -i 's/== Put LiveKit Cloud URL Here ==/$LIVEKIT_CLOUD_URL/g' '$HOME/rov-config.json'"
-exe "sed -i 's/== Put LiveKit API Key Here ==/$LIVEKIT_API_KEY/g' '$HOME/rov-config.json'"
-exe "sed -i 's/== Put LiveKit Secret Key Here ==/$LIVEKIT_SECRET_KEY/g' '$HOME/rov-config.json'"
-exe "sed -i 's/== Put Twitch Stream Key Here ==/$TWITCH_STREAM_KEY/g' '$HOME/rov-config.json'"
+exe "sed -i 's|== ROV_NAME_NOT_SET ==|$ROV_NAME|g' '$HOME/rov-config.json'"
+exe "sed -i 's|== Put ROV Control Password Here ==|$ROV_CONTROL_PASSWORD|g' '$HOME/rov-config.json'"
+exe "sed -i 's|== Put LiveKit Cloud URL Here ==|$LIVEKIT_CLOUD_URL|g' '$HOME/rov-config.json'"
+exe "sed -i 's|== Put LiveKit API Key Here ==|$LIVEKIT_API_KEY|g' '$HOME/rov-config.json'"
+exe "sed -i 's|== Put LiveKit Secret Key Here ==|$LIVEKIT_SECRET_KEY|g' '$HOME/rov-config.json'"
+exe "sed -i 's|== Put Twitch Stream Key Here ==|$TWITCH_STREAM_KEY|g' '$HOME/rov-config.json'"
 
 # ---- setup the rov-web folder to be a git repo inline with github -----
 exe "cd '$HOME/rov-web/'"
