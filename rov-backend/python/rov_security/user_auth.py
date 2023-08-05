@@ -5,7 +5,7 @@ import time
 import logging
 import asyncio
 
-from config_reader import program_config
+from config_reader import rov_config
 from protobufs.rov_actions_proto import DriverChangedResponse, PasswordAcceptedResponse, PasswordInvalidResponse, ResponseBackendMetadata, RovAction, PasswordRequiredResponse, ErrorResponse, RovResponse
 from rov_security.auth_tokens import generateAuthToken, check_token_validty
 
@@ -78,7 +78,7 @@ class UserAuth():
 
     async def handle_password_attempt(self,src_user_id: str, msg_data: RovAction) -> tuple[RovResponse, bool]:
         """Checks if the given password is correct and if so, generates an auth token for the peer"""
-        correct_password = program_config.get('RovControlPassword', 'Set a password in the config file')
+        correct_password = rov_config.get('RovControlPassword', 'Set a password in the config file')
 
         # If the password is incorrect, send a password invalid response:
         if msg_data.password_attempt.password != correct_password:

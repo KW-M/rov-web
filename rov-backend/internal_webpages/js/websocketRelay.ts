@@ -25,7 +25,7 @@ export class WebSocketRelay {
         this.isConnected = false
         this.isRunning = false
         this.connectionTimerId = 0
-        this.serverAddress = "ws://localhost:8765/"
+        this.serverAddress = ""
     }
 
     /*
@@ -33,7 +33,8 @@ export class WebSocketRelay {
         After it is called, it will continue attempting to maintain connection unless stop()
         is invoked.
     */
-    start(msgReceivedFn: (msg: Uint8Array) => void) {
+    start(serverAddress: string, msgReceivedFn: (msg: Uint8Array) => void) {
+        this.serverAddress = serverAddress
         this.msgReceivedFn = msgReceivedFn;
         this.isRunning = true
         this.connect()

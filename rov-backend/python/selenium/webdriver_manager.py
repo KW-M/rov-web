@@ -7,10 +7,14 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 
-class WebdriverManager:
 
-    def init(self):
+class WebdriverManager:
+    url = ""
+
+    def init(self, url):
         self.running = False
+        self.url = url
+        return self
 
 
     def start(self):
@@ -42,24 +46,22 @@ class WebdriverManager:
         service = ChromeService(executable_path=driver_path)
         self.driver = webdriver.Chrome(service=service, options=chrome_options)
 
-        #TODO should point to appropriate website (DONE). (M) if it's static content couldn't we fetch it from the local file system? - yes but we should pass it the  url query parameters at runtime / not hard-coded like it is now.
-        # self.driver.get("https://kw-m.github.io/internal_irov_website/backend/index.html")
-        self.driver.get("http://localhost:80/internal/index.html?ForceLocal=false&RovRoomName=ROV123&LivekitApiKey=APIkoE7m3Zqd5dJ&LivekitSecretKey=YbHcJZmAAbuI4S5Ba0LHAaXx6v9kfAlyLnviB2aRWSG&TwitchStreamKey=live_939208839_kQZt1fjuh3ZRwseCSFOResk96G4QsF")
+        self.driver.get(self.url)
 
 
     """This function will periodically check if the driver is alive while the manager is set to running
        if this isn't the case (which could maybe happen because the browser crashes or there's a network issue),
          then it'll try to fix everything by just restarting.
     """
-    # async def manage_driver_loop(self):
-    #     while True:
-    #         await asyncio.sleep(10) # arbitrary timeout for periodic checks
-    #         alive = self.driver_is_alive()
-    #         running = self.running
-    #         if running and not alive:
-    #             print("We have a problem, for some reason the webdriver is supposed to be running but it's not. Maybe the browser has crashed? or there's a network issue? Attempting to restart webdriver.")
-    #             self.stop()
-    #             self.start()
+    async def manage_driver_loop(self):
+        while True:
+            await asyncio.sleep(10) # arbitrary timeout for periodic checks
+            alive = self.driver_is_alive()
+            running = self.running
+            if running and not alive:
+                print("We have a problem, for some reason the webdriver is supposed to be running but it's not. Maybe the browser has crashed? or there's a network issue? Attempting to restart webdriver.")
+                self.stop()
+                self.start()
 
 
     def stop(self):
@@ -103,22 +105,3 @@ class WebdriverManager:
 
 # Singleton export pattern; anyone importing this module will be able to access this particular instance.
 rovWebdriverManager = WebdriverManager()
-
-# Testing scripts. If you run this module as main, you'll get to see a
-# live output of the logs in the headless browser being controlled by the webdriver.
-if __name__=="__main__":
-    rovWebdriverManager.init()
-    rovWebdriverManager.start()
-    rovWebdriverManager.test_fetch_title()
-    log = rovWebdriverManager.get_browser_log()
-
-    try:
-        rovWebdriverManager.start_browser_logging_loop()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        rovWebdriverManager.stop()
-
-    # print("started manager, ", rovWebdriverManager.is_running())
-    # rovWebdriverManager.stop()
-    # print("stopped manager, ", rovWebdriverManager.is_running())

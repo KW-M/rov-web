@@ -25,41 +25,10 @@ class WebSocketServer:
 
 
     """Start Websocket Server"""
-    async def start_wss(self):
-        async with websockets.serve(self._register, "localhost", 8765):
+    async def start_wss(self, port=8765):
+        async with websockets.serve(self._register, "localhost", port):
             await asyncio.Future()  # run forever
 
     def is_connected(self):
         return len(self.connections) > 0
 websocket_server = WebSocketServer()
-
-
-"""
-import asyncio
-import datetime
-import random
-import websockets
-
-CONNECTIONS = set()
-
-async def register(websocket):
-    CONNECTIONS.add(websocket)
-    try:
-        await websocket.wait_closed()
-    finally:
-        CONNECTIONS.remove(websocket)
-
-async def show_time():
-    while True:
-        message = datetime.datetime.utcnow().isoformat() + "Z"
-        websockets.broadcast(CONNECTIONS, message)
-        await asyncio.sleep(random.random() * 2 + 1)
-
-async def main():
-    async with websockets.serve(register, "localhost", 5678):
-        await show_time()
-
-if __name__ == "__main__":
-    asyncio.run(main())
-
-"""

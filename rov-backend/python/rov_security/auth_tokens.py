@@ -8,7 +8,7 @@ import math
 from uuid import uuid4
 from genericpath import exists
 
-from config_reader import program_config, SECONDS_IN_A_DAY
+from config_reader import rov_config, SECONDS_IN_A_DAY
 
 auth_tokens = {}
 rov_uuid = None
@@ -21,7 +21,7 @@ def generateAuthToken():
     """
     global auth_tokens
     auth_token = binascii.hexlify(os.urandom(20)).decode()  # https://stackoverflow.com/questions/41354205/how-to-generate-a-unique-auth-token-in-python
-    auth_tokens[auth_token] = math.floor(time.time() + program_config.get("AuthTokenTimeout", SECONDS_IN_A_DAY))  # time at which this key should expire (expressed in seconds since epoch)
+    auth_tokens[auth_token] = math.floor(time.time() + rov_config.get("AuthTokenTimeout", SECONDS_IN_A_DAY))  # time at which this key should expire (expressed in seconds since epoch)
     saveAuthStateToDisk()
     return auth_token
 
@@ -56,9 +56,9 @@ def getRovUUID():
 
 
 def readAuthStateFromDisk():
-    """Reads the program_config as json and puts it in authTokens dict"""
+    """Reads saved auth details as json and puts it in authTokens dict"""
     global auth_tokens, rov_uuid
-    authStorageFilepath = program_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
+    authStorageFilepath = rov_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
     if exists(authStorageFilepath):
         with open(authStorageFilepath, "r") as f:
             try:
@@ -72,6 +72,6 @@ def readAuthStateFromDisk():
 
 def saveAuthStateToDisk():
     """Saves the authTokens dict as json text to the AUTH_STATE_STORAGE_FILEPATH"""
-    authStorageFilepath = program_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
+    authStorageFilepath = rov_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
     with open(authStorageFilepath, "w") as f:
         json.dump({"authTokens": auth_tokens, "rovUUID": rov_uuid}, f)

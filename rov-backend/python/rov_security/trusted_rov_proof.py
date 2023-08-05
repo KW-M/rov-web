@@ -4,7 +4,7 @@
 import logging
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Signature import PKCS1_v1_5
-from config_reader import program_config
+from config_reader import rov_config
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 def signTrustedRovChallenge(challenge_string):
     """returns (string) the signature of the challenge_string parameter (can be any string), signed with the PKCS#1 v1.5 algorithim using the private key found in the config json under RovAttestationPrivateKey"""
     rsa_private_key = RSA.import_key(
-        program_config.get("RovAttestationPrivateKey", ""))
+        rov_config.get("RovAttestationPrivateKey", ""))
     if (rsa_private_key.can_sign()):
         return PKCS1_v1_5.new(rsa_private_key).sign(challenge_string)
 

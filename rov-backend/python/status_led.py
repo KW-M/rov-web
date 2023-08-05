@@ -13,11 +13,14 @@ class StatusLedController:
         self.led_pin = led_pin
         GPIO_ctrl.set_pin_mode(self.led_pin, OUTPUT_PIN_MODE)
         self.off()
+        return self
 
     def on(self):
         GPIO_ctrl.set_pin_high(self.led_pin)  # pin HIGH (on)
+        return self
 
     def off(self):
          GPIO_ctrl.set_pin_low(self.led_pin)  # pin LOW (off)
+         return self
 
 status_led_ctrl = StatusLedController()

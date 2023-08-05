@@ -12,7 +12,7 @@ import time
 import logging
 import asyncio
 
-from config_reader import program_config
+from config_reader import rov_config
 from rov_security.user_auth import user_auth
 from sensors.sensors_controller import sensor_ctrl
 from motion.motion_controller import motion_ctrl

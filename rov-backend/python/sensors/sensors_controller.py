@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from config_reader import program_config
+from config_reader import rov_config
 from sensors.generic_sensor import GenericSensor
 from utilities import is_raspberry_pi
 
@@ -24,7 +24,7 @@ class SensorController:
 
     async def sensor_setup_loop(self):
         log.info("Setting Up Sensors...")
-        enabledSensors = program_config.get("EnabledSensors", [])
+        enabledSensors = rov_config.get("EnabledSensors", [])
         self.connected_sensors = list(filter(lambda sensor: sensor.sensor_name in enabledSensors, all_possible_sensors))
         sensor_tasks = [sensor.start_sensor_loop() for sensor in self.connected_sensors]
         await asyncio.gather(*sensor_tasks)

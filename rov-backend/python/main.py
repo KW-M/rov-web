@@ -1,10 +1,3 @@
-# Taken from:
-# https://stackoverflow.com/questions/45364877/interpreting-keypresses-sent-to-raspberry-pi-through-uv4l-webrtc-datachannel
-# based on:
-# https://raspberrypigpi.stackexchange.com/questions/29480/how-to-use-pigpio-to-control-a-servo-motor-with-a-keyboard
-# public domain
-# https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
-
 import logging
 import asyncio
 
@@ -14,20 +7,19 @@ from gpio_interface import GPIO_ctrl
 from motion.motion_controller import motion_ctrl
 from status_led import status_led_ctrl
 from rov_security.auth_tokens import readAuthStateFromDisk
-
 from websocket_server import websocket_server
 from mesage_handler import message_handler
 from sensors.sensors_controller import sensor_ctrl
 # from sensor_log import Sensor_Log
 
-config = read_config_file()
+rov_config = read_config_file()
 readAuthStateFromDisk()
 
 ###### Setup Logging #######
 ############################
 
 # set the Loglevel from command line argument or config file. Use --LogLevel=DEBUG
-logging.basicConfig(level=get_log_level(config['LogLevel']))
+logging.basicConfig(level=get_log_level(rov_config['LogLevel']))
 log = logging.getLogger(__name__)
 
 ######## Main Program Loop ###########
@@ -38,8 +30,7 @@ async def main():
     ############################
 
     GPIO_ctrl.init()
-    status_led_ctrl.init(21)
-    status_led_ctrl.on()
+    status_led_ctrl.init(21).on()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
     motion_ctrl.init()
@@ -50,7 +41,7 @@ async def main():
     await asyncio.gather(
         sensor_ctrl.sensor_setup_loop(),
         motion_ctrl.motor_setup_loop(),
-        websocket_server.start_wss(),
+        websocket_server.start_wss(port=rov_config.get('PythonWebsocketPort', 8765)),
         message_handler.status_broadcast_loop(),
         # start_aiohttp_api_server(),
         # monitor_tasks() # debug

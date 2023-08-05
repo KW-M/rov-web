@@ -3,34 +3,38 @@ import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 import { twitchStream } from "./twitchStream";
+import { SECONDS_IN_DAY } from "../../../shared/js/consts";
 
 // DISABLE VITE HOT MOUDLE RELOADING:
 if (import.meta.hot)
     import.meta.hot.accept(() => import.meta.hot.invalidate())
 
+// Get Setup Options from URL Query Params
 const urlParams = new URLSearchParams(location.search);
 const livekitConfig: LivekitSetupOptions = {
-    RovRoomName: urlParams.get("RovRoomName"),
+    RovName: urlParams.get("RovName"),
+    RovControlPassword: urlParams.get("RovControlPassword"),
     LivekitAPIKey: urlParams.get("LivekitApiKey"),
     LivekitSecretKey: urlParams.get("LivekitSecretKey"),
     TwitchStreamKey: urlParams.get("TwitchStreamKey") || "None", // Twitch Stream Key (For Streaming, duh)
     EnableLivekitLocal: (urlParams.get("ForceLocal") || "false").toLowerCase() === 'true',
     EnableLivekitCloud: (urlParams.get("EnableCloud") || "true").toLowerCase() === 'true',
-    EnableBackendWebsocket: (urlParams.get("EnableBackendWebsocket") || "true").toLowerCase() === 'true',
+    PythonWebsocketPort: parseInt(urlParams.get("PythonWebsocketPort")) || 0,
+    AuthTokenTimeout: parseInt(urlParams.get("AuthTokenTimeout")) || SECONDS_IN_DAY,
 }
-for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing some required livekit setup url query params.");
+for (const key in livekitConfig) if (livekitConfig[key] == undefined) throw new Error("Missing required url query parameter: " + key);
 
-// Initialize Twitch Stream
-if (livekitConfig.TwitchStreamKey !== "None") {
-    twitchStream.innit(livekitConfig.TwitchStreamKey, livekitConfig.RovRoomName, livekitConfig.LivekitAPIKey, livekitConfig.LivekitSecretKey)
-}
 // Start Livekit
 internalConnManager.start(livekitConfig)
 
-window.onbeforeunload = () => { twitchStream.stopStream() } // Stop Twitch Stream when page is closed
+// Initialize Twitch Stream
+if (livekitConfig.TwitchStreamKey !== "None") {
+    twitchStream.init(livekitConfig.TwitchStreamKey, livekitConfig.RovName, livekitConfig.LivekitAPIKey, livekitConfig.LivekitSecretKey)
+    window.addEventListener("beforeunload", () => twitchStream.stopStream()) // Stop Twitch Stream when page is closed
+}
 
 // Start Backend/Python Websocket Communication
-if (livekitConfig.EnableBackendWebsocket) iRovWebSocketRelay.start((msgBytes: Uint8Array) => {
+if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://localhost:" + livekitConfig.PythonWebsocketPort, (msgBytes: Uint8Array) => {
     /*Callback to handle messages being received from the iROV python*/
 
 

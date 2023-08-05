@@ -6,13 +6,15 @@ import { getHumanReadableId, getUniqueNumber } from '../util';
 const RoomServiceClient = globalThis.livekitServerSDK.RoomServiceClient as typeof livekitServerSDKTypes.RoomServiceClient
 
 export type LivekitSetupOptions = {
-    RovRoomName: string,
+    RovName: string,
+    RovControlPassword: string,
     LivekitSecretKey: string,
     LivekitAPIKey: string,
     TwitchStreamKey: string,
     EnableLivekitCloud: boolean,
     EnableLivekitLocal: boolean,
-    EnableBackendWebsocket: boolean,
+    PythonWebsocketPort: number,
+    AuthTokenTimeout: number,
 }
 
 export async function deleteLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {

@@ -5,22 +5,29 @@ import logging
 
 SECONDS_IN_A_DAY = 86400
 
-# default values for the program config json
-program_config = {
+# default values for the rov-config.json
+rov_config = {
     "LogLevel": "info",
-    "RovControlPassword": "pls change this in rov-config.json file",
+    "RovName": "ROV_NAME_UNSET",
+    "RovControlPassword": "SET PASSWORD IN: ~/rov-config.json",
+    "PythonWebsocketPort": 8765,
+    "InternalWebpageUrl": "http://localhost/internal/index.html",
+    "InternalWebpageUrlQueryParams": {
+        "LivekitCloudUrl": "SET URL IN: ~/rov-config.json",
+        "LivekitApiKey": "SET LIVEKIT API KEY IN: ~/rov-config.json",
+        "LivekitSecretKey": "SET LIVEKIT SECRET KEY IN: ~/rov-config.json",
+        "TwitchStreamKey": "SET TWITCH STREAM KEY IN: ~/rov-config.json",
+    },
     "AuthStateStorageFilepath": "./rov-auth-state.json",
     "AuthTokenTimeout": SECONDS_IN_A_DAY,
-    "RovAttestationPrivateKey": "pls set this in rov-config.json file",
-    "EnabledSensors": [], # list of sensor names to enable (see python classes in sensor folder)
-    "WebsocketServerAddress": "http://localhost:7413",
+    "EnabledSensors": [], # list of sensor to enable by name (see "name" attribute of python classes in sensor folder)
 }
 
 
 def read_config_file():
     """
     Reads the json config file specified in the program arguments as a dictionary with the config values
-    returns the program_config dictionary.
+    returns the rov_config dictionary.
     """
 
     # parse the command line arguments
@@ -38,12 +45,12 @@ def read_config_file():
     # open and read the config file:
     with open(config_file_path, 'r', encoding="utf-8") as f:
         file_config_dict = json.load(f)
-        for key in program_config:
+        for key in rov_config:
             if key in file_config_dict:
-                program_config[key] = file_config_dict[key]
+                rov_config[key] = file_config_dict[key]
 
     # return the parsed config dictionary
-    return program_config
+    return rov_config
 
 
 def get_log_level(log_level_string):

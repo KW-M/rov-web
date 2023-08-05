@@ -15,6 +15,7 @@ export enum ConnectionStates {
     failed = "Failed",
 }
 
+
 const TE = new TextEncoder();
 export const ENCODE_TXT = (txt: string) => TE.encode(txt)
 const TD = new TextDecoder();
@@ -23,6 +24,7 @@ export const DECODE_TXT = (data: ArrayBufferLike) => TD.decode(data)
 export const LIVEKIT_CLOUD_ENDPOINT = 'https://rov-web.livekit.cloud'
 export const LIVEKIT_LOCAL_ENDPOINT = 'http://localhost:7880'
 export const PROXY_PREFIX = 'proxy:';
+export const SECONDS_IN_DAY = 60 * 60 * 24;
 
 export const LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: false,

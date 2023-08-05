@@ -32,7 +32,81 @@ exe() { echo -e "$Magenta> $@ $Color_Off" >&2; eval "$@" ; }
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-# setup the rov-web folder to be a git repo inline with github
+# --------------------------------------------
+# ---------- Collect Needed Values -----------
+
+mkdir -p "$HOME/setup-cache"
+
+# Save Rov Name
+if [ -ne "$HOME/setup-cache/ROV_NAME"  ]
+then
+    echo "Please enter a name for this ROV:"
+    read ROV_NAME
+    echo "$ROV_NAME" > "$HOME/setup-cache/ROV_NAME"
+else
+    ROV_NAME=$(cat "$HOME/setup-cache/ROV_NAME")
+fi
+
+# Save Rov Control Password
+if [ -ne "$HOME/setup-cache/ROV_CONTROL_PASSWORD"  ]
+then
+    echo "Please enter a password for this ROV:"
+    read ROV_CONTROL_PASSWORD
+    echo "$ROV_CONTROL_PASSWORD" > "$HOME/setup-cache/ROV_CONTROL_PASSWORD"
+else
+    ROV_CONTROL_PASSWORD=$(cat "$HOME/setup-cache/ROV_CONTROL_PASSWORD")
+fi
+
+# Save Livekit Server URL
+if [ -ne "$HOME/setup-cache/LIVEKIT_CLOUD_URL"  ]
+then
+    echo "Please enter your Livekit Cloud Server URL:"
+    read LIVEKIT_CLOUD_URL
+    echo "$LIVEKIT_SERVER_URL" > "$HOME/setup-cache/LIVEKIT_CLOUD_URL"
+else
+    LIVEKIT_SERVER_URL=$(cat "$HOME/setup-cache/LIVEKIT_CLOUD_URL")
+fi
+
+# Save Livekit API Key
+if [ -ne "$HOME/setup-cache/LIVEKIT_API_KEY"  ]
+then
+    echo "Please enter your Livekit Cloud API Key:"
+    read LIVEKIT_API_KEY
+    echo "$LIVEKIT_API_KEY" > "$HOME/setup-cache/LIVEKIT_API_KEY"
+else
+    LIVEKIT_API_KEY=$(cat "$HOME/setup-cache/LIVEKIT_API_KEY")
+fi
+
+# Save Livekit Secret Key
+if [ -ne "$HOME/setup-cache/LIVEKIT_SECRET_KEY"  ]
+then
+    echo "Please enter your Livekit Cloud Secret Key:"
+    read LIVEKIT_SECRET_KEY
+    echo "$LIVEKIT_SECRET_KEY" > "$HOME/setup-cache/LIVEKIT_SECRET_KEY"
+else
+    LIVEKIT_SECRET_KEY=$(cat "$HOME/setup-cache/LIVEKIT_SECRET_KEY")
+fi
+
+# Save Twitch Stream Key
+if [ -ne "$HOME/setup-cache/TWITCH_STREAM_KEY"  ]
+then
+    echo "Please enter your Twitch Stream Key (Enter 'None' to disable twitch streaming):"
+    read TWITCH_STREAM_KEY
+    echo "$TWITCH_STREAM_KEY" > "$HOME/setup-cache/TWITCH_STREAM_KEY"
+else
+    TWITCH_STREAM_KEY=$(cat "$HOME/setup-cache/TWITCH_STREAM_KEY")
+fi
+
+# ------- setup rov-config.json file: -------
+exe "cp '$HOME/rov-web/rov-config.example.json' '$HOME/rov-config.json'"
+exe "sed -i 's/== ROV_NAME_NOT_SET ==/$ROV_NAME/g' '$HOME/rov-config.json'"
+exe "sed -i 's/== Put ROV Control Password Here ==/$ROV_CONTROL_PASSWORD/g' '$HOME/rov-config.json'"
+exe "sed -i 's/== Put LiveKit Cloud URL Here ==/$LIVEKIT_CLOUD_URL/g' '$HOME/rov-config.json'"
+exe "sed -i 's/== Put LiveKit API Key Here ==/$LIVEKIT_API_KEY/g' '$HOME/rov-config.json'"
+exe "sed -i 's/== Put LiveKit Secret Key Here ==/$LIVEKIT_SECRET_KEY/g' '$HOME/rov-config.json'"
+exe "sed -i 's/== Put Twitch Stream Key Here ==/$TWITCH_STREAM_KEY/g' '$HOME/rov-config.json'"
+
+# ---- setup the rov-web folder to be a git repo inline with github -----
 exe "cd '$HOME/rov-web/'"
 if [ ! -e ".git/" ]; then
     exe "git init -b main"
@@ -51,8 +125,9 @@ exe 'sudo apt-get -y dist-upgrade --fix-missing' || true
 exe 'sudo apt-get -y update' || true
 exe 'sudo apt-get install -y git wget unzip' || true
 
-echoBlue "Installing chromium chromedriver for selinium"
-exe "sudo apt-get install -y chromium-chromedriver xvfb "
+# --------- Install Chromium Headless Tools ------------
+echoBlue "Installing chromium-chromedriver & xvfb for selinium webdriver"
+exe "sudo apt-get install -y chromium-chromedriver xvfb"
 
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
 # { # try
@@ -178,8 +253,7 @@ exe "sudo apt-get install -y chromium-chromedriver xvfb "
     # Check if we have already added words " -e '/var/log/nginx_error.log'" to the nginx.service file:
     if ! grep "/var/log/nginx" "/lib/systemd/system/nginx.service"; then
         echoBlue "Adding nginx error log folder '/var/log/nginx' in /lib/systemd/system/nginx.service "
-        # https://stackoverflow.com/questions/148451/how-to-use-sed-to-replace-only-the-first-occurrence-in-a-file
-        exe "sudo sed -i '0,/ExecStartPre=/s//ExecStartPre=mkdir -p \"\/var\/log\/nginx\/\"\nExecStartPre=/' /lib/systemd/system/nginx.service" || true
+        exe "sudo sed -i '0,/ExecStartPre=/s//ExecStartPre=mkdir -p \"\/var\/log\/nginx\/\"\nExecStartPre=/' /lib/systemd/system/nginx.service" || true # https://stackoverflow.com/questions/148451/how-to-use-sed-to-replace-only-the-first-occurrence-in-a-file
     fi
 } || { # catch
     echoRed "Failed to install & setup nginx web server"

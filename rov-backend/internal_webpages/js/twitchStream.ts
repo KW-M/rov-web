@@ -9,7 +9,7 @@ class TwitchStream {
     private roomName: string = null;
     private streamEgressID: string = null;
 
-    innit(twitchStreamKey: string, roomName: string, apiKey: string, secretKey: string) {
+    init(twitchStreamKey: string, roomName: string, apiKey: string, secretKey: string) {
         this._twitchStreamKey = twitchStreamKey;
         this.roomName = roomName;
         this._egressClient = new EgressClient('https://rov-web.livekit.cloud', apiKey, secretKey);
