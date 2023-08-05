@@ -34,10 +34,10 @@ echo " * Systemd Services Status: *"
 
 #check if services are active, if not, show their status:
 echo "------------------------"
-if systemctl -q is-active rov_go_code.service; then
-    echo "ACTIVE | rov_go_code.service"
+if systemctl -q is-active rov_internal_web_browser.service; then
+    echo "ACTIVE | rov_internal_web_browser.service"
 else
-    systemctl status --no-pager rov_go_code.service
+    systemctl status --no-pager rov_internal_web_browser.service
 fi
 echo "------------------------"
 if systemctl -q is-active rov_python_code.service; then

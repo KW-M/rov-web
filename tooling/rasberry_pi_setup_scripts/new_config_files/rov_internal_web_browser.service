@@ -3,9 +3,9 @@ Description=Internal web browser manager service
 
 [Service]
 User=pi
-# PYTHONUNBUFFERED=1 is so python will spit out print messages to the system log instantly instead of waiting to in batches
+# This is so python will spit out print messages to the system log instantly instead of waiting to in batches
 Environment=PYTHONUNBUFFERED=1
-ExecStart=python3 /home/pi/rov-web/rov-backend/python/selenium/webdriver_manager.py
+ExecStart=python3 /home/pi/rov-web/rov-backend/python/main_internal_web_browser.py
 KillMode=mixed
 Restart=always
 TimeoutStopSec=10s

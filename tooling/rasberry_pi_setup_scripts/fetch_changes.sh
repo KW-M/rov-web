@@ -51,7 +51,7 @@ exe "unzip project.zip -x '.git/*' && rm project.zip"
 echo "$tracked_files" | xargs -d '\n' rm || true # delete all tracked files
 exe "cp -rf ~/temp/rov-web-download/* ~/rov-web/"
 exe "rm -rf ~/temp"
-exe "bash ~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"
+exe "~/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh '$changes'"
 
 # -------------------- Done ------------------------
 
