@@ -121,7 +121,3 @@ echo "$(tput setaf 2)
 $(tput sgr0)"
 echo "========================="
 echo "";
-
-alias rov_status_report="$HOME/rov-web/tooling/rasberry_pi_setup_scripts/rov_status_report.sh"
-alias fetch_changes="$HOME/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh"
-alias apply_changes="$HOME/rov-web/tooling/rasberry_pi_setup_scripts/apply_changes.sh"
