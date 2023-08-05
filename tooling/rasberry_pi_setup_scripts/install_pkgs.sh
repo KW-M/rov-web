@@ -62,10 +62,10 @@ fi
 if [ ! -e "$HOME/setup-cache/LIVEKIT_CLOUD_URL"  ]
 then
     echo "Please enter your Livekit Cloud Server URL (starting with https://):"
-    read LIVEKIT_SERVER_URL
-    echo "$LIVEKIT_SERVER_URL" > "$HOME/setup-cache/LIVEKIT_CLOUD_URL"
+    read LIVEKIT_CLOUD_URL
+    echo "$LIVEKIT_CLOUD_URL" > "$HOME/setup-cache/LIVEKIT_CLOUD_URL"
 else
-    LIVEKIT_SERVER_URL=$(cat "$HOME/setup-cache/LIVEKIT_CLOUD_URL")
+    LIVEKIT_CLOUD_URL=$(cat "$HOME/setup-cache/LIVEKIT_CLOUD_URL")
 fi
 
 # Save Livekit API Key
@@ -99,7 +99,7 @@ else
 fi
 
 # ------- setup rov-config.json file: -------
-exe "cp '$HOME/rov-web/rov-config.example.json' '$HOME/rov-config.json'"
+exe "cp '$HOME/rov-web/tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json' '$HOME/rov-config.json'"
 exe "sed -i 's/== ROV_NAME_NOT_SET ==/$ROV_NAME/g' '$HOME/rov-config.json'"
 exe "sed -i 's/== Put ROV Control Password Here ==/$ROV_CONTROL_PASSWORD/g' '$HOME/rov-config.json'"
 exe "sed -i 's/== Put LiveKit Cloud URL Here ==/$LIVEKIT_CLOUD_URL/g' '$HOME/rov-config.json'"
