@@ -298,8 +298,8 @@ exe "sudo apt-get install -y chromium-chromedriver xvfb"
 # ----------------------------------------------------------------------------------------------------------------------
 
 { # try
-    echoBlue "Running the rasberry_pi_setup_scripts/fetch_changes.sh script in this folder. " &&
-    exe "/bin/bash $FOLDER_CONTAINING_THIS_SCRIPT/fetch_changes.sh" && # run the update config files script in this folder.
+    echoBlue "Running the rasberry_pi_setup_scripts/apply_changes.sh script in this folder. " &&
+    exe "/bin/bash $FOLDER_CONTAINING_THIS_SCRIPT/apply_changes.sh" && # run the script to update system config files.
 
     echoBlue "Enabling systemd (systemctl) services so they start at boot (or whenever configured too)... " &&
     exe 'sudo systemctl enable nginx.service' &&
