@@ -119,6 +119,7 @@ export class SimplePeerConnection {
     }
 
     stop() {
+        this.connectionState.set(ConnectionStates.disconnectedOk);
         this.currentVideoStream.set(null);
         this._shouldReconnect = false;
         if (this._p) this._p.destroy();

@@ -43,7 +43,7 @@ export class FrontendConnectionManager {
         setTimeout(() => {
             if (simplepeerVideoStream && simplepeerVideoStream.getVideoTracks().length > 0 && !simplepeerVideoStream.getVideoTracks()[0].muted) {
                 showToastMessage("Using Direct Video")
-                livekitVideoStream.stop();
+                if (livekitVideoStream) livekitVideoStream.stop();
                 this.mainVideoStream.set(simplepeerVideoStream)
             } else if (livekitVideoStream) {
                 showToastMessage("Using Livekit Video")
