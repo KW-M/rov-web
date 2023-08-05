@@ -3,7 +3,7 @@ import asyncio
 from urllib.parse import urlencode
 
 # import our python files from the same directory
-from selenium.webdriver_manager import rovWebdriverManager
+from selenium_webdriver_manager import rovWebdriverManager
 from config_reader import read_config_file, get_log_level
 rov_config = read_config_file()
 

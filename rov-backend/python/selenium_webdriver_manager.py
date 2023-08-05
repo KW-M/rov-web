@@ -7,7 +7,6 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 
-
 class WebdriverManager:
     url = ""
 
