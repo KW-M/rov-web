@@ -328,9 +328,9 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
         this._livekitApiKey = livekitApiKey;
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
-        const tokens = generateLivekitRoomTokens(livekitApiKey, livekitSecretKey, rovRoomName, [rovRoomName])
-        await createLivekitRoom(this._livekitAdmin, rovRoomName, JSON.stringify({ "accessTokens": tokens }));
+        await createLivekitRoom(this._livekitAdmin, rovRoomName);
         const accessToken = getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
+        await this.updateMetadataTokens();
         await super.start(rovRoomName, accessToken);
     }
 }

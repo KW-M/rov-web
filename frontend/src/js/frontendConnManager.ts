@@ -1,6 +1,6 @@
 import { ConnectionStates, LIVEKIT_BACKEND_ROOM_CONFIG, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";
 import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-import { listLivekitRoomsSansSDK, getAuthTokenFromLivekitRoomMetadata } from "../../../shared/js/livekit/adminActions";
+import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata } from "../../../shared/js/livekit/adminActions";
 import { LivekitViewerConnection } from "../../../shared/js/livekit/livekitConn";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "../../../shared/js/simplePeer";
@@ -64,7 +64,7 @@ export class FrontendConnectionManager {
         if (this.livekitRoomPollingInterval !== -1) clearInterval(this.livekitRoomPollingInterval)
         const listOpenRooms = async () => {
             if (this.connectionState.get() === ConnectionStates.connected || this.connectionState.get() === ConnectionStates.reconnecting) return;
-            const openRooms = await listLivekitRoomsSansSDK(hostName, LIVEKIT_LIST_ONLY_TOKEN)
+            const openRooms = await listLivekitRoomsWithoutSDK(hostName, LIVEKIT_LIST_ONLY_TOKEN)
             const openRoomNames = openRooms.map(room => room.name)
             const openRoomTokens = openRooms.reduce((authTokens, room) => {
                 authTokens[room.name] = getAuthTokenFromLivekitRoomMetadata(room.metadata);

@@ -46,7 +46,7 @@ export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.Ro
     return await client.updateRoomMetadata(roomName, metadata)
 }
 
-export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]): Promise<string> {
+export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]): Promise<string[]> {
     const num_tokens_to_generate = 40;
     const tokens = [];
     for (let i = 0; i < num_tokens_to_generate; i++) {
@@ -58,11 +58,12 @@ export async function generateLivekitRoomTokens(APIKey: string, secretKey: strin
         const frontendAccessToken = getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
         tokens.push(frontendAccessToken);
     }
+    return tokens
 }
 
 export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]) {
     await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
-        accessTokens: generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames)
+        accessTokens: await generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames)
     }));
 }
 
@@ -88,7 +89,7 @@ type LivekitRawRoomSDKResponse = {
         "active_recording": false
     }[]
 }
-export async function listLivekitRoomsSansSDK(hostUrl: string, livekitToken: string) {
+export async function listLivekitRoomsWithoutSDK(hostUrl: string, livekitToken: string) {
     return await fetch(hostUrl + '/twirp/livekit.RoomService/ListRooms', {
         method: 'POST',
         cache: 'no-cache',
