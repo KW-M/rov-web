@@ -225,7 +225,7 @@ export class LivekitGenericConnection {
     }
 
     getParticipantSid(participantIdentity: string) {
-        const participant = [...(this._roomConn.participants.values())].find(p => p.identity === participantIdentity));
+        const participant = [...(this._roomConn.participants.values())].find(p => p.identity === participantIdentity);
         return participant ? participant.sid : null;
     }
 
@@ -312,9 +312,14 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
                 appendLog('unsubscribed from track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid);
-            }).on(RoomEvent.ParticipantConnected, (participant) => {
-                refreshMetadata(this._livekitAdmin, this._livekitApiKey, this._livekitSecretKey, this._rovRoomName);
+            }).on(RoomEvent.ParticipantConnected, () => {
+                this.updateMetadataTokens();
             })
+    }
+
+    updateMetadataTokens() {
+        const existingParticipantIds = [...(this._roomConn.participants.values())].map(p => p.identity);
+        refreshMetadata(this._livekitAdmin, this._livekitApiKey, this._livekitSecretKey, this._rovRoomName, existingParticipantIds);
     }
 
 
@@ -323,8 +328,8 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
         await createLivekitRoom(this._livekitAdmin, rovRoomName);
-        await refreshMetadata(this._livekitAdmin, livekitApiKey, livekitSecretKey, rovRoomName);
         const accessToken = getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
+        this.updateMetadataTokens();
         await super.start(rovRoomName, accessToken);
     }
 }

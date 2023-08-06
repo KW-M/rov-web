@@ -45,11 +45,20 @@ export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.Ro
     return await client.updateRoomMetadata(roomName, metadata)
 }
 
-export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName) {
-    const userName = getHumanReadableId(getUniqueNumber());
-    const frontendAccessToken = getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
+export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]) {
+    const num_tokens_to_generate = 40;
+    const tokens = [];
+    for (let i = 0; i < num_tokens_to_generate; i++) {
+        let userName = getHumanReadableId(getUniqueNumber());
+        while (alreadyTakenNames.includes(userName)) {
+            userName = getHumanReadableId(getUniqueNumber());
+        }
+        alreadyTakenNames.push(userName);
+        const frontendAccessToken = getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
+        tokens.push(frontendAccessToken);
+    }
     await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
-        accessToken: frontendAccessToken,
+        accessTokens: tokens,
     }));
 }
 
@@ -94,10 +103,14 @@ export async function listLivekitRoomsSansSDK(hostUrl: string, livekitToken: str
     });
 }
 
-export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokenName: string = "accessToken"): string {
+export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokensName: string = "accessTokens"): string {
     try {
         const metadata = JSON.parse(roomMetadata);
-        return metadata[tokenName];
+        const tokens = metadata[tokensName];
+        if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
+            console.warn("Failed to get tokens list from livekit room metadata");
+            return "";
+        } else return tokens[Date.now() % tokens.length];
     } catch (e) {
         console.log("Error parsing livekit room metadata", e, roomMetadata);
         return "";
