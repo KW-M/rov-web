@@ -22,7 +22,8 @@ export class FrontendStartupFlowClass {
             console.log("We are in an iframe, enabling iframe proxying to local Livekit...");
             try {
                 enableIframeWebsocketProxying();
-                await frontendConnMngr.initUsingLocalLivekitConnection()
+                console.warn("TODO: Connect to local Livekit server...")
+                // await frontendConnMngr.initUsingLocalLivekitConnection()
             } catch (err) {
                 await this.failedToConnectToLocalLivekit(err)
             }

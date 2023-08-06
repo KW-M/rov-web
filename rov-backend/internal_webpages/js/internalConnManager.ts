@@ -16,7 +16,7 @@ import { twitchStream } from "./twitchStream";
  */
 class InternalConnectionManager {
     private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
-    private _localLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
+    // private _localLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
     private _simplePeerConnections: { [userId: string]: SimplePeerConnection } = {};
     private _cameraMediaStream: MediaStream = null;
 
@@ -45,36 +45,36 @@ class InternalConnectionManager {
         })
 
         // Initlize (but don't start) the local livekit connection:
-        this._localLivekitConnection.init({
-            hostUrl: LIVEKIT_LOCAL_ENDPOINT,
-            publishVideo: true,
-            reconnectAttempts: 300,
-            roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
-            roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
-        })
+        // this._localLivekitConnection.init({
+        //     hostUrl: LIVEKIT_LOCAL_ENDPOINT,
+        //     publishVideo: true,
+        //     reconnectAttempts: 300,
+        //     roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
+        //     roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
+        // })
 
-        changesSubscribe(this._localLivekitConnection.latestRecivedDataMessage, (msgObj) => {
-            if (!msgObj) return;
-            const { senderId, msg } = msgObj;
-            backendHandleWebrtcMsgRcvd(senderId, msg)
-        })
-        changesSubscribe(this._localLivekitConnection.connectionState, (state) => {
-            console.log("Local Conn State Changed: " + state)
-        })
-        changesSubscribe(this._localLivekitConnection.participantConnectionEvents, (evt) => {
-            console.log("Local Conn Participant Event: ", evt)
-        })
+        // changesSubscribe(this._localLivekitConnection.latestRecivedDataMessage, (msgObj) => {
+        //     if (!msgObj) return;
+        //     const { senderId, msg } = msgObj;
+        //     backendHandleWebrtcMsgRcvd(senderId, msg)
+        // })
+        // changesSubscribe(this._localLivekitConnection.connectionState, (state) => {
+        //     console.log("Local Conn State Changed: " + state)
+        // })
+        // changesSubscribe(this._localLivekitConnection.participantConnectionEvents, (evt) => {
+        //     console.log("Local Conn Participant Event: ", evt)
+        // })
     }
 
     private async cameraReady(stream: MediaStream) {
         this._cameraMediaStream = stream;
         if (this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._cloudLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
-        if (this._localLivekitConnection && this._localLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._localLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
+        // if (this._localLivekitConnection && this._localLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._localLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
     }
 
     public async start(livekitSetup: LivekitSetupOptions) {
         if (livekitSetup.EnableLivekitCloud) await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
-        if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
+        // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
         asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({ video: true, audio: false }).then(this.cameraReady.bind(this)).catch((e) => { console.error(e); window.location.reload() });
         console.info("Connection Manager Started")
     }
@@ -112,7 +112,7 @@ class InternalConnectionManager {
 
     public async _sendMessageViaLivekit(msg: Uint8Array, reliable: boolean, toUserIds: string[]) {
         await this._cloudLivekitConnection.sendMessage(msg, reliable, toUserIds);
-        await this._localLivekitConnection.sendMessage(msg, reliable, toUserIds);
+        // await this._localLivekitConnection.sendMessage(msg, reliable, toUserIds);
     }
 
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
@@ -131,7 +131,7 @@ class InternalConnectionManager {
         // }
         const notSentPeers = toUserIds; //toUserIds.filter((userId) => !sentToParticpants.includes(userId));
         await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
-        await this._localLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
+        // await this._localLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
     }
 
 }

@@ -215,7 +215,7 @@ export class LivekitGenericConnection {
         await this._roomConn.localParticipant.publishData(
             msgBytes,
             reliable ? DataPacket_Kind.RELIABLE : DataPacket_Kind.LOSSY,
-            { destination: [] } //toUserIds
+            { destination: toUserIds }
         )
     }
 
