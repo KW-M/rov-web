@@ -19,7 +19,7 @@ import {
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { getWebsocketURL, waitfor } from '../util';
 import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
-import { createLivekitRoom, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from './adminActions';
+import { createLivekitRoom, generateLivekitRoomTokens, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from './adminActions';
 import { getPublisherAccessToken } from './livekitTokens';
 import type { RoomServiceClient } from 'livekit-server-sdk';
 
@@ -324,12 +324,13 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
 
 
     async startRoom(rovRoomName: string, livekitApiKey: string, livekitSecretKey: string) {
+        this._rovRoomName = rovRoomName;
         this._livekitApiKey = livekitApiKey;
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
-        await createLivekitRoom(this._livekitAdmin, rovRoomName);
+        const tokens = generateLivekitRoomTokens(livekitApiKey, livekitSecretKey, rovRoomName, [rovRoomName])
+        await createLivekitRoom(this._livekitAdmin, rovRoomName, JSON.stringify({ "accessTokens": tokens }));
         const accessToken = getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
-        this.updateMetadataTokens();
         await super.start(rovRoomName, accessToken);
     }
 }

@@ -26,12 +26,13 @@ export async function deleteLivekitRoom(client: livekitServerSDKTypes.RoomServic
 }
 
 
-export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string) {
+export async function createLivekitRoom(client: livekitServerSDKTypes.RoomServiceClient, roomName: string, metadata: string = "") {
     // await deleteLivekitRoom(client, roomName)
     return await client.createRoom({
         name: roomName,
         maxParticipants: 12,
         emptyTimeout: 30, // 30 seconds
+        metadata: metadata
     })
 }
 
@@ -45,7 +46,7 @@ export async function updateLivekitRoomMetadata(client: livekitServerSDKTypes.Ro
     return await client.updateRoomMetadata(roomName, metadata)
 }
 
-export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]) {
+export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]): Promise<string> {
     const num_tokens_to_generate = 40;
     const tokens = [];
     for (let i = 0; i < num_tokens_to_generate; i++) {
@@ -57,8 +58,11 @@ export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.Roo
         const frontendAccessToken = getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
         tokens.push(frontendAccessToken);
     }
+}
+
+export async function refreshMetadata(cloudRoomClient: livekitServerSDKTypes.RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]) {
     await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
-        accessTokens: tokens,
+        accessTokens: generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames)
     }));
 }
 
