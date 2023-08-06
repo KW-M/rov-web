@@ -29,6 +29,11 @@ interface msgQueueItem {
     onSendCallback: (msgBytes: Uint8Array) => void
 }
 
+interface LivekitMessageDetails {
+    senderId: string
+    msg: Uint8Array
+}
+
 interface LivekitConfig {
     hostUrl: string;
     publishVideo: boolean;
@@ -38,7 +43,7 @@ interface LivekitConfig {
 }
 
 interface ParticipantConnectionEvent {
-    id: string; // the livekit identity of the participant
+    id: string;  // the livekit identity of the participant
     joined: boolean; // true if the participant joined, false if they left
 }
 
@@ -49,10 +54,7 @@ export class LivekitGenericConnection {
     // subscribe to get updates on the state of the webrtc connection overall.
     connectionState: nStoreT<ConnectionStates>; // TODO
     // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
-    latestRecivedDataMessage: nStoreT<{
-        senderId: string
-        msg: Uint8Array
-    }>;
+    latestRecivedDataMessage: nStoreT<LivekitMessageDetails>;
     // subscribe to get notified when a participant joins or leaves the room.
     participantConnectionEvents: nStoreT<ParticipantConnectionEvent>;
 
@@ -75,10 +77,7 @@ export class LivekitGenericConnection {
 
         // setup reactive stores
         this.connectionState = nStore<ConnectionStates>(ConnectionStates.init)
-        this.latestRecivedDataMessage = nStore<{
-            senderId: string
-            msg: Uint8Array
-        }>(null)
+        this.latestRecivedDataMessage = nStore<LivekitMessageDetails>(null)
         this.participantConnectionEvents = nStore<ParticipantConnectionEvent>(null);
     }
 
@@ -149,14 +148,14 @@ export class LivekitGenericConnection {
                 appendLog('ParticipantMetadataChanged', a);
             })
             .on(RoomEvent.ParticipantConnected, async (participant: Participant) => {
-                appendLog('participant', participant.identity, 'connected', participant.metadata);
+                appendLog(`participant ${participant.identity} (${participant.sid}) connected`, participant.metadata);
                 this.participantConnectionEvents.set({ id: participant.identity, joined: true })
                 participant.on(ParticipantEvent.ConnectionQualityChanged, () => {
                     appendLog('ParticipantEvent.ConnectionQualityChanged', participant.connectionQuality);
                 });
             })
             .on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
-                appendLog('participant', participant.sid, 'disconnected');
+                appendLog(`participant ${participant.identity} (${participant.sid}) disconnected`);
                 this.participantConnectionEvents.set({ id: participant.identity, joined: false })
             })
             .on(RoomEvent.MediaDevicesError, (e: Error) => {
@@ -193,6 +192,7 @@ export class LivekitGenericConnection {
     async start(rovRoomName: string, accessToken: string) {
         this._rovRoomName = rovRoomName;
         this._accessToken = accessToken;
+        this._shouldReconnect = true;
 
         const startTime = Date.now();
         appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
@@ -212,11 +212,21 @@ export class LivekitGenericConnection {
 
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
         console.log("sending message to participant(s) ", toUserIds, reliable ? "reliable" : "unreliable", msgBytes)
+        const participantSIDs = toUserIds.map((userId) => {
+            const sid = this.getParticipantSid(userId)
+            if (!sid) console.warn("no participant found for livekit identity: ", userId)
+            return sid;
+        });
         await this._roomConn.localParticipant.publishData(
             msgBytes,
             reliable ? DataPacket_Kind.RELIABLE : DataPacket_Kind.LOSSY,
-            { destination: toUserIds }
+            { destination: participantSIDs }
         )
+    }
+
+    getParticipantSid(participantIdentity: string) {
+        const participant = [...(this._roomConn.participants.values())].find(p => p.identity === participantIdentity));
+        return participant ? participant.sid : null;
     }
 
     getLivekitIdentitiy() {
@@ -289,7 +299,8 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
                 if (!participant) return console.warn("Ignoring received webrtc message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
                 const senderId = participant.identity;
-                appendLog(`Got dataReceived from ${senderId} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg), participant);
+                const senderSID = participant.sid;
+                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg), participant);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
@@ -340,10 +351,11 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
         // set up more specific event listeners for video publisher (the rov)
         this._roomConn
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
-                if (!participant) return console.warn("Ignoring received webrtc message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
+                if (!participant) return console.warn("Ignoring received livekit data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
+                if (participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 const senderId = participant.identity;
-                appendLog(`Got dataReceived from ${senderId} via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg));
-                if (participant && participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
+                const senderSID = participant.sid;
+                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg), participant);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,

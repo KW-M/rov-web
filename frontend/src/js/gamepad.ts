@@ -142,7 +142,7 @@ export class GamepadController {
         // Set the transform origins of the display joysticks to their centers:
         GPAD_DISPLAY_CONTAINER.querySelectorAll("#stick_right, #stick_left").forEach((element) => {
             CenterTransformOrigin(element as SVGGraphicsElement); // useful if you want to visually transform the joystick with rotation and scaling
-            CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
+            // CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
         });
 
         /* ----- SETUP BUTTON DISPLAY ----- */

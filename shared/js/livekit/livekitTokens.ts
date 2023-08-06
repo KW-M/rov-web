@@ -24,12 +24,13 @@ export function getPublisherAccessToken(apiKey: string, secretKey: string, rovNa
         canPublish: true,
         canSubscribe: false,
         canPublishData: true,
+        canUpdateOwnMetadata: true,
     });
     return token.toJwt();
 }
 
 /**
- * Get a livekit auth token that's valid for 24 hrs and allows joining rooms but not broadcasting video.
+ * Get a livekit auth token that's valid for 6 hrs and allows joining rooms but not broadcasting video.
  * @param {string} apiKey livekit api key to use
  * @param {string} secretKey livekit api secret key to use
  * @param {string} roomName livekit room name that this user will be allowed to join
@@ -45,9 +46,10 @@ export function getFrontendAccessToken(apiKey: string, secretKey: string, roomNa
         room: roomName,
         roomList: true,
         roomJoin: true,
-        canPublish: true, // CHANGE this to false
+        canPublish: false,
         canSubscribe: true,
         canPublishData: true,
+        canUpdateOwnMetadata: false,
     });
     return token.toJwt();
 }
@@ -68,6 +70,7 @@ export function getLongTermStarterAccessToken(apiKey: string, secretKey: string)
         canPublish: false,
         canSubscribe: false,
         canPublishData: false,
+        canUpdateOwnMetadata: false,
     });
     return token.toJwt();
 }

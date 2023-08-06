@@ -41,8 +41,6 @@ exe "git stash push -m 'Auto Stash $CURRENT_DATE'" # stash any changes to the we
 changes=$(git pull --rebase)
 tracked_files=$(git ls-files)
 echoBlue "changes: $changes"
-echoBlue "tracked_files: $tracked_files"
-
 echoBlue "~~ Downloading built rov-web release from Github ~~"
 exe "rm -rf ~/temp"
 exe "mkdir -p ~/temp/rov-web-download"

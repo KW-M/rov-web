@@ -107,10 +107,7 @@ export class FrontendConnectionManager {
      * Does NOT join a room. call connectToLivekitRoom() to do that.
      */
     async initUsingCloudLivekitConnection() {
-        if (this.livekitConnection) {
-            console.warn("initUsingCloudLivekitConnection(): Already connected to Livekit!")
-            this.livekitConnection.close();
-        }
+        this.livekitConnection.close(); // close incase we are already connected
         this.pollForOpenLivekitRooms(LIVEKIT_CLOUD_ENDPOINT)
         await this.livekitConnection.init({
             hostUrl: LIVEKIT_CLOUD_ENDPOINT,
@@ -127,10 +124,7 @@ export class FrontendConnectionManager {
      * Does NOT join a room. call connectToLivekitRoom() to do that.
      */
     async initUsingLocalLivekitConnection() {
-        if (this.livekitConnection) {
-            console.warn("initUsingCloudLivekitConnection(): Already connected to Livekit!")
-            this.livekitConnection.close();
-        }
+        this.livekitConnection.close(); // close incase we are already connected
         this.pollForOpenLivekitRooms(LIVEKIT_LOCAL_ENDPOINT)
         await this.livekitConnection.init({
             hostUrl: LIVEKIT_LOCAL_ENDPOINT,
@@ -147,7 +141,7 @@ export class FrontendConnectionManager {
      * and the room auth token is known.
      */
     public async connectToLivekitRoom(roomName: string) {
-        if (!this.livekitConnection) throw new Error("connectToLivekitRoom() called before livekitConnection was initilized")
+        if (!this.livekitConnection || !this.livekitConnection.config) throw new Error("connectToLivekitRoom() called before livekitConnection was initilized")
 
         const authToken = this.livekitRoomAuthTokens[roomName]
         if (!authToken) throw new Error(`connectToLivekitRoom() called with roomName ${roomName} which is not in the list of known open rooms`)
@@ -201,11 +195,12 @@ export class FrontendConnectionManager {
      */
     public async sendMessageToRov(msg: rov_actions_proto.IRovAction, reliable: boolean) {
         if (!this.livekitConnection) throw new Error("sendMessageToRov() called before livekitConnection was initilized")
-        console.info("Sending RovMessaged: ", msg, reliable);
+
         const msgBytes = rov_actions_proto.RovAction.encode(msg).finish();
         const rovUserId = this.livekitConnection._rovRoomName;
-        if (reliable) {
-            await this.livekitConnection.sendMessage(msgBytes, reliable, []);//rovUserId
+        console.info("Sending Message to ", rovUserId, ":", msg, reliable);
+        if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
+            await this.livekitConnection.sendMessage(msgBytes, reliable, [rovUserId]);
         } else if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {
             await this.simplepeerConnection.sendMessage(msgBytes);
         } else {
