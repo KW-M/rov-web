@@ -18,7 +18,6 @@ export class FrontendRovMsgHandlerClass {
 
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
-        console.log("GOT DC DATA:", rawData);
         const msgData = rov_actions_proto.RovResponse.decode(new Uint8Array(msgBytes));
         if (debugPageModeActive.get()) showToastMessage(JSON.stringify(msgData.toJSON()), 800);
         this.runExchangeCallback(msgData.ExchangeId, msgData);

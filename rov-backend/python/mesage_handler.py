@@ -36,7 +36,7 @@ def verify_authorization(require_password: bool, require_is_driver: bool):
             resp = user_auth.check_authorization(src_participant_id,msg_data,require_password,require_is_driver)
             if resp is not None:
                 message_handler.set_replay_action(src_participant_id, msg_data)
-                return resp[0] # only the first element of the tuple is the RovResponse
+                return self.add_response_metadata(*resp)
             else:
                 return await func(self, src_participant_id, msg_data)
         return wrapper
