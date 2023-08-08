@@ -22,9 +22,17 @@ class RovActionsClass {
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
 
-        if (gamepad.buttons[0].pressed) {
+        if (buttonsChangedMask[0] && buttonsChangedMask[0].released) {
+            this.takeControl()
+        } else if (buttonsChangedMask[1] && buttonsChangedMask[1].released) {
+            this.startVideoRecording()
+        } else if (buttonsChangedMask[2] && buttonsChangedMask[2].released) {
+            this.takePhoto()
+        } else if (buttonsChangedMask[3] && buttonsChangedMask[3].released) {
             frontendConnMngr.toggleSimplePeerConnection();
         }
+
+
         // else if (gamepad.buttons[12].pressed) {
         //     let delay = gpadCtrl.throttleDelay + 1;
         //     // this.setInputThrottle(delay);
@@ -86,8 +94,9 @@ class RovActionsClass {
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
         const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
+        const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
         const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
-        if (movementDelta < 0.1 && timeSinceLastMoveCmd < 800) return;
+        if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 500) return;
         frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } }, null);
         this.lastMove = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw };
         this.lastMovementTime = Date.now();
@@ -99,6 +108,18 @@ class RovActionsClass {
 
     toggleLights() {
         frontendRovMsgHandler.sendRovMessage({ ToogleLights: {} }, null);
+    }
+
+    takePhoto() {
+        frontendRovMsgHandler.sendRovMessage({ TakePhoto: {} }, null);
+    }
+
+    startVideoRecording() {
+        frontendRovMsgHandler.sendRovMessage({ StartVideoRec: {} }, null);
+    }
+
+    stopVideoRecording() {
+        frontendRovMsgHandler.sendRovMessage({ StopVideoRec: {} }, null);
     }
 
     shutdownRov = () => {
