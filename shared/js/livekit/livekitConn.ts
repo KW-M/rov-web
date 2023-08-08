@@ -211,7 +211,6 @@ export class LivekitGenericConnection {
 
 
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
-        console.log("sending message to participant(s) ", toUserIds, reliable ? "reliable" : "unreliable", msgBytes)
         const participantSIDs = toUserIds.map((userId) => {
             const sid = this.getParticipantSid(userId)
             if (!sid) console.warn("no participant found for livekit identity: ", userId)
@@ -300,7 +299,7 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
                 if (!participant) return console.warn("Ignoring received webrtc message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
                 const senderId = participant.identity;
                 const senderSID = participant.sid;
-                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg), participant);
+                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
@@ -361,7 +360,7 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
                 if (participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 const senderId = participant.identity;
                 const senderSID = participant.sid;
-                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`, DECODE_TXT(msg), participant);
+                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,

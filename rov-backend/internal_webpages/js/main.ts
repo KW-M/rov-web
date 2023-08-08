@@ -4,10 +4,16 @@ import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto"
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 import { twitchStream } from "./twitchStream";
 import { SECONDS_IN_DAY } from "../../../shared/js/consts";
+import { getLongTermStarterAccessToken } from "../../../shared/js/livekit/livekitTokens";
 
+
+/// ------- DEBUGGING STUFF: -----------
+window["getLongTermStarterAccessToken"] = getLongTermStarterAccessToken
 // DISABLE VITE HOT MOUDLE RELOADING:
-if (import.meta.hot)
+if (import.meta.hot) {
     import.meta.hot.accept(() => import.meta.hot.invalidate())
+}
+//// ------------------------------------
 
 // Get Setup Options from URL Query Params
 const urlParams = new URLSearchParams(location.search);

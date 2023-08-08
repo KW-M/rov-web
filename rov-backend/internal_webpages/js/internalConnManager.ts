@@ -116,7 +116,8 @@ class InternalConnectionManager {
     }
 
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
-        console.log("Sending WEBRTC Message to: [" + toUserIds.join(", ") + "] reliable: " + reliable, msg)
+        console.info("Sending Message to [" + toUserIds.join(", ") + "]", reliable ? "reliably" : "unreliably", ":", msg);
+        msg.BackendMetadata = new rov_actions_proto.ResponseBackendMetadata({}); // Strip out backend metadata
         const msgBytes = rov_actions_proto.RovResponse.encode(msg).finish();
         // let sentToParticpants = [];
         // if (!reliable) {

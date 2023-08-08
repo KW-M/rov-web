@@ -142,8 +142,14 @@ export class SimplePeerConnection {
     _emptyMsgQueue() {
         if (!this._p || !this._p.connected) return false;
         const len = this._msgSendQueue.length
-        for (let i = 0; i < len; i++) {
-            this._p.send(this._msgSendQueue[i]);
+        while (this._msgSendQueue.length > 0) {
+            const msg = this._msgSendQueue.shift();
+            try {
+                this._p.send(msg);
+            } catch (err) {
+                console.error("failed to send message over simplepeer data channel: ", err.message)
+                this._msgSendQueue.unshift(msg);
+            }
         }
     }
 }

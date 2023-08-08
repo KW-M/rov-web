@@ -160,8 +160,8 @@ export class FrontendConnectionManager {
      */
     public async startSimplePeerConnection() {
         if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplePeerConnection() called when livekitConnection was not fully connected!")
-        if (this.simplepeerConnection) this.simplepeerConnection.stop();
-        await this.simplepeerConnection.start({
+        if (!this.simplepeerConnection) throw new Error("startSimplePeerConnection() called without simplepeerConnection in class!")
+        this.simplepeerConnection.start({
             initiator: true,
             trickle: false,
         })
@@ -180,6 +180,7 @@ export class FrontendConnectionManager {
     public async toggleSimplePeerConnection() {
         if (!this.simplepeerConnection) throw new Error("toggleSimplePeerConnection() called without simplepeerConnection in class!")
         const state = this.simplepeerConnection.connectionState.get();
+        console.log("toggleSimplePeerConnection(): state", state)
         if ([ConnectionStates.disconnectedOk, ConnectionStates.failed, ConnectionStates.init].includes(state)) {
             this.startSimplePeerConnection();
         } else {
@@ -193,12 +194,12 @@ export class FrontendConnectionManager {
      * @param msg - the message to send to the rov
      * @param reliable - whether or not to use tcp and force the livekit connection.
      */
-    public async sendMessageToRov(msg: rov_actions_proto.IRovAction, reliable: boolean) {
+    public async sendMessageToRov(msg: rov_actions_proto.IRovAction, reliable: boolean = false) {
         if (!this.livekitConnection) throw new Error("sendMessageToRov() called before livekitConnection was initilized")
-
+        reliable = false; // TODO: remove. Temp debug
         const msgBytes = rov_actions_proto.RovAction.encode(msg).finish();
         const rovUserId = this.livekitConnection._rovRoomName;
-        console.info("Sending Message to ", rovUserId, ":", msg, reliable);
+        console.info("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg);
         if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
             await this.livekitConnection.sendMessage(msgBytes, reliable, [rovUserId]);
         } else if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {

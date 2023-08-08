@@ -20,6 +20,7 @@ export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBuff
 
     // Decode the protobuf object from bytes
     const msgProto = rov_actions_proto.RovAction.decode(data)
+    console.debug("Rcvd Msg: ", msgProto.toJSON());
     if (handleInternalWebpageActions(senderId, msgProto)) return;
 
     // Stuff the protobuff object with metadata
