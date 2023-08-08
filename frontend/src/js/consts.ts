@@ -2,7 +2,7 @@ import type { Placement } from '@popperjs/core';
 
 /** Token used by the frontend to list available livekit rooms, it does not have any other permissions, but lasts almost indefinately
  * START_LIVEKIT_FRONTEND_TOKEN. */
-export const LIVEKIT_LIST_ONLY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tTGlzdCI6dHJ1ZSwicm9vbUpvaW4iOmZhbHNlLCJjYW5QdWJsaXNoIjpmYWxzZSwiY2FuU3Vic2NyaWJlIjpmYWxzZSwiY2FuUHVibGlzaERhdGEiOmZhbHNlfSwiaWF0IjoxNjc4NzI4ODY1LCJuYmYiOjE2Nzg3Mjg4NjUsImV4cCI6MTExMzk1Mjg4NjUsImlzcyI6IkFQSWtvRTdtM1pxZDVkSiIsInN1YiI6Imx0IiwianRpIjoibHQifQ.6mVaD452mZMSgXKWG7QDkxR__2v76urjJnJ66TjJGjs"
+export const LIVEKIT_LIST_ONLY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tTGlzdCI6dHJ1ZSwicm9vbUpvaW4iOmZhbHNlLCJjYW5QdWJsaXNoIjpmYWxzZSwiY2FuU3Vic2NyaWJlIjpmYWxzZSwiY2FuUHVibGlzaERhdGEiOmZhbHNlLCJjYW5VcGRhdGVPd25NZXRhZGF0YSI6ZmFsc2V9LCJpYXQiOjE2OTE0NTEzNDEsIm5iZiI6MTY5MTQ1MTM0MSwiZXhwIjoxMTE1MjI1MTM0MSwiaXNzIjoiQVBJSGQ3Qm9hOVJVVWlUIiwic3ViIjoibHQiLCJqdGkiOiJsdCJ9.X5fI6ceu2aLf0bc-h3PKc-u2PRzSAgVZEpK5FjScRGQ"
 /* END_LIVEKIT_FRONTEND_TOKEN */
 
 export const ROV_PEERID_BASE = "ROV-";
@@ -79,20 +79,20 @@ export enum LOADING_MESSAGE {
 // export const TOUCHED_BUTTON_EQUIVELANT_VALUE = 0.5;
 export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: Placement, holdAllowed?: boolean, remoteAction?: string, localAction?: string }
 export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
-    { btnName: "button_1", helpLabel: "TBD", tooltipPlacement: "left" },
-    { btnName: "button_2", remoteAction: 'record', helpLabel: "Start/Stop Recording", tooltipPlacement: "left" },
-    { btnName: "button_3", remoteAction: 'photo', helpLabel: "Take Photo", tooltipPlacement: "left" },
-    { btnName: "button_4", remoteAction: 'lights', helpLabel: "Toggle Lights", tooltipPlacement: "left" },
+    { btnName: "button_1", helpLabel: "Take Driver Control", tooltipPlacement: "left" },
+    { btnName: "button_2", helpLabel: "Start/Stop Recording", tooltipPlacement: "left" },
+    { btnName: "button_3", helpLabel: "Take Photo", tooltipPlacement: "left" },
+    { btnName: "button_4", helpLabel: "Switch Video Mode", tooltipPlacement: "left" },
     { btnName: "shoulder_button_front_left", helpLabel: "TBD", tooltipPlacement: "right" },
-    { btnName: "shoulder_button_front_right", remoteAction: 'claw_open', helpLabel: "TBD", tooltipPlacement: "left" },
+    { btnName: "shoulder_button_front_right", helpLabel: "TBD", tooltipPlacement: "left" },
     { btnName: "shoulder_trigger_back_left", remoteAction: 'claw_close', helpLabel: "Open Claw", holdAllowed: true, tooltipPlacement: "right" },
     { btnName: "shoulder_trigger_back_right", remoteAction: 'claw_close', helpLabel: "Close Claw", holdAllowed: true, tooltipPlacement: "left" },
     { btnName: "select_button", helpLabel: "Show/Hide Gamepad Help", tooltipPlacement: "right" },
     { btnName: "start_button", helpLabel: "Show/Hide Gamepad Help", tooltipPlacement: "left" },
     { btnName: "stick_button_left", helpLabel: "Move Forward/Back & Turn", tooltipPlacement: "right" },
     { btnName: "stick_button_right", helpLabel: "Move Up/Down & Left/Right", tooltipPlacement: "left" },
-    { btnName: "d_pad_up", remoteAction: 'exposure_plus', helpLabel: "Increase Camera Brightness", holdAllowed: true, tooltipPlacement: "right" },
-    { btnName: "d_pad_down", remoteAction: 'exposure_minus', helpLabel: "Decreases Camera Brightness", holdAllowed: true, tooltipPlacement: "right" },
+    { btnName: "d_pad_up", remoteAction: 'exposure_plus', helpLabel: "Increase Joystick Input Rate", holdAllowed: true, tooltipPlacement: "right" },
+    { btnName: "d_pad_down", remoteAction: 'exposure_minus', helpLabel: "Decreases Joystick Input Rate", holdAllowed: true, tooltipPlacement: "right" },
     { btnName: "d_pad_left", remoteAction: 'v_quality_plus', helpLabel: "Decrease Video Quality (reduces latency)", holdAllowed: true, tooltipPlacement: "right" },
     { btnName: "d_pad_right", remoteAction: 'v_quality_minus', helpLabel: "Increase Video Quality (increases latency)", holdAllowed: true, tooltipPlacement: "right" },
     // { btnName: "vendor", helpLabel: "TBD", tooltipPlacement: "top" }, // note that the vendor button is often used by windows / android, so we can't use it.
