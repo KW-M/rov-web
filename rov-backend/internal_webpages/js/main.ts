@@ -39,6 +39,27 @@ if (livekitConfig.TwitchStreamKey !== "None") {
     window.addEventListener("beforeunload", () => twitchStream.stopStream()) // Stop Twitch Stream when page is closed
 }
 
+// Data Logging
+const startLogging = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/start_logging', { method: 'POST' });
+        const result = await response.text();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const stopLogging = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/stop_logging', { method: 'POST' });
+        const result = await response.text();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 // Start Backend/Python Websocket Communication
 if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://localhost:" + livekitConfig.PythonWebsocketPort, (msgBytes: Uint8Array) => {
     /*Callback to handle messages being received from the iROV python*/
@@ -56,6 +77,11 @@ if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://local
 
     // Send message on using livekit:
     internalConnManager.sendMessage(msgProto, isReliable, targetUserIds)
+
+    // If ROV is online start logging
+    if (msgProto.RovOnline) startLogging();
+    
+    window.addEventListener("beforeunload", () => stopLogging()); // Stop data logging when page is closed
 });
 
 
