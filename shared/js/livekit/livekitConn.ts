@@ -63,7 +63,7 @@ export class LivekitGenericConnection {
     // the livekit JWT accessToken used to connect to the livekit server (controls our identity, what room we'll connect to, and what permissions we have)
     _accessToken: string;
     // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
-    _reconnectAttemptCount: number;
+    _reconnectAttemptCount: number = 0;
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
     // the html element on the page to attach the video stream to
@@ -260,9 +260,13 @@ export class LivekitGenericConnection {
             const expBackoffDelay = this._reconnectAttemptCount * 800;
             this._reconnectAttemptCount++;
             await waitfor(expBackoffDelay)
-            await this._connect();
+            try {
+                await this._connect();
+            } catch (e) {
+                console.error("Livekit error reconnecting to room", e)
+            }
         } else {
-            console.error("Livekit failed to reconnect after ", this.config.reconnectAttempts, " attempts")
+            console.error("Livekit failed to reconnect after ", this._reconnectAttemptCount, "/", this.config.reconnectAttempts, "attempts")
             this._fail();
         }
     }
