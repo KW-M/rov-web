@@ -14,7 +14,7 @@
     "compile:proto:python": "protoc --python_betterproto_out=rov-backend/python/protobufs/ shared/protobufs/rov_actions.proto",
     "compile:proto:javascript": "pbjs -t static-module --es6 -w es6 -o ./shared/js/protobufs/rovActionsProto.js ./shared/protobufs/rov_actions.proto;pbts -o ./shared/js/protobufs/rovActionsProto.d.ts ./shared/js/protobufs/rovActionsProto.js",
     "compile:cython": "python3 rov-backend/python/cython_modules/setup.py build_ext --inplace",
-    "run_py": "python3 rov-backend/python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.json"
+    "run_py": "python3 rov-backend/python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json"
   },
   "devDependencies": {
     "@rgossiaux/svelte-headlessui": "^1.0.2",

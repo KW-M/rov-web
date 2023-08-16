@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from config_reader import rov_config
+from protobufs.rov_actions_proto import Measurement, SensorMeasurmentTypes #mock
 from sensors.generic_sensor import GenericSensor
 from utilities import is_raspberry_pi
 
@@ -45,6 +46,13 @@ class SensorController:
             for measurement in sensor.measurements:
                 sensor_updates.append(measurement)
         return sensor_updates
+
+    def mock_get_all_sensor_values(self):
+        mock_sensor_updates = []
+        # spoof measurement
+        mock_sensor_updates = [Measurement(SensorMeasurmentTypes.yaw_degrees, 10), Measurement(SensorMeasurmentTypes.pitch_degrees, 76), Measurement(SensorMeasurmentTypes.roll_degrees, 110), Measurement(SensorMeasurmentTypes.internal_temp_celsius, 9.2)]
+        return mock_sensor_updates
+        
 
     def cleanup(self):
         for sensor in self.connected_sensors:

@@ -11,6 +11,7 @@ from websocket_server import websocket_server
 from mesage_handler import message_handler
 from sensors.sensors_controller import sensor_ctrl
 # from sensor_log import Sensor_Log
+from sensors.sensors_datalog import sensor_log
 
 rov_config = read_config_file()
 readAuthStateFromDisk()
@@ -35,7 +36,9 @@ async def main():
     websocket_server.init(message_handler.handle_incoming_msg)
     motion_ctrl.init()
     sensor_ctrl.init()
-    # sensor_log.start(sensors.all_sensors)
+    sensor_log.init()
+    sensor_log.create_csv_file()
+    sensor_log.start()
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(
