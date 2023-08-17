@@ -48,6 +48,8 @@ class SensorDataLog:
         # await self.sensors_ctrl.sensor_setup_loop()
         while self.running:
             current_time = datetime.datetime.now()
+            current_time = current_time.strftime("%H:%M:%S")
+
             # Get sensor updates or all values, modify based on your requirement
             sensor_data = self.sensors_ctrl.get_all_sensor_values()
             # sensor_data = self.sensors_ctrl.mock_get_all_sensor_values()
