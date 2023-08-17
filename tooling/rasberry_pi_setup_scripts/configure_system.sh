@@ -146,6 +146,12 @@ fi
 # 	exe "echo 'tmpfs /var/log    tmpfs    defaults,noatime,nosuid,mode=0755,size=30m    0 0' | sudo tee -a /etc/fstab"
 # fi
 
+
+# We need this so that wifi + everything gets enabled on startup.
+echoGreen  "Adding wifi-unblocking line to rc.local"
+exe "sudo sed -i 's/exit 0/rfkill unblock all \n\nexit 0/' /etc/rc.local" || true
+
+
 # -------------------- Done ------------------------
 
 echoBlue "configure_system.sh Done"
