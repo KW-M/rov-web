@@ -59,7 +59,7 @@
     "glob": "^10.2.6",
     "livekit-client": "^1.9.7",
     "livekit-server-sdk": "^1.2.5",
-    "protobufjs": "~7.2.3",
+    "protobufjs": "~7.2.4",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "simple-peer": "^9.11.1",
     "twgl.js": "^5.3.1",
