@@ -5,6 +5,7 @@ from pathlib import Path
 from protobufs.rov_actions_proto import SensorMeasurmentTypes
 
 from sensors.sensors_controller import sensor_ctrl
+from sensors.data_uploader import DataUpload
 
 # Create a subfolder named 'sensor_data' if it doesn't exist
 data_folder = Path("sensor_data")
@@ -15,10 +16,13 @@ date_str = current_time.strftime("%Y-%m-%d")
 filename = f"{date_str}.csv"
 
 class SensorDataLog:
-    def init(self):
+    def __init__(self):
         self.running = False
         self.task = None
         self.sensors_ctrl = sensor_ctrl
+
+        # Create an instance of DataUpload class
+        self.data_upload = DataUpload()
 
     def create_csv_file(self):
         measurement_header = self.sensors_ctrl.mock_get_all_sensor_values()
@@ -29,7 +33,6 @@ class SensorDataLog:
         # mm = SensorMeasurmentTypes._member_map_  # Get all sensor names from proto file
         # header += [str(mm[measurement.measurement_type]) for measurement in measurement_header]
         
-
         file_path = data_folder / filename
 
         # Write header if the file doesn't exist
@@ -57,15 +60,13 @@ class SensorDataLog:
                 data_to_write = [current_time.date(), current_time.time()] + [measurement.value for measurement in sensor_data]
                 self.update_csv_file(filename, data_to_write)
             await asyncio.sleep(30)  # Wait for 30 seconds
-            self.upload_to_drive()  # Upload to google drive
-
-    def upload_to_drive(self):
-        pass # TODO: Upload to google drive
+            self.data_upload.update_drive_file()  # Update the file with the latest data
 
     def start(self):
         if not self.running:
             self.running = True
             self.task = asyncio.create_task(self.run_logger())
+            self.data_upload.stream_upload_file()  # Upload to google drive
             print("Sensor data logging started.")
 
     def stop(self):
