@@ -7,6 +7,9 @@ from pyvirtualdisplay import Display
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 
+class WebdriverMediaDeviceError(Exception):
+    pass
+
 class WebdriverManager:
     url = ""
 
@@ -92,12 +95,20 @@ class WebdriverManager:
     def start_browser_logging_loop(self):
 
         L = 0 # Track Length of latest received log array
+        count_mdc = 0 # Tracks number of times "MediaDevicesChanged" message has come up in logs
 
         # Continuously check for new logs and print them.
         while True:
             logs = self.driver.get_log('browser')
             for log in logs[L:len(logs)]: #only print new ones
                 print(log['message']+"\n")
+                
+                # The following code checks for a known error ocurring
+                if "MediaDevicesChanged" in log['message']:
+                    count_mdc += 1
+                if count_mdc > 2:
+                    raise WebdriverMediaDeviceError()
+                
             L = len(logs)
             time.sleep(1)  # Wait for 1 second before checking again
 

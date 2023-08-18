@@ -3,7 +3,7 @@ import asyncio
 from urllib.parse import urlencode
 
 # import our python files from the same directory
-from selenium_webdriver_manager import rovWebdriverManager
+from selenium_webdriver_manager import rovWebdriverManager, WebdriverMediaDeviceError
 from config_reader import read_config_file, get_log_level
 rov_config = read_config_file()
 
@@ -26,14 +26,19 @@ query_params['PythonWebsocketPort'] = rov_config.get('PythonWebsocketPort')
 url += "?" + urlencode(query_params)
 print (url)
 
-# Start the webdriver manager
-rovWebdriverManager.init(url).start()
-rovWebdriverManager.test_fetch_title()
-log = rovWebdriverManager.get_browser_log()
+while True:
+    # Start the webdriver manager
+    rovWebdriverManager.init(url).start()
+    # rovWebdriverManager.test_fetch_title() # A little test to verify it's connecting ok.
+    # log = rovWebdriverManager.get_browser_log()
 
-try:
-    rovWebdriverManager.start_browser_logging_loop()
-except KeyboardInterrupt:
-    pass
-finally:
-    rovWebdriverManager.stop()
+    try:
+        rovWebdriverManager.start_browser_logging_loop()
+    except WebDriverMediaDeviceError:
+        rovWebdriverManager.stop()
+        continue
+    except KeyboardInterrupt:
+        pass
+
+
+rovWebdriverManager.stop()
