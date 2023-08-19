@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>ROV VIDEO RECORD TEST WEBPAGE</title>
+</head>
+
+<body>
+    <h1>Hi!</h1>
+    <button class="start-button">Start</button>
+    <button class="stop-button">Stop</button>
+    <video id="video"></video>
+    <script>
+        const constraints = {
+            audio: false,
+            video: {
+                width: { ideal: 99999 },
+                height: { ideal: 99999 },
+                frameRate: { ideal: 30 }
+            }
+        }
+
+        async function createNestedFilePath(startFolder, filePath) {
+            for (let i = 0; i < filePath.length - 1; i++) {
+                startFolder = await startFolder.getDirectoryHandle(filePath[i], { create: true })
+            }
+            const filename = filePath[filePath.length - 1];
+            return await startFolder.getFileHandle(filename, { create: true })
+        }
+
+        async function getFileSystemOpenFile() {
+            let mainFolder = await showDirectoryPicker({ mode: "readwrite", startIn: "downloads" });
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            var mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9', });
+            var video = document.getElementById("video");
+
+
+            // make the file at the path
+            const path = ["videos", Date.now() + ".webm"]
+            let dataFile = await createNestedFilePath(mainFolder, path)
+
+            // Create a FileSystemWritableFileStream to write to.
+            const writable = await dataFile.createWritable();
+
+            mediaRecorder.ondataavailable = async (event) => {
+                await writable.write(event.data);
+            }; mediaRecorder.start(5000);
+
+            const end = async () => {
+                // Close the file and write the contents to disk.
+                console.log("Stopping!");
+                mediaRecorder.stop();
+                stream.getTracks().forEach(track => track.stop());
+                setTimeout(async () => {
+                    await writable.close();
+                    console.log("File written successfully!");
+                }, 1000);
+            }
+            window.onbeforeunload = end;
+            document.querySelector(".stop-button").onclick = end;
+        }
+
+
+        document.querySelector(".start-button").onclick = () => getFileSystemOpenFile().then(console.log)
+
+
+    </script>
+</body>
+
+</html>
