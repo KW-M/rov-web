@@ -264,6 +264,7 @@ export class LivekitGenericConnection {
                 await this._connect();
             } catch (e) {
                 console.error("Livekit error reconnecting to room", e)
+                throw e;
             }
         } else {
             console.error("Livekit failed to reconnect after ", this._reconnectAttemptCount, "/", this.config.reconnectAttempts, "attempts")
