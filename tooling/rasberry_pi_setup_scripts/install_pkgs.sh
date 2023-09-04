@@ -278,9 +278,9 @@ exe "sudo apt-get install -y chromium-driver xvfb"
 { # try
     exe "cd ~/rov-web" &&
 
-    echoBlue "Installing python3-pip & pigpiod" &&
+    echoBlue "Installing python3 incl. python3-pip" &&
     exe 'echo "PATH=\$PATH:$HOME/.local/bin" | sudo tee -a ~/.profile' &&
-    exe 'sudo apt-get install -y python3-pip pigpiod' &&
+    exe 'sudo apt-get install -y python3 python3-pip' &&
     exe 'python3 -m pip install --upgrade setuptools' &&
 
     echoBlue "Installing required python packages" &&
@@ -303,7 +303,6 @@ exe "sudo apt-get install -y chromium-driver xvfb"
 
     echoBlue "Enabling systemd (systemctl) services so they start at boot (or whenever configured too)... " &&
     exe 'sudo systemctl enable nginx.service' &&
-    exe 'sudo systemctl enable pigpiod.service' &&
     exe 'sudo systemctl enable maintain_network.service' &&
     exe 'sudo systemctl enable rov_python_code.service' &&
     exe 'sudo systemctl enable rov_internal_web_browser.service'

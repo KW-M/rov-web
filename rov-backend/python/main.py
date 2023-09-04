@@ -3,7 +3,7 @@ import asyncio
 
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
-from gpio_interface import GPIO_ctrl
+from gpio.gpio_interface import GPIO_ctrl
 from motion.motion_controller import motion_ctrl
 from status_led import status_led_ctrl
 from rov_security.auth_tokens import readAuthStateFromDisk

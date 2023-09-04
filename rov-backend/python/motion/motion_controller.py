@@ -4,7 +4,7 @@ import asyncio
 import logging
 import math
 
-from gpio_interface import GPIO_ctrl
+from gpio.gpio_interface import GPIO_ctrl
 from motion.drok_pwm_motor_controller import Drok_Pwm_Motor
 from motion.adafruit_pwm_motor_controller import Adafruit_Pwm_Motor
 

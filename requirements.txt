@@ -3,7 +3,6 @@ aiohttp==3.8.5
 aiostream==0.4.5
 websockets==11.0.3
 async-timeout==4.0.2
-pigpio==1.78
 ms5803py==1.0.0
 betterproto==2.0.0b6
 cython==3.0.0

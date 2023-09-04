@@ -99,7 +99,6 @@ backupThenOverwrite "maintain_network.service" "/lib/systemd/system/maintain_net
 echoBlue "Restarting systemd (systemctl) Services..."
 # daemon-reload makes the system load any new/changed services in the /lib/systemd/system/ directory
 exe "sudo systemctl daemon-reload"
-exe "sudo systemctl restart pigpiod.service"
 exe "sudo systemctl restart rov_python_code.service"
 exe "sudo systemctl restart rov_internal_web_browser.service"
 exe "sudo systemctl restart maintain_network.service"

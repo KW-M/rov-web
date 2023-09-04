@@ -1,5 +1,5 @@
 import logging
-from gpio_interface import GPIO_ctrl, OUTPUT_PIN_MODE
+from gpio.gpio_interface import GPIO_ctrl, OUTPUT_PIN_MODE
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
