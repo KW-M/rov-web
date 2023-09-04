@@ -109,12 +109,13 @@ exe "sed -i 's|== Put Twitch Stream Key Here ==|$TWITCH_STREAM_KEY|g' '$HOME/rov
 
 # ---- setup the rov-web folder to be a git repo inline with github -----
 exe "cd '$HOME/rov-web/'"
+BRANCH_NAME="${BRANCH_NAME:='main'}"  # If variable not set or null, set it to default.
 if [ ! -e ".git/" ]; then
-    exe "git init -b main"
+    exe "git init -b $BRANCH_NAME"
     exe "git remote add origin 'https://github.com/KW-M/rov-web.git'"
     exe "git fetch"
-    exe "git reset --hard origin/main"
-    exe "git branch --set-upstream-to=origin/main main"
+    exe "git reset --hard origin/$BRANCH_NAME"
+    exe "git branch --set-upstream-to=origin/$BRANCH_NAME $BRANCH_NAME"
 fi
 
 # --------- Update System Packages ------------
