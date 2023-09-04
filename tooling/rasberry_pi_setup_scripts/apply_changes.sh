@@ -7,6 +7,7 @@ set -o pipefail # exit if any command in a pipe fails
 # ---- Helpful Variables -------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+USER=$(whoami)
 PATH_TO_THIS_SCRIPT=$(readlink -f -- $0)
 FOLDER_CONTAINING_THIS_SCRIPT=${PATH_TO_THIS_SCRIPT%/*}
 CURRENT_DATE=$(date +"%Y-%m-%d_%H-%M-%S")
