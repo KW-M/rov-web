@@ -78,7 +78,8 @@ async def random_motors():
     FORWARD_LEFT_MOTOR.set_paired_motor_ctrlr(UP_LEFT_MOTOR)
     UP_LEFT_MOTOR.set_paired_motor_ctrlr(FORWARD_LEFT_MOTOR)
 
-    with open("/home/pi/rov-web/motor_log.csv", "w+") as f:
+    file_path = os.path.expanduser("~/rov-web/motor_log.csv")
+    with open(file_path, "w+") as f:
         flipFlop = True
         while True:
             max_speed = 1

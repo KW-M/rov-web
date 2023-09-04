@@ -218,7 +218,7 @@ class MessageHandlerClass:
 
     async def handle_rov_status_report(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse,None]:
         """ Returns the generator of the status shell script"""
-        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/rov_status_report.sh", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "~/rov-web/tooling/rasberry_pi_setup_scripts/rov_status_report.sh", cmd_timeout=20)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     async def handle_refresh_all_sensors(self, src_user_id: str, msg_data: RovAction) -> RovResponse:
@@ -296,7 +296,7 @@ class MessageHandlerClass:
 
     @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)
     async def handle_restart_rov_services(self, src_user_id: str, msg_data: RovAction) -> AsyncGenerator[RovResponse, None]:
-        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "/home/pi/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh", cmd_timeout=20)
+        msg_generator = generate_cmd_continued_output_response(msg_data.exchange_id, "~/rov-web/tooling/rasberry_pi_setup_scripts/fetch_changes.sh", cmd_timeout=20)
         return map_for_async_generator(msg_generator, self.add_response_metadata, [src_user_id])
 
     @VERIFY_AUTHORIZATION(require_password=False, require_is_driver=False)

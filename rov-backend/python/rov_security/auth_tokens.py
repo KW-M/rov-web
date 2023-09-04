@@ -59,8 +59,9 @@ def readAuthStateFromDisk():
     """Reads saved auth details as json and puts it in authTokens dict"""
     global auth_tokens, rov_uuid
     authStorageFilepath = rov_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
-    if exists(authStorageFilepath):
-        with open(authStorageFilepath, "r") as f:
+    expandedPath = os.path.expanduser(authStorageFilepath)
+    if exists(expandedPath):
+        with open(expandedPath, "r") as f:
             try:
                 state = json.load(f)
                 auth_tokens = state.get("authTokens", {})
@@ -73,5 +74,6 @@ def readAuthStateFromDisk():
 def saveAuthStateToDisk():
     """Saves the authTokens dict as json text to the AUTH_STATE_STORAGE_FILEPATH"""
     authStorageFilepath = rov_config.get("AuthStateStorageFilepath", "./rov-auth-state.json")
-    with open(authStorageFilepath, "w") as f:
+    expandedPath = os.path.expanduser(authStorageFilepath)
+    with open(expandedPath, "w") as f:
         json.dump({"authTokens": auth_tokens, "rovUUID": rov_uuid}, f)

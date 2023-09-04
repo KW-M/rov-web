@@ -3,7 +3,7 @@
     "LogLevel": "DEBUG",
     "RovName": "== ROV_NAME_NOT_SET ==",
     "RovControlPassword": "== Put ROV Control Password Here ==",
-    "AuthStateStorageFilepath": "/home/pi/rov-auth-state.json",
+    "AuthStateStorageFilepath": "~/rov-auth-state.json",
     "AuthTokenTimeout": 86400,
     "PythonWebsocketPort": 8765,
     "InternalWebpageUrl": "http://localhost:80/internal/index.html",

@@ -32,12 +32,13 @@ class SensorDataLog:
 
         # mm = SensorMeasurmentTypes._member_map_  # Get all sensor names from proto file
         # header += [str(mm[measurement.measurement_type]) for measurement in measurement_header]
-        
+
         file_path = data_folder / filename
+        expandedPath = file_path.expanduser()
 
         # Write header if the file doesn't exist
-        if not file_path.exists():
-            with open(file_path, 'w', newline='') as csv_file:
+        if not expandedPath.exists():
+            with open(expandedPath, 'w', newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(header)
 

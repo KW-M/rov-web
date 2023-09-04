@@ -1,3 +1,4 @@
+import os
 import sys
 import argparse
 import json
@@ -41,9 +42,10 @@ def read_config_file():
 
     # get the config file path from the program arguments or use the default
     config_file_path = args.config_file
+    expanded_path = os.path.expanduser(config_file_path)
 
     # open and read the config file:
-    with open(config_file_path, 'r', encoding="utf-8") as f:
+    with open(expanded_path, 'r', encoding="utf-8") as f:
         file_config_dict = json.load(f)
         for key in rov_config:
             if key in file_config_dict:

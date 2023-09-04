@@ -279,7 +279,7 @@ exe "sudo apt-get install -y chromium-chromedriver xvfb"
     exe "cd ~/rov-web" &&
 
     echoBlue "Installing python3-pip & pigpiod" &&
-    exe 'echo "PATH=\$PATH:/home/pi/.local/bin" | sudo tee -a ~/.profile' &&
+    exe 'echo "PATH=\$PATH:$HOME/.local/bin" | sudo tee -a ~/.profile' &&
     exe 'sudo apt-get install -y python3-pip pigpiod' &&
     exe 'python3 -m pip install --upgrade setuptools' &&
 
