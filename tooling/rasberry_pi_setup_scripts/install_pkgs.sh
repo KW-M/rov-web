@@ -127,8 +127,8 @@ exe 'sudo apt-get -y update' || true
 exe 'sudo apt-get install -y git wget unzip' || true
 
 # --------- Install Chromium Headless Tools ------------
-echoBlue "Installing chromium-chromedriver & xvfb for selinium webdriver"
-exe "sudo apt-get install -y chromium-chromedriver xvfb"
+echoBlue "Installing chromium-driver & xvfb for selinium webdriver"
+exe "sudo apt-get install -y chromium-driver xvfb"
 
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
 # { # try
