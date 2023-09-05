@@ -1,0 +1,31 @@
+{
+    "ExposedPorts": {
+        "2222/tcp": {}
+    },
+    "HostConfig": {
+        "Privileged": true,
+        "NetworkMode": "host",
+        "Binds": [
+            "/root/.config:/root/.config"
+        ],
+        "PortBindings": {
+            "22/tcp": [
+                {
+                    "HostPort": "2222"
+                }
+            ]
+        },
+        "Tmpfs": {
+            "/run": "rw",
+            "/run/lock": "rw",
+            "/tmp": "rw"
+        },
+        "CapAdd": [
+            "SYS_ADMIN"
+        ],
+        "SecurityOpt": [
+            "seccomp=unconfined"
+        ],
+        "CgroupParent": "docker.slice",
+    }
+}
