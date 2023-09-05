@@ -263,6 +263,22 @@ exe "sudo apt-get install -y chromium chromium-driver xvfb"
     exit 1
 }
 
+# install pigpio
+{ # try
+    exe 'cd ~/'
+    exe 'wget https://github.com/joan2937/pigpio/archive/master.zip'
+    exe 'unzip master.zip'
+    exe 'cd pigpio-master'
+    exe 'make'
+    exe 'sudo make install'
+    exe 'sudo cp ~/pigpio-master/util/pigpiod.service /lib/systemd/system/pigpiod.service'
+    exe 'cd ../ && rm -rf pigpio-master && rm master.zip'
+    exe 'sudo systemctl enable pigpiod.service'
+} || { # catch
+    echoRed "Failed to install pigpio"
+    echoRed "Install it manually: https://abyz.me.uk/rpi/pigpio/download.html"
+}
+
 # --------------------------------------------------------------------------
 # ----- Python Library Setup -------------------------------------------------------
 # --------------------------------------------------------------------------
