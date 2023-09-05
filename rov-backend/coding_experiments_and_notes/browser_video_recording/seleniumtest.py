@@ -25,8 +25,8 @@ class WebdriverManager:
 
         # WARNING: these hardcoded paths must be correct
         # TODO these URLs should be accepted as parameters in some way.q
-        browser_binary_path = r'/usr/bin/chromium-browser'
-        driver_path = r'/usr/lib/chromium-browser/chromedriver'
+        browser_binary_path = r'/usr/bin/chromium'
+        driver_path = r'/usr/bin/chromedriver'
 
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)
@@ -37,7 +37,6 @@ class WebdriverManager:
         chrome_options.add_argument("--enable-logging")
         chrome_options.add_argument("--v=1")
         chrome_options.add_argument("--headless")
-        # chrome_options.add_argument("--disable-gpu") # may also be necessary for headless
         # chrome_options.add_argument("--remote-debugging-port=9222") # Breaks chrome driver
         # chrome_options.add_argument("--remote-debugging-address=0.0.0.0")
         # chrome_options.add_experimental_option("detach", True)
