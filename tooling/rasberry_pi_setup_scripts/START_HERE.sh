@@ -33,13 +33,15 @@ if [ $install_pkgs_exit_code -ne 0 ]; then
     exit $install_pkgs_exit_code
 fi
 
-echo "====== Running configure_system.sh ========="
-$FOLDER_CONTAINING_THIS_SCRIPT/configure_system.sh |& tee -a ~/rov-setup.log
-configure_system_exit_code=$?
-if [ $configure_system_exit_code -ne 0 ]; then
-    echo "ERROR: configure_system.sh failed with exit code $configure_system_exit_code"
-    echo "Please fix the error and try again."
-    exit $configure_system_exit_code
+if command -v raspi-config &> /dev/null; then # if raspi-config is installed (it should be by default on Raspberry Pi OS)
+    echo "====== Running configure_system.sh ========="
+    $FOLDER_CONTAINING_THIS_SCRIPT/configure_system.sh |& tee -a ~/rov-setup.log
+    configure_system_exit_code=$?
+    if [ $configure_system_exit_code -ne 0 ]; then
+        echo "ERROR: configure_system.sh failed with exit code $configure_system_exit_code"
+        echo "Please fix the error and try again."
+        exit $configure_system_exit_code
+    fi
 fi
 
 # ---------------- DONE --------------------------------------

@@ -280,7 +280,7 @@ exe "sudo apt-get install -y chromium-driver xvfb"
 
     echoBlue "Installing python3 incl. python3-pip" &&
     exe 'echo "PATH=\$PATH:$HOME/.local/bin" | sudo tee -a ~/.profile' &&
-    exe 'sudo apt-get install -y python3 python3-pip' &&
+    exe 'sudo apt-get install -y python3 python3-pip python3-numpy' &&
     exe 'python3 -m pip install --upgrade setuptools' &&
 
     echoBlue "Installing required python packages" &&
