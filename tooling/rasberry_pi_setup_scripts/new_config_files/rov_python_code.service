@@ -5,7 +5,7 @@ Description=rov python code from ~/rov-web/python/main.py
 User=pi
 # this is so python will spit out print messages to the system log instantly instead of waiting to in batches
 Environment=PYTHONUNBUFFERED=1
-ExecStart=python3 ~/rov-web/rov-backend/python/main.py --config-file  ~/rov-config.json
+ExecStart=/bin/bash -c 'python3 "$HOME/rov-web/rov-backend/python/main.py" --config-file "$HOME/rov-config.json"'
 KillMode=mixed
 Restart=always
 TimeoutStopSec=10s
