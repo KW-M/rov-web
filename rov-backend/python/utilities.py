@@ -1,5 +1,6 @@
 from functools import wraps
 from typing import Any, AsyncGenerator, Callable
+import os
 
 known_is_raspberry_pi = None
 def is_raspberry_pi():
@@ -24,12 +25,8 @@ def is_in_docker():
     if known_is_docker is not None:
         return known_is_docker
     try:
-        with open('/proc/self/cgroup', 'r') as f:
-            txt = f.read()
-            is_docker = 'docker' in txt
-            print("Is docker: ", txt, is_docker)
-            known_is_docker = is_docker
-            return is_docker
+        known_is_docker = os.getenv("container","").lower() == "docker"
+        return known_is_docker
     except:
         return False
 
