@@ -9,7 +9,14 @@ docker run -it --rm --tmpfs /tmp --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup -
 docker run -it --rm --name systemd-debian --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro systest
 
 docker run -it --rm --name rov-web --cgroup-parent=docker.slice --cgroupns host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup --privileged --network host rov-web-container
-docker run -it --rm --name systemd_test \
+docker run -it --rm --name systemd_test --volumes /home/pi \
+  --privileged --cap-add SYS_ADMIN --security-opt seccomp=unconfined \
+  --cgroup-parent=docker.slice --cgroupns private \
+  --tmpfs /tmp --tmpfs /run --tmpfs /run/lock \
+  systemd_test
+
+docker run -it --rm --name systemd_test --volumes /home/pi \
+  --publish-all -p 80 \
   --privileged --cap-add SYS_ADMIN --security-opt seccomp=unconfined \
   --cgroup-parent=docker.slice --cgroupns private \
   --tmpfs /tmp --tmpfs /run --tmpfs /run/lock \

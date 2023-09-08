@@ -84,18 +84,22 @@ LABEL links='{\
 LABEL requirements="core >= 1.1"
 LABEL permissions='{ \
     "ExposedPorts": { \
-    "2222/tcp": {} \
+    "80/tcp": {} \
     }, \
+    "PublishAllPorts": true, \
     "HostConfig": { \
     "Privileged": true, \
     "NetworkMode": "host", \
     "Binds": [ \
     "/root/.config:/root/.config" \
     ], \
+    "Volumes": { \
+    "/home/pi": {} \
+    }, \
     "PortBindings": { \
-    "22/tcp": [ \
+    "80/tcp": [ \
     { \
-    "HostPort": "2222" \
+    "HostPort": "" \
     } \
     ] \
     }, \
