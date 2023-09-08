@@ -1,8 +1,8 @@
-from utilities import is_raspberry_pi
+from utilities import is_in_docker, is_raspberry_pi
 
 OUTPUT_PIN_MODE = 0
 INPUT_PIN_MODE = 1
-if is_raspberry_pi():
+if is_raspberry_pi() and not is_in_docker():
     try:
         import pigpio
         from gpio.pigpio_gpio_controller import Pigpio_GPIO_Controller

@@ -3,14 +3,15 @@ import asyncio
 
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
-from gpio.gpio_interface import GPIO_ctrl
 from motion.motion_controller import motion_ctrl
 from status_led import status_led_ctrl
 from rov_security.auth_tokens import readAuthStateFromDisk
+from utilities import is_in_docker
 from websocket_server import websocket_server
 from mesage_handler import message_handler
 from sensors.sensors_controller import sensor_ctrl
 # from sensors.sensors_datalog import sensor_log
+from gpio.gpio_interface import GPIO_ctrl
 
 rov_config = read_config_file()
 readAuthStateFromDisk()
@@ -29,11 +30,12 @@ async def main():
     ##### Setup Controllers #####
     ############################
 
-    GPIO_ctrl.init()
-    status_led_ctrl.init(21).on()
+    if not is_in_docker():
+        GPIO_ctrl.init()
+        status_led_ctrl.init(21).on()
+    motion_ctrl.init()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
-    motion_ctrl.init()
     sensor_ctrl.init()
     # sensor_log.init()
     # sensor_log.create_csv_file()
