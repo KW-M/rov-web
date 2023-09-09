@@ -33,23 +33,30 @@ async def main():
     if not is_in_docker():
         GPIO_ctrl.init()
         status_led_ctrl.init(21).on()
+        sensor_ctrl.init()
     motion_ctrl.init()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
-    sensor_ctrl.init()
+
     # sensor_log.init()
     # sensor_log.create_csv_file()
     # sensor_log.start()
 
-    # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
-    await asyncio.gather(
-        sensor_ctrl.sensor_setup_loop(),
-        motion_ctrl.motor_setup_loop(),
+    parallel_tasks = [
         websocket_server.start_wss(port=rov_config.get('PythonWebsocketPort', 8765)),
         message_handler.status_broadcast_loop(),
+        motion_ctrl.motor_setup_loop(),
         # start_aiohttp_api_server(),
         # monitor_tasks() # debug
-    )
+    ]
+
+    if not is_in_docker():
+        parallel_tasks.extend([
+            sensor_ctrl.sensor_setup_loop(),
+        ])
+
+    # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
+    await asyncio.gather(*parallel_tasks)
 
 
 ##### run the main program loop, and exit quietly if ctrl-c is pressed  #####
