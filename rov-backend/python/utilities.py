@@ -25,7 +25,7 @@ def is_in_docker():
     if known_is_docker is not None:
         return known_is_docker
     try:
-        known_is_docker = os.getenv("container","").lower() == "docker"
+        known_is_docker = os.path.exists("/.dockerenv") # this file only exists in our docker container because we added it in the dockerfile
         return known_is_docker
     except:
         return False
