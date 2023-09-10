@@ -12,7 +12,6 @@ def is_raspberry_pi():
         with open('/proc/cpuinfo', 'r') as f:
             txt = f.read()
             is_pi = 'Raspberry Pi' in txt
-            print(txt, is_pi)
             known_is_raspberry_pi = is_pi
             return is_pi
     except:

@@ -1,5 +1,6 @@
 import logging
 import asyncio
+from blueos_link.mavlink import rov_web_mavlink
 
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
@@ -34,6 +35,8 @@ async def main():
         GPIO_ctrl.init()
         status_led_ctrl.init(21).on()
         sensor_ctrl.init()
+    else:
+        await rov_web_mavlink.start()
     motion_ctrl.init()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
@@ -66,10 +69,11 @@ except KeyboardInterrupt:
     pass
 finally:
     # finally block is stuff that will always run no matter what
-    status_led_ctrl.off()
-    sensor_ctrl.cleanup()
     motion_ctrl.stop_motors()
-    GPIO_ctrl.cleanup()
+    if not is_in_docker():
+        status_led_ctrl.off()
+        sensor_ctrl.cleanup()
+        GPIO_ctrl.cleanup()
 
 #### ASYNCIO DEBUG ####
 

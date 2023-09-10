@@ -26,7 +26,7 @@ class WebSocketServer:
 
     """Start Websocket Server"""
     async def start_wss(self, port=8765):
-        async with websockets.serve(self._register, "localhost", port):
+        async with websockets.serve(self._register, "127.0.0.1", port):
             await asyncio.Future()  # run forever
 
     def is_connected(self):
