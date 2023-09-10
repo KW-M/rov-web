@@ -57,6 +57,11 @@ async def main():
         parallel_tasks.extend([
             sensor_ctrl.sensor_setup_loop(),
         ])
+    else:
+        parallel_tasks.extend([
+            rov_web_mavlink.send_heartbeat_loop(),
+            rov_web_mavlink.handle_mavlink_msgs(),
+        ])
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(*parallel_tasks)

@@ -80,7 +80,7 @@ class RovWebMavlink:
             try:
                 msg = self.master.recv_match()
                 if msg:
-                    print(msg.to_dict())
+                    print("mavlink_msg: ",str(msg.to_dict()))
             except Exception as e:
                 print(e)
                 pass
