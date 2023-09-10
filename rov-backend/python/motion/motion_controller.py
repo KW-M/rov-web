@@ -48,7 +48,6 @@ class MotionController:
     async def motor_setup_loop(self):
         """ Function to run in a loop to check if the motors are working properly. """
         if is_in_docker():
-            await rov_web_mavlink.start()
             rov_web_mavlink.arm()
             rov_web_mavlink.set_manual_flight_mode()
             return

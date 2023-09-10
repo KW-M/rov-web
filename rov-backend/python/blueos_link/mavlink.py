@@ -114,6 +114,7 @@ class RovWebMavlink:
         z = int(z * 1000)
         r = int(r * 1000)
         try:
+            print(f"Sending mavlink joy movement: {x},{y},{z},{r}")
             self.mav.manual_control_send(1,x,y,z,r,0)
         except Exception as e:
             print(e)
