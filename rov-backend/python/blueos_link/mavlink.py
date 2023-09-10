@@ -19,8 +19,8 @@ from pymavlink.dialects.v20 import ardupilotmega as mavlink2
 # https://github.com/egebilecen/eb-python/blob/6fba992f05b7b3bbc19383d816d7dc730427677c/eb/mavlink/vehicle.py
 
 class RovWebMavlink:
+
     master: mavutil.mavudp
-    mav: mavlink2.MAVLink
 
     async def start(self):
 
@@ -30,8 +30,7 @@ class RovWebMavlink:
         #  You can check in http:192.168.1.2:2770/mavproxy that the communication made for 14558
         #  uses a 'udp' (server) and not 'udpout' (client).
         # source system is any number between 1 and 255 used to identify this python script as a mavlink system
-        self.master = mavutil.mavlink_connection('udpout:host.docker.internal:14550',source_system=171,autoreconnect=True,retries=200)
-        self.mav = self.master.mav
+        self.master = mavutil.mavlink_connection('udpout:host.docker.internal:8235',source_system=171,autoreconnect=True,retries=200)
 
         # Send a ping to start connection and wait for any reply.
         #  This function is necessary when using 'udpout',
@@ -46,24 +45,24 @@ class RovWebMavlink:
         """
         msg = None
         while not msg:
-            self.mav.ping_send(
+            self.master.mav.ping_send(
                 int(time.time() * 1e6), # Unix time in microseconds
                 0, # Ping number
                 0, # Request ping of all systems
                 0 # Request ping of all components
             )
-            msg = self.master.recv_match(timeout=100) # wait for the first message that comes back
+            msg = self.master.recv_match() # wait for the first message that comes back
             time.sleep(0.5)
 
     def cleanup(self):
         self.master.close()
 
-    async def send_heartbeat_loop(self, base_mode=0, custom_mode=0, system_status=0):
+    async def send_heartbeat_loop(self, base_mode=192, custom_mode=0, system_status=mavlink2.MAV_STATE_STANDBY):
         while True:
             try:
-                self.mav.heartbeat_send(
+                self.master.mav.heartbeat_send(
                     mavlink2.MAV_TYPE_GCS,
-                    mavutil.mavlink.MAV_AUTOPILOT_INVALID,
+                    mavlink2.MAV_AUTOPILOT_INVALID,
                     base_mode,
                     custom_mode,
                     system_status
@@ -87,26 +86,26 @@ class RovWebMavlink:
             await asyncio.sleep(0.1)
 
     def arm(self):
-        self.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,1,21196,0,0,0,0,0) # 21196 = force arm
-        # self.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,1,0,0,0,0,0,0) # 0 = normal arm
+        self.master.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,1,21196,0,0,0,0,0) # 21196 = force arm
+        # self.master.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,1,0,0,0,0,0,0) # 0 = normal arm
         print("MAV arm sent---------------")
 
     def disarm(self):
-        self.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,0,21196,0,0,0,0,0) # 21196 = force disarm
-        # self.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,0,0,0,0,0,0,0) # 0 = normal disarm
+        self.master.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,0,21196,0,0,0,0,0) # 21196 = force disarm
+        # self.master.mav.command_long_send(1,0,mavlink2.MAV_CMD_COMPONENT_ARM_DISARM,0,0,0,0,0,0,0,0) # 0 = normal disarm
         print("MAV disarm sent---------------")
 
     def set_manual_flight_mode(self):
        self.arm()
-       self.mav.set_mode_send(1,mavlink2.MAV_MODE_MANUAL_ARMED,0)
+       self.master.mav.set_mode_send(1,mavlink2.MAV_MODE_MANUAL_ARMED,0)
 
     def set_guided_flight_mode(self):
         self.arm()
-        self.mav.set_mode_send(1,mavlink2.MAV_MODE_GUIDED_ARMED,0)
+        self.master.mav.set_mode_send(1,mavlink2.MAV_MODE_GUIDED_ARMED,0)
 
     def set_stabalize_flight_mode(self):
         self.arm()
-        self.mav.set_mode_send(1,mavlink2.MAV_MODE_STABILIZE_ARMED,0)
+        self.master.mav.set_mode_send(1,mavlink2.MAV_MODE_STABILIZE_ARMED,0)
 
     def send_movement(self,x,y,z,r):
         x = int(x * 1000)
@@ -115,7 +114,7 @@ class RovWebMavlink:
         r = int(r * 1000)
         try:
             print(f"Sending mavlink joy movement: {x},{y},{z},{r}")
-            self.mav.manual_control_send(1,x,y,z,r,0)
+            self.master.mav.manual_control_send(1,x,y,z,r,0)
         except Exception as e:
             print(e)
             pass
