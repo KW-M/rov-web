@@ -30,7 +30,7 @@ class RovWebMavlink:
         #  You can check in http:192.168.1.2:2770/mavproxy that the communication made for 14558
         #  uses a 'udp' (server) and not 'udpout' (client).
         # source system is any number between 1 and 255 used to identify this python script as a mavlink system
-        self.master = mavutil.mavlink_connection('udpout:172.18.0.1:14558',source_system=171,autoreconnect=True,retries=200)
+        self.master = mavutil.mavlink_connection('udpout:host.docker.internal:14550',source_system=171,autoreconnect=True,retries=200)
         self.mav = self.master.mav
 
         # Send a ping to start connection and wait for any reply.
