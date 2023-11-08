@@ -1,7 +1,7 @@
 import logging
 import sys
 from adafruit_pwm_motor_controller import Adafruit_Pwm_Motor
-from gpio_interface import GPIO_ctrl
+from gpio.gpio_interface import GPIO_ctrl
 
 ###### setup logging #######
 log = logging.getLogger(__name__)

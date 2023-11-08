@@ -5,7 +5,6 @@ window.livekitServerSDK = sdk;
 const simplepeer = require('simple-peer')
 window.SimplePeer = simplepeer;
 
-
 // module.exports = {
 //     livekitServerSDK: sdk
 // }

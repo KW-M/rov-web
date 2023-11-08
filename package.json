@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.2",
   "type": "module",
-  "packageManager": "pnpm@8.6.10",
+  "packageManager": "pnpm@8.10.2",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base=./",
@@ -13,6 +13,7 @@
     "compile:proto": "pnpm run compile:proto:python && pnpm run compile:proto:javascript",
     "compile:proto:python": "protoc --python_betterproto_out=rov-backend/python/protobufs/ shared/protobufs/rov_actions.proto",
     "compile:proto:javascript": "pbjs -t static-module --es6 -w es6 -o ./shared/js/protobufs/rovActionsProto.js ./shared/protobufs/rov_actions.proto;pbts -o ./shared/js/protobufs/rovActionsProto.d.ts ./shared/js/protobufs/rovActionsProto.js",
+    "compile:browserify": "browserify ./shared/js/etc/nodeJsShims.js --standalone nodeJsShim -o ./shared/js/nodeShimsBundle.js",
     "compile:cython": "python3 rov-backend/python/cython_modules/setup.py build_ext --inplace",
     "run_py": "python3 rov-backend/python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json"
   },
@@ -27,9 +28,7 @@
     "@xstate/inspect": "^0.8.0",
     "@zerodevx/svelte-toast": "^0.9.3",
     "autoprefixer": "^10.4.14",
-    "buffer": "^6.0.3",
-    "peerjs": "^1.4.7",
-    "postcss": "^8.4.19",
+    "postcss": "^8.4.23",
     "protobufjs-cli": "~1.1.1",
     "svelte": "^3.59.1",
     "svelte-check": "^3.3.2",

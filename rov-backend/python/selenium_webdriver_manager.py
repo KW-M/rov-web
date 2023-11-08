@@ -28,8 +28,8 @@ class WebdriverManager:
 
         # WARNING: these hardcoded paths must be correct
         # TODO these URLs should be accepted as parameters in some way.q
-        browser_binary_path = r'/usr/bin/chromium-browser'
-        driver_path = r'/usr/lib/chromium-browser/chromedriver'
+        browser_binary_path = r'/usr/bin/chromium'
+        driver_path = r'/usr/bin/chromedriver'
 
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)
@@ -102,13 +102,13 @@ class WebdriverManager:
             logs = self.driver.get_log('browser')
             for log in logs[L:len(logs)]: #only print new ones
                 print(log['message']+"\n")
-                
+
                 # The following code checks for a known error ocurring
                 if "MediaDevicesChanged" in log['message']:
                     count_mdc += 1
                 if count_mdc > 2:
                     raise WebdriverMediaDeviceError()
-                
+
             L = len(logs)
             time.sleep(1)  # Wait for 1 second before checking again
 

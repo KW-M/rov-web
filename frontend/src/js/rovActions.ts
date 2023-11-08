@@ -5,7 +5,6 @@ import { frontendRovMsgHandler } from "./rovMessageHandler"
 import { showConfirmationMsg, showScrollableTextPopup } from "./ui"
 import { showToastMessage } from "../components/ToastMessages.svelte";
 import { calculateDesiredMotion } from "./rovUtil";
-import { gpadCtrl } from "./gamepad";
 import type { buttonChangeDetails } from "virtual-gamepad-lib";
 import { ConnectionStates } from "../../../shared/js/consts";
 
@@ -25,7 +24,8 @@ class RovActionsClass {
         if (buttonsChangedMask[0] && buttonsChangedMask[0].released) {
             this.takeControl()
         } else if (buttonsChangedMask[1] && buttonsChangedMask[1].released) {
-            this.startVideoRecording()
+            // this.startVideoRecording()
+            this.disarm()
         } else if (buttonsChangedMask[2] && buttonsChangedMask[2].released) {
             this.takePhoto()
         } else if (buttonsChangedMask[3] && buttonsChangedMask[3].released) {
@@ -90,6 +90,10 @@ class RovActionsClass {
     takeControl() {
         // attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized
         frontendRovMsgHandler.sendRovMessage({ TakeControl: {} }, null);
+    }
+
+    disarm() {
+        frontendRovMsgHandler.sendRovMessage({ Disarm: {} }, null);
     }
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {

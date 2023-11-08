@@ -1,19 +1,31 @@
 from functools import wraps
 from typing import Any, AsyncGenerator, Callable
+import os
 
-known_is_raspberry_pi = False
+known_is_raspberry_pi = None
 def is_raspberry_pi():
     """Returns True if the code is running on a raspberry pi, False otherwise."""
     global known_is_raspberry_pi
-    if known_is_raspberry_pi:
-        return True
+    if known_is_raspberry_pi is not None:
+        return known_is_raspberry_pi
     try:
         with open('/proc/cpuinfo', 'r') as f:
             txt = f.read()
             is_pi = 'Raspberry Pi' in txt
-            print(txt, is_pi)
             known_is_raspberry_pi = is_pi
             return is_pi
+    except:
+        return False
+
+known_is_docker = None
+def is_in_docker():
+    """Returns True if the code is running in a docker container, False otherwise."""
+    global known_is_docker
+    if known_is_docker is not None:
+        return known_is_docker
+    try:
+        known_is_docker = os.path.exists("/.dockerenv") # this file only exists in our docker container because we added it in the dockerfile
+        return known_is_docker
     except:
         return False
 

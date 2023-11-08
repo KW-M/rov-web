@@ -25,8 +25,8 @@ class WebdriverManager:
 
         # WARNING: these hardcoded paths must be correct
         # TODO these URLs should be accepted as parameters in some way.q
-        browser_binary_path = r'/usr/bin/chromium-browser'
-        driver_path = r'/usr/lib/chromium-browser/chromedriver'
+        browser_binary_path = r'/usr/bin/chromium'
+        driver_path = r'/usr/bin/chromedriver'
 
         # Object that can be used to pass in command line option flags when starting chromium apps
         # (anything that can otherwise be passed through CLI is valid here.)

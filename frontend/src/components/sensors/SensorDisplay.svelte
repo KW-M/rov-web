@@ -90,16 +90,16 @@
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%); */
   }
 
-  .sensor-overlay-left {
-    /* flex-wrap: wrap;
+  /* .sensor-overlay-left {
+     flex-wrap: wrap;
     display: flex;
     justify-content: space-around;
     flex: 1;
     background: white;
     min-height: 36px;
     padding-right: 1rem;
-    box-sizing: content-box; */
-  }
+    box-sizing: content-box;
+  } */
 
   .sensor-center-spacer {
     /* @apply max-w-xl; */
@@ -123,10 +123,10 @@
     flex-direction: row-reverse;
   }
 
-  .spacer {
+  /* .spacer {
     width: 3rem;
     height: 3rem;
-  }
+  } */
 
   .sensor {
     border-radius: 40px;
@@ -160,12 +160,12 @@
     width: calc(100vh - 1em);
   }
 
-  .vertical-indicator.left-up {
+  /* .vertical-indicator.left-up {
     bottom: 0.5em;
     left: 0.75em;
     transform: rotate(-90deg);
     transform-origin: left bottom;
-  }
+  } */
 
   .vertical-indicator.left-down {
     top: -0.5em;
@@ -174,7 +174,7 @@
     transform-origin: left top;
   }
 
-  .vertical-indicator.right-up {
+  /* .vertical-indicator.right-up {
     top: 0;
     right: 0em;
     width: calc(100vh - 2em);
@@ -188,5 +188,5 @@
     width: calc(100vh - 2em);
     transform: rotate(90deg);
     transform-origin: right top;
-  }
+  } */
 </style>

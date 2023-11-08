@@ -3,9 +3,9 @@ import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 import { twitchStream } from "./twitchStream";
-import { SECONDS_IN_DAY } from "../../../shared/js/consts";
+import { ENCODE_TXT, SECONDS_IN_DAY } from "../../../shared/js/consts";
 import { getLongTermStarterAccessToken } from "../../../shared/js/livekit/livekitTokens";
-
+import { irovMavlinkInterface } from "./mavlinkWebsocket";
 
 /// ------- DEBUGGING STUFF: -----------
 window["getLongTermStarterAccessToken"] = getLongTermStarterAccessToken
@@ -56,4 +56,21 @@ if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://local
 
     // Send message on using livekit:
     internalConnManager.sendMessage(msgProto, isReliable, targetUserIds)
+});
+
+
+// Start Mavlink2Rest Websocket Communication
+irovMavlinkInterface.start("ws://blueos.attlocal.net:6040/ws/mavlink", (msg) => {
+    /*Callback to handle messages being received from the arduPilot via */
+
+    if (!msg.header || !msg.message) return console.error("Mavlink message missing header or message body", msg);
+    const msgBytes = ENCODE_TXT(JSON.stringify(msg))
+    const msgProto = rov_actions_proto.RovResponse.create({
+        Mavlink: {
+            Message: msgBytes,
+        }
+    })
+
+    // Send message on using livekit:
+    internalConnManager.sendMessage(msgProto, true, [])
 });

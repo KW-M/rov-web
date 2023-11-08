@@ -1,17 +1,18 @@
 import logging
 import asyncio
+from blueos_link.mavlink import rov_web_mavlink
 
 # import our python files from the same directory
 from config_reader import read_config_file, get_log_level
-from gpio_interface import GPIO_ctrl
 from motion.motion_controller import motion_ctrl
 from status_led import status_led_ctrl
 from rov_security.auth_tokens import readAuthStateFromDisk
+from utilities import is_in_docker
 from websocket_server import websocket_server
 from mesage_handler import message_handler
 from sensors.sensors_controller import sensor_ctrl
-# from sensor_log import Sensor_Log
-from sensors.sensors_datalog import sensor_log
+# from sensors.sensors_datalog import sensor_log
+from gpio.gpio_interface import GPIO_ctrl
 
 rov_config = read_config_file()
 readAuthStateFromDisk()
@@ -30,25 +31,40 @@ async def main():
     ##### Setup Controllers #####
     ############################
 
-    GPIO_ctrl.init()
-    status_led_ctrl.init(21).on()
+    if not is_in_docker():
+        GPIO_ctrl.init()
+        status_led_ctrl.init(21).on()
+        sensor_ctrl.init()
+    else:
+        await rov_web_mavlink.start()
+    motion_ctrl.init()
     message_handler.init()
     websocket_server.init(message_handler.handle_incoming_msg)
-    motion_ctrl.init()
-    sensor_ctrl.init()
-    sensor_log.init()
-    sensor_log.create_csv_file()
-    sensor_log.start()
 
-    # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
-    await asyncio.gather(
-        sensor_ctrl.sensor_setup_loop(),
-        motion_ctrl.motor_setup_loop(),
+    # sensor_log.init()
+    # sensor_log.create_csv_file()
+    # sensor_log.start()
+
+    parallel_tasks = [
         websocket_server.start_wss(port=rov_config.get('PythonWebsocketPort', 8765)),
         message_handler.status_broadcast_loop(),
+        motion_ctrl.motor_setup_loop(),
         # start_aiohttp_api_server(),
         # monitor_tasks() # debug
-    )
+    ]
+
+    if not is_in_docker():
+        parallel_tasks.extend([
+            sensor_ctrl.sensor_setup_loop(),
+        ])
+    else:
+        parallel_tasks.extend([
+            rov_web_mavlink.send_heartbeat_loop(),
+            rov_web_mavlink.handle_mavlink_msgs(),
+        ])
+
+    # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
+    await asyncio.gather(*parallel_tasks)
 
 
 ##### run the main program loop, and exit quietly if ctrl-c is pressed  #####
@@ -58,10 +74,11 @@ except KeyboardInterrupt:
     pass
 finally:
     # finally block is stuff that will always run no matter what
-    status_led_ctrl.off()
-    sensor_ctrl.cleanup()
     motion_ctrl.stop_motors()
-    GPIO_ctrl.cleanup()
+    if not is_in_docker():
+        status_led_ctrl.off()
+        sensor_ctrl.cleanup()
+        GPIO_ctrl.cleanup()
 
 #### ASYNCIO DEBUG ####
 

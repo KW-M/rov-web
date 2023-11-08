@@ -7,6 +7,7 @@ set -o pipefail # exit if any command in a pipe fails
 # ---- Helpful Variables -------------------------------------------------------
 # ------------------------------------------------------------------------------
 
+USER=$(whoami)
 PATH_TO_THIS_SCRIPT=$(readlink -f -- $0)
 FOLDER_CONTAINING_THIS_SCRIPT=${PATH_TO_THIS_SCRIPT%/*}
 CURRENT_DATE=$(date +"%Y-%m-%d_%H-%M-%S")
@@ -98,12 +99,11 @@ backupThenOverwrite "maintain_network.service" "/lib/systemd/system/maintain_net
 
 echoBlue "Restarting systemd (systemctl) Services..."
 # daemon-reload makes the system load any new/changed services in the /lib/systemd/system/ directory
-exe "sudo systemctl daemon-reload"
-exe "sudo systemctl restart pigpiod.service"
-exe "sudo systemctl restart rov_python_code.service"
-exe "sudo systemctl restart rov_internal_web_browser.service"
-exe "sudo systemctl restart maintain_network.service"
-exe "sudo systemctl restart nginx.service"
+exe "sudo systemctl daemon-reload" || echoRed "Failed to reload systemd service files. (probably ok)"
+exe "sudo systemctl restart rov_python_code.service" || echoRed "Failed to restart rov_python_code.service"
+exe "sudo systemctl restart rov_internal_web_browser.service" || echoRed "Failed to restart rov_internal_web_browser.service"
+exe "sudo systemctl restart maintain_network.service" || echoRed "Failed to restart maintain_network.service"
+exe "sudo systemctl restart nginx.service" || echoRed "Failed to restart nginx.service"
 
 # The above lines restart systemd "services" running when this rasberry pi boots.
 # for more about these files: https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files

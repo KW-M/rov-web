@@ -1,0 +1,34 @@
+{
+    "ExposedPorts": {
+        "80/tcp": {}
+    },
+    "PublishAllPorts": true,
+    "HostConfig": {
+        "Privileged": true,
+        "Binds": [
+            "/root/.config:/root/.config"
+        ],
+        "ExtraHosts": [
+            "host.docker.internal:host-gateway"
+        ],
+        "PortBindings": {
+            "80/tcp": [
+                {
+                    "HostPort": ""
+                }
+            ]
+        },
+        "Tmpfs": {
+            "/run": "rw",
+            "/run/lock": "rw",
+            "/tmp": "rw"
+        },
+        "CapAdd": [
+            "SYS_ADMIN"
+        ],
+        "SecurityOpt": [
+            "seccomp=unconfined"
+        ],
+        "CgroupParent": "docker.slice"
+    }
+}

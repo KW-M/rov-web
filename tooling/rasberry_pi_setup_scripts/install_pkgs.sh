@@ -128,8 +128,8 @@ exe 'sudo apt-get -y update' || true
 exe 'sudo apt-get install -y git wget unzip' || true
 
 # --------- Install Chromium Headless Tools ------------
-echoBlue "Installing chromium-driver & xvfb for selinium webdriver"
-exe "sudo apt-get install -y chromium-driver xvfb"
+echoBlue "Installing chromium, chromium-driver, & xvfb for selinium webdriver"
+exe "sudo apt-get install -y chromium chromium-driver xvfb"
 
 # # ---- Install libvpx (vp8 & vp9 video codecs) and libx264 (h264 video codec) and ffmpeg ----
 # { # try
@@ -264,6 +264,22 @@ exe "sudo apt-get install -y chromium-driver xvfb"
     exit 1
 }
 
+# install pigpio
+{ # try
+    exe 'cd ~/'
+    exe 'wget https://github.com/joan2937/pigpio/archive/master.zip'
+    exe 'unzip master.zip'
+    exe 'cd pigpio-master'
+    exe 'make'
+    exe 'sudo make install'
+    exe 'sudo cp ~/pigpio-master/util/pigpiod.service /lib/systemd/system/pigpiod.service'
+    exe 'cd ../ && rm -rf pigpio-master && rm master.zip'
+    exe 'sudo systemctl enable pigpiod.service'
+} || { # catch
+    echoRed "Failed to install pigpio"
+    echoRed "Install it manually: https://abyz.me.uk/rpi/pigpio/download.html"
+}
+
 # --------------------------------------------------------------------------
 # ----- Python Library Setup -------------------------------------------------------
 # --------------------------------------------------------------------------
@@ -279,9 +295,9 @@ exe "sudo apt-get install -y chromium-driver xvfb"
 { # try
     exe "cd ~/rov-web" &&
 
-    echoBlue "Installing python3-pip & pigpiod" &&
+    echoBlue "Installing python3 incl. python3-pip" &&
     exe 'echo "PATH=\$PATH:$HOME/.local/bin" | sudo tee -a ~/.profile' &&
-    exe 'sudo apt-get install -y python3-pip pigpiod' &&
+    exe 'sudo apt-get install -y python3 python3-pip python3-numpy python3-lxml' &&
     exe 'python3 -m pip install --upgrade setuptools' &&
 
     echoBlue "Installing required python packages" &&
@@ -304,7 +320,6 @@ exe "sudo apt-get install -y chromium-driver xvfb"
 
     echoBlue "Enabling systemd (systemctl) services so they start at boot (or whenever configured too)... " &&
     exe 'sudo systemctl enable nginx.service' &&
-    exe 'sudo systemctl enable pigpiod.service' &&
     exe 'sudo systemctl enable maintain_network.service' &&
     exe 'sudo systemctl enable rov_python_code.service' &&
     exe 'sudo systemctl enable rov_internal_web_browser.service'

@@ -4,9 +4,11 @@ import asyncio
 import logging
 import math
 
-from gpio_interface import GPIO_ctrl
+from gpio.gpio_interface import GPIO_ctrl
 from motion.drok_pwm_motor_controller import Drok_Pwm_Motor
 from motion.adafruit_pwm_motor_controller import Adafruit_Pwm_Motor
+from blueos_link.mavlink import rov_web_mavlink
+from utilities import is_in_docker
 
 ###### setup logging #######
 log = logging.getLogger(__name__)
@@ -45,6 +47,11 @@ class MotionController:
 
     async def motor_setup_loop(self):
         """ Function to run in a loop to check if the motors are working properly. """
+        if is_in_docker():
+            rov_web_mavlink.arm()
+            rov_web_mavlink.set_manual_flight_mode()
+            return
+
         self.gpio_issue_flag = asyncio.Event()
         while True:
             self.gpio_issue_flag.clear()
@@ -52,14 +59,14 @@ class MotionController:
             log.debug('init_motor_controllers done')
             if self.gpio_issue_flag.is_set():
                 log.debug('motor_setup_loop: flag set')
-                self.cleanup_gpio()
+                self.stop_motors()
                 await asyncio.sleep(3)
                 continue
 
             log.debug('motor_setup_loop: waiting for gpio_issue_flag')
             # pause this loop until a problem occurs with the gpio (like set motion) which will set this flag.
             await self.gpio_issue_flag.wait()
-            self.cleanup_gpio()
+            self.stop_motors()
 
     def init_motor_controllers(self, async_loop: Optional[asyncio.AbstractEventLoop] = None):
         # Initilize the library for adafruit I2C 4 motor controller pi hat:
@@ -97,6 +104,10 @@ class MotionController:
                     at some rate (full clockwise = 1, full counterclokwise = -1).
         """
 
+        if is_in_docker():
+            rov_web_mavlink.send_movement(x=velocity_x, y=velocity_y, z=velocity_z, r=yaw_angular_velocity)
+            return
+
         if self.gpio_issue_flag.is_set():
             return
 
@@ -131,6 +142,9 @@ class MotionController:
             self.gpio_issue_flag.set()
 
     def stop_motors(self):
+        if is_in_docker():
+                rov_web_mavlink.send_movement(x=0, y=0, z=0, r=0)
+                return
         try:
             # print("S/TOPPING MOTORS")
             self.forward_left_motor.set_speed(0)

@@ -4,7 +4,7 @@ import asyncio
 import logging
 import pigpio
 
-from gpio_interface import GPIO_ctrl
+from gpio.gpio_interface import GPIO_ctrl, OUTPUT_PIN_MODE
 
 REQUIRED_BREAKING_TIME = 0.05  # seconds
 
@@ -17,7 +17,6 @@ class Drok_Pwm_Motor:
     This motor driver attempts to use delays between breaking & starting of both motor contollers on each board
     to avoid H-Bridge short circuts that seem to breifly happen when the motor direction is changed or both motors
     are changed at the same time.
-    pigpio_instance: the pigpio library instance to use to drive the pwm / gpio signals from the pi
     pin_ena: the raspberry pi pin going to the ENA1 pin on the motor driver (ENA2 if driving the second motor)
     pin_in1: the raspberry pi pin going to IN1 pin on the motor controller (IN3 if driving the second motor)
     pin_in2: the raspberry pi pin going to IN2 pin on the motor controller (IN4 if driving the second motor)
@@ -39,9 +38,9 @@ class Drok_Pwm_Motor:
         self.pin_ena = pin_ena
         self.pin_in1 = pin_in1
         self.pin_in2 = pin_in2
-        GPIO_ctrl.set_pin_mode(self.pin_ena, pigpio.OUTPUT)
-        GPIO_ctrl.set_pin_mode(self.pin_in1, pigpio.OUTPUT)
-        GPIO_ctrl.set_pin_mode(self.pin_in2, pigpio.OUTPUT)
+        GPIO_ctrl.set_pin_mode(self.pin_ena, OUTPUT_PIN_MODE)
+        GPIO_ctrl.set_pin_mode(self.pin_in1, OUTPUT_PIN_MODE)
+        GPIO_ctrl.set_pin_mode(self.pin_in2, OUTPUT_PIN_MODE)
         # Halt pwm / motor (breaking mode)
         GPIO_ctrl.set_pin_pwm(self.pin_ena, 0)
         GPIO_ctrl.set_pin_low(self.pin_in1)  # pin LOW (off)
@@ -199,8 +198,8 @@ if __name__ == '__main__':
             print('--------------', motor1.current_speed, motor2.current_speed)
 
     async def main():
-        motor1 = Drok_Pwm_Motor(fake_pigpio(), 1, 3, 5)
-        motor2 = Drok_Pwm_Motor(fake_pigpio(), 2, 4, 6)
+        motor1 = Drok_Pwm_Motor(1, 3, 5)
+        motor2 = Drok_Pwm_Motor(2, 4, 6)
 
         drive_motor(motor1, 1)
         drive_motor(motor2, 1)
