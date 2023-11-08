@@ -1,5 +1,5 @@
 rm dockerfile || true; nano dockerfile
-docker build . -t rov-web-container
+docker build . -t rov-web
 docker run -it --rm --name rov-web --cgroup-parent=docker.slice --cgroupns host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup --privileged --network host rov-web-container
 docker exec -it rov-web bash
 docker stop rov-web
@@ -9,19 +9,15 @@ docker run -it --rm --tmpfs /tmp --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup -
 docker run -it --rm --name systemd-debian --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro systest
 
 docker run -it --rm --name rov-web --cgroup-parent=docker.slice --cgroupns host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup --privileged --network host rov-web-container
-docker run -it --rm --name systemd_test --volumes /home/pi \
-  --privileged --cap-add SYS_ADMIN --security-opt seccomp=unconfined \
-  --cgroup-parent=docker.slice --cgroupns private \
-  --tmpfs /tmp --tmpfs /run --tmpfs /run/lock \
-  systemd_test
 
-docker run -it --rm --name systemd_test --volumes /home/pi \
+docker run -it --rm --name rov-web --volume /home/pi \
   --publish-all -p 80 \
   --privileged --cap-add SYS_ADMIN --security-opt seccomp=unconfined \
   --cgroup-parent=docker.slice --cgroupns private \
   --tmpfs /tmp --tmpfs /run --tmpfs /run/lock \
-  systemd_test
+  rov-web
 
+docker push kywm/rov-web:1
 
 #https://rpi4cluster.com/docker/selenium/
 #https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerCreate
