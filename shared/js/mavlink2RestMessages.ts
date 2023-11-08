@@ -113,7 +113,7 @@ export interface COMMAND_ACK extends mavlink2RestMessageBody {
     "type": "COMMAND_ACK"
 }
 
-export const addMessageHeader = (msg: mavlink2RestMessageBody, sequence: number = 0): mavlink2RestFullMessage {
+export const addMessageHeader = (msg: mavlink2RestMessageBody, sequence: number = 0): mavlink2RestFullMessage => {
     return {
         header: {
             system_id: 254,

@@ -13,7 +13,7 @@
   $: collapsedMode = true; //$rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
   export let visible: boolean = true;
-  export let disabled: boolean = false;
+  // export let disabled: boolean = false;
   // $: if (visible && !disabled) {
   //   gpadCtrl.clearExternalEventListenerCallbacks();
   // } else {
