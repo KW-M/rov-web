@@ -1,5 +1,7 @@
+import { arm, disarm, heartbeat, manualControl } from "../../../shared/js/mavlink2RestMessages";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import { internalConnManager } from "./internalConnManager";
+import { irovMavlinkInterface } from "./mavlinkWebsocket";
 import { iRovWebSocketRelay } from "./websocketRelay";
 
 
@@ -7,6 +9,22 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
     if (msgProto.SimplepeerSignal) {
         internalConnManager.ingestSimplePeerSignallingMsg(senderId, msgProto.SimplepeerSignal.Message)
         return true;
+    } else if (msgProto.Move) {
+        let x = msgProto.Move.VelocityX * 500
+        let y = msgProto.Move.VelocityY * 500
+        let z = msgProto.Move.VelocityZ * 500 + 500
+        let r = msgProto.Move.AngularVelocityYaw * 500
+        irovMavlinkInterface.sendMessage(manualControl(x, y, z, r))
+        return true;
+    } else if (msgProto.Disarm) {
+        irovMavlinkInterface.sendMessage(disarm(true))
+        return true;
+    } else if (msgProto.TakeControl) {
+        irovMavlinkInterface.sendMessage(arm(false))
+        return false;
+    } else if (msgProto.Ping) {
+        irovMavlinkInterface.sendMessage(heartbeat())
+        return false;
     } else return false;
 }
 

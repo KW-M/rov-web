@@ -4,6 +4,7 @@ import { showToastMessage } from "../components/ToastMessages.svelte";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
+import { DECODE_TXT } from "../../../shared/js/consts";
 
 let lastTimeRecvdPong = NaN;
 
@@ -50,6 +51,8 @@ export class FrontendRovMsgHandlerClass {
             return this.handleClientDisconnectedMsgRecived(msgData.ExchangeId, msgData.ClientDisconnected);
         } else if (msgData.SimplepeerSignal) {
             frontendConnMngr.ingestSimplePeerSignallingMsg(msgData.SimplepeerSignal.Message);
+        } else if (msgData.Mavlink) {
+            return this.handleMavlinkMessageRecived(msgData.ExchangeId, msgData.Mavlink);
         }
     }
 
@@ -116,6 +119,11 @@ export class FrontendRovMsgHandlerClass {
             showToastMessage("ROV Driver is now " + msgData.DriverPeerId);
             isRovDriver.set(false);
         }
+    }
+
+    handleMavlinkMessageRecived(ExchangeId: number, msgData: rov_actions_proto.IMavlinkResponse) {
+        const msg = JSON.parse(DECODE_TXT(msgData.Message));
+        console.debug("@ Mav MSG: ", msg);
     }
 
     handleClientConnectedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IClientConnectedResponse) {

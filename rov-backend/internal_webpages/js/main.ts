@@ -3,9 +3,9 @@ import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
 import type { LivekitSetupOptions } from "../../../shared/js/livekit/adminActions";
 import { twitchStream } from "./twitchStream";
-import { SECONDS_IN_DAY } from "../../../shared/js/consts";
+import { ENCODE_TXT, SECONDS_IN_DAY } from "../../../shared/js/consts";
 import { getLongTermStarterAccessToken } from "../../../shared/js/livekit/livekitTokens";
-
+import { irovMavlinkInterface } from "./mavlinkWebsocket";
 
 /// ------- DEBUGGING STUFF: -----------
 window["getLongTermStarterAccessToken"] = getLongTermStarterAccessToken
@@ -60,20 +60,17 @@ if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://local
 
 
 // Start Mavlink2Rest Websocket Communication
-iRovWebSocketRelay.start("ws://localhost:" + livekitConfig.PythonWebsocketPort, (msgBytes: Uint8Array) => {
-    /*Callback to handle messages being received from the iROV python*/
+irovMavlinkInterface.start("ws://blueos.attlocal.net:6040/ws/mavlink", (msg) => {
+    /*Callback to handle messages being received from the arduPilot via */
 
-
-    // Decode protobuf object from bytes
-    if (msgBytes.length === 0) return;
-    const msgProto = rov_actions_proto.RovResponse.decode(msgBytes)
-
-    // Extract metadata from protobuf object
-    if (!msgProto.BackendMetadata) return console.error("No BackendMetadata in message from iROV", msgProto.toJSON(), msgBytes);
-    const targetUserIds = msgProto.BackendMetadata.TargetUserIds
-    const transportMethod = msgProto.BackendMetadata.TransportMethod
-    const isReliable = transportMethod == rov_actions_proto.DataTransportMethod.LivekitReliable
+    if (!msg.header || !msg.message) return console.error("Mavlink message missing header or message body", msg);
+    const msgBytes = ENCODE_TXT(JSON.stringify(msg))
+    const msgProto = rov_actions_proto.RovResponse.create({
+        Mavlink: {
+            Message: msgBytes,
+        }
+    })
 
     // Send message on using livekit:
-    internalConnManager.sendMessage(msgProto, isReliable, targetUserIds)
+    internalConnManager.sendMessage(msgProto, true, [])
 });

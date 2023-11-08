@@ -7,13 +7,13 @@ import { WebSocketRelay } from "./websocketRelay";
 
 export class mavlinkInterface {
     mavlinkWebsocket: WebSocketRelay
-    onMessage: (msg: mavlink2RestMessageBody) => void;
+    onMessage: (msg: mavlink2RestFullMessage) => void;
 
     constructor() {
         this.mavlinkWebsocket = new WebSocketRelay()
     }
 
-    start(wsUrl: string, onMessage: (msg: any) => void) {
+    start(wsUrl: string, onMessage: (msg: mavlink2RestFullMessage) => void) {
         this.onMessage = onMessage
         this.mavlinkWebsocket.start(wsUrl, (msgBytes: Uint8Array) => {
             /*Callback to handle messages being received from the Mavlink2Rest server */
@@ -24,7 +24,7 @@ export class mavlinkInterface {
     handleMessage(msgBytes: Uint8Array) {
         // Decode json object from bytes
         if (msgBytes.length === 0) return;
-        const msgJson = JSON.parse(DECODE_TXT(msgBytes)) as mavlink2RestMessageBody
+        const msgJson = JSON.parse(DECODE_TXT(msgBytes)) as mavlink2RestFullMessage
         this.onMessage(msgJson)
     }
 
