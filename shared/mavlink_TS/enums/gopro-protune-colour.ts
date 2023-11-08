@@ -1,5 +1,0 @@
-export enum GoproProtuneColour {
-	GOPRO_PROTUNE_COLOUR_STANDARD = 0, // Auto.
-	GOPRO_PROTUNE_COLOUR_NEUTRAL = 1, // Neutral.
-	GOPRO_PROTUNE_COLOUR_ENUM_END = 2, // 
-}

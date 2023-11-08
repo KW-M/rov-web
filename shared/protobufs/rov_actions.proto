@@ -134,6 +134,10 @@ message SimplepeerSignalAction {
     string Message = 1;
 }
 
+message DisarmAction {
+    // No data needed
+}
+
 message ActionBackendMetadata {
     // The identity of the livekit user/client that sent the message or the message relates to.
     // !!!! This MUST get overwritten by the backend with the true origin user
@@ -191,6 +195,8 @@ message RovAction {
         MavlinkAction Mavlink = 21;
         // simplepeer_signal
         SimplepeerSignalAction SimplepeerSignal = 22;
+        // disarm
+        DisarmAction Disarm = 23;
     }
 }
 

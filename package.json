@@ -28,9 +28,6 @@
     "@xstate/inspect": "^0.8.0",
     "@zerodevx/svelte-toast": "^0.9.3",
     "autoprefixer": "^10.4.14",
-    "buffer": "^6.0.3",
-    "node-mavlink": "2.0.5",
-    "peerjs": "^1.4.7",
     "postcss": "^8.4.23",
     "protobufjs-cli": "~1.1.1",
     "svelte": "^3.59.1",
@@ -52,8 +49,7 @@
     "workbox-routing": "^6.5.4",
     "workbox-strategies": "^6.5.4",
     "ws": "^8.13.0",
-    "xstate": "^4.37.2",
-    "@ifrunistuttgart/node-mavlink": "^0.1.2"
+    "xstate": "^4.37.2"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.3.0",
