@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {GoproHeartbeatStatus} from '../enums/gopro-heartbeat-status';
-import {GoproCaptureMode} from '../enums/gopro-capture-mode';
-import {GoproHeartbeatFlags} from '../enums/gopro-heartbeat-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { GoproHeartbeatStatus } from '../enums/gopro-heartbeat-status';
+import { GoproCaptureMode } from '../enums/gopro-capture-mode';
+import { GoproHeartbeatFlags } from '../enums/gopro-heartbeat-flags';
 /*
 Heartbeat from a HeroBus attached GoPro.
 */

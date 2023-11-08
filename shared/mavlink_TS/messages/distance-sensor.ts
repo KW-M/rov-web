@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavDistanceSensor} from '../enums/mav-distance-sensor';
-import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavDistanceSensor } from '../enums/mav-distance-sensor';
+import { MavSensorOrientation } from '../enums/mav-sensor-orientation';
 /*
 Distance sensor information for an onboard rangefinder.
 */

@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MagCalStatus} from '../enums/mag-cal-status';
-import {MavSensorOrientation} from '../enums/mav-sensor-orientation';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MagCalStatus } from '../enums/mag-cal-status';
+import { MavSensorOrientation } from '../enums/mav-sensor-orientation';
 /*
 Reports results of completed compass calibration. Sent until MAG_CAL_ACK received.
 */

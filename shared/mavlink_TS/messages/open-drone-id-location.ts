@@ -1,11 +1,11 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavOdidStatus} from '../enums/mav-odid-status';
-import {MavOdidHeightRef} from '../enums/mav-odid-height-ref';
-import {MavOdidHorAcc} from '../enums/mav-odid-hor-acc';
-import {MavOdidVerAcc} from '../enums/mav-odid-ver-acc';
-import {MavOdidSpeedAcc} from '../enums/mav-odid-speed-acc';
-import {MavOdidTimeAcc} from '../enums/mav-odid-time-acc';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavOdidStatus } from '../enums/mav-odid-status';
+import { MavOdidHeightRef } from '../enums/mav-odid-height-ref';
+import { MavOdidHorAcc } from '../enums/mav-odid-hor-acc';
+import { MavOdidVerAcc } from '../enums/mav-odid-ver-acc';
+import { MavOdidSpeedAcc } from '../enums/mav-odid-speed-acc';
+import { MavOdidTimeAcc } from '../enums/mav-odid-time-acc';
 /*
 Data for filling the OpenDroneID Location message. The float data types are 32-bit IEEE 754. The Location message provides the location, altitude, direction and speed of the aircraft.
 */

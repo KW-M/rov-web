@@ -1,5 +1,5 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
 /*
 Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.
 */

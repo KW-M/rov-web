@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {GpsFixType} from '../enums/gps-fix-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { GpsFixType } from '../enums/gps-fix-type';
 /*
 Second GPS data.
 */

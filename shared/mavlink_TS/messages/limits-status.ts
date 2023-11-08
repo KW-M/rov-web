@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {LimitsState} from '../enums/limits-state';
-import {LimitModule} from '../enums/limit-module';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { LimitsState } from '../enums/limits-state';
+import { LimitModule } from '../enums/limit-module';
 /*
 Status of AP_Limits. Sent in extended status stream when AP_Limits is enabled.
 */

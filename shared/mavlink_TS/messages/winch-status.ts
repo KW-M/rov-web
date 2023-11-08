@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavWinchStatusFlag} from '../enums/mav-winch-status-flag';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavWinchStatusFlag } from '../enums/mav-winch-status-flag';
 /*
 Winch status.
 */

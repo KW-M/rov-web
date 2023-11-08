@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavFrame} from '../enums/mav-frame';
-import {LandingTargetType} from '../enums/landing-target-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavFrame } from '../enums/mav-frame';
+import { LandingTargetType } from '../enums/landing-target-type';
 /*
 The location of a landing target. See: https://mavlink.io/en/services/landing_target.html
 */

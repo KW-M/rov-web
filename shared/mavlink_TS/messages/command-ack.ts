@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavCmd} from '../enums/mav-cmd';
-import {MavResult} from '../enums/mav-result';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavCmd } from '../enums/mav-cmd';
+import { MavResult } from '../enums/mav-result';
 /*
 Report status of a command. Includes feedback whether the command was executed. The command microservice is documented at https://mavlink.io/en/services/command.html
 */

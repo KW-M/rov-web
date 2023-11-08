@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavPowerStatus} from '../enums/mav-power-status';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavPowerStatus } from '../enums/mav-power-status';
 /*
 Power supply status
 */

@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavGeneratorStatusFlag} from '../enums/mav-generator-status-flag';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavGeneratorStatusFlag } from '../enums/mav-generator-status-flag';
 /*
 Telemetry of power generation system. Alternator or mechanical generator.
 */

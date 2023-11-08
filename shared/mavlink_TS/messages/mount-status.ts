@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavMountMode} from '../enums/mav-mount-mode';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavMountMode } from '../enums/mav-mount-mode';
 /*
 Message with some status from autopilot to GCS about camera or antenna mount.
 */

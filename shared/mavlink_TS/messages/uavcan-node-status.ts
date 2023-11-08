@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {UavcanNodeHealth} from '../enums/uavcan-node-health';
-import {UavcanNodeMode} from '../enums/uavcan-node-mode';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { UavcanNodeHealth } from '../enums/uavcan-node-health';
+import { UavcanNodeMode } from '../enums/uavcan-node-mode';
 /*
 General status information of an UAVCAN node. Please refer to the definition of the UAVCAN message "uavcan.protocol.NodeStatus" for the background information. The UAVCAN specification is available at http://uavcan.org.
 */

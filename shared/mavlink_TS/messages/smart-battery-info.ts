@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavBatteryFunction} from '../enums/mav-battery-function';
-import {MavBatteryType} from '../enums/mav-battery-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavBatteryFunction } from '../enums/mav-battery-function';
+import { MavBatteryType } from '../enums/mav-battery-type';
 /*
 Smart Battery information (static/infrequent update). Use for updates from: smart battery to flight stack, flight stack to GCS. Use BATTERY_STATUS for smart battery frequent updates.
 */

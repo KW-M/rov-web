@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {CameraCapFlags} from '../enums/camera-cap-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { CameraCapFlags } from '../enums/camera-cap-flags';
 /*
 Information about a camera. Can be requested with a MAV_CMD_REQUEST_MESSAGE command.
 */

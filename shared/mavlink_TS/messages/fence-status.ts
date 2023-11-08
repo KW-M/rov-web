@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {FenceBreach} from '../enums/fence-breach';
-import {FenceMitigate} from '../enums/fence-mitigate';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { FenceBreach } from '../enums/fence-breach';
+import { FenceMitigate } from '../enums/fence-mitigate';
 /*
 Status of geo-fencing. Sent in extended status stream when fencing enabled.
 */

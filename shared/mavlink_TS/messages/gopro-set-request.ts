@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {GoproCommand} from '../enums/gopro-command';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { GoproCommand } from '../enums/gopro-command';
 /*
 Request to set a GOPRO_COMMAND with a desired.
 */

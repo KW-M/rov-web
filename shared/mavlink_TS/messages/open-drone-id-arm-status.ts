@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavOdidArmStatus} from '../enums/mav-odid-arm-status';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavOdidArmStatus } from '../enums/mav-odid-arm-status';
 /*
 Status from the transmitter telling the flight controller if the remote ID system is ready for arming.
 */

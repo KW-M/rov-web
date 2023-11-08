@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavFrame} from '../enums/mav-frame';
-import {PositionTargetTypemask} from '../enums/position-target-typemask';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavFrame } from '../enums/mav-frame';
+import { PositionTargetTypemask } from '../enums/position-target-typemask';
 /*
 Sets a desired vehicle position in a local north-east-down coordinate frame. Used by an external controller to command the vehicle (manual controller or other system).
 */

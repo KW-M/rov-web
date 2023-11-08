@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {IcarousFmsState} from '../enums/icarous-fms-state';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { IcarousFmsState } from '../enums/icarous-fms-state';
 /*
 ICAROUS heartbeat
 */

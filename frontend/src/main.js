@@ -1,3 +1,7 @@
+import { parseMavlinkBuffer, getManualControlMessage } from '../../shared/js/mavlinkInterface';
+import { Buffer } from 'buffer';
+globalThis.Buffer = Buffer;
+window.Buffer = Buffer;
 import './app.css'
 import App from './App.svelte'
 import { frontendConnMngr } from './js/frontendConnManager';
@@ -7,6 +11,9 @@ import { getURLQueryStringVariable } from './js/util';
 // DISABLE VITE HOT MOUDLE RELOADING:
 if (import.meta.hot)
   import.meta.hot.accept(() => import.meta.hot.invalidate())
+
+parseMavlinkBuffer(Buffer.from([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]));
+getManualControlMessage()
 
 debugPageModeActive.set(getURLQueryStringVariable("debug") != undefined);
 

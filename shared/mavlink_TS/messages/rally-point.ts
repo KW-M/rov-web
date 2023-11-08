@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {RallyFlags} from '../enums/rally-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { RallyFlags } from '../enums/rally-flags';
 /*
 A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
 */

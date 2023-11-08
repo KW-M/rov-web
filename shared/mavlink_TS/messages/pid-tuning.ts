@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {PidTuningAxis} from '../enums/pid-tuning-axis';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { PidTuningAxis } from '../enums/pid-tuning-axis';
 /*
 PID tuning information.
 */

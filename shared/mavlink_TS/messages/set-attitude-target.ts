@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {AttitudeTargetTypemask} from '../enums/attitude-target-typemask';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { AttitudeTargetTypemask } from '../enums/attitude-target-typemask';
 /*
 Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).
 */

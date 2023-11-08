@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {RtkBaselineCoordinateSystem} from '../enums/rtk-baseline-coordinate-system';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { RtkBaselineCoordinateSystem } from '../enums/rtk-baseline-coordinate-system';
 /*
 RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting
 */

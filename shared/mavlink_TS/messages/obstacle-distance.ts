@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavDistanceSensor} from '../enums/mav-distance-sensor';
-import {MavFrame} from '../enums/mav-frame';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavDistanceSensor } from '../enums/mav-distance-sensor';
+import { MavFrame } from '../enums/mav-frame';
 /*
 Obstacle distances in front of the sensor, starting from the left in increment degrees to the right
 */

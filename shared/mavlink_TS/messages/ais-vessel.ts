@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {AisNavStatus} from '../enums/ais-nav-status';
-import {AisType} from '../enums/ais-type';
-import {AisFlags} from '../enums/ais-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { AisNavStatus } from '../enums/ais-nav-status';
+import { AisType } from '../enums/ais-type';
+import { AisFlags } from '../enums/ais-flags';
 /*
 The location and information of an AIS vessel
 */

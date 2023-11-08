@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavVtolState} from '../enums/mav-vtol-state';
-import {MavLandedState} from '../enums/mav-landed-state';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavVtolState } from '../enums/mav-vtol-state';
+import { MavLandedState } from '../enums/mav-landed-state';
 /*
 Provides state for additional features
 */

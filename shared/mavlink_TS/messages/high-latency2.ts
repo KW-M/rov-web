@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavType} from '../enums/mav-type';
-import {MavAutopilot} from '../enums/mav-autopilot';
-import {HlFailureFlag} from '../enums/hl-failure-flag';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavType } from '../enums/mav-type';
+import { MavAutopilot } from '../enums/mav-autopilot';
+import { HlFailureFlag } from '../enums/hl-failure-flag';
 /*
 Message appropriate for high latency connections like Iridium (version 2)
 */

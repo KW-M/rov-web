@@ -1,9 +1,9 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavType} from '../enums/mav-type';
-import {MavAutopilot} from '../enums/mav-autopilot';
-import {MavModeFlag} from '../enums/mav-mode-flag';
-import {MavState} from '../enums/mav-state';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavType } from '../enums/mav-type';
+import { MavAutopilot } from '../enums/mav-autopilot';
+import { MavModeFlag } from '../enums/mav-mode-flag';
+import { MavState } from '../enums/mav-state';
 /*
 The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 */

@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {OsdParamConfigType} from '../enums/osd-param-config-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { OsdParamConfigType } from '../enums/osd-param-config-type';
 /*
 Configure an OSD parameter slot.
 */

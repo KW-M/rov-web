@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavDistanceSensor} from '../enums/mav-distance-sensor';
-import {MavFrame} from '../enums/mav-frame';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavDistanceSensor } from '../enums/mav-distance-sensor';
+import { MavFrame } from '../enums/mav-frame';
 /*
 Obstacle located as a 3D vector.
 */

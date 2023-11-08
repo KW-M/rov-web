@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {UavionixAdsbOutStatusState} from '../enums/uavionix-adsb-out-status-state';
-import {UavionixAdsbOutStatusNicNacp} from '../enums/uavionix-adsb-out-status-nic-nacp';
-import {UavionixAdsbOutStatusFault} from '../enums/uavionix-adsb-out-status-fault';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { UavionixAdsbOutStatusState } from '../enums/uavionix-adsb-out-status-state';
+import { UavionixAdsbOutStatusNicNacp } from '../enums/uavionix-adsb-out-status-nic-nacp';
+import { UavionixAdsbOutStatusFault } from '../enums/uavionix-adsb-out-status-fault';
 /*
 Status message with information from UCP Heartbeat and Status messages.
 */

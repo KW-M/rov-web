@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {GimbalDeviceFlags} from '../enums/gimbal-device-flags';
-import {GimbalDeviceErrorFlags} from '../enums/gimbal-device-error-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { GimbalDeviceFlags } from '../enums/gimbal-device-flags';
+import { GimbalDeviceErrorFlags } from '../enums/gimbal-device-error-flags';
 /*
 Message reporting the status of a gimbal device.
 	  This message should be broadcast by a gimbal device component at a low regular rate (e.g. 5 Hz).

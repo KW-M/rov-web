@@ -57,3 +57,23 @@ if (livekitConfig.PythonWebsocketPort != 0) iRovWebSocketRelay.start("ws://local
     // Send message on using livekit:
     internalConnManager.sendMessage(msgProto, isReliable, targetUserIds)
 });
+
+
+// Start Mavlink2Rest Websocket Communication
+iRovWebSocketRelay.start("ws://localhost:" + livekitConfig.PythonWebsocketPort, (msgBytes: Uint8Array) => {
+    /*Callback to handle messages being received from the iROV python*/
+
+
+    // Decode protobuf object from bytes
+    if (msgBytes.length === 0) return;
+    const msgProto = rov_actions_proto.RovResponse.decode(msgBytes)
+
+    // Extract metadata from protobuf object
+    if (!msgProto.BackendMetadata) return console.error("No BackendMetadata in message from iROV", msgProto.toJSON(), msgBytes);
+    const targetUserIds = msgProto.BackendMetadata.TargetUserIds
+    const transportMethod = msgProto.BackendMetadata.TransportMethod
+    const isReliable = transportMethod == rov_actions_proto.DataTransportMethod.LivekitReliable
+
+    // Send message on using livekit:
+    internalConnManager.sendMessage(msgProto, isReliable, targetUserIds)
+});

@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {VideoStreamType} from '../enums/video-stream-type';
-import {VideoStreamStatusFlags} from '../enums/video-stream-status-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { VideoStreamType } from '../enums/video-stream-type';
+import { VideoStreamStatusFlags } from '../enums/video-stream-status-flags';
 /*
 Information about video stream. It may be requested using MAV_CMD_REQUEST_MESSAGE, where param2 indicates the video stream id: 0 for all streams, 1 for first, 2 for second, etc.
 */

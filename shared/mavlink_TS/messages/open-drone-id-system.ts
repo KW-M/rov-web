@@ -1,9 +1,9 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavOdidOperatorLocationType} from '../enums/mav-odid-operator-location-type';
-import {MavOdidClassificationType} from '../enums/mav-odid-classification-type';
-import {MavOdidCategoryEu} from '../enums/mav-odid-category-eu';
-import {MavOdidClassEu} from '../enums/mav-odid-class-eu';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavOdidOperatorLocationType } from '../enums/mav-odid-operator-location-type';
+import { MavOdidClassificationType } from '../enums/mav-odid-classification-type';
+import { MavOdidCategoryEu } from '../enums/mav-odid-category-eu';
+import { MavOdidClassEu } from '../enums/mav-odid-class-eu';
 /*
 Data for filling the OpenDroneID System message. The System Message contains general system information including the operator location/altitude and possible aircraft group and/or category/class information.
 */

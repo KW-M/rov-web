@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {AdsbAltitudeType} from '../enums/adsb-altitude-type';
-import {AdsbEmitterType} from '../enums/adsb-emitter-type';
-import {AdsbFlags} from '../enums/adsb-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { AdsbAltitudeType } from '../enums/adsb-altitude-type';
+import { AdsbEmitterType } from '../enums/adsb-emitter-type';
+import { AdsbFlags } from '../enums/adsb-flags';
 /*
 The location and information of an ADSB vehicle
 */

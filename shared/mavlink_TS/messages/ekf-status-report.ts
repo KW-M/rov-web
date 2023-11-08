@@ -1,6 +1,6 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {EkfStatusFlags} from '../enums/ekf-status-flags';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { EkfStatusFlags } from '../enums/ekf-status-flags';
 /*
 EKF Status message including flags and variances.
 */

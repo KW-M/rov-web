@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {UavionixAdsbOutControlState} from '../enums/uavionix-adsb-out-control-state';
-import {UavionixAdsbEmergencyStatus} from '../enums/uavionix-adsb-emergency-status';
-import {UavionixAdsbXbit} from '../enums/uavionix-adsb-xbit';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { UavionixAdsbOutControlState } from '../enums/uavionix-adsb-out-control-state';
+import { UavionixAdsbEmergencyStatus } from '../enums/uavionix-adsb-emergency-status';
+import { UavionixAdsbXbit } from '../enums/uavionix-adsb-xbit';
 /*
 Control message with all data sent in UCP control message.
 */

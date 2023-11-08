@@ -1,10 +1,10 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {AdsbEmitterType} from '../enums/adsb-emitter-type';
-import {UavionixAdsbOutCfgAircraftSize} from '../enums/uavionix-adsb-out-cfg-aircraft-size';
-import {UavionixAdsbOutCfgGpsOffsetLat} from '../enums/uavionix-adsb-out-cfg-gps-offset-lat';
-import {UavionixAdsbOutCfgGpsOffsetLon} from '../enums/uavionix-adsb-out-cfg-gps-offset-lon';
-import {UavionixAdsbOutRfSelect} from '../enums/uavionix-adsb-out-rf-select';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { AdsbEmitterType } from '../enums/adsb-emitter-type';
+import { UavionixAdsbOutCfgAircraftSize } from '../enums/uavionix-adsb-out-cfg-aircraft-size';
+import { UavionixAdsbOutCfgGpsOffsetLat } from '../enums/uavionix-adsb-out-cfg-gps-offset-lat';
+import { UavionixAdsbOutCfgGpsOffsetLon } from '../enums/uavionix-adsb-out-cfg-gps-offset-lon';
+import { UavionixAdsbOutRfSelect } from '../enums/uavionix-adsb-out-rf-select';
 /*
 Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter)
 */

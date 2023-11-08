@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavModeFlag} from '../enums/mav-mode-flag';
-import {MavLandedState} from '../enums/mav-landed-state';
-import {GpsFixType} from '../enums/gps-fix-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavModeFlag } from '../enums/mav-mode-flag';
+import { MavLandedState } from '../enums/mav-landed-state';
+import { GpsFixType } from '../enums/gps-fix-type';
 /*
 Message appropriate for high latency connections like Iridium
 */

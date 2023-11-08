@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {GoproCommand} from '../enums/gopro-command';
-import {GoproRequestStatus} from '../enums/gopro-request-status';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { GoproCommand } from '../enums/gopro-command';
+import { GoproRequestStatus } from '../enums/gopro-request-status';
 /*
 Response from a GOPRO_COMMAND set request.
 */

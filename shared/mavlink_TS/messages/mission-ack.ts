@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavMissionResult} from '../enums/mav-mission-result';
-import {MavMissionType} from '../enums/mav-mission-type';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavMissionResult } from '../enums/mav-mission-result';
+import { MavMissionType } from '../enums/mav-mission-type';
 /*
 Acknowledgment message during waypoint handling. The type field states if this message is a positive ack (type=0) or if an error happened (type=non-zero).
 */

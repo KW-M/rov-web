@@ -1,10 +1,10 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavBatteryFunction} from '../enums/mav-battery-function';
-import {MavBatteryType} from '../enums/mav-battery-type';
-import {MavBatteryChargeState} from '../enums/mav-battery-charge-state';
-import {MavBatteryMode} from '../enums/mav-battery-mode';
-import {MavBatteryFault} from '../enums/mav-battery-fault';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavBatteryFunction } from '../enums/mav-battery-function';
+import { MavBatteryType } from '../enums/mav-battery-type';
+import { MavBatteryChargeState } from '../enums/mav-battery-charge-state';
+import { MavBatteryMode } from '../enums/mav-battery-mode';
+import { MavBatteryFault } from '../enums/mav-battery-fault';
 /*
 Battery information
 */

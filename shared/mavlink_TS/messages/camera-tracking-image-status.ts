@@ -1,8 +1,8 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {CameraTrackingStatusFlags} from '../enums/camera-tracking-status-flags';
-import {CameraTrackingMode} from '../enums/camera-tracking-mode';
-import {CameraTrackingTargetData} from '../enums/camera-tracking-target-data';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { CameraTrackingStatusFlags } from '../enums/camera-tracking-status-flags';
+import { CameraTrackingMode } from '../enums/camera-tracking-mode';
+import { CameraTrackingTargetData } from '../enums/camera-tracking-target-data';
 /*
 Camera tracking status, sent while in active tracking. Use MAV_CMD_SET_MESSAGE_INTERVAL to define message interval.
 */

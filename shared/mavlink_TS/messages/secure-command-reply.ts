@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {SecureCommandOp} from '../enums/secure-command-op';
-import {MavResult} from '../enums/mav-result';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { SecureCommandOp } from '../enums/secure-command-op';
+import { MavResult } from '../enums/mav-result';
 /*
 Reply from secure command.
 */

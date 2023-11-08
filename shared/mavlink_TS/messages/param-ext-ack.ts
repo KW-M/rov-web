@@ -1,7 +1,7 @@
-import {MAVLinkMessage} from 'node-mavlink';
-import {readInt64LE, readUInt64LE} from 'node-mavlink';
-import {MavParamExtType} from '../enums/mav-param-ext-type';
-import {ParamAck} from '../enums/param-ack';
+import { MAVLinkMessage } from '@ifrunistuttgart/node-mavlink';
+import { readInt64LE, readUInt64LE } from '@ifrunistuttgart/node-mavlink';
+import { MavParamExtType } from '../enums/mav-param-ext-type';
+import { ParamAck } from '../enums/param-ack';
 /*
 Response from a PARAM_EXT_SET message.
 */
