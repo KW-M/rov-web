@@ -24,12 +24,19 @@ export class mavlinkInterface {
     handleMessage(msgBytes: Uint8Array) {
         // Decode json object from bytes
         if (msgBytes.length === 0) return;
-        const msgJson = JSON.parse(DECODE_TXT(msgBytes)) as mavlink2RestFullMessage
-        this.onMessage(msgJson)
+        const msgTxt = DECODE_TXT(msgBytes)
+        try {
+            const msgJson = JSON.parse(msgTxt) as mavlink2RestFullMessage
+            this.onMessage(msgJson)
+        } catch (e) {
+            console.error("Failed to parse recived mavlink2rest json: " + msgTxt, e)
+        }
+
     }
 
     sendMessage(msg: mavlink2RestFullMessage) {
-        this.mavlinkWebsocket.sendMessage(ENCODE_TXT(JSON.stringify(msg)))
+        console.info("Sending Mavlink Message: ", msg)
+        this.mavlinkWebsocket.sendMessage(JSON.stringify(msg))
     }
 
 }

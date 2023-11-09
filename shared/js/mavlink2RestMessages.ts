@@ -116,7 +116,7 @@ export interface COMMAND_ACK extends mavlink2RestMessageBody {
 export const addMessageHeader = (msg: mavlink2RestMessageBody, sequence: number = 0): mavlink2RestFullMessage => {
     return {
         header: {
-            system_id: 254,
+            system_id: 255,
             component_id: 240,
             sequence: sequence,
         },
@@ -130,9 +130,14 @@ export const arm = (force: boolean) => {
         command: { type: "MAV_CMD_COMPONENT_ARM_DISARM" },
         target_system: 1,
         target_component: 1,
-        confirmation: 1,
+        confirmation: 0,
         param1: 1,
-        param2: force ? 21196 : 0,
+        param2: 0,// force ? 21196 : 0,
+        "param3": 0,
+        "param4": 0,
+        "param5": 0,
+        "param6": 0,
+        "param7": 0,
     } as mavlinkLongMessage)
 }
 
@@ -144,7 +149,12 @@ export const disarm = (force: boolean) => {
         target_component: 1,
         confirmation: 1,
         param1: 0,
-        param2: force ? 21196 : 0,
+        param2: 0,//force ? 21196 : 0,
+        "param3": 0,
+        "param4": 0,
+        "param5": 0,
+        "param6": 0,
+        "param7": 0,
     } as mavlinkLongMessage)
 }
 
@@ -181,23 +191,24 @@ export const setMode = (mode: FlightMode) => {
 export const heartbeat = () => {
     return addMessageHeader({
         type: "HEARTBEAT",
+        custom_mode: 0,
         mavtype: { type: "MAV_TYPE_GCS" },
         autopilot: { type: "MAV_AUTOPILOT_INVALID" },
-        base_mode: { bits: 209 },
-        custom_mode: 0,
+        base_mode: { bits: 192 },
         system_status: { type: "MAV_STATE_ACTIVE" },
         mavlink_version: 1,
+        confirmation: 0,
     } as mavlink2RestMessageBody)
 }
 
 export const manualControl = (x: number, y: number, z: number, r: number) => {
     return addMessageHeader({
         type: "MANUAL_CONTROL",
-        x: x,
-        y: y,
-        z: z,
-        r: r,
+        x: Math.floor(x),
+        y: Math.floor(y),
+        z: Math.floor(z),
+        r: Math.floor(r),
         buttons: 0,
-        target_system: 1,
+        target: 1,
     } as mavlink2RestMessageBody)
 }

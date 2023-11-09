@@ -67,7 +67,7 @@ class RovActionsClass {
         this.pingLoopIntervalId = Number(setInterval(() => {
             if (frontendConnMngr.connectionState.get() != ConnectionStates.connected) return;
             frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
-        }, 3000))
+        }, 1000))
     }
 
     stopPingLoop() {

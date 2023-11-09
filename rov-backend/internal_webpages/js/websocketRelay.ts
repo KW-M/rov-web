@@ -1,3 +1,4 @@
+import { ENCODE_TXT } from "../../../shared/js/consts"
 
 
 /*
@@ -66,8 +67,9 @@ export class WebSocketRelay {
             if (this.isRunning) this.queueConnect()
         });
 
-        this.socket.addEventListener("message", (msgEvent: MessageEvent<Blob>) => {
-            msgEvent.data.arrayBuffer().then((arrayBuffer) => {
+        this.socket.addEventListener("message", (msgEvent: MessageEvent<Blob> | MessageEvent<string>) => {
+            if (typeof msgEvent.data === "string") this.msgReceivedFn(ENCODE_TXT(msgEvent.data))
+            else msgEvent.data.arrayBuffer().then((arrayBuffer) => {
                 this.msgReceivedFn(new Uint8Array(arrayBuffer))
             })
         })
