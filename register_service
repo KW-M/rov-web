@@ -1,0 +1,10 @@
+{
+    "name": "Rov Web - Driver Interface",
+    "description": "Driver interface for Rov Web BlueOS Extension",
+    "icon": "mdi-google-controller",
+    "company": "Oceans and Robotics",
+    "version": "0.1.0",
+    "webpage": "https://example.com",
+    "api": "",
+    "new_page": true
+}
