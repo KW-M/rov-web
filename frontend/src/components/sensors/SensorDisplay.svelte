@@ -3,10 +3,10 @@
   import { NetworkCheck, Waves, Thermostat } from "@steeze-ui/material-design-icons";
   import { addTooltip } from "../HelpTooltips.svelte";
   import { depthM, internalTempC, networkLatencyMs, waterTempC } from "../../js/sensors";
-  import type { nStoreT } from "../../js/libraries/nStore";
   import type { IconSource } from "@steeze-ui/svelte-icon/types";
   import { subscribe } from "svelte/internal";
   import { onDestroy } from "svelte";
+  import type { nStoreT } from "../../../../shared/js/libraries/nStore";
 
   type SensorDetails = {
     measurementName: string;
@@ -44,7 +44,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <!-- <progress id="depth" class="progress progress-warning vertical-indicator left-down h-8" value={sensorValues.Depth} max="100" tabindex="0" use:addTooltip={{ label: "Depth Guage", placement: "right", timeout: 500 }}> Depth: {sensorValues.Depth}ft</progress> -->
 <!-- <input id="depth" type="range" min="0" max="100" value={sensorValues.Depth} class="range range-primary range-md vertical-indicator left-down" /> -->
-<input id="depth2" type="range" min="0" max="100" value={$depthM} class="range range-info range-md vertical-indicator left-down" />
+<!-- <input id="depth2" type="range" min="0" max="100" value={$depthM} class="range range-info range-md vertical-indicator left-down" /> -->
 <!-- <progress id="depth2" class="progress progress-success" value="40" max="100" /> -->
 <div class="sensor-overlay-container pointer-events-none">
   <div class="sensor-overlay sensor-overlay-left">

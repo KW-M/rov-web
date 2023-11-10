@@ -23,6 +23,60 @@ export const b00100000 = 32 | 0; // 0b00100000
 export const b01000000 = 64 | 0; // 0b01000000
 export const b10000000 = 128 | 0; // 0b10000000
 
+
+export enum FlightMode {
+    manual = 19,
+    stabilize = 0,
+    acrobatic = 1,
+    depth_hold = 2,
+    surface = 9,
+    // stabilize =  param1:1, param2:0
+    // acro = param1:1, param2:1
+    // alt_hold = param1:1, param2:2
+    // auto = param1:1, param2:3
+    // guided = param1:1, param2:4
+    // surface = param1:1, param2:9
+    // manual = param1:1, param2:19
+    // poshold (unsupported) =  param1:1, param2:16
+    // circle (unsupported) =  param1:1, param2:7
+    unknown = -1,
+}
+
+export const FlightmodeNameMap = {
+    [FlightMode.manual]: "Manual",
+    [FlightMode.stabilize]: "Stabilize",
+    [FlightMode.acrobatic]: "Acrobatic",
+    [FlightMode.depth_hold]: "Depth Hold",
+    [FlightMode.surface]: "Surface",
+    [FlightMode.unknown]: "Unknown",
+}
+
+export enum MavState {
+    MAV_STATE_UNINIT = 0, // Uninitialized system, state is unknown.
+    MAV_STATE_BOOT = 1, // System is booting up.
+    MAV_STATE_CALIBRATING = 2, // System is calibrating and not flight-ready.
+    MAV_STATE_STANDBY = 3, // System is grounded and on standby. It can be launched any time.
+    MAV_STATE_ACTIVE = 4, // System is active and might be already airborne. Motors are engaged.
+    MAV_STATE_CRITICAL = 5, // System is in a non-normal flight mode. It can however still navigate.
+    MAV_STATE_EMERGENCY = 6, // System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down.
+    MAV_STATE_POWEROFF = 7, // System just initialized its power-down sequence, will shut down now.
+    MAV_STATE_FLIGHT_TERMINATION = 8, // System is terminating itself.
+    MAV_STATE_ENUM_END = 9, //
+}
+
+export const MavStateNameMap = {
+    [MavState.MAV_STATE_UNINIT]: "Uninitialized",
+    [MavState.MAV_STATE_BOOT]: "Booting",
+    [MavState.MAV_STATE_CALIBRATING]: "Calibrating",
+    [MavState.MAV_STATE_STANDBY]: "Standby",
+    [MavState.MAV_STATE_ACTIVE]: "Active",
+    [MavState.MAV_STATE_CRITICAL]: "Critical Failsafe",
+    [MavState.MAV_STATE_EMERGENCY]: "Emergency",
+    [MavState.MAV_STATE_POWEROFF]: "Powering Off",
+    [MavState.MAV_STATE_FLIGHT_TERMINATION]: "Flight Termination",
+    [MavState.MAV_STATE_ENUM_END]: "Unknown",
+}
+
 export interface mavlink2RestMessageBody {
     type: string
     target_system?: number
@@ -59,7 +113,7 @@ export interface mavlinkLongMessage extends mavlink2RestMessageBody {
 
 export interface ARDUSUB_HEARTBEAT extends mavlink2RestMessageBody {
     "autopilot": {
-        "type": "MAV_AUTOPILOT_ARDUPILOTMEGA"
+        "type": "MAV_AUTOPILOT_ARDUPILOTMEGA" | "MAV_AUTOPILOT_INVALID" | string
     },
     "base_mode": {
         "bits": 81 | number
@@ -70,7 +124,7 @@ export interface ARDUSUB_HEARTBEAT extends mavlink2RestMessageBody {
         "type": "MAV_TYPE_SUBMARINE"
     },
     "system_status": {
-        "type": "MAV_STATE_CRITICAL" | "MAV_STATE_ACTIVE" // https://mavlink.io/en/messages/common.html#MAV_STATE
+        "type": "MAV_STATE_STANDBY" | "MAV_STATE_CRITICAL" | "MAV_STATE_ACTIVE" | string // https://mavlink.io/en/messages/common.html#MAV_STATE
     },
     "type": "HEARTBEAT"
 }
@@ -111,6 +165,17 @@ export interface COMMAND_ACK extends mavlink2RestMessageBody {
     "target_component": 0 | number,
     "target_system": 0 | number,
     "type": "COMMAND_ACK"
+}
+
+export interface ATTITUDE extends mavlink2RestMessageBody {
+    "pitch": number, // 0.3690577447414398 rad?
+    "pitchspeed": number,
+    "roll": number,
+    "rollspeed": number,
+    "yaw": number,
+    "yawspeed": number // 0.003902553580701351 ? rad/s
+    "time_boot_ms": number,
+    "type": "ATTITUDE"
 }
 
 export const addMessageHeader = (msg: mavlink2RestMessageBody, sequence: number = 0): mavlink2RestFullMessage => {
@@ -156,23 +221,6 @@ export const disarm = (force: boolean) => {
         "param6": 0,
         "param7": 0,
     } as mavlinkLongMessage)
-}
-
-export enum FlightMode {
-    manual = 19,
-    stabilize = 0,
-    acrobatic = 1,
-    depth_hold = 2,
-    surface = 9,
-    // stabilize =  param1:1, param2:0
-    // acro = param1:1, param2:1
-    // alt_hold = param1:1, param2:2
-    // auto = param1:1, param2:3
-    // guided = param1:1, param2:4
-    // surface = param1:1, param2:9
-    // manual = param1:1, param2:19
-    // poshold (unsupported) =  param1:1, param2:16
-    // circle (unsupported) =  param1:1, param2:7
 }
 
 

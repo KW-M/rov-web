@@ -47,9 +47,10 @@ class RovActionsClass {
     }
 
     gamepadAxisTriggers(gamepad: Gamepad) {
+        const sensitivity = 0.2;
         const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
         if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
-        this.moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw);
+        this.moveRov(VelocityX * sensitivity, VelocityY * sensitivity, VelocityZ * sensitivity, AngularVelocityYaw * sensitivity);
     }
 
     // ==== Helpers =====

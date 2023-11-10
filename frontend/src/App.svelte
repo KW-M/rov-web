@@ -17,6 +17,7 @@
   import OnscreenGamepads from "./components/OnscreenGamepads.svelte";
   import SensorDisplay from "./components/sensors/SensorDisplay.svelte";
   import Dialogs from "./components/dialogs/Dialogs.svelte";
+  import SystemStateMenu from "./components/SystemStateMenu.svelte";
   import LoadingIndicator, { showLoadingUi, hideLoadingUi } from "./components/LoadingIndicator.svelte";
   import HelpTooltips, { addTooltip } from "./components/HelpTooltips.svelte";
   import ToastMessages, { showToastMessage } from "./components/ToastMessages.svelte";
@@ -86,8 +87,7 @@
   <HelpTooltips />
   <Dialogs />
   <LoadingIndicator />
-
-  <VideoPlayer />
+  <SystemStateMenu />
 
   <!-- UI Layout -->
   <VideoPlayer />
