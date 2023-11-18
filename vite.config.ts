@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { ViteEntrypointRewritePlugin } from './tooling/vite-plugin-mp'
-// import resolve from 'vite-plugin-resolve'
-// import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
