@@ -1,5 +1,5 @@
-import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
+import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 
 export const networkLatencyMs: nStoreT<number> = nStore(0);
 export const depthM: nStoreT<number> = nStore(0);
@@ -30,3 +30,7 @@ export function updateSensorValues(sensorUpdates: rov_actions_proto.ISensorUpdat
         }
     }
 }
+
+// export function updateSensorValues(sensorUpdates: any) {
+
+// }

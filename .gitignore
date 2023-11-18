@@ -1,9 +1,20 @@
-# secrets stuff (paswords, etc)
-/secret_config.json
-SECRETS*
-secrets*
+.DS_Store
+node_modules
+/build
+.svelte-kit
+/package
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+
+# Shhh! =) (paswords, etc)
+SECRET*
+secret*
 PRIVATE*
 private*
+coding_experiments_and_notes
 
 # npm & parcel
 .parcel-cache
@@ -73,8 +84,8 @@ Temporary Items
 # ----------------------------------------
 
 ## exclude generated Cython cpp, but include source cpp in the cython_modules/cpp folder
-rov-backend/python/cython_modules/*.cpp
-!rov-backend/python/cython_modules/cpp
+rov-python/cython_modules/*.cpp
+!rov-python/cython_modules/cpp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -92,7 +103,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -190,7 +200,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -230,7 +239,7 @@ cython_debug/
 #.idea/
 
 # Protobufs
-rov-backend/python/protobufs/*
-!rov-backend/python/protobufs/README.md
+rov-python/protobufs/*
+!rov-python/protobufs/README.md
 shared/js/protobufs/*
 !shared/js/protobufs/README.md

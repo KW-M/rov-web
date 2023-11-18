@@ -1,4 +1,4 @@
-import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
+import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
 
 export enum DIALOG_TYPE {
     Alert = 0,

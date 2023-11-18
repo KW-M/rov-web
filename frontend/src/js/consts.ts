@@ -1,4 +1,4 @@
-import type { Placement } from '@popperjs/core';
+import type { PopupSettings } from "../components/Popup/types";
 
 /** Token used by the frontend to list available livekit rooms, it does not have any other permissions, but lasts almost indefinately
  * START_LIVEKIT_FRONTEND_TOKEN. */
@@ -77,7 +77,7 @@ export enum LOADING_MESSAGE {
 /****** GAMEPAD RELATED ***********/
 
 // export const TOUCHED_BUTTON_EQUIVELANT_VALUE = 0.5;
-export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: Placement, holdAllowed?: boolean, remoteAction?: string, localAction?: string }
+export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: PopupSettings["placement"], holdAllowed?: boolean, remoteAction?: string, localAction?: string }
 export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
     { btnName: "button_1", helpLabel: "Take Driver Control", tooltipPlacement: "left" },
     { btnName: "button_2", helpLabel: "Start/Stop Recording", tooltipPlacement: "left" },

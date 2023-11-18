@@ -1,5 +1,5 @@
 import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
-import { computePosition, autoUpdate, flip, shift } from '@floating-ui/dom';
+import { computePosition, autoUpdate, flip, shift, offset, arrow } from "@floating-ui/dom";
 
 export class GamepadUi {
     gpadButtonHighlightElements: HTMLElement[];

@@ -1,22 +1,22 @@
-import { ConnectionStates, LIVEKIT_BACKEND_ROOM_CONFIG, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";
-import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata } from "../../../shared/js/livekit/adminActions";
-import { LivekitViewerConnection } from "../../../shared/js/livekit/livekitConn";
-import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
-import { SimplePeerConnection } from "../../../shared/js/simplePeer";
-import { changesSubscribe, oneShotSubscribe, waitfor } from "../../../shared/js/util";
-import { showToastMessage } from "../components/ToastMessages.svelte";
+import { ConnectionStates, LIVEKIT_BACKEND_ROOM_CONFIG, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT } from "./shared/consts";
+import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
+import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata } from "./shared/livekit/adminActions";
+import { LivekitViewerConnection } from "./shared/livekit/livekitConn";
+import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
+import { SimplePeerConnection } from "./shared/simplePeer";
+import { changesSubscribe, oneShotSubscribe, waitfor } from "./shared/util";
+import { showToastMessage } from "./toastMessageManager";
 import { LIVEKIT_LIST_ONLY_TOKEN } from "./consts";
 import { frontendRovMsgHandler } from "./rovMessageHandler";
 
 export class FrontendConnectionManager {
-    connectionState: nStoreT<ConnectionStates> = nStore(ConnectionStates.init);
-    livekitConnection: LivekitViewerConnection = new LivekitViewerConnection();
-    mainVideoStream: nStoreT<MediaStream> = nStore(null);
-    currentLivekitIdentity: nStoreT<string> = nStore("None");
+    connectionState = nStore<ConnectionStates>(ConnectionStates.init);
+    livekitConnection = new LivekitViewerConnection();
+    mainVideoStream = nStore<MediaStream | undefined>(undefined);
+    currentLivekitIdentity = nStore<string | null>(null);
     simplepeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
-    openLivekitRoomNames: nStoreT<string[]> = nStore([]);
+    openLivekitRoomNames = nStore<string[]>(["Rov Baja 2, Monterey Mexico", "b"]);
     livekitRoomAuthTokens: { [key: string]: string } = {}; // key is room name, value is room token
     _cleanupFuncs: { [key: string]: () => void } = {};
 
@@ -60,7 +60,7 @@ export class FrontendConnectionManager {
      * and sets the result in this.openLivekitRooms nStore.
      * @param hostName - the hostname of the livekit server to poll
      */
-    async pollForOpenLivekitRooms(hostName) {
+    async pollForOpenLivekitRooms(hostName: string) {
         if (this.livekitRoomPollingInterval !== -1) clearInterval(this.livekitRoomPollingInterval)
         const listOpenRooms = async () => {
             if (this.connectionState.get() === ConnectionStates.connected || this.connectionState.get() === ConnectionStates.reconnecting) return;
@@ -75,7 +75,7 @@ export class FrontendConnectionManager {
             // console.log("openRoomNames: ", openRoomNames, "openRoomTokens: ", openRoomTokens, "raw:", openRooms)
         }
         await listOpenRooms();
-        this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 1000))
+        this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 5000))
     }
 
     /**
@@ -209,7 +209,7 @@ export class FrontendConnectionManager {
         }
     }
 
-    public async disconnectFromLivekitRoom() {
+    public async disconnect() {
         if (this.simplepeerConnection) await this.simplepeerConnection.stop();
         if (this.livekitConnection) await this.livekitConnection.close();
         for (const key in this._cleanupFuncs) this._cleanupFuncs[key]();

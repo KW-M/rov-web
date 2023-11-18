@@ -1,0 +1,16 @@
+aiohttp==3.8.5
+aiostream==0.4.5
+websockets==11.0.3
+async-timeout==4.0.2
+# ms5803py==1.0.0
+betterproto==2.0.0b6
+# cython==3.0.0
+# AHRS==0.3.1
+# smbus==1.1.post2
+# selenium==4.10.0
+pyvirtualdisplay>=3.0
+# sparkfun-qwiic-icm20948>=0.0.1
+# pigpio>=1.78
+aiogoogle>=5.5.0
+pymavlink>=2.4.39
+playwright>=1.39.0

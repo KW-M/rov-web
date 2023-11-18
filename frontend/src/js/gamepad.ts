@@ -7,7 +7,7 @@ import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
 import { addTooltip } from "../components/HelpTooltips.svelte";
-import { showToastMessage } from "../components/ToastMessages.svelte";
+import { showToastMessage } from "./toastMessageManager";
 import { frontendConnMngr } from './frontendConnManager';
 
 // CONSTS
@@ -82,18 +82,18 @@ export class GamepadController {
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
         if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
-        // if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
-        //     this.gpadUi.toggleGamepadHelpScreen();
-        // }
+        if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
+            this.gpadUi.toggleGamepadHelpScreen();
+        }
 
         let noGamepadButtonTouched = true;
         for (let i = 0; i < buttonsChangedMask.length; i++) {
             if (buttonsChangedMask[i] && buttonsChangedMask[i].touchDown) {
-                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].showTooltipTimeout();
+                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].open();
                 noGamepadButtonTouched = false;
             }
             else if (buttonsChangedMask[i] && buttonsChangedMask[i].touchUp) {
-                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].hideTooltip();
+                if (gpadHelpTooltips[i]) gpadHelpTooltips[i].close();
             }
         }
     }
@@ -150,6 +150,14 @@ export class GamepadController {
         const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
             if (name.includes("trigger")) {
                 // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
+                console.log("GamepadDisplayVariableButton", {
+                    type: gamepadButtonType.variable,
+                    highlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_highlight"),
+                    buttonElement: GPAD_DISPLAY_CONTAINER.querySelector("#" + name),
+                    direction: gamepadDirection.down,
+                    directionHighlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_direction_highlight"),
+                    movementRange: 10,
+                })
                 return {
                     type: gamepadButtonType.variable,
                     highlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_highlight"),
@@ -158,6 +166,7 @@ export class GamepadController {
                     directionHighlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_direction_highlight"),
                     movementRange: 10,
                 } as GamepadDisplayVariableButton;
+
             } else {
                 // all other buttons are simply on (pressed) or off (not pressed).
                 return {
@@ -345,9 +354,9 @@ export class GamepadController {
     }
 
     addHelpTooltips() {
-        ONSCREEN_GPAD_BUTTON_LABELS.forEach((name, i) => {
+        ONSCREEN_GPAD_BUTTON_LABELS.forEach(async (name, i) => {
             const elem = document.getElementById(name + "_touch_target");
-            if (elem) gpadHelpTooltips[i] = addTooltip(elem, { label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement }, false);
+            if (elem) gpadHelpTooltips[i] = await addTooltip(elem, GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, { placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement });
         })
     }
 }

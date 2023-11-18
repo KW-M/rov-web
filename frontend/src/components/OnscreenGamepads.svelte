@@ -1,18 +1,19 @@
 <script lang="ts">
   import { ConnectionState } from "../js/consts";
   import { appReady } from "../js/globalContext";
-  import GamepadLeftSvg from "../assets/optimized/display-gamepad-left.svg?raw";
-  import GamepadRightSvg from "../assets/optimized/display-gamepad-right.svg?raw";
+  import GamepadLeftSvg from "../assets/gamepad/optimized/display-gamepad-left.svg?raw";
+  import GamepadRightSvg from "../assets/gamepad/optimized/display-gamepad-right.svg?raw";
   import { gpadCtrl } from "../js/gamepad";
-  import type { nStoreT } from "../../../shared/js/libraries/nStore";
-  import { oneShotSubscribe } from "../../../shared/js/util";
+  import type { nStoreT } from "../js/shared/libraries/nStore";
+  import { oneShotSubscribe } from "../js/shared/util";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;
-  $: collapsedMode = true; //$rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
+  let collapsedMode = false; //$rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
-  export let visible: boolean = true;
+  export let visible: boolean = false;
   // export let disabled: boolean = false;
   // $: if (visible && !disabled) {
   //   gpadCtrl.clearExternalEventListenerCallbacks();
@@ -30,8 +31,12 @@
   // });
 </script>
 
-<!-- hidden -->
-<div id="gamepad-container" bind:this={GPAD_DISPLAY_CONTAINER} class={collapsedMode ? "" : ""}>
+<!-- <button
+  on:click={() => {
+    collapsedMode = !collapsedMode;
+  }}>{collapsedMode ? "Show Gamepads" : "Hide Gamepads"}</button
+> -->
+<div id="gamepad-container" bind:this={GPAD_DISPLAY_CONTAINER} class:hidden={collapsedMode} class="inset-0 opacity-30 absolute pointer-events-none" transition:fade={{ duration: 100 }}>
   <!-- Gamepad joystick touch start areas -->
   <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area" />
   <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
@@ -62,109 +67,65 @@
 
 <style>
   /* ********* Onscreen Gamepad Related ********* */
-  :global(.display-gamepad) {
+  /* *********  Gamepad Display Related ********* */
+
+  :global(.gpad-display) {
+    display: contents;
+  }
+
+  :global(.gpad-display svg) {
     position: absolute;
-    bottom: -12px;
-
-    width: 72%;
-    max-width: 47.5vh;
-    max-height: 14cm;
-    transition: opacity 0.5s ease-in-out;
-
-    pointer-events: none;
-  }
-
-  /* .display-gamepad svg {
+    user-select: none;
+    width: max-content;
     bottom: 0;
-  } */
+    max-height: 14cm;
+    pointer-events: none;
+    /* z-index: 100; */
+  }
 
-  :global(#display-gamepad-left) {
+  :global(.gpad-display-left svg) {
     left: 0;
-
-    transition: transform 0.4s, left 0.4s;
-    transform: translateX(-120%);
+    transform: translateX(-20%);
   }
 
-  :global(#display-gamepad-right) {
+  :global(.gpad-display-right svg) {
     right: 0;
-
-    transition: transform 0.4s, right 0.4s;
-    transform: translateX(120%);
+    transform: translateX(20%);
   }
 
-  :global(#display-gamepad-full) {
+  :global(.gpad-display-full svg) {
     left: 50%;
     width: 100%;
     max-width: 100vw;
-
-    transition: transform 0.4s, left 0.4s;
     transform: translateX(-50%);
   }
-  /*
-  :global(body.gamepad-help-open #display-gamepad-left) {
-    bottom: 15px;
-    left: 50% !important;
 
-    transform: translateX(-98%) !important;
-
-    opacity: 1 !important;
-  }
-
-  :global(body.gamepad-help-open #display-gamepad-right) {
-    right: 50% !important;
-    bottom: 15px;
-
-    transform: translateX(98%) !important;
-
-    opacity: 1 !important;
-  }
-
-  :global(body.gamepad-help-open #gamepad-help-tooltip) {
-    display: block !important;
-  }
-*/
-  :global(.gpad-btn-highlight) {
-    visibility: hidden;
-
-    cursor: pointer;
-    pointer-events: all;
-  }
-
-  /* :global(#stick_button_right_highlight) {
-    visibility: hidden;
-  }
-
-  :global(#stick_button_right_highlight\.gpad-btn-highlight) {
-    opacity: 0.5;
-  } */
-
-  :global(.gpad-btn-highlight.touched) {
-    visibility: visible;
-
-    opacity: 0.5;
-  }
-
-  :global(.gpad-btn-highlight.pressed) {
-    visibility: visible;
-
-    opacity: 1 !important;
-  }
-
-  :global(.gpad-arrow-highlight) {
-    /* visibility: hidden; */
-    pointer-events: none;
-
+  :global(.gpad-highlight) {
     opacity: 0;
   }
 
-  :global(.gpad-arrow-highlight.touched) {
-    visibility: visible;
+  :global(.gpad-highlight.pressed.touched) {
+    opacity: 1;
   }
 
-  :global(.gpad-arrow-highlight.axis-moved) {
-    visibility: visible;
+  :global(.gpad-highlight.touched) {
+    opacity: 0.5;
+  }
 
-    opacity: 0.5 !important;
+  :global(.direction_highlight) {
+    opacity: 0;
+  }
+
+  :global(.direction_highlight.moved) {
+    opacity: 0.8;
+  }
+
+  :global(#l_touch_targets > *, #r_touch_targets > *) {
+    visibility: hidden;
+
+    /* cursor: none; */
+    cursor: pointer;
+    pointer-events: all;
   }
 
   .gamepad-joystick-touch-area {
@@ -176,7 +137,7 @@
 
     z-index: 0;
     /* background-color: #0c61d860; */
-    pointer-events: all;
+    pointer-events: none;
   }
 
   .gamepad-joystick-touch-area#gamepad-joystick-touch-area-left {

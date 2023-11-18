@@ -1,91 +1,126 @@
 <script lang="ts">
-  import { RovActions } from "../js/rovActions";
+  import { AppBar, SlideToggle, getDrawerStore } from "@skeletonlabs/skeleton";
+  import CompassDial from "./CompassDial.svelte";
 
-  import { Icon } from "@steeze-ui/svelte-icon";
-  import { AdjustmentsHorizontal, Wrench, Power, ArrowDownOnSquareStack, ArrowsPointingOut, ArrowsPointingIn, Cog6Tooth, QuestionMarkCircle } from "@steeze-ui/heroicons";
-  import { fade, slide } from "svelte/transition";
-  import CompassDial from "./sensors/CompassDial.svelte";
   import { fullscreenOpen } from "../js/globalContext";
-  import { selectKeypressFactory, toggleFullscreen } from "../js/util";
-  import { ConnectionState } from "../js/consts";
-  import { addTooltip } from "./HelpTooltips.svelte";
-  import { frontendConnMngr } from "../js/frontendConnManager";
-  let menuOpen = false;
-  // $: if ($rovDataChannelConnState != ConnectionState.connected) menuOpen = false;
+
+  import GearIcon from "svelte-google-materialdesign-icons/Settings_power.svelte";
+  import InfoIcon from "svelte-google-materialdesign-icons/Info.svelte";
+  import ShutdownIcon from "svelte-google-materialdesign-icons/Power_settings_new.svelte";
+  import RestartIcon from "svelte-google-materialdesign-icons/Restart_alt.svelte";
+  import DisconnectIcon from "svelte-google-materialdesign-icons/Close.svelte";
+  import UpdateSystemIcon from "svelte-google-materialdesign-icons/System_update.svelte";
+  import FullscreenIcon from "svelte-google-materialdesign-icons/Fullscreen.svelte";
+  import FullscreenExitIcon from "svelte-google-materialdesign-icons/Fullscreen_exit.svelte";
+  import MenuIcon from "svelte-google-materialdesign-icons/Menu.svelte";
+  import MoreHorizIcon from "svelte-google-materialdesign-icons/More_horiz.svelte";
+  import HelpIcon from "svelte-google-materialdesign-icons/Help.svelte";
+  import FlightModeSelector from "./FlightModeSelector.svelte";
+  import { toggleFullscreen } from "../js/util";
+  import { RovActions } from "../js/rovActions";
+  import { autopilotArmed, autopilotMavState } from "../js/vehicleStats";
+  import { MavStateNameMap } from "../js/shared/mavlink2RestMessages";
+
+  const drawerStore = getDrawerStore();
+  const openSideDrawer = (): void => drawerStore.open();
+
+  let powerMenuExpanded = false;
+
+  const motorArmSwitchChange = (e) => {
+    const arm = e.target.checked;
+    // autopilotArmed.set(arm);
+    if (arm) {
+      console.log("Arming Vehicle");
+      RovActions.takeControl();
+    } else {
+      console.log("Disarming Vehicle");
+      RovActions.disarm();
+    }
+  };
+
+  const disarmVehicle = () => {
+    // VechicleArmed = false;
+    RovActions.disarm();
+  };
+
+  const armVehicle = () => {
+    // VechicleArmed = false;
+    RovActions.takeControl();
+  };
+
+  const shutdownRov = () => {
+    RovActions.shutdownRov();
+  };
 </script>
 
-<div class="px-1 absolute flex w-full flex-col max-h-screen pointer-events-none">
-  <div class="navbar rounded-t-none shadow-xl rounded-box h-9 p-0 min-h-0 lg:rounded-t-none bg-base-100 m-auto max-w-sm top-bar flex-none pointer-events-auto overflow-hidden">
-    <div class="pr-3 justify-start flex-shrink">
-      <!-- <div class="dropdown"> -->
-      <button class="btn btn-ghost btn-square rounded-tl-none" on:click={() => (menuOpen = !menuOpen)} use:addTooltip={{ label: "Menu", placement: "left" }} disabled={false}>
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg> -->
-        <Icon theme="solid" src={Cog6Tooth} class="w-6 h-6 pointer-events-none" />
-      </button>
-      <!-- <ul  class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-          <li><a>Homepage</a></li>
-          <li><a>Portfolio</a></li>
-          <li><a>About</a></li>
-        </ul> -->
-      <!-- </div> -->
+<AppBar padding="p-2" background="bg-transparent" slotDefault="flex justify-around overflow-visible min-w-0">
+  <svelte:fragment slot="lead">
+    <button on:click={openSideDrawer} class="btn btn-lg btn-icon bg-initial lg:hidden"> <MenuIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
+    <FlightModeSelector />
+    <button class="btn btn-md variant-outline-primary" on:click={disarmVehicle}>Disarm</button>
+    <button class="btn btn-md variant-outline-primary" on:click={armVehicle}>Arm</button>
+    <div class="overflow-visible" style="max-width: 4em;">
+      {#if powerMenuExpanded}
+        <div class="btn-group variant-filled-primary justify-evenly relative">
+          <button on:click={() => (powerMenuExpanded = false)}><DisconnectIcon class="text-2xl  pointer-events-none" tabindex="-1" variation="round" /></button>
+          <button
+            on:click={() => {
+              RovActions.shutdownRov();
+              powerMenuExpanded = false;
+            }}
+            class="variant-filled-secondary"><ShutdownIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button
+          >
+          <button
+            on:click={() => {
+              RovActions.rebootRov();
+              powerMenuExpanded = false;
+            }}
+            class="variant-filled-secondary"><RestartIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button
+          >
+          <button
+            on:click={() => {
+              RovActions.getRovStatusReport();
+              powerMenuExpanded = false;
+            }}
+            class="variant-filled-secondary"><InfoIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button
+          >
+          <button
+            on:click={() => {
+              RovActions.restartRovServices();
+              powerMenuExpanded = false;
+            }}
+            class="variant-filled-secondary"><UpdateSystemIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button
+          >
+        </div>
+      {:else}
+        <button class="btn variant-filled-primary" on:click={() => (powerMenuExpanded = true)}>
+          <ShutdownIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
+          <MoreHorizIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
+        </button>
+      {/if}
     </div>
-    <div class="navbar-center flex-1 self-stretch"><CompassDial /></div>
-    <div class="pl-3 justify-end flex-shrink">
-      <!-- <button class="btn btn-square btn-ghost" on:click={(e) => toggleFullscreen(e.target, null)} use:addTooltip={{ label: "Toggle Fullscreen", placement: "right" }}>
-        <Icon theme="solid" src={$fullscreenOpen ? ArrowsPointingIn : ArrowsPointingOut} class="w-6 h-6 pointer-events-none" />
-      </button> -->
-      <button class="btn btn-square btn-ghost !rounded-tr-none" use:addTooltip={{ label: "Hover or long-press buttons to show help", placement: "bottom", timeout: 0 }}>
-        <Icon theme="solid" src={QuestionMarkCircle} class="w-6 h-6 pointer-events-none" />
-      </button>
-    </div>
-  </div>
-  {#if menuOpen}
-    <div transition:slide class="mt-1 mb-24 m-auto w-full max-w-max card card-compact dropdown-content bg-base-100 shadow p-1 overflow-auto pointer-events-auto">
-      <div class="multi-menu card-body md:flex-row rounded-box">
-        <ul class="menu inline-block menu-normal flex-1">
-          <li aria-hidden="true"><Icon theme="mini" src={Power} class="h-12 pointer-events-none" /></li>
-          <li on:click={RovActions.shutdownRov} on:keypress={selectKeypressFactory(RovActions.shutdownRov)} role="menuitem"><span class="btn btn-ghost">Shutdown ROV</span></li>
-          <li on:click={RovActions.rebootRov} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">Reboot ROV</span></li>
-          <li on:click={RovActions.restartRovServices} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">Restart ROV Services</span></li>
-        </ul>
-        <div class="divider md:divider-horizontal md:m-0" />
-        <ul class="menu inline-block menu-normal flex-1">
-          <li aria-hidden="true"><Icon theme="solid" src={Wrench} class="h-12 pointer-events-none" /></li>
-          <li on:click={RovActions.getRovStatusReport} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">System Status</span></li>
-          <li on:click={RovActions.getRovLogs} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">ROV Logs</span></li>
-          <li on:click={() => window.open("./404.html")} on:keypress={selectKeypressFactory(() => window.open("./404.html"))} role="menuitem"><span class="btn btn-ghost">Local Debug Links</span></li>
-        </ul>
-        <div class="divider md:divider-horizontal md:m-0" />
-        <ul class="menu inline-block menu-normal flex-1">
-          <li aria-hidden="true"><Icon theme="solid" src={AdjustmentsHorizontal} class="h-12 pointer-events-none" /></li>
-          <li on:click={RovActions.enableRovWifi} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">Enable ROV Wifi</span></li>
-          <li on:click={RovActions.disableRovWifi} on:keypress={selectKeypressFactory(RovActions.rebootRov)} role="menuitem"><span class="btn btn-ghost">Disable ROV Wifi</span></li>
-        </ul>
-      </div>
-    </div>
-  {/if}
-</div>
-<button class="btn btn-square bg-base-100 pointer-events-auto absolute -right-1 -top-1 rounded-none rounded-bl-2xl" on:click={(e) => toggleFullscreen(e, null)} use:addTooltip={{ label: "Toggle Fullscreen", placement: "right" }}>
-  <Icon theme="solid" src={$fullscreenOpen ? ArrowsPointingIn : ArrowsPointingOut} class="w-6 h-6 pointer-events-none" />
-</button>
+  </svelte:fragment>
+  <svelte:fragment slot="default">
+    <CompassDial class="w-full flex-auto -z-10" />
+  </svelte:fragment>
+  <svelte:fragment slot="trail">
+    <span class="px-2">MavState: {MavStateNameMap[$autopilotMavState]}</span>
 
-<style>
-  .top-bar {
-    width: calc(100% - 12.5rem);
-  }
-
-  .multi-menu.card-body {
-    @apply p-3 gap-1;
-  }
-
-  .multi-menu.card-body ul {
-    @apply m-0 inline-block;
-  }
-
-  .multi-menu li span {
-    @apply whitespace-nowrap my-1 align-text-bottom  inline-block w-60;
-
-    text-align: center;
-    border-radius: var(--rounded-box, 1rem);
-  }
-</style>
+    <SlideToggle name="Arm Vehicle" background="bg-success-400" active="bg-error-500" checked={$autopilotArmed} on:change={motorArmSwitchChange}>
+      <span class="whitespace-normal w-min inline-block">{$autopilotArmed ? "Motors ON" : "Motors OFF"}</span>
+    </SlideToggle>
+    <button class="btn variant-filled-secondary text-white md:btn-base"><span class="hidden lg:inline">Help</span> <HelpIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
+    <button
+      class="btn btn-lg btn-icon bg-initial"
+      on:click={(e) => {
+        toggleFullscreen(e, null);
+      }}
+    >
+      {#if $fullscreenOpen}
+        <FullscreenExitIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
+      {:else}
+        <FullscreenIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
+      {/if}
+    </button>
+  </svelte:fragment>
+</AppBar>

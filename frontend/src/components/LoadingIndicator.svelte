@@ -1,9 +1,9 @@
 <script context="module" lang="ts">
   import { LOADING_MESSAGE } from "../js/consts";
-  import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
+  import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
 
   let currentMsg: nStoreT<string> = nStore(null);
-  let loadingStack = {};
+  let loadingStack: { [Key: LOADING_MESSAGE]: string } = {};
 
   /** show the loading indicator with the given message
    * @param msgId {LOADING_MESSAGE}
@@ -36,7 +36,7 @@
 </script>
 
 {#if $currentMsg != null}
-  <div id="site_loading_indicator" class="lds-circle">
+  <div id="site_loading_indicator" class="lds-circle bg-surface-900 border-4 border-surface-700 shadow-2xl">
     <div />
     <span id="site_loading_text">{$currentMsg}</span>
   </div>
@@ -45,7 +45,7 @@
 <style>
   #site_loading_indicator {
     padding: 1rem 2rem;
-    transform: translate(-50%, 20vh);
+    transform: translate(-50%, -20vh);
 
     display: flex;
     flex-wrap: nowrap;
@@ -56,10 +56,9 @@
     max-width: calc(100% - 6rem);
     pointer-events: none;
     user-select: none;
-    background-color: hsl(var(--b1) / 0.9);
     position: absolute;
     z-index: 4;
-    top: 6px;
+    bottom: 0px;
     left: 50%;
   }
 

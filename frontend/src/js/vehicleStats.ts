@@ -1,13 +1,39 @@
-import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-import { FlightMode, FlightmodeNameMap, MavState } from "../../../shared/js/mavlink2RestMessages";
-import { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import nStore from "./shared/libraries/nStore";
+import { FlightMode, FlightmodeNameMap, MavState } from "./shared/mavlink2RestMessages";
+import { showToastMessage } from "./toastMessageManager";
 
-export const networkLatencyMs: nStoreT<number> = nStore(0);
-export const internalTempC: nStoreT<number> = nStore(0);
-export const autopilotLoad: nStoreT<number> = nStore(0);
-export const autopilotErrorCount: nStoreT<number> = nStore(0);
-export const autopilotMode: nStoreT<FlightMode> = nStore(FlightMode.unknown);
-export const autopilotMavState: nStoreT<MavState> = nStore(MavState.MAV_STATE_UNINIT);
+export const networkLatencyMs = nStore<number>(0);
+export const batteryPercent = nStore<number>(0);
+export const batteryVoltage = nStore<number>(0);
+export const batteryCurrent = nStore<number>(0);
+
+export const autopilotLoad = nStore<number>(0);
+export const autopilotErrorCount = nStore<number>(0);
+export const autopilotMode = nStore<FlightMode>(FlightMode.unknown);
+export const autopilotMavState = nStore<MavState>(MavState.MAV_STATE_UNINIT);
+export const autopilotArmed = nStore<boolean>(false);
+
+export const cpuTempC = nStore<number>(0);
+export const cpuUsagePercent = nStore<number>(0);
+export const memUsagePercent = nStore<number>(0);
+export const diskUsagePercent = nStore<number>(0);
+
+export function updateSystemMonitorDisplay(cpuTemp: number, cpuUsage: number, MemUsage: number, DiskUsage: number, warnings: string[]) {
+    cpuTempC.set(cpuTemp);
+    cpuUsagePercent.set(cpuUsage);
+    memUsagePercent.set(MemUsage);
+    diskUsagePercent.set(DiskUsage);
+    warnings.forEach((warning) => {
+        console.warn("System Monitor Warning: " + warning)
+        showToastMessage(warning, 5000)
+    });
+}
+
+export function updateBatteryDisplay(percent: number, voltage: number, current: number) {
+    batteryPercent.set(percent);
+    batteryVoltage.set(voltage);
+    batteryCurrent.set(current);
+}
 
 export function updateLatencyDisplay(latencyMs: number) {
     networkLatencyMs.set(latencyMs);

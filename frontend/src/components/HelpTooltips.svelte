@@ -1,112 +1,65 @@
 <script context="module" lang="ts">
-  import { default as nStore, type nStoreT } from "../../../shared/js/libraries/nStore";
-  import { createPopperActions } from "svelte-popperjs";
-  import type { ContentAction } from "svelte-popperjs";
+  import { popup } from "./Popup/popup";
+  import type { PopupSettings } from "./Popup/types";
+  import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
   import { fade } from "svelte/transition";
+  import { waitfor } from "../js/shared/util";
 
   type savedTooltipData = {
+    id: string;
     label: string;
-    visible: boolean;
-    popperContent: ContentAction<Partial<import("@popperjs/core").Modifier<any, any>>>;
-  };
-  let tooltips: nStoreT<savedTooltipData[]> = nStore([]);
-
-  /** hide the loading indicator with the given message
-   * @typedef {{ label: string, placement: import("@popperjs/core").Placement, timeout: number }} tooltipConfig
-   * @param { HTMLElement | SVGElement } node
-   * @param { tooltipConfig } config
-   * @param { boolean } addEvents  */
-  export const addTooltip = (node, config, addEvents = true) => {
-    const { tooltip, showTooltip, showTooltipTimeout, hideTooltip, destroyTooltip } = newTooltip(node, config);
-    if (addEvents) {
-      node.addEventListener("pointerenter", showTooltipTimeout);
-      node.addEventListener("pointerout", hideTooltip);
-      node.addEventListener("focusin", showTooltipTimeout);
-      node.addEventListener("focusout", hideTooltip);
-      node.addEventListener("mousedown", hideTooltip);
-    }
-    return {
-      tooltip,
-      showTooltip,
-      showTooltipTimeout,
-      hideTooltip,
-      destroyTooltip,
-      destroy() {
-        if (addEvents) {
-          node.removeEventListener("pointerenter", showTooltip);
-          node.removeEventListener("pointerout", hideTooltip);
-          node.removeEventListener("focusin", showTooltip);
-          node.removeEventListener("focusout", hideTooltip);
-          node.removeEventListener("mousedown", hideTooltip);
-        }
-        destroyTooltip();
-      },
+    config: PopupSettings;
+    actions?: {
+      update: (config: PopupSettings) => void;
+      open: () => void;
+      close: () => void;
+      toggle: () => void;
+      destroy: () => void;
     };
   };
+  let savedTooltips: nStoreT<savedTooltipData[]> = nStore([]);
 
-  /** hide the loading indicator with the given message
-   * @param { HTMLElement | SVGElement } node
-   * @param { tooltipConfig } config
-   * @returns {{tooltip: savedTooltipData, showTooltip: ()=>void, showTooltipTimeout:()=>void, hideTooltip:()=>void, destroyTooltip:()=>void }} */
-  const newTooltip = (node, config) => {
-    const [popperRef, popperContent] = createPopperActions({
-      placement: config.placement || "top", // placement
-      strategy: "absolute", // strategy
-      modifiers: [
+  /** create a new tooltip with */
+  export const addTooltip = async (node: HTMLElement | SVGElement, message: string, config: PopupSettings | null) => {
+    let actions, tooltipId, savedInfo, tooltipIndex;
+    savedTooltips.update((tooltips) => {
+      tooltipId = "TT-" + String(tooltips.length);
+      config = Object.assign(
         {
-          name: "offset",
-          options: {
-            offset: [0, 10],
+          event: "hover",
+          target: tooltipId,
+          delay: 1500,
+          placement: "bottom",
+          middleware: {
+            autoPlacement: {
+              alignment: "start",
+              autoAlignment: true,
+            },
           },
-        },
-      ],
+        } as PopupSettings,
+        config
+      );
+      tooltipIndex = tooltips.length;
+      tooltips.push({
+        id: tooltipId,
+        label: message,
+        config: config,
+      });
+      return tooltips;
     });
-    popperRef(node);
-    const tooltip = {
-      label: config.label,
-      visible: false,
-      popperContent,
-    };
-    tooltips.update((tooltip_list) => {
-      tooltip_list.push(tooltip);
-      return tooltip_list;
-    });
-
-    let timeout = null;
-
-    const showTooltip = () => {
-      tooltip.visible = true;
-      tooltips.update((tooltip_list) => tooltip_list);
-    };
-
-    return {
-      tooltip,
-      showTooltip: showTooltip,
-      showTooltipTimeout: () => {
-        timeout = setTimeout(showTooltip, config.timeout != undefined ? config.timeout : 750);
-      },
-      hideTooltip: () => {
-        clearTimeout(timeout);
-        tooltip.visible = false;
-        node.blur();
-        tooltips.update((tooltips) => tooltips);
-      },
-      destroyTooltip: () => {
-        clearTimeout(timeout);
-        tooltips.update((tooltip_list) => {
-          return tooltip_list.filter((t) => t != tooltip);
-        });
-      },
-    };
+    await waitfor(1);
+    actions = popup(node, config);
+    console.log("tooltip ddd", savedTooltips.get());
+    savedTooltips.get()[tooltipIndex].actions = actions;
+    console.log("tooltip created", savedTooltips.get()[tooltipIndex]);
+    return actions;
   };
 </script>
 
-{#each $tooltips as tooltip}
-  {#if tooltip.visible}
-    <div class="popper-tooltip help-tooltip" use:tooltip.popperContent transition:fade={{ duration: 300 }}>
-      {tooltip.label}
-    </div>
-  {/if}
+{#each $savedTooltips as tooltip}
+  <div class="popper-tooltip help-tooltip z-40 opacity-0" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
+    {tooltip.label}
+  </div>
 {/each}
 
 <style>
@@ -120,7 +73,6 @@
   .popper-tooltip {
     z-index: 1000;
     white-space: pre-wrap;
-    display: inline-block;
 
     padding: 5px 10px;
 

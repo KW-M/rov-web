@@ -1,0 +1,20 @@
+{
+    "$schema": "./rov-config.schema.json",
+    "LogLevel": "INFO",
+    "RovName": "== ROV_NAME_NOT_SET ==",
+    "RovControlPassword": "== Put ROV Control Password Here ==",
+    "AuthStateStorageFilepath": "~/rov-auth-state.json",
+    "AuthTokenTimeout": 86400,
+    "PythonWebsocketPort": 8765,
+    "InternalWebpageUrl": "http://localhost:8080/internal/index.html",
+    "InternalWebpageUrlQueryParams": {
+        "LivekitCloudUrl": "== Put LiveKit Cloud URL Here ==",
+        "LivekitApiKey": "== Put LiveKit API Key Here ==",
+        "LivekitSecretKey": "== Put LiveKit Secret Key Here ==",
+        "TwitchStreamKey": "== Put Twitch Stream Key Here =="
+    },
+    "EnabledSensors": [
+        "ICM20948_fused_compass",
+        "ms5803_pressure_temp"
+    ]
+}

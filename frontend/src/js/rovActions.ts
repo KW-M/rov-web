@@ -1,12 +1,13 @@
 
-import type { rov_actions_proto } from "../../../shared/js/protobufs/rovActionsProto";
+import type { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { frontendConnMngr } from "./frontendConnManager";
 import { frontendRovMsgHandler } from "./rovMessageHandler"
-import { showConfirmationMsg, showScrollableTextPopup } from "./ui"
-import { showToastMessage } from "../components/ToastMessages.svelte";
+import { modalConfirm, modalScrollingText } from "./uiDialogs"
+import { showToastMessage } from "./toastMessageManager";
 import { calculateDesiredMotion } from "./rovUtil";
 import type { buttonChangeDetails } from "virtual-gamepad-lib";
-import { ConnectionStates } from "../../../shared/js/consts";
+import { ConnectionStates } from "./shared/consts";
+import type { FlightMode } from "./shared/mavlink2RestMessages";
 
 class RovActionsClass {
 
@@ -77,7 +78,7 @@ class RovActionsClass {
     }
 
     showCommandOutputPopup(title, firstLine, doneLine) {
-        let addTextToPopup = showScrollableTextPopup(title, null)
+        let addTextToPopup = modalScrollingText(title, "", null)
         addTextToPopup(firstLine)
         return (response: rov_actions_proto.RovResponse) => {
             if (response.ContinuedOutput) addTextToPopup(response.ContinuedOutput.Message + "\n");
@@ -95,6 +96,10 @@ class RovActionsClass {
 
     disarm() {
         frontendRovMsgHandler.sendRovMessage({ Disarm: {} }, null);
+    }
+
+    setFlightMode(mode: FlightMode) {
+        frontendRovMsgHandler.sendRovMessage({ SetAutopilotMode: { mode: mode } }, null);
     }
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
@@ -128,7 +133,7 @@ class RovActionsClass {
     }
 
     shutdownRov = () => {
-        showConfirmationMsg("Are you sure you want to shutdown the ROV?", (ok) => {
+        modalConfirm("Are you sure you want to shutdown the ROV?", "", (ok) => {
             showToastMessage("Sending Shutdown Request...")
             this.sendActionAndWaitForDone({ ShutdownRov: {} }, (msgData) => {
                 if (msgData.Error) {
@@ -136,14 +141,14 @@ class RovActionsClass {
                 } else if (msgData.Done) {
                     showToastMessage("Please wait 20 seconds before unplugging")
                     showToastMessage("ROV: " + msgData.Done.Message)
-                    frontendConnMngr.disconnectFromLivekitRoom();
+                    frontendConnMngr.disconnect();
                 }
             })
         })
     }
 
     rebootRov = () => {
-        showConfirmationMsg("Are you sure you want to reboot the ROV?", (ok) => {
+        modalConfirm("Are you sure you want to reboot the ROV?", "The ROV will stop responding for about two minutes and then you can re-connect.", (ok) => {
             showToastMessage("Sending Reboot Request...")
             this.sendActionAndWaitForDone({ RebootRov: {} }, (msgData) => {
                 if (msgData.Error) {
@@ -151,14 +156,14 @@ class RovActionsClass {
                 } else if (msgData.Done) {
                     showToastMessage("Press Connect again in about 30 seconds")
                     showToastMessage("ROV: " + msgData.Done.Message)
-                    frontendConnMngr.disconnectFromLivekitRoom();
+                    frontendConnMngr.disconnect();
                 }
             })
         })
     }
 
     restartRovServices = () => {
-        showConfirmationMsg("Are you sure you want to restart services? - The ROV will stop responding for about a minute and then you can re-connect.", () => {
+        modalConfirm("Are you sure you want to restart services?", "The ROV will stop responding for about a minute and then you can re-connect.", () => {
             let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
             frontendRovMsgHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
         })
@@ -186,7 +191,7 @@ class RovActionsClass {
     }
 
     disableRovWifi = () => {
-        showConfirmationMsg("Are you sure you want to disable rov wifi? If the ROV is connected via wifi, don't do this!", () => {
+        modalConfirm("Are you sure you want to disable rov wifi?", "If the ROV is connected via wifi, <em>don't do this!</em>", () => {
             showToastMessage("Sending Disable Wifi Command...")
             this.sendActionAndWaitForDone({ DisableWifi: {} }, (msgData) => {
                 if (msgData.Error) {

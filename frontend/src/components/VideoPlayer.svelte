@@ -1,43 +1,43 @@
 <script lang="ts">
   import { ConnectionState, LOADING_MESSAGE } from "../js/consts";
-  import videoPlaceholderUrl from "../assets/video-placeholder.jpg";
+  import videoPlaceholderUrl from "../assets/ui-elements/video-placeholder.jpg";
   import { appReady, fullscreenOpen } from "../js/globalContext";
-  let videoContainerElement = null;
-  let trackId = null;
   import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
   import { onDestroy } from "svelte";
-  import { showToastMessage } from "./ToastMessages.svelte";
-  import { changesSubscribe } from "../../../shared/js/util";
+  import { changesSubscribe } from "../js/shared/util";
   import { frontendConnMngr } from "../js/frontendConnManager";
-  let currentVideoStream = null;
+  import { showToastMessage } from "../js/toastMessageManager";
 
-  $: if ($appReady === true) {
-  }
+  let currentVideoStream: MediaStream | null = null;
+  let videoElem: HTMLVideoElement | null = null;
+  let videoContainerElem: HTMLDivElement | null = null;
 
-  let vidElem = null;
-
-  const setVideo = (stream) => {
+  const setVideo = (stream: MediaStream | null) => {
     if (!stream || stream == currentVideoStream) return;
+    if (!videoContainerElem) return;
     currentVideoStream = stream;
-    // const vidContainerElem = document.getElementById("livestream_container") as HTMLDivElement;
-    vidElem = document.createElement("video");
-    vidElem.id = "video_livestream";
-    vidElem.muted = true;
-    vidElem.autoplay = true;
-    vidElem.controls = false;
-    vidElem.srcObject = stream;
-    vidElem.setAttribute("tabindex", "-1");
-    videoContainerElement.innerHTML = "";
-    videoContainerElement.appendChild(vidElem);
-    vidElem.onclick = () => {
-      vidElem.play();
+
+    // Create a new video element:
+    videoElem = document.createElement("video");
+    videoElem.id = "video_livestream";
+    videoElem.muted = true;
+    videoElem.autoplay = true;
+    videoElem.controls = false;
+    videoElem.srcObject = stream;
+    videoElem.setAttribute("tabindex", "-1");
+
+    videoContainerElem.innerHTML = "";
+    videoContainerElem.appendChild(videoElem);
+    videoElem.onclick = () => {
+      if (videoElem) videoElem.play();
     };
     setTimeout(() => {
-      vidElem.play().catch((err) => {
-        showToastMessage("Click video to play.", 5000, () => {
-          vidElem.play();
+      if (videoElem)
+        videoElem.play().catch((err) => {
+          showToastMessage("Click video to play.", 5000, () => {
+            if (videoElem) videoElem.play();
+          });
         });
-      });
     }, 150); // for some reason firefox complains if you play too soon.
   };
 
@@ -59,19 +59,20 @@
   // });
 
   onDestroy(() => {
-    if (vidElem) {
-      vidElem.pause();
-      vidElem.srcObject = null;
+    if (videoElem) {
+      videoElem.pause();
+      videoElem.srcObject = null;
     }
     unsub();
   });
 </script>
 
 <!-- {#if currentVideoStream} -->
-<div id="livestream_container" class={$fullscreenOpen ? "full" : ""} bind:this={videoContainerElement}>
+<div id="livestream_container" class="pointer-events-none" class:full={$fullscreenOpen} bind:this={videoContainerElem}>
   <!-- svelte-ignore a11y-media-has-caption -->
   <!-- <video id="video_livestream" muted tabindex="-1" poster={videoPlaceholderUrl} bind:this={videoElement} /> -->
 </div>
+<button class="btn btn-md variant-filled-primary" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random())}>Hi</button>
 
 <!-- {/if} -->
 <style>
@@ -102,7 +103,7 @@
     padding: 0;
     max-height: 100%;
     width: 100%;
-    padding: 20px;
+    padding-bottom: 4em;
     /* padding-top: 36px; */
     /* padding: 40px 36px 28px; */
     /* aspect-ratio: 16 / 9; */

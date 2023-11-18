@@ -1,7 +1,7 @@
-import { enableIframeWebsocketProxying } from "../../../shared/js/iframeWsProxy/iframeWsProxy";
-import { waitfor } from "../../../shared/js/util";
+import { enableIframeWebsocketProxying } from "./shared/iframeWsProxy/iframeWsProxy";
+import { waitfor } from "./shared/util";
 import { frontendConnMngr } from "./frontendConnManager";
-import { LIVEKIT_LOCAL_ENDPOINT } from "../../../shared/js/consts";
+import { LIVEKIT_LOCAL_ENDPOINT } from "./shared/consts";
 
 
 export class FrontendStartupFlowClass {

@@ -1,0 +1,351 @@
+syntax = "proto3";
+package rov_actions_proto;
+
+enum SensorMeasurmentTypes {
+    depth_meters = 0;
+    water_temp_celsius = 1;
+    pressure_mbar = 2;
+    yaw_degrees = 3;
+    pitch_degrees = 4;
+    roll_degrees = 5;
+    x_acceleration_m_s2 = 6; // Not implemented
+    y_acceleration_m_s2 = 7; // Not implemented
+    z_acceleration_m_s2 = 8; // Not implemented
+    battery_voltage = 9; // Not implemented
+    battery_current_amps = 10; // Not implemented
+    internal_temp_celsius = 11; // from the compass/imu
+}
+
+// Storez a single sensor measurement/value
+message Measurement {
+    // The sensor type (see RovSensorTypes)
+    SensorMeasurmentTypes MeasurementType = 1;
+    // The sensor value
+    float Value = 2;
+}
+
+enum DataTransportMethod {
+    // Livekit reliable messages are sent / received through the livekit server via TCP.
+    LivekitReliable = 0;
+    // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
+    LivekitUnreliable = 1;
+    // // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    // DirectReliable = 2;
+    // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
+    DirectUnreliable = 3;
+}
+
+enum InternalWebpageEvent {
+    Nothing = 0;
+    // The rov has connected to at least one livekit server
+    RovConnected = 1;
+    // The rov is disconnected from all livekit servers
+    RovDisconnected = 2;
+    // A livekit user has connected to the rov
+    UserConnected = 3;
+    // A livekit user has disconnected from the rov
+    UserDisconnected = 4;
+}
+
+message PingAction {
+    // The time the ping was sent
+    int64 Time = 1;
+}
+
+message PasswordAttemptAction {
+    // The password to attempt
+    string Password = 1;
+}
+
+message AuthTokenAttemptAction {
+    // The token to attempt
+    string Token = 1;
+}
+
+message TakeControlAction {
+    // No data needed
+}
+
+message MoveAction {
+    // How to move the rov (X is left/right, Y is forward/backward, Z is up/down, Yaw is rotation))
+    float VelocityX = 1;
+    float VelocityY = 2;
+    float VelocityZ = 3;
+    float AngularVelocityYaw = 4;
+}
+
+message BeginVideoStreamAction {
+    // No data needed
+}
+
+message TakePhotoAction {
+    // No data needed
+}
+
+message StartVideoRecAction {
+    // No data needed
+}
+
+message StopVideoRecAction {
+    // No data needed
+}
+
+message ToogleLightsAction {
+    // No data needed
+}
+
+message ShutdownRovAction {
+    // No data needed
+}
+
+message RebootRovAction {
+    // No data needed
+}
+
+message EnableWifiAction {
+    // No data needed
+}
+
+message DisableWifiAction {
+    // No data needed
+}
+
+message RovStatusReportAction {
+    // No data needed
+}
+
+message RestartRovServicesAction {
+    // No data needed
+}
+
+message RovLogsAction {
+    // No data needed
+}
+
+message RefreshAllSensorsAction {
+    // No data needed
+}
+
+message MavlinkAction {
+    bytes Message = 1;
+}
+
+message SimplepeerSignalAction {
+    string Message = 1;
+}
+
+message DisarmAction {
+    // No data needed
+}
+
+message SetAutopilotModeAction {
+    int32 mode = 1;
+}
+
+message ActionBackendMetadata {
+    // The identity of the livekit user/client that sent the message or the message relates to.
+    // !!!! This MUST get overwritten by the backend with the true origin user
+    // before being sent to the python code for security.
+    string FromUserId = 1; // optional
+    // If an event happens such as a user connection or disconnection this will be set:
+    InternalWebpageEvent InternalWebpageEvt = 2; // optional
+}
+
+// wrapper message for anything sent by a pilot/spectator to the rov (aka an "action").
+message RovAction {
+    // Metadata set by backend webpage before the message is forwarded to the python code.
+    ActionBackendMetadata BackendMetadata = 1;
+    // MUST BE UNIQUE! Message exchange id (used to match up action requests and responses and prevent duplicate messages from being processed)
+    int32 ExchangeId = 2;
+    // The body / content of the action
+    oneof Body {
+        // ping
+        PingAction Ping = 3;
+        // password_attempt
+        PasswordAttemptAction PasswordAttempt = 4;
+        // authtoken_attempt
+        AuthTokenAttemptAction AuthTokenAttempt = 5;
+        // take_control
+        TakeControlAction TakeControl = 6;
+        // move
+        MoveAction Move = 7;
+        // begin_video_stream
+        BeginVideoStreamAction BeginVideoStream = 8;
+        // take_photo
+        TakePhotoAction TakePhoto = 9;
+        // start_video_rec
+        StartVideoRecAction StartVideoRec = 10;
+        // stop_video_rec
+        StopVideoRecAction StopVideoRec = 11;
+        // toogle_lights
+        ToogleLightsAction ToogleLights = 12;
+        // shutdown_rov
+        ShutdownRovAction ShutdownRov = 13;
+        // reboot_rov
+        RebootRovAction RebootRov = 14;
+        // enable_wifi
+        EnableWifiAction EnableWifi = 15;
+        // disable_wifi
+        DisableWifiAction DisableWifi = 16;
+        // rov_status_report
+        RovStatusReportAction RovStatusReport = 17;
+        // restart_rov_services
+        RestartRovServicesAction RestartRovServices = 18;
+        // rov_logs
+        RovLogsAction RovLogs = 19;
+        // refresh_all_sensors
+        RefreshAllSensorsAction RefreshAllSensors = 20;
+        // mavlink
+        MavlinkAction Mavlink = 21;
+        // simplepeer_signal
+        SimplepeerSignalAction SimplepeerSignal = 22;
+        // disarm
+        DisarmAction Disarm = 23;
+        // set_autopilot_mode
+        SetAutopilotModeAction SetAutopilotMode = 24;
+    }
+}
+
+// sent to a specific client when an action is received by the rov and completes successfully.
+message DoneResponse {
+    // An optional informational status message to send back
+    string Message = 1; // optional
+}
+
+// sent to a specific client when an action is received by the rov and DOES NOT complete successfully.
+message ErrorResponse {
+    // The error message
+    string Message = 1;
+}
+
+// sent to a specific client in response to a ping request
+message PongResponse {
+    // The time the ping was sent
+    int64 Time = 1;
+}
+
+// sent to all clients whenever a sensor measurement changes or after a refresh_all_sensors action is sent.
+message SensorUpdatesResponse {
+    // All the changed mesurements from the sensors: (see Measurement type)
+    repeated Measurement MeasurementUpdates = 1;
+}
+
+// sent to a specific client when the proceding action sent by the client to the rov requires a password to show the rov that the client has privilages.
+message PasswordRequiredResponse {
+    // the id of the rov that is requesting a password (to be used to match tokens to rov's when using token based auth)
+    string RovId = 1;
+}
+
+// sent when a password or token attempt is accepted by the rov.
+// The rov will additionally do whatever action required the password or token in the first place.
+message PasswordAcceptedResponse {
+    // Authtoken to use for future requests in place of the password
+    string AuthToken = 1;
+}
+
+// sent when a password or token attempt is not accepted by the rov.
+message PasswordInvalidResponse {
+    // No data needed
+}
+
+// sent to all clients (including the new driver) whenever the designated driver client changes.
+message DriverChangedResponse {
+    // The new driver's peer id
+    string DriverPeerId = 1;
+}
+
+// sent to all clients (including the new client) whenever a new client connects to the rov.
+message ClientConnectedResponse {
+    // The new client's peer id
+    string ClientPeerId = 1;
+}
+
+// sent to all clients whenever a client becomes disconnected from the rov (either due to leaving or a network timeout).
+message ClientDisconnectedResponse {
+    // The disconnected client's peer id
+    string ClientPeerId = 1;
+}
+
+// sent at a regular interval to all clients regardless of their connection status.
+message HeartbeatResponse {
+    // The time the heartbeat was sent
+    int64 Time = 1;
+}
+
+// sent to a specific client for responses that have multiple parts such as logs or shell command output that output in an async manner.
+message ContinuedOutputResponse {
+    string Message = 1;
+}
+
+// reserved for future use by the mavlink protocol if we ever need it.
+message MavlinkResponse {
+    bytes Message = 1;
+}
+
+// used by the simplepeer signalling protocol to establish a direct webrtc connection between the rov and driver client (bypassing livekit).
+message SimplepeerSignalResponse {
+    string Message = 1;
+}
+
+message SystemMonitorResponse {
+    // The cpu temperature in celsius
+    float CpuTemp = 1;
+    // The cpu usage as a percentage
+    float CpuUsage = 2;
+    // The memory usage as a percentage
+    float MemoryUsage = 3;
+    // The disk usage as a percentage
+    float DiskUsage = 4;
+    // warnings are strings that are displayed to the user about thresholds being exceeded
+    repeated string Warnings = 5;
+}
+
+message ResponseBackendMetadata {
+    // The identiies of the livekit user/clients to sent this response to.
+    // !!!! If empty, the message will be sent to ALL clients.
+    repeated string TargetUserIds = 1;
+    // How to send this response (reliable/unreliable):
+    DataTransportMethod TransportMethod = 2;
+}
+
+// wrapper message for any message sent by the rov to a pilot/spectator (aka a response).
+message RovResponse {
+    // Metadata sent by the python code to the backend webpage to tell it how to send the message.
+    // !!!! This field WILL be erased before the message is forwarded from the backend website to the livekit users.
+    ResponseBackendMetadata BackendMetadata = 1; // optional
+    // Response exchange id (used to match up action requests and responses)
+    int32 ExchangeId = 2;
+    // The body / content of the response
+	oneof Body {
+        // done (action was completed successfully)
+        DoneResponse Done = 3;
+        // error (action failed)
+        ErrorResponse Error = 4;
+        // pong (response to a ping action)
+        PongResponse Pong = 5;
+        // continued_output (for string responses that arrive in multiple parts such as logs or shell command output)
+        ContinuedOutputResponse ContinuedOutput = 6;
+        // sensor_updates (gives a list of sensor updates containing only new/changed sensors and their current values)
+        SensorUpdatesResponse SensorUpdates = 7;
+        // password_required (sent when a password is required before an action is performed)
+        PasswordRequiredResponse PasswordRequired = 8;
+        // password_accepted (sent when a password request is accepted)
+        PasswordAcceptedResponse PasswordAccepted = 9;
+        // password_invalid (sent when a password or token challenge action has an incorrect password or token)
+        PasswordInvalidResponse PasswordInvalid = 10;
+        // driver_changed
+        DriverChangedResponse DriverChanged = 13;
+        // client_connected
+        ClientConnectedResponse ClientConnected = 14;
+        // client_disconnected
+        ClientDisconnectedResponse ClientDisconnected = 15;
+        // heartbeat
+        HeartbeatResponse Heartbeat = 16;
+        // mavlink
+        MavlinkResponse Mavlink = 17;
+        // simplepeer_signal
+        SimplepeerSignalResponse SimplepeerSignal = 18;
+        // system_monitor
+        SystemMonitorResponse SystemMonitor = 19;
+    }
+}

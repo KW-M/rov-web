@@ -1,6 +1,6 @@
-import type { nStoreT } from '../../../shared/js/libraries/nStore';
+import type { nStoreT } from './shared/libraries/nStore';
 import { EMOJI_MAP } from "./consts";
-import { changesSubscribe } from '../../../shared/js/util';
+import { changesSubscribe } from './shared/util';
 
 declare global {
     interface Element {

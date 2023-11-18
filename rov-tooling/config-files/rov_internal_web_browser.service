@@ -1,0 +1,17 @@
+[Unit]
+Description=Internal web browser manager service
+
+[Service]
+User=pi
+# This is so python will spit out print messages to the system log instantly instead of waiting to in batches
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/bin/bash -c 'python3 "$HOME/rov-web/rov-python/main_internal_web_browser.py"  --config-file "$HOME/rov-config.json"'
+KillMode=mixed
+Restart=always
+TimeoutStopSec=10s
+RestartSec=5s
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+# see: https://unix.stackexchange.com/questions/506347/why-do-most-systemd-examples-contain-wantedby-multi-user-target
