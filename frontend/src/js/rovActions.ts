@@ -22,6 +22,7 @@ class RovActionsClass {
     };
     lastMovementTime = 0;
     lastPingTime = 0;
+    sensitivity = 1;
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
 
@@ -41,7 +42,8 @@ class RovActionsClass {
         if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
             const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
             const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
-            const throttle = Math.round((LT - RT) * 100);
+            // const throttle = Math.round((LT - RT) * 100);
+            this.sensitivity = 1 - Math.max(LT, RT) * 0.8
             // do something with throttle
         }
 
@@ -67,7 +69,7 @@ class RovActionsClass {
     }
 
     gamepadAxisTriggers(gamepad: Gamepad) {
-        const sensitivity = 0.2;
+        const sensitivity = this.sensitivity;
         const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
         if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
         this.moveRov(VelocityX * sensitivity, VelocityY * sensitivity, VelocityZ * sensitivity, AngularVelocityYaw * sensitivity);
