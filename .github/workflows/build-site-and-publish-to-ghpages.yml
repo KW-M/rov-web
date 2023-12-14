@@ -86,6 +86,7 @@ jobs:
             allowUpdates: true
 
         - name: Deploy Site to Github Pages Website Hosting 🚀
-          uses: JamesIves/github-pages-deploy-action@v4.3.4
+          uses: JamesIves/github-pages-deploy-action@v4.5.0
           with:
             folder: frontend/build # The folder the action should deploy.
+            branch: gh-pages # The branch the action should deploy to.
