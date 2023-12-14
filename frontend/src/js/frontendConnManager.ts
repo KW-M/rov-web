@@ -1,13 +1,32 @@
-import { ConnectionStates, LIVEKIT_BACKEND_ROOM_CONFIG, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, LIVEKIT_LOCAL_ENDPOINT } from "./shared/consts";
-import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
-import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata } from "./shared/livekit/adminActions";
+import { ConnectionStates, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, SIMPLEPEER_BASE_CONFIG } from "./shared/consts";
+import { default as nStore } from "./shared/libraries/nStore";
+import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata, type AuthTokenInfo } from "./shared/livekit/adminlessActions";
 import { LivekitViewerConnection } from "./shared/livekit/livekitConn";
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "./shared/simplePeer";
 import { changesSubscribe, oneShotSubscribe, waitfor } from "./shared/util";
-import { showToastMessage } from "./toastMessageManager";
-import { LIVEKIT_LIST_ONLY_TOKEN } from "./consts";
+import { showToastMessage, ToastSeverity } from "./toastMessageManager";
+import { LIVEKIT_LIST_ONLY_TOKEN, URL_PARAMS } from "./frontendConsts";
 import { frontendRovMsgHandler } from "./rovMessageHandler";
+
+export interface LivekitRoomInfo {
+    name: string;
+    token: AuthTokenInfo;
+}
+
+export enum VideoStreamMethod {
+    none = "none",
+    livekit = "livekit",
+    simplepeer = "simplepeer",
+}
+
+interface InternalLivekitSetupOptions {
+    RovName: string,
+    APIKey: string,
+    SecretKey: string,
+    LivekitCloudURL: string,
+    LivekitLocalURL: string,
+}
 
 export class FrontendConnectionManager {
     connectionState = nStore<ConnectionStates>(ConnectionStates.init);
@@ -16,9 +35,10 @@ export class FrontendConnectionManager {
     currentLivekitIdentity = nStore<string | null>(null);
     simplepeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
-    openLivekitRoomNames = nStore<string[]>(["Rov Baja 2, Monterey Mexico", "b"]);
-    livekitRoomAuthTokens: { [key: string]: string } = {}; // key is room name, value is room token
+    openLivekitRoomInfo = nStore<LivekitRoomInfo[]>([]);
     _cleanupFuncs: { [key: string]: () => void } = {};
+    currentVideoStreamMethod = nStore<VideoStreamMethod>(VideoStreamMethod.none);
+
 
     constructor() {
         this.simplepeerConnection = new SimplePeerConnection();
@@ -42,15 +62,19 @@ export class FrontendConnectionManager {
         const simplepeerVideoStream = this.simplepeerConnection.currentVideoStream.get()
         setTimeout(() => {
             if (simplepeerVideoStream && simplepeerVideoStream.getVideoTracks().length > 0 && !simplepeerVideoStream.getVideoTracks()[0].muted) {
-                showToastMessage("Using Direct Video")
+                // /this.currentVideoStreamMethod.get() !== VideoStreamMethod.simplepeer
+                this.currentVideoStreamMethod.set(VideoStreamMethod.simplepeer)
+                showToastMessage("Using Direct Video", 1000, false)
                 if (livekitVideoStream) livekitVideoStream.stop();
                 this.mainVideoStream.set(simplepeerVideoStream)
             } else if (livekitVideoStream) {
-                showToastMessage("Using Livekit Video")
+                this.currentVideoStreamMethod.set(VideoStreamMethod.livekit)
+                showToastMessage("Using Livekit Video", 1000, false)
                 livekitVideoStream.start();
                 this.mainVideoStream.set(livekitVideoStream.mediaStream)
             } else {
-                showToastMessage("No Video")
+                this.currentVideoStreamMethod.set(VideoStreamMethod.none)
+                showToastMessage("No Camera Stream", 1000, false, ToastSeverity.error)
             }
         }, 100)
     }
@@ -64,18 +88,22 @@ export class FrontendConnectionManager {
         if (this.livekitRoomPollingInterval !== -1) clearInterval(this.livekitRoomPollingInterval)
         const listOpenRooms = async () => {
             if (this.connectionState.get() === ConnectionStates.connected || this.connectionState.get() === ConnectionStates.reconnecting) return;
-            const openRooms = await listLivekitRoomsWithoutSDK(hostName, LIVEKIT_LIST_ONLY_TOKEN)
-            const openRoomNames = openRooms.map(room => room.name)
-            const openRoomTokens = openRooms.reduce((authTokens, room) => {
-                authTokens[room.name] = getAuthTokenFromLivekitRoomMetadata(room.metadata);
-                return authTokens
-            }, this.livekitRoomAuthTokens)
-            this.openLivekitRoomNames.set(openRoomNames)
-            this.livekitRoomAuthTokens = openRoomTokens
-            // console.log("openRoomNames: ", openRoomNames, "openRoomTokens: ", openRoomTokens, "raw:", openRooms)
+            let openRooms;
+            try {
+                openRooms = await listLivekitRoomsWithoutSDK(hostName, LIVEKIT_LIST_ONLY_TOKEN)
+            } catch (e) {
+                console.warn("LK Error: Could not retrive list of livekit rooms", e)
+                return this.openLivekitRoomInfo.set([])
+            }
+            const validOpenRooms = openRooms.filter(room => room.num_participants > 0 && room.metadata.length > 0);
+            const openRoomInfo = validOpenRooms.map(room => ({
+                name: room.name,
+                token: getAuthTokenFromLivekitRoomMetadata(room.metadata)
+            } as LivekitRoomInfo)).sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+            this.openLivekitRoomInfo.set(openRoomInfo)
         }
         await listOpenRooms();
-        this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 5000))
+        this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 3000))
     }
 
     /**
@@ -108,9 +136,9 @@ export class FrontendConnectionManager {
      */
     async initUsingCloudLivekitConnection() {
         this.livekitConnection.close(); // close incase we are already connected
-        this.pollForOpenLivekitRooms(LIVEKIT_CLOUD_ENDPOINT)
+        this.pollForOpenLivekitRooms(URL_PARAMS.LIVEKIT_CLOUD_ENDPOINT)
         await this.livekitConnection.init({
-            hostUrl: LIVEKIT_CLOUD_ENDPOINT,
+            hostUrl: URL_PARAMS.LIVEKIT_CLOUD_ENDPOINT,
             publishVideo: false,
             reconnectAttempts: 3,
             roomConnectionConfig: LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG,
@@ -125,9 +153,9 @@ export class FrontendConnectionManager {
      */
     async initUsingLocalLivekitConnection() {
         this.livekitConnection.close(); // close incase we are already connected
-        this.pollForOpenLivekitRooms(LIVEKIT_LOCAL_ENDPOINT)
+        this.pollForOpenLivekitRooms(URL_PARAMS.LIVEKIT_LOCAL_ENDPOINT)
         await this.livekitConnection.init({
-            hostUrl: LIVEKIT_LOCAL_ENDPOINT,
+            hostUrl: URL_PARAMS.LIVEKIT_LOCAL_ENDPOINT,
             publishVideo: false,
             reconnectAttempts: 3,
             roomConnectionConfig: LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG,
@@ -140,11 +168,8 @@ export class FrontendConnectionManager {
      * requires that the livekit connection is already initilized
      * and the room auth token is known.
      */
-    public async connectToLivekitRoom(roomName: string) {
+    public async connectToLivekitRoom(roomName: string, authToken: string) {
         if (!this.livekitConnection || !this.livekitConnection.config) throw new Error("connectToLivekitRoom() called before livekitConnection was initilized")
-
-        const authToken = this.livekitRoomAuthTokens[roomName]
-        if (!authToken) throw new Error(`connectToLivekitRoom() called with roomName ${roomName} which is not in the list of known open rooms`)
 
         this._keepTrackOfConnectionState();
         await this.livekitConnection.start(roomName, authToken);
@@ -161,10 +186,7 @@ export class FrontendConnectionManager {
     public async startSimplePeerConnection() {
         if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplePeerConnection() called when livekitConnection was not fully connected!")
         if (!this.simplepeerConnection) throw new Error("startSimplePeerConnection() called without simplepeerConnection in class!")
-        this.simplepeerConnection.start({
-            initiator: true,
-            trickle: false,
-        })
+        this.simplepeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true } }))
     }
 
     /**
@@ -199,7 +221,7 @@ export class FrontendConnectionManager {
         reliable = false; // TODO: remove. Temp debug
         const msgBytes = rov_actions_proto.RovAction.encode(msg).finish();
         const rovUserId = this.livekitConnection._rovRoomName;
-        console.info("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg);
+        if (URL_PARAMS.DEBUG_MODE) console.debug("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg);
         if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
             await this.livekitConnection.sendMessage(msgBytes, reliable, [rovUserId]);
         } else if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {

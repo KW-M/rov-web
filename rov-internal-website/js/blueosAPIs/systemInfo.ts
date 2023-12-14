@@ -1,6 +1,7 @@
 // Refactor out methods as separate exports using axios
 import axios from "axios"
-const API_URL = 'http://blueos.attlocal.net/system-information'
+import { URL_PARAMS } from "../constsInternal"
+const API_PATH = '/system-information'
 
 /** Base structure that provides CPU specific information */
 export interface CPU {
@@ -202,7 +203,7 @@ export interface System {
 export async function getSystemAllInfo(): Promise<System> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -216,7 +217,7 @@ export async function getSystemAllInfo(): Promise<System> {
 export async function getSystemCpu(): Promise<CPU> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/cpu`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/cpu`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -229,7 +230,7 @@ export async function getSystemCpu(): Promise<CPU> {
 export async function getSystemDisk(): Promise<Disk> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/disk`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/disk`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -242,7 +243,7 @@ export async function getSystemDisk(): Promise<Disk> {
 export async function getSystemInfo(): Promise<Info> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/info`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/info`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -255,7 +256,7 @@ export async function getSystemInfo(): Promise<Info> {
 export async function getSystemMemory(): Promise<Memory> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/memory`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/memory`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -268,7 +269,7 @@ export async function getSystemMemory(): Promise<Memory> {
 export async function getSystemNetwork(): Promise<Network> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/network`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/network`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -281,7 +282,7 @@ export async function getSystemNetwork(): Promise<Network> {
 export async function getSystemProcess(): Promise<Process> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/process`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/process`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -294,7 +295,7 @@ export async function getSystemProcess(): Promise<Process> {
 export async function getSystemTemperature(): Promise<Temperature> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/temperature`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/temperature`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -307,7 +308,7 @@ export async function getSystemTemperature(): Promise<Temperature> {
 export async function getSystemUnixTimeSeconds(): Promise<number> {
     return axios({
         method: 'get',
-        url: `${API_URL}/system/unix_time_seconds`,
+        url: `${URL_PARAMS.BLUEOS_APIS_ENDPOINT + API_PATH}/system/unix_time_seconds`,
         timeout: 10000,
     }).then((response) => response.data)
         .catch((error) => {
@@ -336,7 +337,8 @@ export function getDiskUsagePercent(disks: Disk[]): { value: number, warnings: s
 
     const [used_disk_space, total_disk_space] = get_space_disk(main_disk)
     const percent_disk_usage = 100 * used_disk_space / total_disk_space
-    const warnings: string[] = percent_disk_usage > 95 ? [`Disk/SD Card is almost full: ${used_disk_space}/${total_disk_space}`] : [];
+    const warnings: string[] = percent_disk_usage > 95 ? [`Disk/SD Card is almost full: ${Math.round(used_disk_space * 10) / 10}/${Math.round(used_disk_space
+        * 10) / 10}GB Used`] : [];
     return { value: percent_disk_usage, warnings };
 }
 

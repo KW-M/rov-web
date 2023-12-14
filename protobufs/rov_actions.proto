@@ -1,6 +1,14 @@
 syntax = "proto3";
 package rov_actions_proto;
 
+enum LogLevel {
+    Debug = 0;
+    Info = 1;
+    Warning = 2;
+    Error = 3;
+    Critical = 4;
+}
+
 enum SensorMeasurmentTypes {
     depth_meters = 0;
     water_temp_celsius = 1;
@@ -72,6 +80,7 @@ message MoveAction {
     float VelocityY = 2;
     float VelocityZ = 3;
     float AngularVelocityYaw = 4;
+    optional int32 ButtonBitmask = 5;
 }
 
 message BeginVideoStreamAction {
@@ -300,6 +309,13 @@ message SystemMonitorResponse {
     repeated string Warnings = 5;
 }
 
+message LogMessageResponse {
+    // The log message
+    string Message = 1;
+    // The level at which the log message was logged
+    LogLevel Level = 2;
+}
+
 message ResponseBackendMetadata {
     // The identiies of the livekit user/clients to sent this response to.
     // !!!! If empty, the message will be sent to ALL clients.
@@ -347,5 +363,7 @@ message RovResponse {
         SimplepeerSignalResponse SimplepeerSignal = 18;
         // system_monitor
         SystemMonitorResponse SystemMonitor = 19;
+        // log_message
+        LogMessageResponse LogMessage = 20;
     }
 }

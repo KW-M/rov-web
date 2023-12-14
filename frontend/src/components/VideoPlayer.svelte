@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { ConnectionState, LOADING_MESSAGE } from "../js/consts";
+  import { ConnectionState, LOADING_MESSAGE } from "../js/frontendConsts";
   import videoPlaceholderUrl from "../assets/ui-elements/video-placeholder.jpg";
   import { appReady, fullscreenOpen } from "../js/globalContext";
-  import { showLoadingUi, hideLoadingUi } from "./LoadingIndicator.svelte";
   import { onDestroy } from "svelte";
   import { changesSubscribe } from "../js/shared/util";
   import { frontendConnMngr } from "../js/frontendConnManager";
-  import { showToastMessage } from "../js/toastMessageManager";
+  import { showToastMessage, ToastSeverity } from "../js/toastMessageManager";
 
   let currentVideoStream: MediaStream | null = null;
   let videoElem: HTMLVideoElement | null = null;
@@ -20,6 +19,7 @@
     // Create a new video element:
     videoElem = document.createElement("video");
     videoElem.id = "video_livestream";
+    videoElem.poster = videoPlaceholderUrl;
     videoElem.muted = true;
     videoElem.autoplay = true;
     videoElem.controls = false;
@@ -34,7 +34,7 @@
     setTimeout(() => {
       if (videoElem)
         videoElem.play().catch((err) => {
-          showToastMessage("Click video to play.", 5000, () => {
+          showToastMessage("Video cannot start: Click video to play or try reloading page", 5000, false, ToastSeverity.warning, () => {
             if (videoElem) videoElem.play();
           });
         });
@@ -72,8 +72,11 @@
   <!-- svelte-ignore a11y-media-has-caption -->
   <!-- <video id="video_livestream" muted tabindex="-1" poster={videoPlaceholderUrl} bind:this={videoElement} /> -->
 </div>
-<button class="btn btn-md variant-filled-primary" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random())}>Hi</button>
 
+<!-- <button class="btn btn-md variant-filled-success" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random(), 1000,false,ToastSeverity.success)}>Hi</button>
+<button class="btn btn-md variant-filled-warning" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random(), 1000,false,ToastSeverity.warning)}>Hi</button>
+<button class="btn btn-md variant-filled-error" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random(), 1000,false,ToastSeverity.error)}>Hi</button>
+<button class="btn btn-md variant-filled-tertiary" on:click={() => showToastMessage("hello world! Thanks World you rock." + Math.random(), 1000,false,ToastSeverity.info)}>Hi</button> -->
 <!-- {/if} -->
 <style>
   #livestream_container {
@@ -88,37 +91,5 @@
 
     transform: translateZ(0);
     /* padding-bottom: calc(var(--aspect-ratio, 0.5625) * 100%); 16:9 */
-  }
-
-  :global(#video_livestream) {
-    display: block;
-    position: absolute;
-    box-sizing: border-box;
-    margin: 0;
-    /* border: 3px solid black; */
-    align-self: center;
-    /* border-radius: 12px; */
-    /* background: rgba(0, 0, 0, 0.55); */
-    height: min-content;
-    padding: 0;
-    max-height: 100%;
-    width: 100%;
-    padding-bottom: 4em;
-    /* padding-top: 36px; */
-    /* padding: 40px 36px 28px; */
-    /* aspect-ratio: 16 / 9; */
-    /* object-fit: contain; */
-  }
-
-  #livestream_container.full {
-    width: 100%;
-    height: 100%;
-    padding-right: 4px;
-    padding-left: 4px;
-  }
-
-  :global(#livestream_container.full #video_livestream) {
-    width: 100%;
-    height: 100%;
   }
 </style>

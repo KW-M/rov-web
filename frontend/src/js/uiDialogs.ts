@@ -32,18 +32,28 @@ export function modalConfirm(title: string, body: string, callback: () => void):
 }
 
 let passwordModalOpen = false
-export function modalPasswordPrompt(title: string, body: string, callback: (password: string) => void): boolean {
-    if (passwordModalOpen) return false;
-    passwordModalOpen = true;
-    const modal: ModalSettings = {
-        type: 'prompt',
-        title: title,
-        body: body,
-        valueAttr: { type: 'text', placeholder: "password", required: true },
-        response: (r: string) => { if (callback) callback(r) }
-    };
-    modalTool.trigger(modal);
-    return true;
+export function modalPasswordPrompt(title: string, body: string = ""): Promise<string> {
+    return new Promise((resolve, reject) => {
+        if (passwordModalOpen) return reject("Password modal already open");
+        passwordModalOpen = true;
+        const modal: ModalSettings = {
+            type: 'prompt',
+            title: title,
+            body: body,
+            valueAttr: { type: 'text', placeholder: "password", required: true },
+
+            response: (r: string) => {
+                console.log("modalPasswordPrompt response", r)
+                passwordModalOpen = false; resolve(r)
+            }
+        };
+        try {
+            modalTool.trigger(modal);
+        } catch (e) {
+            passwordModalOpen = false;
+            reject(e);
+        }
+    })
 }
 
 

@@ -88,4 +88,4 @@ jobs:
         - name: Deploy Site to Github Pages Website Hosting 🚀
           uses: JamesIves/github-pages-deploy-action@v4.3.4
           with:
-            folder: dist # The folder the action should deploy.
+            folder: frontend/build # The folder the action should deploy.

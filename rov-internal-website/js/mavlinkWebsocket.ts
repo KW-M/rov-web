@@ -13,29 +13,29 @@ export class mavlinkInterface {
         this.mavlinkWebsocket = new WebSocketRelay()
     }
 
-    start(wsUrl: string, onMessage: (msg: mavlink2RestFullMessage) => void) {
+    start(wsUrl: string, onMessage: (msg: mavlink2RestFullMessage) => void, onConnected?: () => void) {
         this.onMessage = onMessage
-        this.mavlinkWebsocket.start(wsUrl, (msgBytes: Uint8Array) => {
+        if (onConnected) this.mavlinkWebsocket.onConnectedFn = onConnected;
+        this.mavlinkWebsocket.start(wsUrl, (msgData) => {
             /*Callback to handle messages being received from the Mavlink2Rest server */
-            this.handleMessage(msgBytes)
+            this.handleMessage(msgData as string)
         })
     }
 
-    handleMessage(msgBytes: Uint8Array) {
+    handleMessage(msgData: string | Uint8Array) {
         // Decode json object from bytes
-        if (msgBytes.length === 0) return;
-        const msgTxt = DECODE_TXT(msgBytes)
+        if (msgData.length === 0) return;
+        const msgTxt = msgData instanceof Uint8Array ? DECODE_TXT(msgData) : msgData as string
         try {
+            if (msgTxt.startsWith("Ok")) return;
             const msgJson = JSON.parse(msgTxt) as mavlink2RestFullMessage
             this.onMessage(msgJson)
         } catch (e) {
             console.error("Failed to parse recived mavlink2rest json: " + msgTxt, e)
         }
-
     }
 
     sendMessage(msg: mavlink2RestFullMessage) {
-        console.info("Sending Mavlink Message: ", msg)
         this.mavlinkWebsocket.sendMessage(JSON.stringify(msg))
     }
 

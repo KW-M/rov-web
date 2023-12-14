@@ -1,5 +1,4 @@
-import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './consts';
-import { computePosition, autoUpdate, flip, shift, offset, arrow } from "@floating-ui/dom";
+import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './frontendConsts';
 
 export class GamepadUi {
     gpadButtonHighlightElements: HTMLElement[];
@@ -30,19 +29,6 @@ export class GamepadUi {
         // });
     }
 
-    updateTooltip() {
-        computePosition(this.currentPopperTarget, this.gamepadHelpTooltip, {
-            middleware: [flip(), shift()],
-            placement: 'right',
-            strategy: 'absolute',
-        }).then(({ x, y }) => {
-            Object.assign(this.gamepadHelpTooltip.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-            });
-        });
-    }
-
 
     toggleGamepadHelpScreen() {
         this.gamepadHelpVisible = !this.gamepadHelpVisible // toggle it
@@ -53,31 +39,10 @@ export class GamepadUi {
             document.body.classList.remove("gamepad-help-open")
         }
 
-        let count = 0;
-        let updateFunc = () => { this.updateTooltip(); count++; if (count < 60) requestAnimationFrame(updateFunc) }
-        updateFunc();
     }
 
     showNotSupported() {
-        alert('Gamepad interface not supported, please use a more modern browser.');
-        // showGamepadConnected(true);
-    }
-
-    showHelpTooltip(btnElem, btnHelpText) {
-        if (this.gamepadHelpVisible) {
-            if (btnElem) {
-                this.currentPopperTarget = btnElem;
-                this.gamepadHelpTooltipText.innerText = btnHelpText;
-                this.gamepadHelpTooltip.style.opacity = "0.9";
-            } else {
-                this.gamepadHelpTooltip.style.opacity = "0";
-            }
-        } else if (!btnHelpText) {
-            this.currentPopperTarget = this.defaultTooltipTarget;
-            this.gamepadHelpTooltipText.innerText = "Gamepad Help";
-            this.gamepadHelpTooltip.style.opacity = "0.8";
-        }
-        this.updateTooltip()
+        alert('Game controllers are not supported in your browser! Use keyboard or mouse/touch controls or switch to a more modern browser.');
     }
 
     handleGamepadVisualFeedbackAxisEvents(axiesMaping, directionalHelpThreshold) { //axisHoveredClass, axisMovedClass
@@ -95,11 +60,9 @@ export class GamepadUi {
                         if (yValue < -directionalHelpThreshold) {
                             axisMap.upIndicatorElement.style.opacity = Math.max(-yValue, 0);
                             axisMap.downIndicatorElement.style.opacity = 0;
-                            this.showHelpTooltip(axisMap.upIndicatorElement, axisMap.upHelpText || "None");
                         } else if (yValue > directionalHelpThreshold) {
                             axisMap.upIndicatorElement.style.opacity = 0;
                             axisMap.downIndicatorElement.style.opacity = Math.max(yValue, 0);
-                            this.showHelpTooltip(axisMap.downIndicatorElement, axisMap.downHelpText || "None");
                         } else {
                             axisMap.upIndicatorElement.style.opacity = 0;
                             axisMap.downIndicatorElement.style.opacity = 0;
@@ -115,12 +78,10 @@ export class GamepadUi {
                         if (xValue < -directionalHelpThreshold) {
                             axisMap.leftIndicatorElement.style.opacity = Math.max(-xValue, 0);
                             axisMap.rightIndicatorElement.style.opacity = 0;
-                            this.showHelpTooltip(axisMap.leftIndicatorElement, axisMap.leftHelpText || "None");
                         }
                         else if (xValue > directionalHelpThreshold) {
                             axisMap.leftIndicatorElement.style.opacity = 0;
                             axisMap.rightIndicatorElement.style.opacity = Math.max(xValue, 0);
-                            this.showHelpTooltip(axisMap.rightIndicatorElement, axisMap.rightHelpText || "None");
                         } else {
                             axisMap.leftIndicatorElement.style.opacity = 0;
                             axisMap.rightIndicatorElement.style.opacity = 0;

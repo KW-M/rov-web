@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ConnectionState } from "../js/consts";
+  import { ConnectionState } from "../js/frontendConsts";
   import { appReady } from "../js/globalContext";
   import GamepadLeftSvg from "../assets/gamepad/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/gamepad/optimized/display-gamepad-right.svg?raw";
@@ -68,65 +68,6 @@
 <style>
   /* ********* Onscreen Gamepad Related ********* */
   /* *********  Gamepad Display Related ********* */
-
-  :global(.gpad-display) {
-    display: contents;
-  }
-
-  :global(.gpad-display svg) {
-    position: absolute;
-    user-select: none;
-    width: max-content;
-    bottom: 0;
-    max-height: 14cm;
-    pointer-events: none;
-    /* z-index: 100; */
-  }
-
-  :global(.gpad-display-left svg) {
-    left: 0;
-    transform: translateX(-20%);
-  }
-
-  :global(.gpad-display-right svg) {
-    right: 0;
-    transform: translateX(20%);
-  }
-
-  :global(.gpad-display-full svg) {
-    left: 50%;
-    width: 100%;
-    max-width: 100vw;
-    transform: translateX(-50%);
-  }
-
-  :global(.gpad-highlight) {
-    opacity: 0;
-  }
-
-  :global(.gpad-highlight.pressed.touched) {
-    opacity: 1;
-  }
-
-  :global(.gpad-highlight.touched) {
-    opacity: 0.5;
-  }
-
-  :global(.direction_highlight) {
-    opacity: 0;
-  }
-
-  :global(.direction_highlight.moved) {
-    opacity: 0.8;
-  }
-
-  :global(#l_touch_targets > *, #r_touch_targets > *) {
-    visibility: hidden;
-
-    /* cursor: none; */
-    cursor: pointer;
-    pointer-events: all;
-  }
 
   .gamepad-joystick-touch-area {
     position: absolute;

@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import { LOADING_MESSAGE } from "../js/consts";
+  import { LOADING_MESSAGE } from "../js/frontendConsts";
   import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
 
   let currentMsg: nStoreT<string> = nStore(null);

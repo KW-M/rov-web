@@ -8,16 +8,20 @@ class TwitchStream {
     private streamEgressID?: string;
 
     init(twitchStreamKey: string, roomName: string, apiKey: string, secretKey: string) {
-        this._twitchStreamKey = twitchStreamKey;
         this.roomName = roomName;
+        this._twitchStreamKey = twitchStreamKey;
         this._egressClient = new EgressClient('https://rov-web.livekit.cloud', apiKey, secretKey);
     }
 
-    async isAnotherStreamRunning() {
-        if (!this._egressClient) return true;
-        return this._egressClient.listEgress().then((egresses) => {
-            return egresses.filter((egress) => !this.streamEgressID || egress.egressId != this.streamEgressID).length > 0;
-        })
+    async listRunningEgress() {
+        if (!this._egressClient) throw new Error("Egress client not initialized!");
+        return await this._egressClient.listEgress({ active: true });
+    }
+
+    async isAnotherEgressRunning() {
+        const egresses = await this.listRunningEgress();
+        return egresses && egresses.length > 0
+        //egresses.filter((egress) => !this.streamEgressID || egress.egressId != this.streamEgressID).length > 0;
     }
 
     async closeOtherEgresses() {
@@ -34,7 +38,7 @@ class TwitchStream {
     async startStream() {
         if (!this._twitchStreamKey || !this._egressClient || !this.roomName) return console.warn("startStream() err: Twitch stream key not set or twitchStream class not initilized!");
         await this.closeOtherEgresses();
-        while (await this.isAnotherStreamRunning() == true) {
+        while (await this.isAnotherEgressRunning() == true) {
             console.log("Another twitch stream is running, waiting 5 seconds to try again...");
             await waitfor(5000);
         }

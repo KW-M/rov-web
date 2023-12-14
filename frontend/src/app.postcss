@@ -14,3 +14,155 @@ body {
 	src: url('/fonts/SpaceGrotesk.ttf');
 	font-display: swap;
 }
+
+/* gamepad related styles */
+.gpad-display {
+	display: contents;
+}
+
+.gpad-display svg {
+	position: absolute;
+	user-select: none;
+	width: max-content;
+	bottom: 0;
+	max-height: 14cm;
+	pointer-events: none;
+	/* z-index: 100; */
+}
+
+.gpad-display-left svg {
+	left: 0;
+	transform: translateX(-20%);
+}
+
+.gpad-display-right svg {
+	right: 0;
+	transform: translateX(20%);
+}
+
+.gpad-display-full svg {
+	left: 50%;
+	width: 100%;
+	max-width: 100vw;
+	transform: translateX(-50%);
+}
+
+.gpad-highlight {
+	opacity: 0;
+}
+
+.gpad-highlight.pressed.touched {
+	opacity: 1;
+}
+
+.gpad-highlight.touched {
+	opacity: 0.5;
+}
+
+.direction_highlight {
+	opacity: 0;
+}
+
+.direction_highlight.moved {
+	opacity: 0.8;
+}
+
+#l_touch_targets>*,
+#r_touch_targets>* {
+	visibility: hidden;
+
+	/* cursor: none; */
+	cursor: pointer;
+	pointer-events: all;
+}
+
+
+/* tooltip related styles */
+
+
+.popper-tooltip[data-popper-placement^="top"]::after {
+	bottom: -16px;
+	left: 50%;
+
+	transform: translateX(-16px) rotate(0);
+}
+
+.popper-tooltip[data-popper-placement^="bottom"]::after {
+	top: -15px;
+	left: 50%;
+
+	transform: translateX(-16px) rotate(180deg);
+}
+
+.popper-tooltip[data-popper-placement^="left"]::after {
+	top: 50%;
+	right: -22px;
+
+	transform: translateY(-8px) rotate(270deg);
+}
+
+.popper-tooltip[data-popper-placement^="right"]::after {
+	top: 50%;
+	left: -22px;
+
+	transform: translateY(-8px) rotate(90deg);
+}
+
+.popper-tooltip[data-popper-placement^="top"]::before {
+	bottom: -20px;
+	left: 50%;
+
+	transform: translateX(-17px) rotate(0);
+}
+
+.popper-tooltip[data-popper-placement^="bottom"]::before {
+	top: -19px;
+	left: 50%;
+	transform: translateX(-17px) rotate(180deg);
+}
+
+.popper-tooltip[data-popper-placement^="left"]::before {
+	top: 50%;
+	right: -26px;
+
+	transform: translateY(-8.5px) rotate(270deg);
+}
+
+.popper-tooltip[data-popper-placement^="right"]::before {
+	top: 50%;
+	left: -26px;
+
+	transform: translateY(-8.5px) rotate(90deg);
+}
+
+#video_livestream {
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+	margin: 0;
+	/* border: 3px solid black; */
+	align-self: center;
+	/* border-radius: 12px; */
+	/* background: rgba(0, 0, 0, 0.55); */
+	height: min-content;
+	padding: 0;
+	max-height: 100%;
+	width: 100%;
+	padding-bottom: 4em;
+	/* padding-top: 36px; */
+	/* padding: 40px 36px 28px; */
+	/* aspect-ratio: 16 / 9; */
+	/* object-fit: contain; */
+}
+
+#livestream_container.full {
+	width: 100%;
+	height: 100%;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+#livestream_container.full #video_livestream {
+	width: 100%;
+	height: 100%;
+}

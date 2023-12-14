@@ -1,5 +1,7 @@
 
 import { AccessToken } from "livekit-server-sdk";
+import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
+import { encrypt } from "../encryption";
 
 /**
  * Get a livekit auth token that's valid for 24 hrs and allows all actions.
@@ -27,6 +29,11 @@ export async function getPublisherAccessToken(apiKey: string, secretKey: string,
     return await token.toJwt();
 }
 
+export async function encryptAccessToken(accessToken: string, password: string): Promise<string> {
+    const { encryptedText, iv, salt } = await encrypt(accessToken, password)
+    return salt + "|" + iv + "|" + encryptedText;
+}
+
 /**
  * Get a livekit auth token that's valid for 6 hrs and allows joining rooms but not broadcasting video.
  * @param {string} apiKey livekit api key to use
@@ -34,7 +41,7 @@ export async function getPublisherAccessToken(apiKey: string, secretKey: string,
  * @param {string} roomName livekit room name that this user will be allowed to join
  * @param {string} userName  user name & identity that this user will get when joining the room / using livekit.
  * @returns {string} JWT access token */
-export function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string) {
+export async function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string, encryptionPassword: string | null = null) {
     const token = new AccessToken(apiKey, secretKey, {
         identity: userName,
         name: userName,
@@ -49,7 +56,13 @@ export function getFrontendAccessToken(apiKey: string, secretKey: string, roomNa
         canPublishData: true,
         canUpdateOwnMetadata: false,
     });
-    return token.toJwt();
+    const unencryptedToken = await token.toJwt();
+    if (encryptionPassword && encryptionPassword.length > 0) {
+        console.debug("AuthToken before encryption for " + userName, unencryptedToken)
+        return userName + "|" + await encryptAccessToken(ENCRYPTED_AUTH_TOKEN_PREFIX + unencryptedToken, encryptionPassword);
+    } else {
+        return userName + "|" + unencryptedToken;
+    }
 }
 
 /**

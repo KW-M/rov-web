@@ -1,5 +1,3 @@
-import { ENCODE_TXT } from "./shared/consts"
-
 
 /*
     Wrapper class for the WebSocket built-in javascript module. Acts as a proxy for communication
@@ -8,9 +6,10 @@ import { ENCODE_TXT } from "./shared/consts"
 */
 export class WebSocketRelay {
 
-    socket: WebSocket
+    socket?: WebSocket
     serverAddress: string
-    msgReceivedFn: (msg: Uint8Array) => void
+    msgReceivedFn?: (msg: string | Uint8Array) => void
+    onConnectedFn?: () => void
     isRunning: boolean
     isConnected: boolean
     connectionTimerId // type is "a positive integer"
@@ -34,7 +33,7 @@ export class WebSocketRelay {
         After it is called, it will continue attempting to maintain connection unless stop()
         is invoked.
     */
-    start(serverAddress: string, msgReceivedFn: (msg: Uint8Array) => void) {
+    start(serverAddress: string, msgReceivedFn: (msg: string | Uint8Array) => void) {
         this.serverAddress = serverAddress
         this.msgReceivedFn = msgReceivedFn;
         this.isRunning = true
@@ -43,7 +42,7 @@ export class WebSocketRelay {
 
     stop() {
         this.isRunning = false
-        this.socket.close()
+        if (this.socket) this.socket.close()
     }
 
     /*
@@ -53,8 +52,20 @@ export class WebSocketRelay {
     connect() {
         console.log("Attempting to connect to websocket: " + this.serverAddress)
         this.socket = new WebSocket(this.serverAddress);
-        this.socket.binaryType = "blob"
-        this.isConnected = true
+        this.socket.binaryType = "arraybuffer"
+
+        const openTimeout = setTimeout(() => {
+            console.error("WebSocket connection timed out after 10 seconds")
+            this.stop()
+            this.queueConnect()
+        }, 10000)
+
+        this.socket.addEventListener('open', (event) => {
+            this.isConnected = true
+            clearTimeout(openTimeout);
+            if (this.onConnectedFn) this.onConnectedFn();
+        });
+
         this.socket.addEventListener('close', (event) => {
             console.log('WebSocket connection closed with code: ', event.code);
             this.isConnected = false
@@ -67,11 +78,12 @@ export class WebSocketRelay {
             if (this.isRunning) this.queueConnect()
         });
 
-        this.socket.addEventListener("message", (msgEvent: MessageEvent<Blob> | MessageEvent<string>) => {
-            if (typeof msgEvent.data === "string") this.msgReceivedFn(ENCODE_TXT(msgEvent.data))
-            else msgEvent.data.arrayBuffer().then((arrayBuffer) => {
-                this.msgReceivedFn(new Uint8Array(arrayBuffer))
-            })
+        this.socket.addEventListener("message", (msgEvent: MessageEvent<string | ArrayBufferLike>) => {
+            if (!this.msgReceivedFn) return console.error("No msgReceivedFn defined for WebSocketRelay");
+            if (typeof msgEvent.data === "string") this.msgReceivedFn(msgEvent.data as string)
+            else if (msgEvent.data instanceof ArrayBuffer) this.msgReceivedFn(new Uint8Array(msgEvent.data as ArrayBuffer))
+            else if (msgEvent.data instanceof Blob) throw new Error("WebSocketRelay received Blob type, which is not supported!")
+            else throw new Error("WebSocketRelay received unknown type")
         })
 
     }
@@ -94,7 +106,8 @@ export class WebSocketRelay {
     /*
         Sends an arbitrary byte sequence through the WebSocket
     */
-    sendMessage(message: Uint8Array) {
+    sendMessage(message: Uint8Array | string) {
+        if (!this.socket || this.socket.readyState != this.socket.OPEN) return console.debug("Can't send WebSocket msg: " + (this.socket ? this.socket.readyState : "no socket"))
         this.socket.send(message)
     }
 

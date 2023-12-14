@@ -1,8 +1,8 @@
 
-import { ONSCREEN_GPAD_BUTTON_LABELS } from './consts';
+import { ONSCREEN_GPAD_BUTTON_LABELS } from './frontendConsts';
 import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, gamepadEmulationState, CenterTransformOrigin, CenterTransformOriginDebug, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton, type buttonChangeDetails } from "virtual-gamepad-lib";
 import { GamepadUi } from "./gamepad-ui"
-import { GAME_CONTROLLER_BUTTON_CONFIG } from "./consts";
+import { GAME_CONTROLLER_BUTTON_CONFIG } from "./frontendConsts";
 import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
@@ -15,6 +15,10 @@ const LEFT_X_AXIS_INDEX = 0;
 const LEFT_Y_AXIS_INDEX = 1;
 const RIGHT_X_AXIS_INDEX = 2;
 const RIGHT_Y_AXIS_INDEX = 3;
+const X_BUTTON_INDEX = 0;
+const A_BUTTON_INDEX = 1;
+const B_BUTTON_INDEX = 2;
+const Y_BUTTON_INDEX = 3;
 const gpadHelpTooltips = [];
 
 export class GamepadController {
@@ -36,13 +40,16 @@ export class GamepadController {
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
         // the emulator will either use the real gamepad api if a gamepad is plugged in or it will inject the onscreen gamepad as if it were comming from the gamepad api.
         this.gpadEmulator = new GamepadEmulator(0.1);
+
+        // check if gamepads are't supported and show a message if they aren't
+        if (!new GamepadApiWrapper({}).gamepadApiSupported()) this.gpadUi.showNotSupported();
+
         // initilize the GamepadInterface class with the config from the button consts file
         this.gpadApiWrapper = new GamepadApiWrapper({
             axisDeadZone: 0.05,
-            updateDelay: 0,
-            buttonConfigs: []//GAME_CONTROLLER_BUTTON_CONFIG,
+            updateDelay: 10,
+            buttonConfigs: GAME_CONTROLLER_BUTTON_CONFIG,
         });
-        if (!this.gpadApiWrapper.gamepadApiSupported()) this.gpadUi.showNotSupported();
         this.onAxisChange = onAxisChange;
         this.onButtonChange = onButtonChange;
         this.setupGamepadEvents(throttleDelay);
@@ -150,14 +157,6 @@ export class GamepadController {
         const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
             if (name.includes("trigger")) {
                 // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
-                console.log("GamepadDisplayVariableButton", {
-                    type: gamepadButtonType.variable,
-                    highlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_highlight"),
-                    buttonElement: GPAD_DISPLAY_CONTAINER.querySelector("#" + name),
-                    direction: gamepadDirection.down,
-                    directionHighlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_direction_highlight"),
-                    movementRange: 10,
-                })
                 return {
                     type: gamepadButtonType.variable,
                     highlight: GPAD_DISPLAY_CONTAINER.querySelector("#" + name + "_highlight"),
@@ -310,8 +309,17 @@ export class GamepadController {
     /** Add events to translate keyboard events to to the gamepad emulator (NOTE that this is through the gamepad emulator. The page thinks it is reciving gamepad events) */
     addEmulatedGamepadKeyboardBindings(EMULATED_GPAD_INDEX) {
         const handleKeyEvent = (keyDown, e) => {
+
+
+            // don't handle keyboard events if the user is typing in an input field
+            const formElements = ['INPUT', 'TEXTAREA', 'SELECT', 'OPTION'];
+            e = e || window.event;
+            if (formElements.includes(e.target.tagName)) return;
+
             // try to parse the key name as a digit (0-9)
             const numberKey = parseInt(e.key);
+
+            if (e.key === "Space" && keyDown) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, X_BUTTON_INDEX, 1, true); // spacebar to press the "start" button
 
             // wasd to move the left stick
             if (e.key === "a") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_X_AXIS_INDEX, keyDown ? -1 : 0);
@@ -335,8 +343,8 @@ export class GamepadController {
             }
 
             // all other gamepad buttons are mapped to the number keys or keycodes for high button numbers
-            else if (!isNaN(numberKey)) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, numberKey, keyDown ? 1 : 0, keyDown);
-            else if (e.keyCode) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, e.keyCode - 66 + 10, keyDown ? 1 : 0, keyDown); // 66 is the keycode for "B" (A is already used), 10 is the count of number keys on the keyboard (0-9), so "b" is button #10, "c" is button #11, etc.
+            else if (!isNaN(numberKey)) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, Math.max(numberKey - 1, 0), keyDown ? 1 : 0, keyDown);
+            else if (e.keyCode) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, e.keyCode - 66 + 9, keyDown ? 1 : 0, keyDown); // 66 is the keycode for "B" (A is already used), 10 is the count of number keys on the keyboard (0-9), so "b" is button #10, "c" is button #11, etc.
         }
         window.onkeydown = (e) => handleKeyEvent(true, e);
         window.onkeyup = (e) => handleKeyEvent(false, e);

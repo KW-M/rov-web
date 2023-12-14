@@ -1,9 +1,22 @@
 import type { nStoreT } from "./libraries/nStore";
 
 
-export function waitfor(millisec) {
-    return new Promise(resolve => {
-        setTimeout(() => { resolve('') }, millisec);
+export function waitfor(millisec: number) {
+    return new Promise<void>(resolve => {
+        setTimeout(() => { resolve() }, millisec);
+    })
+}
+
+
+export function waitforCondition(condition: () => boolean, millisec: number = 0) {
+    return new Promise<void>((resolve, reject) => {
+        if (millisec !== 0) setTimeout(() => { reject() }, millisec);
+        const interval = setInterval(() => {
+            if (condition()) {
+                clearInterval(interval);
+                resolve();
+            }
+        }, 100);
     })
 }
 

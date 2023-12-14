@@ -1,10 +1,10 @@
 <script lang="ts">
   import { FlightMode, FlightmodeNameMap } from "../js/shared/mavlink2RestMessages";
-  // import { RovActions } from "../js/rovActions";
   import ChevronDownIcon from "svelte-google-materialdesign-icons/Expand_more.svelte";
   import { autopilotMode } from "../js/vehicleStats";
   import { RovActions } from "../js/rovActions";
 
+  export let disabled = false;
   export let selectedMode: FlightMode = FlightMode.unknown;
   $: selectedMode = $autopilotMode;
   let onModeChange = (mode: string) => {
@@ -18,7 +18,7 @@
 </script>
 
 <div class="rounded-full bg-slate-50 relative mx-2 mr-4">
-  <select class="select variant-outline-primary appearance-none md:pl-4" value={selectedMode} on:change={(e) => onModeChange(e.currentTarget.value)}>
+  <select {disabled} class="select variant-outline-primary appearance-none md:pl-4" value={selectedMode} on:change={(e) => onModeChange(e.currentTarget.value)}>
     {#each modes as mode}
       {#if mode == FlightMode.unknown}
         <option value={mode} disabled>Flight Mode</option>

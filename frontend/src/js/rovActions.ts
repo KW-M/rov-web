@@ -3,36 +3,55 @@ import type { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { frontendConnMngr } from "./frontendConnManager";
 import { frontendRovMsgHandler } from "./rovMessageHandler"
 import { modalConfirm, modalScrollingText } from "./uiDialogs"
-import { showToastMessage } from "./toastMessageManager";
+import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 import { calculateDesiredMotion } from "./rovUtil";
 import type { buttonChangeDetails } from "virtual-gamepad-lib";
 import { ConnectionStates } from "./shared/consts";
 import type { FlightMode } from "./shared/mavlink2RestMessages";
+import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT } from "./frontendConsts";
 
 class RovActionsClass {
 
-    pingLoopIntervalId: number = null;
+    requiredMsgsLoopIntervalId: number = null;
     lastMove = {
         VelocityX: 0,
         VelocityY: 0,
         VelocityZ: 0,
         AngularVelocityYaw: 0,
+        ButtonBitmask: 0
     };
     lastMovementTime = 0;
+    lastPingTime = 0;
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
 
-        if (buttonsChangedMask[0] && buttonsChangedMask[0].released) {
+        const BTN_A = GPAD_STANDARD_BUTTON_INDEX.A
+        const BTN_B = GPAD_STANDARD_BUTTON_INDEX.B
+        const BTN_X = GPAD_STANDARD_BUTTON_INDEX.X
+        const BTN_Y = GPAD_STANDARD_BUTTON_INDEX.Y
+        const BTN_LT = GPAD_STANDARD_BUTTON_INDEX.LT
+        const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
+
+        if (buttonsChangedMask[BTN_A] && buttonsChangedMask[BTN_A].released) {
             this.takeControl()
-        } else if (buttonsChangedMask[1] && buttonsChangedMask[1].released) {
-            // this.startVideoRecording()
+        } else if (buttonsChangedMask[BTN_B] && buttonsChangedMask[BTN_B].released) {
             this.disarm()
-        } else if (buttonsChangedMask[2] && buttonsChangedMask[2].released) {
-            this.takePhoto()
-        } else if (buttonsChangedMask[3] && buttonsChangedMask[3].released) {
-            frontendConnMngr.toggleSimplePeerConnection();
         }
 
+        if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
+            const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
+            const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
+            const throttle = Math.round((LT - RT) * 100);
+            // do something with throttle
+        }
+
+        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT];
+        const pressedButtons = buttonsChangedMask.map((val, index) => {
+            if (val === false) return false;
+            if (rawExcludedButtons.includes(index)) return false;
+            return val.pressed || val.heldDown;
+        })
+        this.sendButtonsToRov(pressedButtons);
 
         // else if (gamepad.buttons[12].pressed) {
         //     let delay = gpadCtrl.throttleDelay + 1;
@@ -64,17 +83,25 @@ class RovActionsClass {
         })
     }
 
-    startPingLoop() {
-        if (this.pingLoopIntervalId) return;
-        this.pingLoopIntervalId = Number(setInterval(() => {
+    startRequiredMsgLoop() {
+        if (this.requiredMsgsLoopIntervalId) return;
+        this.requiredMsgsLoopIntervalId = Number(setInterval(() => {
             if (frontendConnMngr.connectionState.get() != ConnectionStates.connected) return;
-            frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
-        }, 1000))
+            const now = Date.now();
+            if (now - this.lastPingTime > MOVE_MSG_TIMEOUT) {
+                frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
+                this.lastPingTime = now;
+            }
+            if (now - this.lastMovementTime > MOVE_MSG_TIMEOUT) {
+                this.moveRov(0, 0, 0, 0, 0);
+                this.lastMovementTime = now;
+            }
+        }, 10))
     }
 
-    stopPingLoop() {
-        clearInterval(this.pingLoopIntervalId)
-        this.pingLoopIntervalId = null;
+    stopRequiredMsgLoop() {
+        clearInterval(this.requiredMsgsLoopIntervalId)
+        this.requiredMsgsLoopIntervalId = null;
     }
 
     showCommandOutputPopup(title, firstLine, doneLine) {
@@ -102,13 +129,32 @@ class RovActionsClass {
         frontendRovMsgHandler.sendRovMessage({ SetAutopilotMode: { mode: mode } }, null);
     }
 
-    moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw) {
+    moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, btnBitmask: number = -1) {
+        const ButtonBitmask = btnBitmask === -1 ? this.lastMove.ButtonBitmask : btnBitmask;
         const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
         const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
         const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
-        if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 500) return;
+        if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
         frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } }, null);
-        this.lastMove = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw };
+        this.lastMove = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask };
+        this.lastMovementTime = Date.now();
+    }
+
+    sendButtonsToRov(buttons: boolean[]) {
+        const VelocityX = this.lastMove.VelocityX;
+        const VelocityY = this.lastMove.VelocityY;
+        const VelocityZ = this.lastMove.VelocityZ;
+        const AngularVelocityYaw = this.lastMove.AngularVelocityYaw;
+        const ButtonBitmask = buttons.reduce((acc, val, index) => {
+            if (val) {
+                acc |= 1 << GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX[index];;
+            }
+            return acc;
+        }, 0)
+        const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
+        if (this.lastMove.ButtonBitmask === ButtonBitmask && timeSinceLastMoveCmd < 700) return;
+        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
+        this.lastMove.ButtonBitmask = ButtonBitmask;
         this.lastMovementTime = Date.now();
     }
 
@@ -133,14 +179,13 @@ class RovActionsClass {
     }
 
     shutdownRov = () => {
-        modalConfirm("Are you sure you want to shutdown the ROV?", "", (ok) => {
-            showToastMessage("Sending Shutdown Request...")
+        modalConfirm("Shutdown the ROV?", "", () => {
+            showToastMessage("Sending Shutdown Request...", 2000, false, ToastSeverity.info)
             this.sendActionAndWaitForDone({ ShutdownRov: {} }, (msgData) => {
                 if (msgData.Error) {
-                    showToastMessage("ROV Shutdown Error: " + msgData.Error.Message)
+                    showToastMessage("ROV Shutdown Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
                 } else if (msgData.Done) {
-                    showToastMessage("Please wait 20 seconds before unplugging")
-                    showToastMessage("ROV: " + msgData.Done.Message)
+                    showToastMessage("Please wait 20 seconds before unplugging. ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
                     frontendConnMngr.disconnect();
                 }
             })
@@ -148,13 +193,13 @@ class RovActionsClass {
     }
 
     rebootRov = () => {
-        modalConfirm("Are you sure you want to reboot the ROV?", "The ROV will stop responding for about two minutes and then you can re-connect.", (ok) => {
-            showToastMessage("Sending Reboot Request...")
+        modalConfirm("Reboot the ROV?", "The ROV will stop responding for about two minutes and then you can re-connect.", () => {
+            showToastMessage("Sending Reboot Request...", 2000, false, ToastSeverity.info)
             this.sendActionAndWaitForDone({ RebootRov: {} }, (msgData) => {
                 if (msgData.Error) {
-                    showToastMessage("ROV Reboot Error: " + msgData.Error.Message)
+                    showToastMessage("ROV Reboot Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
                 } else if (msgData.Done) {
-                    showToastMessage("Press Connect again in about 30 seconds")
+                    showToastMessage("Press Connect again in about 30 seconds ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
                     showToastMessage("ROV: " + msgData.Done.Message)
                     frontendConnMngr.disconnect();
                 }
@@ -163,7 +208,7 @@ class RovActionsClass {
     }
 
     restartRovServices = () => {
-        modalConfirm("Are you sure you want to restart services?", "The ROV will stop responding for about a minute and then you can re-connect.", () => {
+        modalConfirm("Restart ROV services?", "The ROV will stop responding for about a minute and then you can re-connect.", () => {
             let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
             frontendRovMsgHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
         })
@@ -180,24 +225,24 @@ class RovActionsClass {
     }
 
     enableRovWifi = () => {
-        showToastMessage("Sending Enable Wifi Command...")
+        showToastMessage("Sending Enable Wifi Command...", 2000, false, ToastSeverity.info)
         this.sendActionAndWaitForDone({ EnableWifi: {} }, (msgData) => {
             if (msgData.Error) {
-                showToastMessage("Enable Wifi Error: " + msgData.Error.Message)
+                showToastMessage("Enable Wifi Error: " + msgData.Error.Message, 8000, false, ToastSeverity.error)
             } else if (msgData.Done) {
-                showToastMessage("Wifi Enable: " + msgData.Done.Message)
+                showToastMessage("Wifi Enable: " + msgData.Done.Message, 2000, false, ToastSeverity.success)
             }
         })
     }
 
     disableRovWifi = () => {
         modalConfirm("Are you sure you want to disable rov wifi?", "If the ROV is connected via wifi, <em>don't do this!</em>", () => {
-            showToastMessage("Sending Disable Wifi Command...")
+            showToastMessage("Sending Disable Wifi Command...", 2000, false, ToastSeverity.info)
             this.sendActionAndWaitForDone({ DisableWifi: {} }, (msgData) => {
                 if (msgData.Error) {
-                    showToastMessage("Disable Wifi Error: " + msgData.Error.Message)
+                    showToastMessage("Disable Wifi Error: " + msgData.Error.Message, 8000, false, ToastSeverity.error)
                 } else if (msgData.Done) {
-                    showToastMessage("Wifi Disable: " + msgData.Done.Message)
+                    showToastMessage("Wifi Disable: " + msgData.Done.Message, 2000, false, ToastSeverity.success)
                 }
             })
         })

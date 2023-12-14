@@ -1,20 +1,56 @@
 <script lang="ts">
   import ChevronRight from "svelte-google-materialdesign-icons/Chevron_right.svelte";
   import { fade } from "svelte/transition";
-  import { frontendConnMngr } from "../js/frontendConnManager";
-  import { ConnectionStates } from "../js/shared/consts";
+  import { frontendConnMngr, type LivekitRoomInfo } from "../js/frontendConnManager";
+  import { ConnectionStates, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../js/shared/consts";
+  import { showToastMessage, ToastSeverity } from "../js/toastMessageManager";
+  import { modalPasswordPrompt } from "../js/uiDialogs";
+  import { decrypt } from "../js/shared/encryption";
+  import { waitfor } from "../js/shared/util";
 
   export let selectedRov = "";
 
   const connectionState = frontendConnMngr.connectionState;
   $: collapsedMode = $connectionState === ConnectionStates.connected || $connectionState === ConnectionStates.connecting;
 
-  const availableRovNames = frontendConnMngr.openLivekitRoomNames;
+  const availableRovRooms = frontendConnMngr.openLivekitRoomInfo;
   const ourIdentity = frontendConnMngr.currentLivekitIdentity;
 
-  function connectToRov(rovName: string) {
-    selectedRov = rovName;
-    frontendConnMngr.connectToLivekitRoom(rovName);
+  async function connectToRov(rovRoomInfo: LivekitRoomInfo) {
+    if (!rovRoomInfo.token) return showToastMessage("ROV is not available at the moment. Please wait & try again.", 5000, false, ToastSeverity.error);
+    let authToken = "";
+    if (rovRoomInfo.token.encrypted) {
+      selectedRov = rovRoomInfo.name;
+      const salt = rovRoomInfo.token.salt;
+      const iv = rovRoomInfo.token.iv;
+
+      while (true) {
+        await waitfor(200);
+        const password = await modalPasswordPrompt("Enter ROV Password");
+        if (!password) return;
+        // decrypt the token
+        try {
+          const decryptedToken = await decrypt(rovRoomInfo.token.token, salt, iv, password);
+          console.log('Decrypted Token:"' + decryptedToken + '"', rovRoomInfo.name);
+          if (!decryptedToken || !decryptedToken.startsWith(ENCRYPTED_AUTH_TOKEN_PREFIX)) {
+            showToastMessage("Incorrect password. Please try again.", 2000, false, ToastSeverity.warning);
+            continue;
+          }
+          showToastMessage("Password accepted. Connecting...", 2000, false, ToastSeverity.success);
+          authToken = decryptedToken.substring(ENCRYPTED_AUTH_TOKEN_PREFIX.length);
+          break;
+        } catch (e) {
+          console.error("Token Decryption Failure:", e);
+          showToastMessage("Incorrect password. Please try again. (Token Decryption Failure)", 2000, false, ToastSeverity.warning);
+          continue;
+        }
+      }
+    } else {
+      authToken = rovRoomInfo.token.token;
+    }
+    // no password, just connect
+    selectedRov = rovRoomInfo.name;
+    frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
   }
 
   function disconnect() {
@@ -27,14 +63,14 @@
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourIdentity}</span></p>
   {/if} -->
   <div class:p-1={collapsedMode} class={` bg-surface-700 border-2 border-surface-500 m-0 items-center flex whitespace-nowrap text-center rounded-xl max-h-full  ${!collapsedMode ? "flex-col shadow-2xl" : "rounded-b-none border-b-0"}`}>
-    {#if $availableRovNames.length == 0}
+    {#if $availableRovRooms.length == 0}
       <h2 class="text-center py-4 px-6 font-bold">Searching for online ROVs...</h2>
     {:else if !collapsedMode}
       <h2 class="text-center py-4 px-6 font-bold">Connect to a ROV:</h2>
       <div class="flex flex-col align-stretch overflow-y-auto w-full p-3 pt-0">
-        {#each $availableRovNames as rovName}
-          <button in:fade on:click={() => connectToRov(rovName)} class="btn ring-white variant-filled-primary align-top block m-1"
-            >{rovName}
+        {#each $availableRovRooms as rovRoom}
+          <button in:fade disabled={!rovRoom.token} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1"
+            >{rovRoom.name}
             <ChevronRight variant="round" class="text-2xl inline-block pointer-events-none" tabindex="-1" />
           </button>
         {/each}

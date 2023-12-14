@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROV-Web Extension Help</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin: auto;
+            padding: 2em;
+            max-width: 800px;
+
+        }
+
+        p {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+        <h2>ROV-Web Extension Help</h2>
+        <a href="../">Drive ROV (Local)</a> |
+        <a href="https://kw-m.github.io/rov-web">Drive ROV (Hosted)</a> |
+        <a href="https://livekit.io/cloud">Livekit Cloud</a> |
+        <p>To edit the extension options:
+            2. Go to the extensions manager in the Blue OS Web UI
+            2. Enable pirate mode
+            3. Find the ROV-Web extension under the "Installed Extensions" tab
+            4. Click the edit link for the ROV-Web extension
+            5. Under the "Custom Settings" tab, you can edit the extension options.
+            6. Settings is a json object with the JSON field "Env" containing an array of enviroment variables as quoted
+            strings. Enviroment variables use the format "KEY=VALUE" where KEY is the name of the variable and VALUE is
+            the value of the variable. Don't add extra spaces or quotes!
+            7. Click the "Save" button to save your changes
+            Example custom settings:
+        </p>
+
+        <pre>
+            {
+                "Env": [
+                    "ROV_NAME=My ROV",
+                    "ROV_CONTROL_PASSWORD=1234ABC",
+                ]
+            }
+        </pre>
+    </article>
+</body>
+
+</html>

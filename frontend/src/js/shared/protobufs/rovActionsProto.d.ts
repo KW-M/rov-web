@@ -3,6 +3,15 @@ import Long = require("long");
 /** Namespace rov_actions_proto. */
 export namespace rov_actions_proto {
 
+    /** LogLevel enum. */
+    enum LogLevel {
+        Debug = 0,
+        Info = 1,
+        Warning = 2,
+        Error = 3,
+        Critical = 4
+    }
+
     /** SensorMeasurmentTypes enum. */
     enum SensorMeasurmentTypes {
         depth_meters = 0,
@@ -534,6 +543,9 @@ export namespace rov_actions_proto {
 
         /** MoveAction AngularVelocityYaw */
         AngularVelocityYaw?: (number|null);
+
+        /** MoveAction ButtonBitmask */
+        ButtonBitmask?: (number|null);
     }
 
     /** Represents a MoveAction. */
@@ -556,6 +568,12 @@ export namespace rov_actions_proto {
 
         /** MoveAction AngularVelocityYaw. */
         public AngularVelocityYaw: number;
+
+        /** MoveAction ButtonBitmask. */
+        public ButtonBitmask?: (number|null);
+
+        /** MoveAction _ButtonBitmask. */
+        public _ButtonBitmask?: "ButtonBitmask";
 
         /**
          * Creates a new MoveAction instance using the specified properties.
@@ -4014,6 +4032,109 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a LogMessageResponse. */
+    interface ILogMessageResponse {
+
+        /** LogMessageResponse Message */
+        Message?: (string|null);
+
+        /** LogMessageResponse Level */
+        Level?: (rov_actions_proto.LogLevel|null);
+    }
+
+    /** Represents a LogMessageResponse. */
+    class LogMessageResponse implements ILogMessageResponse {
+
+        /**
+         * Constructs a new LogMessageResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ILogMessageResponse);
+
+        /** LogMessageResponse Message. */
+        public Message: string;
+
+        /** LogMessageResponse Level. */
+        public Level: rov_actions_proto.LogLevel;
+
+        /**
+         * Creates a new LogMessageResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LogMessageResponse instance
+         */
+        public static create(properties?: rov_actions_proto.ILogMessageResponse): rov_actions_proto.LogMessageResponse;
+
+        /**
+         * Encodes the specified LogMessageResponse message. Does not implicitly {@link rov_actions_proto.LogMessageResponse.verify|verify} messages.
+         * @param message LogMessageResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ILogMessageResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LogMessageResponse message, length delimited. Does not implicitly {@link rov_actions_proto.LogMessageResponse.verify|verify} messages.
+         * @param message LogMessageResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ILogMessageResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LogMessageResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LogMessageResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.LogMessageResponse;
+
+        /**
+         * Decodes a LogMessageResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LogMessageResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.LogMessageResponse;
+
+        /**
+         * Verifies a LogMessageResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LogMessageResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LogMessageResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.LogMessageResponse;
+
+        /**
+         * Creates a plain object from a LogMessageResponse message. Also converts values to other types if specified.
+         * @param message LogMessageResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.LogMessageResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LogMessageResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LogMessageResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a ResponseBackendMetadata. */
     interface IResponseBackendMetadata {
 
@@ -4170,6 +4291,9 @@ export namespace rov_actions_proto {
 
         /** RovResponse SystemMonitor */
         SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse|null);
+
+        /** RovResponse LogMessage */
+        LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
     }
 
     /** Represents a RovResponse. */
@@ -4232,8 +4356,11 @@ export namespace rov_actions_proto {
         /** RovResponse SystemMonitor. */
         public SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse|null);
 
+        /** RovResponse LogMessage. */
+        public LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
+
         /** RovResponse Body. */
-        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor");
+        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage");
 
         /**
          * Creates a new RovResponse instance using the specified properties.

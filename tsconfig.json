@@ -1,6 +1,16 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "./frontend/.svelte-kit/tsconfig.json",
+	"exclude": [
+		"*/build/*",
+		"node_modules/**",
+		"./frontend/.svelte-kit/[!ambient.d.ts]**",
+		"./frontend/src/service-worker.js",
+		"./frontend/src/service-worker.ts",
+		"./frontend/src/service-worker.d.ts"
+	],
 	"compilerOptions": {
+		"moduleResolution": "Bundler",
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
@@ -15,7 +25,7 @@
 			"DOM.Iterable",
 			"WebWorker"
 		],
-		// "baseUrl": "/",
+		"baseUrl": "./",
 		// "noEmit": true,
 	},
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

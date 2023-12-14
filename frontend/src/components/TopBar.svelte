@@ -5,6 +5,8 @@
   import { fullscreenOpen } from "../js/globalContext";
 
   import GearIcon from "svelte-google-materialdesign-icons/Settings_power.svelte";
+  import HdIcon from "svelte-google-materialdesign-icons/Hd.svelte";
+  import HdrOffIcon from "svelte-google-materialdesign-icons/Hdr_off.svelte";
   import InfoIcon from "svelte-google-materialdesign-icons/Info.svelte";
   import ShutdownIcon from "svelte-google-materialdesign-icons/Power_settings_new.svelte";
   import RestartIcon from "svelte-google-materialdesign-icons/Restart_alt.svelte";
@@ -15,11 +17,21 @@
   import MenuIcon from "svelte-google-materialdesign-icons/Menu.svelte";
   import MoreHorizIcon from "svelte-google-materialdesign-icons/More_horiz.svelte";
   import HelpIcon from "svelte-google-materialdesign-icons/Help.svelte";
+  import DangerousIcon from "svelte-google-materialdesign-icons/Dangerous.svelte";
+
   import FlightModeSelector from "./FlightModeSelector.svelte";
   import { toggleFullscreen } from "../js/util";
   import { RovActions } from "../js/rovActions";
   import { autopilotArmed, autopilotMavState } from "../js/vehicleStats";
   import { MavStateNameMap } from "../js/shared/mavlink2RestMessages";
+  import { VideoStreamMethod, frontendConnMngr } from "../js/frontendConnManager";
+  import { ConnectionStates } from "../js/shared/consts";
+
+  const videoMethod = frontendConnMngr.currentVideoStreamMethod;
+  $: usingHDVideo = $videoMethod === VideoStreamMethod.simplepeer;
+
+  const connectionState = frontendConnMngr.connectionState;
+  $: connected = $connectionState === ConnectionStates.connected;
 
   const drawerStore = getDrawerStore();
   const openSideDrawer = (): void => drawerStore.open();
@@ -28,7 +40,7 @@
 
   const motorArmSwitchChange = (e) => {
     const arm = e.target.checked;
-    // autopilotArmed.set(arm);
+    autopilotArmed.set(!arm);
     if (arm) {
       console.log("Arming Vehicle");
       RovActions.takeControl();
@@ -53,14 +65,23 @@
   };
 </script>
 
-<AppBar padding="p-2" background="bg-transparent" slotDefault="flex justify-around overflow-visible min-w-0">
+<AppBar padding="p-2" class="overflow-visible" background="bg-transparent" slotDefault="flex justify-around overflow-visible min-w-0">
   <svelte:fragment slot="lead">
-    <button on:click={openSideDrawer} class="btn btn-lg btn-icon bg-initial lg:hidden"> <MenuIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
-    <FlightModeSelector />
-    <button class="btn btn-md variant-outline-primary" on:click={disarmVehicle}>Disarm</button>
-    <button class="btn btn-md variant-outline-primary" on:click={armVehicle}>Arm</button>
+    <button on:click={openSideDrawer} disabled={!connected} class="btn btn-lg btn-icon bg-initial lg:hidden"> <MenuIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
+    <FlightModeSelector disabled={!connected} />
+    {#if $autopilotArmed}
+      <button disabled={!connected} class="variant-filled-error mr-4 max-lg:btn-icon lg:btn btn-base" on:click={disarmVehicle}>
+        <DangerousIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
+        <span class="hidden lg:inline">Halt Thrusters</span>
+      </button>
+    {:else}
+      <button disabled={!connected} class="variant-filled-success mr-4 max-lg:btn-icon lg:btn btn-base" on:click={armVehicle}>
+        <span class="block text-2xl -my-2 pointer-events-none font-mono font-bold">GO</span>
+        <span class="hidden lg:inline">Enable Thrusters</span>
+      </button>
+    {/if}
     <div class="overflow-visible" style="max-width: 4em;">
-      {#if powerMenuExpanded}
+      {#if powerMenuExpanded && connected}
         <div class="btn-group variant-filled-primary justify-evenly relative">
           <button on:click={() => (powerMenuExpanded = false)}><DisconnectIcon class="text-2xl  pointer-events-none" tabindex="-1" variation="round" /></button>
           <button
@@ -93,7 +114,7 @@
           >
         </div>
       {:else}
-        <button class="btn variant-filled-primary" on:click={() => (powerMenuExpanded = true)}>
+        <button disabled={!connected} class="btn variant-filled-primary" on:click={() => (powerMenuExpanded = true)}>
           <ShutdownIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
           <MoreHorizIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
         </button>
@@ -101,15 +122,22 @@
     </div>
   </svelte:fragment>
   <svelte:fragment slot="default">
+    <span class="px-2 fixed left-1/2 -top-1">MavState: {MavStateNameMap[$autopilotMavState]}</span>
     <CompassDial class="w-full flex-auto -z-10" />
   </svelte:fragment>
   <svelte:fragment slot="trail">
-    <span class="px-2">MavState: {MavStateNameMap[$autopilotMavState]}</span>
-
-    <SlideToggle name="Arm Vehicle" background="bg-success-400" active="bg-error-500" checked={$autopilotArmed} on:change={motorArmSwitchChange}>
+    <button disabled={!connected} class="max-lg:btn-icon lg:btn variant-filled-warning text-white btn-base" on:click={() => frontendConnMngr.toggleSimplePeerConnection()}>
+      {#if usingHDVideo}
+        <HdrOffIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
+      {:else}
+        <HdIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
+      {/if}
+      <span class="hidden lg:inline">{usingHDVideo ? "Use SD Video" : "Use HD Video"}</span>
+    </button>
+    <!-- <SlideToggle name="Arm Vehicle" background="bg-success-400" active="bg-error-500" disabled checked={$autopilotArmed}>
       <span class="whitespace-normal w-min inline-block">{$autopilotArmed ? "Motors ON" : "Motors OFF"}</span>
-    </SlideToggle>
-    <button class="btn variant-filled-secondary text-white md:btn-base"><span class="hidden lg:inline">Help</span> <HelpIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
+    </SlideToggle> -->
+    <button class="max-lg:btn-icon lg:btn variant-filled-secondary text-white btn-base"><HelpIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /><span class="hidden lg:inline">Help</span> </button>
     <button
       class="btn btn-lg btn-icon bg-initial"
       on:click={(e) => {

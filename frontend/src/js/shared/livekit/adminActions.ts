@@ -1,18 +1,28 @@
 
 import { getFrontendAccessToken } from './livekitTokens';
 import { getHumanReadableId, getUniqueNumber } from '../util';
-import { RoomServiceClient, type Room } from 'livekit-server-sdk';
+import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
 
-export type LivekitSetupOptions = {
-    RovName: string,
-    RovControlPassword: string,
-    LivekitSecretKey: string,
-    LivekitAPIKey: string,
-    TwitchStreamKey: string,
-    EnableLivekitCloud: boolean,
-    EnableLivekitLocal: boolean,
-    PythonWebsocketPort: number,
-    AuthTokenTimeout: number,
+export interface AuthTokenInfo {
+    // the name/id we will have (according to livekit) if we use this token.
+    userGivenIdentity: string,
+    // the actual token string
+    token: string,
+    // whether or not this token is encrypted (not just JWT encoding but an additional pass of encryption w the rov password).
+    encrypted: boolean,
+    // if encrypted, the salt used for encryption algorithm
+    salt?: string,
+    // if encrypted, the iv used for encryption algorithm
+    iv?: string,
+}
+
+
+export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string, secretKey: string) {
+    return new RoomServiceClient(host, apiKey, secretKey)
+}
+
+export function newLivekitAdminSDKEgressClient(host: string, apiKey: string, secretKey: string) {
+    return new EgressClient(host, apiKey, secretKey)
 }
 
 export async function deleteLivekitRoom(client: RoomServiceClient, roomName: string) {
@@ -22,7 +32,6 @@ export async function deleteLivekitRoom(client: RoomServiceClient, roomName: str
         console.warn("Failed to delete room: " + roomName, e)
     }
 }
-
 
 export async function createLivekitRoom(client: RoomServiceClient, roomName: string, metadata: string = "") {
     // await deleteLivekitRoom(client, roomName)
@@ -44,8 +53,8 @@ export async function updateLivekitRoomMetadata(client: RoomServiceClient, roomN
     return await client.updateRoomMetadata(roomName, metadata)
 }
 
-export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]): Promise<string[]> {
-    const num_tokens_to_generate = 40;
+export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[], encryptionPassword: string | null = null): Promise<string[]> {
+    const num_tokens_to_generate = 10;
     const tokens: string[] = [];
     for (let i = 0; i < num_tokens_to_generate; i++) {
         let userName = getHumanReadableId(getUniqueNumber());
@@ -53,69 +62,14 @@ export async function generateLivekitRoomTokens(APIKey: string, secretKey: strin
             userName = getHumanReadableId(getUniqueNumber());
         }
         alreadyTakenNames.push(userName);
-        const frontendAccessToken = await getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName);
+        const frontendAccessToken = await getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName, encryptionPassword);
         tokens.push(frontendAccessToken);
     }
     return tokens
 }
 
-export async function refreshMetadata(cloudRoomClient: RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[]) {
+export async function refreshMetadata(cloudRoomClient: RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[], encryptionPassword: string | null = null) {
     await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
-        accessTokens: await generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames)
+        accessTokens: await generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames, encryptionPassword)
     }));
-}
-
-
-export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string, secretKey: string) {
-    return new RoomServiceClient(host, apiKey, secretKey)
-}
-
-// --- FUNCTIONS THAT DON'T USE THE OFFICAL LIVEKIT SDK: ---
-
-type LivekitRawRoomSDKResponse = {
-    "rooms": {
-        "sid": string,
-        "name": string,
-        "empty_timeout": number,
-        "max_participants": number,
-        "creation_time": number,
-        "turn_password": string,
-        "enabled_codecs": { 'mime': string, 'fmtp_line': string }[],
-        "metadata": string,
-        "num_participants": number,
-        "num_publishers": number,
-        "active_recording": false
-    }[]
-}
-export async function listLivekitRoomsWithoutSDK(hostUrl: string, livekitToken: string) {
-    return await fetch(hostUrl + '/twirp/livekit.RoomService/ListRooms', {
-        method: 'POST',
-        cache: 'no-cache',
-        mode: 'cors',
-        body: JSON.stringify({}),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + livekitToken,
-        }
-    }).then(response => response.json()).then((response: LivekitRawRoomSDKResponse) => {
-        const rooms = response.rooms;
-        if (!rooms || !Array.isArray(rooms)) throw new Error(`Error getting livekit room list from ${hostUrl} - ${JSON.stringify(response)}`)
-        return rooms.filter(room => room.num_participants > 0)
-    }).catch((e) => {
-        throw new Error(`Error getting livekit room list from  - ${hostUrl}: ${e}`)
-    });
-}
-
-export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokensName: string = "accessTokens"): string {
-    try {
-        const metadata = JSON.parse(roomMetadata);
-        const tokens = metadata[tokensName];
-        if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
-            console.warn("Failed to get tokens list from livekit room metadata");
-            return "";
-        } else return tokens[Date.now() % tokens.length];
-    } catch (e) {
-        console.log("Error parsing livekit room metadata", e, roomMetadata);
-        return "";
-    }
 }

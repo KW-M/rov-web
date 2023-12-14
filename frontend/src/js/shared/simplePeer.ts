@@ -1,6 +1,7 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
+// import SimplePeer from '@thaunknown/simple-peer/full';
 import SimplePeer from 'simple-peer';
 
 enum SimplePeerErrorCodes {
@@ -25,14 +26,14 @@ export class SimplePeerConnection {
     // timestamp in ms which is updated whenever a message is recived from another participant.
     lastMsgRecivedTimestamp: number;
     // subscribe to get updates on the state of the webrtc connection overall.
-    connectionState: nStoreT<ConnectionStates>; // TODO
+    connectionState = nStore<ConnectionStates>(ConnectionStates.init); // TODO
     // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
-    latestRecivedDataMessage: nStoreT<Uint8Array>;
+    latestRecivedDataMessage = nStore<Uint8Array | null>(null);
     // subscribe to get notified when the simplepeer connection is sending out a new signaling message to establish or maintain a connection.
     // thses messages should be sent to the other party via a already established side channel like a livekit or websocket data connection.
-    outgoingSignalingMessages: nStoreT<string>;
+    outgoingSignalingMessages = nStore<string | null>(null);
     // the current video track being sent/recived through simplepeer.
-    currentVideoStream: nStoreT<MediaStream>;
+    currentVideoStream = nStore<MediaStream | null>(null);
 
     // the simplepeer instance used for this connection.
     _p: SimplePeer;
@@ -43,24 +44,25 @@ export class SimplePeerConnection {
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
 
-    constructor() {
-        this.currentVideoStream = nStore(null);
-        this.outgoingSignalingMessages = nStore(null);
-        this.latestRecivedDataMessage = nStore(null);
-        this.connectionState = nStore(ConnectionStates.init);
-    }
+    constructor() { }
 
-    async start(simplePeerOpts: any) {
+    async start(simplePeerOpts: any, autoReconnect: boolean = true) {
+        this._shouldReconnect = autoReconnect;
+        simplePeerOpts = Object.assign({}, simplePeerOpts, SimplePeer.config);
         this._p = new SimplePeer(simplePeerOpts);
+        this._p._debug = (...args: any[]) => console.debug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
         this._reconnectAttemptCount = 0;
 
+        this.connectionState.set(ConnectionStates.connecting);
+
         this._p.on('signal', (signalData: Object) => {
-            console.log("SIMPLEPEER sendSignallingMsgCallback: ", signalData)
+            console.info("SIMPLEPEER: signal out", signalData)
             this.outgoingSignalingMessages.set(JSON.stringify(signalData));
         })
 
         this._p.on('connect', () => {
             // wait for 'connect' event before using the data channel
+            console.count("SIMPLEPEER: Connected")
             this._emptyMsgQueue();
             this._reconnectAttemptCount = 0;
             this.connectionState.set(ConnectionStates.connected);
@@ -99,7 +101,7 @@ export class SimplePeerConnection {
 
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
-            console.error('SIMPLEPEER: error: ', err)
+            console.error('SIMPLEPEER: error ', err)
             this.currentVideoStream.set(null);
             if (this._shouldReconnect) {
                 this.connectionState.set(ConnectionStates.reconnecting);
@@ -107,11 +109,14 @@ export class SimplePeerConnection {
                 if (this._reconnectAttemptCount < 10) {
                     setTimeout(() => {
                         this._p.reconnect();
-                    }, 10000);
+                    }, 2000);
+                    return
                 } else {
                     console.error('SIMPLEPEER: failed to reconnect after 10 attempts, giving up.')
                 }
             }
+            this._p.destroy();
+            this.connectionState.set(ConnectionStates.failed);
         })
     }
 
@@ -125,6 +130,8 @@ export class SimplePeerConnection {
     ingestSignalingMsg(signalingMsg: string) {
         try {
             const signal = JSON.parse(signalingMsg);
+            if (this._p.destroyed) return;
+            console.info("SIMPLEPEER: signal in", signal)
             this._p.signal(signal)
         } catch (err) {
             console.warn("failed to parse & ingest simplepeer signalling message: ", signalingMsg, err.message)
@@ -140,7 +147,7 @@ export class SimplePeerConnection {
         if (!this._p || !this._p.connected) return false;
         const len = this._msgSendQueue.length
         while (this._msgSendQueue.length > 0) {
-            const msg = this._msgSendQueue.shift();
+            const msg = this._msgSendQueue.shift() as ArrayBufferLike;
             try {
                 this._p.send(msg);
             } catch (err) {

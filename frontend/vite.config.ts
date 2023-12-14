@@ -8,14 +8,15 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [
 		nodePolyfills({
-			include: ["buffer", "stream", "util", "crypto"],
+			include: ["buffer", "stream", "util", "crypto","process"],
 			globals: {
 				Buffer: true,
-				global: false,
-				process: false,
+				global: true,
+				process: true,
 			},
 			protocolImports: false,
-		}), vitePluginRequire.default(), sveltekit(), purgeCss()],
+		}), vitePluginRequire.default(), sveltekit() ],
+		//purgeCss()
 	server: {
 		hmr: true,
 	},

@@ -17,6 +17,26 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
     const rov_actions_proto = {};
 
     /**
+     * LogLevel enum.
+     * @name rov_actions_proto.LogLevel
+     * @enum {number}
+     * @property {number} Debug=0 Debug value
+     * @property {number} Info=1 Info value
+     * @property {number} Warning=2 Warning value
+     * @property {number} Error=3 Error value
+     * @property {number} Critical=4 Critical value
+     */
+    rov_actions_proto.LogLevel = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "Debug"] = 0;
+        values[valuesById[1] = "Info"] = 1;
+        values[valuesById[2] = "Warning"] = 2;
+        values[valuesById[3] = "Error"] = 3;
+        values[valuesById[4] = "Critical"] = 4;
+        return values;
+    })();
+
+    /**
      * SensorMeasurmentTypes enum.
      * @name rov_actions_proto.SensorMeasurmentTypes
      * @enum {number}
@@ -1190,6 +1210,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {number|null} [VelocityY] MoveAction VelocityY
          * @property {number|null} [VelocityZ] MoveAction VelocityZ
          * @property {number|null} [AngularVelocityYaw] MoveAction AngularVelocityYaw
+         * @property {number|null} [ButtonBitmask] MoveAction ButtonBitmask
          */
 
         /**
@@ -1240,6 +1261,28 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         MoveAction.prototype.AngularVelocityYaw = 0;
 
         /**
+         * MoveAction ButtonBitmask.
+         * @member {number|null|undefined} ButtonBitmask
+         * @memberof rov_actions_proto.MoveAction
+         * @instance
+         */
+        MoveAction.prototype.ButtonBitmask = null;
+
+        // OneOf field names bound to virtual getters and setters
+        let $oneOfFields;
+
+        /**
+         * MoveAction _ButtonBitmask.
+         * @member {"ButtonBitmask"|undefined} _ButtonBitmask
+         * @memberof rov_actions_proto.MoveAction
+         * @instance
+         */
+        Object.defineProperty(MoveAction.prototype, "_ButtonBitmask", {
+            get: $util.oneOfGetter($oneOfFields = ["ButtonBitmask"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
          * Creates a new MoveAction instance using the specified properties.
          * @function create
          * @memberof rov_actions_proto.MoveAction
@@ -1271,6 +1314,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 writer.uint32(/* id 3, wireType 5 =*/29).float(message.VelocityZ);
             if (message.AngularVelocityYaw != null && Object.hasOwnProperty.call(message, "AngularVelocityYaw"))
                 writer.uint32(/* id 4, wireType 5 =*/37).float(message.AngularVelocityYaw);
+            if (message.ButtonBitmask != null && Object.hasOwnProperty.call(message, "ButtonBitmask"))
+                writer.uint32(/* id 5, wireType 0 =*/40).int32(message.ButtonBitmask);
             return writer;
         };
 
@@ -1321,6 +1366,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         message.AngularVelocityYaw = reader.float();
                         break;
                     }
+                case 5: {
+                        message.ButtonBitmask = reader.int32();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1356,6 +1405,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         MoveAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
+            let properties = {};
             if (message.VelocityX != null && message.hasOwnProperty("VelocityX"))
                 if (typeof message.VelocityX !== "number")
                     return "VelocityX: number expected";
@@ -1368,6 +1418,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (message.AngularVelocityYaw != null && message.hasOwnProperty("AngularVelocityYaw"))
                 if (typeof message.AngularVelocityYaw !== "number")
                     return "AngularVelocityYaw: number expected";
+            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask")) {
+                properties._ButtonBitmask = 1;
+                if (!$util.isInteger(message.ButtonBitmask))
+                    return "ButtonBitmask: integer expected";
+            }
             return null;
         };
 
@@ -1391,6 +1446,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 message.VelocityZ = Number(object.VelocityZ);
             if (object.AngularVelocityYaw != null)
                 message.AngularVelocityYaw = Number(object.AngularVelocityYaw);
+            if (object.ButtonBitmask != null)
+                message.ButtonBitmask = object.ButtonBitmask | 0;
             return message;
         };
 
@@ -1421,6 +1478,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.VelocityZ = options.json && !isFinite(message.VelocityZ) ? String(message.VelocityZ) : message.VelocityZ;
             if (message.AngularVelocityYaw != null && message.hasOwnProperty("AngularVelocityYaw"))
                 object.AngularVelocityYaw = options.json && !isFinite(message.AngularVelocityYaw) ? String(message.AngularVelocityYaw) : message.AngularVelocityYaw;
+            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask")) {
+                object.ButtonBitmask = message.ButtonBitmask;
+                if (options.oneofs)
+                    object._ButtonBitmask = "ButtonBitmask";
+            }
             return object;
         };
 
@@ -8982,6 +9044,267 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SystemMonitorResponse;
     })();
 
+    rov_actions_proto.LogMessageResponse = (function() {
+
+        /**
+         * Properties of a LogMessageResponse.
+         * @memberof rov_actions_proto
+         * @interface ILogMessageResponse
+         * @property {string|null} [Message] LogMessageResponse Message
+         * @property {rov_actions_proto.LogLevel|null} [Level] LogMessageResponse Level
+         */
+
+        /**
+         * Constructs a new LogMessageResponse.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a LogMessageResponse.
+         * @implements ILogMessageResponse
+         * @constructor
+         * @param {rov_actions_proto.ILogMessageResponse=} [properties] Properties to set
+         */
+        function LogMessageResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LogMessageResponse Message.
+         * @member {string} Message
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @instance
+         */
+        LogMessageResponse.prototype.Message = "";
+
+        /**
+         * LogMessageResponse Level.
+         * @member {rov_actions_proto.LogLevel} Level
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @instance
+         */
+        LogMessageResponse.prototype.Level = 0;
+
+        /**
+         * Creates a new LogMessageResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {rov_actions_proto.ILogMessageResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.LogMessageResponse} LogMessageResponse instance
+         */
+        LogMessageResponse.create = function create(properties) {
+            return new LogMessageResponse(properties);
+        };
+
+        /**
+         * Encodes the specified LogMessageResponse message. Does not implicitly {@link rov_actions_proto.LogMessageResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {rov_actions_proto.ILogMessageResponse} message LogMessageResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LogMessageResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.Message);
+            if (message.Level != null && Object.hasOwnProperty.call(message, "Level"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Level);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LogMessageResponse message, length delimited. Does not implicitly {@link rov_actions_proto.LogMessageResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {rov_actions_proto.ILogMessageResponse} message LogMessageResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LogMessageResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LogMessageResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.LogMessageResponse} LogMessageResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LogMessageResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.LogMessageResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Message = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.Level = reader.int32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LogMessageResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.LogMessageResponse} LogMessageResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LogMessageResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LogMessageResponse message.
+         * @function verify
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LogMessageResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                if (!$util.isString(message.Message))
+                    return "Message: string expected";
+            if (message.Level != null && message.hasOwnProperty("Level"))
+                switch (message.Level) {
+                default:
+                    return "Level: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    break;
+                }
+            return null;
+        };
+
+        /**
+         * Creates a LogMessageResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.LogMessageResponse} LogMessageResponse
+         */
+        LogMessageResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.LogMessageResponse)
+                return object;
+            let message = new $root.rov_actions_proto.LogMessageResponse();
+            if (object.Message != null)
+                message.Message = String(object.Message);
+            switch (object.Level) {
+            default:
+                if (typeof object.Level === "number") {
+                    message.Level = object.Level;
+                    break;
+                }
+                break;
+            case "Debug":
+            case 0:
+                message.Level = 0;
+                break;
+            case "Info":
+            case 1:
+                message.Level = 1;
+                break;
+            case "Warning":
+            case 2:
+                message.Level = 2;
+                break;
+            case "Error":
+            case 3:
+                message.Level = 3;
+                break;
+            case "Critical":
+            case 4:
+                message.Level = 4;
+                break;
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LogMessageResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {rov_actions_proto.LogMessageResponse} message LogMessageResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LogMessageResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.Message = "";
+                object.Level = options.enums === String ? "Debug" : 0;
+            }
+            if (message.Message != null && message.hasOwnProperty("Message"))
+                object.Message = message.Message;
+            if (message.Level != null && message.hasOwnProperty("Level"))
+                object.Level = options.enums === String ? $root.rov_actions_proto.LogLevel[message.Level] === undefined ? message.Level : $root.rov_actions_proto.LogLevel[message.Level] : message.Level;
+            return object;
+        };
+
+        /**
+         * Converts this LogMessageResponse to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LogMessageResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LogMessageResponse
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.LogMessageResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LogMessageResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.LogMessageResponse";
+        };
+
+        return LogMessageResponse;
+    })();
+
     rov_actions_proto.ResponseBackendMetadata = (function() {
 
         /**
@@ -9272,6 +9595,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.IMavlinkResponse|null} [Mavlink] RovResponse Mavlink
          * @property {rov_actions_proto.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
          * @property {rov_actions_proto.ISystemMonitorResponse|null} [SystemMonitor] RovResponse SystemMonitor
+         * @property {rov_actions_proto.ILogMessageResponse|null} [LogMessage] RovResponse LogMessage
          */
 
         /**
@@ -9425,17 +9749,25 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          */
         RovResponse.prototype.SystemMonitor = null;
 
+        /**
+         * RovResponse LogMessage.
+         * @member {rov_actions_proto.ILogMessageResponse|null|undefined} LogMessage
+         * @memberof rov_actions_proto.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.LogMessage = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovResponse Body.
-         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|undefined} Body
+         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|undefined} Body
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal", "SystemMonitor"]),
+            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal", "SystemMonitor", "LogMessage"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -9497,6 +9829,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.SimplepeerSignalResponse.encode(message.SimplepeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             if (message.SystemMonitor != null && Object.hasOwnProperty.call(message, "SystemMonitor"))
                 $root.rov_actions_proto.SystemMonitorResponse.encode(message.SystemMonitor, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+            if (message.LogMessage != null && Object.hasOwnProperty.call(message, "LogMessage"))
+                $root.rov_actions_proto.LogMessageResponse.encode(message.LogMessage, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             return writer;
         };
 
@@ -9597,6 +9931,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     }
                 case 19: {
                         message.SystemMonitor = $root.rov_actions_proto.SystemMonitorResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 20: {
+                        message.LogMessage = $root.rov_actions_proto.LogMessageResponse.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -9791,6 +10129,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "SystemMonitor." + error;
                 }
             }
+            if (message.LogMessage != null && message.hasOwnProperty("LogMessage")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.LogMessageResponse.verify(message.LogMessage);
+                    if (error)
+                        return "LogMessage." + error;
+                }
+            }
             return null;
         };
 
@@ -9887,6 +10235,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (typeof object.SystemMonitor !== "object")
                     throw TypeError(".rov_actions_proto.RovResponse.SystemMonitor: object expected");
                 message.SystemMonitor = $root.rov_actions_proto.SystemMonitorResponse.fromObject(object.SystemMonitor);
+            }
+            if (object.LogMessage != null) {
+                if (typeof object.LogMessage !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.LogMessage: object expected");
+                message.LogMessage = $root.rov_actions_proto.LogMessageResponse.fromObject(object.LogMessage);
             }
             return message;
         };
@@ -9986,6 +10339,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.SystemMonitor = $root.rov_actions_proto.SystemMonitorResponse.toObject(message.SystemMonitor, options);
                 if (options.oneofs)
                     object.Body = "SystemMonitor";
+            }
+            if (message.LogMessage != null && message.hasOwnProperty("LogMessage")) {
+                object.LogMessage = $root.rov_actions_proto.LogMessageResponse.toObject(message.LogMessage, options);
+                if (options.oneofs)
+                    object.Body = "LogMessage";
             }
             return object;
         };

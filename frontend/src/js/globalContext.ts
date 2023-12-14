@@ -38,6 +38,7 @@ export const appReady: nStoreT<boolean> = nStore(false);
 export const debugPageModeActive: nStoreT<boolean> = nStore(false);
 export const stressTest: nStoreT<boolean> = nStore(false);
 export const fullscreenOpen: nStoreT<boolean> = nStore(false);
+export const sidebarExpanded: nStoreT<boolean> = nStore(false);
 
 export const peerServerConfig: nStoreT<any | null> = nStore(null);
 export const rovIpAddr: nStoreT<string> = nStore("raspberrypi.local");

@@ -1,13 +1,20 @@
 import { LivekitPublisherConnection } from "./shared/livekit/livekitConn"
-import { LIVEKIT_CLOUD_ENDPOINT, LIVEKIT_LOCAL_ENDPOINT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates } from './shared/consts';
-import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor } from './shared/util';
+import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates, SIMPLEPEER_BASE_CONFIG } from './shared/consts';
+import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor, waitforCondition } from './shared/util';
 import { getPublisherAccessToken } from './shared/livekit/livekitTokens';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
-import { createLivekitRoom, listLivekitRooms, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from './shared/livekit/adminActions';
 import { SimplePeerConnection } from "./shared/simplePeer"
-import type { LivekitSetupOptions } from "./shared/livekit/adminActions";
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
+import { URL_PARAMS } from "./constsInternal";
+
+export interface InternalLivekitSetupOptions {
+    RovName: string,
+    APIKey: string,
+    SecretKey: string,
+    LivekitCloudURL: string,
+    LivekitLocalURL: string,
+}
 
 /** InternalConnectionManager
  * consolidates all the internet-facing connections of the internal webpage into one place
@@ -23,7 +30,7 @@ class InternalConnectionManager {
     constructor() {
         // Initlize (but don't start) the cloud livekit connection:
         this._cloudLivekitConnection.init({
-            hostUrl: LIVEKIT_CLOUD_ENDPOINT,
+            hostUrl: URL_PARAMS.LIVEKIT_CLOUD_ENDPOINT,
             publishVideo: true,
             reconnectAttempts: 300,
             roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
@@ -72,12 +79,23 @@ class InternalConnectionManager {
         // if (this._localLivekitConnection && this._localLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._localLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
     }
 
-    public async start(livekitSetup: LivekitSetupOptions) {
-        if (livekitSetup.EnableLivekitCloud) this._cloudLivekitConnection.startRoom(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey)
+    public async start(livekitSetup: InternalLivekitSetupOptions) {
+        let lastCloudConnState = this._cloudLivekitConnection.connectionState.get();
+        if (livekitSetup.LivekitCloudURL) this._cloudLivekitConnection.connectionState.subscribe((state) => {
+            if (state === ConnectionStates.failed || state === ConnectionStates.init) {
+                console.info("Creating & Starting Livekit Room: " + livekitSetup.RovName)
+                const backoff = asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3);
+                backoff(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey).catch((e) => { console.error(e); console.log("Too many errors: Triggering Page Reload"); window.location.reload() });
+            } else if (state === ConnectionStates.connected && lastCloudConnState !== ConnectionStates.init) {
+                this._cloudLivekitConnection.updateMetadataTokens()
+            }
+            lastCloudConnState = state;
+        })
         // await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
         // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
         asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({ video: true, audio: false }).then(this.cameraReady.bind(this)).catch((e) => { console.error(e); window.location.reload() });
         console.info("Connection Manager Started")
+        await waitforCondition(() => this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState && this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected)
     }
 
     public async startSimplePeerConnection(userId: string, firstSignallingMessage?: string) {
@@ -87,16 +105,15 @@ class InternalConnectionManager {
         }
         const spConn = new SimplePeerConnection();
         changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
-            backendHandleWebrtcMsgRcvd(userId, msg)
+            if (msg) backendHandleWebrtcMsgRcvd(userId, msg)
         })
         changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
             this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])
         })
-        await spConn.start({
+        await spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
             initiator: false,
-            trickle: false,
             streams: [this._cameraMediaStream]
-        })
+        }), false)
 
         this._simplePeerConnections[userId] = spConn;
         if (firstSignallingMessage) spConn.ingestSignalingMsg(firstSignallingMessage);
@@ -105,7 +122,8 @@ class InternalConnectionManager {
     public async ingestSimplePeerSignallingMsg(userId: string, signallingMsg: string) {
         const spConn = this._simplePeerConnections[userId]
         if (spConn) {
-            if ([ConnectionStates.failed, ConnectionStates.disconnectedOk, ConnectionStates.init].includes(spConn.connectionState.get())) {
+            if ([ConnectionStates.failed, ConnectionStates.disconnectedOk].includes(spConn.connectionState.get())) {
+                console.log("SP: Reconnecting to " + userId + " after signalling message received connectionState: " + spConn.connectionState.get())
                 await this.startSimplePeerConnection(userId, signallingMsg);
             } else spConn.ingestSignalingMsg(signallingMsg);
         } else await this.startSimplePeerConnection(userId, signallingMsg);
@@ -117,11 +135,14 @@ class InternalConnectionManager {
     }
 
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
-        if (!msg || this._cloudLivekitConnection.connectionState.get() != ConnectionStates.connected) return console.count("Livekit Message Not Sent, Livekit Not Connected");
-        console.debug("LvKit: " + (toUserIds.length == 0 ? "Broadcasting msg " : "Sending msg to [" + toUserIds.join(", ") + "]") + (reliable ? "reliably" : "unreliably") + ":", msg);
-        msg.BackendMetadata = new rov_actions_proto.ResponseBackendMetadata({}); // Strip out backend metadata
+        if (!msg) return false;
+        if (this._cloudLivekitConnection.connectionState.get() !== ConnectionStates.connected) {
+            if (URL_PARAMS.DEBUG_MODE) console.debug("LK: Message Not Sent, Livekit Not Connected",);
+            return false;
+        }
+        if (URL_PARAMS.DEBUG_MODE) console.debug("LK/SP: " + (toUserIds.length == 0 ? "Broadcasting msg " : "Sending msg to [" + toUserIds.join(", ") + "]") + (reliable ? "reliably" : "unreliably") + ":", msg);
+        msg.BackendMetadata = new rov_actions_proto.ResponseBackendMetadata({}); // Strip out backend metadata if present
         const msgBytes = rov_actions_proto.RovResponse.encode(msg).finish();
-        // let sentToParticpants = [];
         // if (!reliable) {
         //     for (const userId of toUserIds) {
         //         const spConn = this._simplePeerConnections[userId]
@@ -135,6 +156,7 @@ class InternalConnectionManager {
         const notSentPeers = toUserIds; //toUserIds.filter((userId) => !sentToParticpants.includes(userId));
         await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
         // await this._localLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
+        return true;
     }
 
 }

@@ -1,5 +1,5 @@
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
-import { showToastMessage } from "./toastMessageManager";
+import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
@@ -7,6 +7,7 @@ import { DECODE_TXT } from "./shared/consts";
 import { modalPasswordPrompt } from "./uiDialogs";
 import { handleMavlinkMessage } from "./mavlinkMessageHandler";
 import { updateSystemMonitorDisplay } from "./vehicleStats";
+import { URL_PARAMS } from "./frontendConsts";
 
 let lastTimeRecvdPong = NaN;
 
@@ -22,8 +23,7 @@ export class FrontendRovMsgHandlerClass {
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
         const msgData = rov_actions_proto.RovResponse.decode(new Uint8Array(msgBytes));
-        console.debug("Rcvd Msg: ", msgData.toJSON());
-        if (debugPageModeActive.get()) showToastMessage(JSON.stringify(msgData.toJSON()), 800);
+
         this.runExchangeCallback(msgData.ExchangeId, msgData);
         if (msgData.Done) {
             return this.handleDoneMsgRecived(msgData.ExchangeId, msgData.Done);
@@ -53,11 +53,15 @@ export class FrontendRovMsgHandlerClass {
             return this.handleMavlinkMessageRecived(msgData.ExchangeId, msgData.Mavlink);
         } else if (msgData.SystemMonitor) {
             return this.handleSystemMonitorMsgRecived(msgData.ExchangeId, msgData.SystemMonitor);
+        } else if (msgData.LogMessage) {
+            return this.handleLogMsgRecived(msgData.ExchangeId, msgData.LogMessage);
+        } else {
+            console.warn("Unhandled ROV message recived: ", msgData);
         }
     }
 
     handleDoneMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IDoneResponse) {
-        console.log("Done: ", msgData);
+        if (URL_PARAMS.DEBUG_MODE) console.debug("Done: ", msgData);
     }
 
     handleErrorMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IErrorResponse) {
@@ -72,12 +76,12 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handleContinuedOutputMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IContinuedOutputResponse) {
-        console.log("ContinuedOutput: ", ExchangeId, msgData);
+        if (URL_PARAMS.DEBUG_MODE) console.debug("ContinuedOutput: ", ExchangeId, msgData);
         // pass
     }
 
     handleSensorUpdatesMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ISensorUpdatesResponse) {
-        console.log("SensorUpdates: ", msgData);
+        if (URL_PARAMS.DEBUG_MODE) console.debug("SensorUpdates: ", msgData);
         updateSensorValues(msgData);
     }
 
@@ -86,9 +90,9 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handlePasswordRequiredMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordRequiredResponse) {
-        console.log("PasswordRequired for rovId:", msgData.RovId);
+        if (URL_PARAMS.DEBUG_MODE) console.debug("PasswordRequired for rovId:", msgData.RovId);
         // TODO: use the rovId to determine if we have authtoken
-        modalPasswordPrompt("Enter ROV Password", "", (password) => {
+        modalPasswordPrompt("Enter ROV Password", "").then((password) => {
             if (password) {
                 this.sendRovMessage({
                     PasswordAttempt: {
@@ -104,8 +108,6 @@ export class FrontendRovMsgHandlerClass {
 
     handlePasswordAcceptedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordAcceptedResponse) {
         showToastMessage("Password Accepted", 1000, null);
-        // TODO: save the auth token
-        console.log("TODO: Got AuthToken:", msgData.AuthToken)
     }
 
     handlePasswordInvalidMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordInvalidResponse) {
@@ -130,10 +132,9 @@ export class FrontendRovMsgHandlerClass {
         const mavMessage = DECODE_TXT(msgData.Message)
         try {
             const msg = JSON.parse(mavMessage);
-            console.debug("@ Mav MSG: ", msg);
             handleMavlinkMessage(msg);
         } catch (e) {
-            console.warn("@ Mav MSG INVALID JSON: ", mavMessage);
+            console.warn("@ Mav MSG RECIVED W INVALID JSON: ", mavMessage);
         }
     }
 
@@ -145,7 +146,23 @@ export class FrontendRovMsgHandlerClass {
         showToastMessage(msgData.ClientPeerId + " Disconnected from ROV", 1500, null);
     }
 
+    handleLogMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ILogMessageResponse) {
+        if (URL_PARAMS.SHOW_REMOTE_LOGS) {
+            let logArgs = JSON.parse(msgData.Message);
+            if (!Array.isArray(logArgs)) logArgs = [logArgs];
+            if (logArgs.length === 0) return;
+            if (typeof logArgs[0] === 'string') logArgs[0] = "REMOTE LOG: " + logArgs[0];
+            else logArgs.unshift("REMOTE LOG: ");
+            if (msgData.Level == rov_actions_proto.LogLevel.Debug) console.debug(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Info) console.info(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Warning) console.warn(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Error) console.error(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Critical) console.error(...logArgs);
+        }
+    }
+
     sendRovMessage(msg: rov_actions_proto.IRovAction, replyCallback: null | ((replyMsgData: rov_actions_proto.RovResponse) => void) = null) {
+        if (frontendConnMngr.currentLivekitIdentity.get() === null) return;
         if (!msg.ExchangeId) msg.ExchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random exchange id if none is provided
         if (!this.replyContinuityCallbacks[msg.ExchangeId]) this.replyContinuityCallbacks[msg.ExchangeId] = { callback: replyCallback, originalMsgData: msg };
         frontendConnMngr.sendMessageToRov(msg, false);
@@ -157,7 +174,7 @@ export class FrontendRovMsgHandlerClass {
             console.info("Resending message: ", replyExchageData.originalMsgData)
             this.sendRovMessage(replyExchageData.originalMsgData, replyExchageData.callback);
         } else {
-            console.info("No message to resend for ExchangeId: ", ExchangeId)
+            console.warn("resendMessage(): No message to resend for ExchangeId: ", ExchangeId)
         }
     }
 

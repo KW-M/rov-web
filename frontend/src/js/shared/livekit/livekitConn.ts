@@ -40,6 +40,7 @@ interface LivekitConfig {
     reconnectAttempts: number;
     roomConfig: RoomOptions;
     roomConnectionConfig: RoomConnectOptions;
+    tokenEncryptionPassword?: string;
 }
 
 interface ParticipantConnectionEvent {
@@ -91,13 +92,13 @@ export class LivekitGenericConnection {
         // set up event listeners on the room
         this._roomConn
             .on(RoomEvent.DCBufferStatusChanged, (status) => {
-                appendLog('DCBufferStatusChanged', status);
+                appendLog('LK: DCBufferStatusChanged ', status);
             })
             .on(RoomEvent.SignalConnected, async () => { // DIFF
-                appendLog(`signal connection established`);
+                appendLog(`LK: Signal connection established to ${this.config.hostUrl}`);
             })
             .on(RoomEvent.Connected, async () => {
-                appendLog(`Connected to room: ${this._roomConn.name}`)
+                appendLog(`LK: Connected to room: ${this._roomConn.name} via ${this.config.hostUrl}`)
                 this.connectionState.set(ConnectionStates.connected)
             })
             .on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
@@ -105,85 +106,85 @@ export class LivekitGenericConnection {
                 let reconnect = this._shouldReconnect && !!this._roomConn
                 if (reason === DisconnectReason.DUPLICATE_IDENTITY) {
                     // TODO: handle duplicate identity
-                    console.warn('duplicate identity, disconnected')
+                    console.warn('LK: disconnected from room - duplicate identity')
                     reconnect = false
                 } else if (reason === DisconnectReason.CLIENT_INITIATED) {
-                    console.log('disconnected from room, client initiated')
+                    console.log('LK: disconnected from room - client initiated')
                     reconnect = false
                 } else if (reason === DisconnectReason.SERVER_SHUTDOWN) {
-                    console.log('disconnected from room, server shutdown')
+                    console.log('LK: disconnected from room - server shutdown')
                     reconnect = false
                 } else if (reason === DisconnectReason.PARTICIPANT_REMOVED) {
-                    console.log('disconnected from room, participant removed')
+                    console.log('LK: disconnected from room - participant removed')
                     reconnect = false
                 } else if (reason === DisconnectReason.ROOM_DELETED) {
-                    console.log('disconnected from room, room deleted')
+                    console.log('LK: disconnected from room - room deleted')
                     reconnect = false
                 } else if (reason === DisconnectReason.STATE_MISMATCH) {
-                    console.log('disconnected from room, state mismatch')
+                    console.log('LK: disconnected from room - state mismatch')
                     reconnect = false
                 } else if (reason === DisconnectReason.JOIN_FAILURE) {
-                    console.log('disconnected from room, join failure')
+                    console.log('LK: disconnected from room - join failure')
                 } else if (reason === DisconnectReason.UNKNOWN_REASON) {
-                    console.log('disconnected from room, unknown reason')
+                    console.log('LK: disconnected from room - unknown reason')
                 } else if (reason === DisconnectReason.UNRECOGNIZED) {
-                    console.log('disconnected from room, unrecognized')
+                    console.log('LK: disconnected from room - unrecognized')
                 }
                 if (reconnect) this._reconnect();
                 else this.close();
 
             })
             .on(RoomEvent.Reconnecting, () => {
-                appendLog('Reconnecting to room')
+                appendLog(`LK: Reconnecting to room ${this._roomConn.name} via ${this.config.hostUrl}`)
                 this.connectionState.set(ConnectionStates.reconnecting)
             })
             .on(RoomEvent.Reconnected, async () => {
                 appendLog(
-                    'Successfully reconnected. server',
+                    'LK: Successfully reconnected. server',
                     await this._roomConn.engine.getConnectedServerAddress(),
                 );
                 this.connectionState.set(ConnectionStates.connected)
             })
             .on(RoomEvent.ParticipantMetadataChanged, (a) => {
-                appendLog('ParticipantMetadataChanged', a);
+                appendLog('LK: Participant Metadata Changed', a);
             })
             .on(RoomEvent.ParticipantConnected, async (participant: Participant) => {
-                appendLog(`participant ${participant.identity} (${participant.sid}) connected`, participant.metadata);
+                appendLog(`LK: Participant ${participant.identity} (${participant.sid}) connected`, participant.metadata);
                 this.participantConnectionEvents.set({ id: participant.identity, joined: true })
                 participant.on(ParticipantEvent.ConnectionQualityChanged, () => {
-                    appendLog('ParticipantEvent.ConnectionQualityChanged', participant.connectionQuality);
+                    appendLog('LK: ParticipantEvent.ConnectionQualityChanged', participant.connectionQuality);
                 });
             })
             .on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => {
-                appendLog(`participant ${participant.identity} (${participant.sid}) disconnected`);
+                appendLog(`LK: Participant ${participant.identity} (${participant.sid}) disconnected`);
                 this.participantConnectionEvents.set({ id: participant.identity, joined: false })
             })
             .on(RoomEvent.MediaDevicesError, (e: Error) => {
                 const failure = MediaDeviceFailure.getFailure(e);
-                appendLog('media device failure', failure);
+                appendLog('LK: Media device failure', failure);
                 // this._reconnect();
             })
             .on(RoomEvent.ConnectionQualityChanged, (quality: ConnectionQuality, participant?: Participant) => {
-                appendLog(`connection quality for ${participant ? participant.identity : "[no identity]"} changed to ${quality}`);
+                appendLog(`LK: connection quality for ${participant ? participant.identity : "[no identity]"} changed to ${quality}`);
             })
             .on(RoomEvent.RoomMetadataChanged, (metadata) => {
-                appendLog('new metadata for room', metadata);
+                appendLog('LK: new metadata for room', metadata);
             })
             .on(RoomEvent.MediaDevicesChanged, () => {
-                appendLog('MediaDevicesChanged');
+                appendLog('LK: MediaDevicesChanged');
             })
             .on(RoomEvent.LocalTrackUnpublished, (track: LocalTrackPublication, participant: LocalParticipant) => {
-                appendLog("LocalTrackUnpublished!?????????????", track, participant)
+                appendLog("LK: LocalTrackUnpublished", track.trackSid, "by participant", participant.identity, "source", track.track ? track.track.source : "[no track found]");
             })
             .on(RoomEvent.LocalTrackPublished, (track: LocalTrackPublication, participant: LocalParticipant) => {
-                appendLog('LocalVideoTrackPublished ', track, participant)
+                appendLog('LK: LocalVideoTrackPublished', track.trackSid, "by participant", participant.identity, "source", track.track ? track.track.source : "[no track found]");
             })
             .on(RoomEvent.MediaDevicesError, (e: Error) => {
                 const failure = MediaDeviceFailure.getFailure(e);
-                appendLog('media device failure', failure);
+                appendLog('LK: media device failure', failure);
             })
             .on(RoomEvent.AudioPlaybackStatusChanged, () => {
-                appendLog('AudioPlaybackStatusChanged. canPlaybackAudio =', this._roomConn.canPlaybackAudio);
+                appendLog('LK: AudioPlaybackStatusChanged. canPlaybackAudio =', this._roomConn.canPlaybackAudio);
             })
     }
 
@@ -195,15 +196,15 @@ export class LivekitGenericConnection {
         this._shouldReconnect = true;
 
         const startTime = Date.now();
-        appendLog(`Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
+        console.log(`LK: Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         try {
             // setup timeout in case of connection hang
             const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}`); this._reconnect() }, 16000);
             await this._connect();
             clearTimeout(timeout);
-            appendLog(`Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
+            console.log(`LK: Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
         } catch (err) {
-            appendLog(`Error connecting to ${this.config.hostUrl}`, err);
+            console.log(`LK: Error connecting to ${this.config.hostUrl}`, err);
             this._reconnect();
         }
     }
@@ -213,7 +214,7 @@ export class LivekitGenericConnection {
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
         const participantSIDs = toUserIds.map((userId) => {
             const sid = this.getParticipantSid(userId)
-            if (!sid) console.warn("no participant found for livekit identity: ", userId)
+            if (!sid) console.warn("LK: SendMessge: No participant found for livekit identity: ", userId)
             return sid;
         }) as string[];
         await this._roomConn.localParticipant.publishData(
@@ -239,21 +240,21 @@ export class LivekitGenericConnection {
     async close() {
         this._shouldReconnect = false;
         if (this._roomConn) {
-            console.info("Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
+            console.info("LK: Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
             await this._roomConn.disconnect(true);
         }
     }
 
     async _connect() {
         await this._roomConn.connect(getWebsocketURL(this.config.hostUrl), this._accessToken, this.config.roomConnectionConfig);
-        console.info('connected to room', this._roomConn.name, this._roomConn);
+        console.info('LK: Connected to room', this._roomConn.name, this._roomConn);
     }
 
     async _reconnect() {
         try {
             await this._roomConn.disconnect(true);
         } catch (e) {
-            console.error("Livekit error disconnecting from room", e)
+            console.error("LK: Error disconnecting from room", e)
         }
         if (this._shouldReconnect == false) return;
         if (this._reconnectAttemptCount < this.config.reconnectAttempts) {
@@ -263,11 +264,11 @@ export class LivekitGenericConnection {
             try {
                 await this._connect();
             } catch (e) {
-                console.error("Livekit error reconnecting to room", e)
+                console.error("LK: Error reconnecting to room", e)
                 throw e;
             }
         } else {
-            console.error("Livekit failed to reconnect after ", this._reconnectAttemptCount, "/", this.config.reconnectAttempts, "attempts")
+            console.error("LK: Failed to reconnect after ", this._reconnectAttemptCount, "/", this.config.reconnectAttempts, "attempts")
             this._fail();
         }
     }
@@ -300,10 +301,10 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
                 }
             })
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
-                if (!participant) return console.warn("Ignoring received webrtc message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
+                if (!participant) return console.warn("LK: Ignoring received data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
                 const senderId = participant.identity;
                 const senderSID = participant.sid;
-                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
+                // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
@@ -311,19 +312,19 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
                 })
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
-                appendLog('subscribed to track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid, participant.identity, track.source);
+                console.warn('LK: Subscribed to track ', pub.trackSid, " from participant: ", participant.identity, " source: ", track.source, ' _THIS SHOULDNT HAPPEN on BACKEND_ ');
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
-                appendLog('unsubscribed from track _THIS SHOULDN\'T HAPPEN on BACKEND??_', pub.trackSid);
+                console.warn('LK: Unsubscribed from track', pub.trackSid, " from participant: ", participant.identity, ' _THIS SHOULDNT HAPPEN on BACKEND_ ');
             }).on(RoomEvent.ParticipantConnected, () => {
                 this.updateMetadataTokens();
             })
     }
 
     updateMetadataTokens() {
-        if (!this._livekitAdmin) return console.warn("Can't update metadata tokens, livekit admin client not initialized");
+        if (!this._livekitAdmin) return console.warn("LK: Can't update metadata tokens, livekit admin client not initialized");
         const existingParticipantIds = [...(this._roomConn.participants.values())].map(p => p.identity);
-        refreshMetadata(this._livekitAdmin, this._livekitApiKey, this._livekitSecretKey, this._rovRoomName, existingParticipantIds);
+        refreshMetadata(this._livekitAdmin, this._livekitApiKey, this._livekitSecretKey, this._rovRoomName, existingParticipantIds, this.config.tokenEncryptionPassword);
     }
 
 
@@ -361,11 +362,11 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
         // set up more specific event listeners for video publisher (the rov)
         this._roomConn
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
-                if (!participant) return console.warn("Ignoring received livekit data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
+                if (!participant) return console.warn("LK: Ignoring received data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
                 if (participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 const senderId = participant.identity;
                 const senderSID = participant.sid;
-                appendLog(`Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
+                // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = Date.now();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
@@ -385,26 +386,26 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
                 if (track.kind === Track.Kind.Video) {
                     const remoteVideo = this.remoteVideoTrack.get()
                     if (remoteVideo) {
-                        console.warn("Livekit: already subscribed to video track, unsubscribing from old track", this.remoteVideoTrack.get())
+                        console.warn("LK: already subscribed to video track, unsubscribing from old track", this.remoteVideoTrack.get())
                         remoteVideo.stop()
                     }
-                    appendLog('Livekit: subscribed to video', track.source);
+                    appendLog('LK: subscribed to video', track.source);
                     this.remoteVideoTrack.set(track)
                     track.on('upstreamPaused', () => {
-                        console.log('livekit: video upstream paused')
+                        console.log('LK: video upstream paused')
                     })
                     track.on('muted', () => {
-                        console.log('livekit: video muted')
+                        console.log('LK: video muted')
                     })
                     track.on('ended', () => {
-                        console.log('livekit: video ended')
+                        console.log('LK: video ended')
                     })
                 } else {
-                    appendLog('Livekit: subscribed to unknown track kind', track.kind, track.source);
+                    console.warn('LK: Subscribed to unknown track kind: ', track.kind, track.source);
                 }
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
-                appendLog('unsubscribed from track!!!!', pub.trackSid);
+                appendLog('LK: Unsubscribed from track', pub.trackSid, " from participant: ", participant.identity);
             })
     }
 

@@ -1,4 +1,6 @@
 import asyncio
+import os
+from urllib.parse import urlencode
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -42,6 +44,7 @@ class WebdriverManager:
         chrome_options.add_argument("--enable-logging")
         chrome_options.add_argument("--v=1")
         chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
 
         # chrome_options.add_argument("--remote-debugging-port=9222") # Breaks chrome driver
         # chrome_options.add_argument("--remote-debugging-address=0.0.0.0")
@@ -123,3 +126,30 @@ class WebdriverManager:
 
 # Singleton export pattern; anyone importing this module will be able to access this particular instance.
 rovWebdriverManager = WebdriverManager()
+
+if __name__ == "__main__":
+    query_params = {
+        "ROV_NAME": os.environ.get("ROV_NAME", "Default-ROV"),
+        "ROV_CONTROL_PASSWORD": os.environ.get("ROV_CONTROL_PASSWORD", ""),
+        "DEBUG_MODE": os.environ.get("DEBUG_MODE", "false").upper() == "TRUE",
+        "SEND_LOGS": os.environ.get("SEND_LOGS", "false").upper() == "TRUE",
+        "BLUEOS_APIS_ENDPOINT": os.environ.get(
+            "BLUEOS_APIS_ENDPOINT", "http://host.docker.internal"
+        ),
+        "PYTHON_WEBSOCKET_PORT": os.environ.get("PYTHON_WEBSOCKET_PORT", 0),
+        "LIVEKIT_CLOUD_URL": os.environ.get(
+            "LIVEKIT_CLOUD_URL", "https://rov-web.livekit.cloud"
+        ),
+        "LIVEKIT_API_KEY": os.environ.get("LIVEKIT_API_KEY", ""),
+        "LIVEKIT_SECRET_KEY": os.environ.get("LIVEKIT_SECRET_KEY", ""),
+        "TWITCH_STREAM_KEY": os.environ.get("TWITCH_STREAM_KEY", ""),
+    }
+    # add query string to url from query_params dict using url encoding:
+    URL = os.environ.get("INTERNAL_WEBPAGE_URL", "http://localhost:8080/internal")
+    URL += "?" + urlencode(query_params)
+    print(URL)
+
+    rovWebdriverManager.init(URL)
+    rovWebdriverManager.start()
+    rovWebdriverManager.test_fetch_title()
+    rovWebdriverManager.start_browser_logging_loop()

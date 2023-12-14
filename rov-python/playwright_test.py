@@ -5,6 +5,7 @@ from playwright.async_api import async_playwright, Playwright
 
 
 async def run(playwright: Playwright):
+    browser_context = None
     try:
         # necessary to make virtual display to run graphical applications in headless mode
         # display = Display(visible=0, size=(800, 600))
@@ -13,7 +14,6 @@ async def run(playwright: Playwright):
         chromium = playwright.chromium
         browser_context = await chromium.launch(
             args=["--enable-logging", "--v=1", "--use-fake-ui-for-media-stream"],
-            # viewport={"width": 800, "height": 600},
             chromium_sandbox=True,
             headless=True,
         )
@@ -26,17 +26,15 @@ async def run(playwright: Playwright):
         #     # screen={"width": 800, "height": 600},
         #     headless=True,
         # )
-        page = await browser_context.new_page(
-            permissions=["microphone", "camera", "geolocation"]
-        )
-        await page.goto(
-            "http://localhost:8080/internal?LivekitCloudUrl=https%3A%2F%2Frov-web.livekit.cloud&LivekitApiKey=APIHd7Boa9RUUiT&LivekitSecretKey=OEnyn7xw5d0vKNqLlKDSD6UXaSvoVQ8uLDiZycjb8pH&RovName=Kyle-9&RovControlPassword=1234&AuthTokenTimeout=86400"
-        )
+        page = await browser_context.new_page(permissions=["camera"])
         page.on(
             "console",
             lambda msg: print(
                 "WEB CONSOLE " + msg.type.rjust(6, " ") + ": " + msg.text
             ),
+        )
+        await page.goto(
+            "http://localhost:8080/internal?LivekitCloudUrl=https%3A%2F%2Frov-web.livekit.cloud&LivekitApiKey=APIHd7Boa9RUUiT&LivekitSecretKey=OEnyn7xw5d0vKNqLlKDSD6UXaSvoVQ8uLDiZycjb8pH&RovName=Kyle-9&RovControlPassword=1234&AuthTokenTimeout=86400"
         )
         while True:
             await asyncio.sleep(100)

@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [
 		nodePolyfills({
-			include: ["buffer", "process"],
+			include: ["buffer", "process", "util"],
 			globals: {
 				Buffer: true,
 				process: true,
@@ -36,7 +36,8 @@ export default defineConfig({
 		rollupOptions: {
 			input: {
 				internal: "index.html",
-				offlineframe: "offlineframe/index.html"
+				offlineframe: "offlineframe/index.html",
+				docs: "docs/index.html"
 			},
 			output: {
 				compact: true,

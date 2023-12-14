@@ -29,15 +29,16 @@
           event: "hover",
           target: tooltipId,
           delay: 1500,
-          placement: "bottom",
+          placement: "left",
           middleware: {
             autoPlacement: {
-              alignment: "start",
-              autoAlignment: true,
+              autoAlignment: false,
+              crossAxis: true,
+              allowedPlacements: ["left", "right"],
             },
           },
         } as PopupSettings,
-        config
+        config,
       );
       tooltipIndex = tooltips.length;
       tooltips.push({
@@ -49,27 +50,22 @@
     });
     await waitfor(1);
     actions = popup(node, config);
-    console.log("tooltip ddd", savedTooltips.get());
     savedTooltips.get()[tooltipIndex].actions = actions;
-    console.log("tooltip created", savedTooltips.get()[tooltipIndex]);
     return actions;
   };
 </script>
 
 {#each $savedTooltips as tooltip}
-  <div class="popper-tooltip help-tooltip z-40 opacity-0" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
+  <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-filled-primary z-40 pointer-events-none select-none" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
     {tooltip.label}
+    <div class="arrow variant-filled-primary popper-tooltip-arrow" />
   </div>
 {/each}
 
 <style>
   /* ***** Popper Tooltip Customizations ***** */
 
-  .help-tooltip {
-    user-select: none;
-    pointer-events: none;
-  }
-
+  /*
   .popper-tooltip {
     z-index: 1000;
     white-space: pre-wrap;
@@ -85,7 +81,12 @@
     font-weight: bold;
   }
 
-  .popper-tooltip::after {
+  .popper-tooltip-arrow{
+    z-index: -1;
+  width: 20px;
+  height: 20px;
+  } */
+  /* .popper-tooltip-arrow::after {
     position: absolute;
 
     display: block;
@@ -93,14 +94,12 @@
     width: 0;
     height: 0;
 
-    content: "";
-
     border-top: 16px solid rgb(255, 255, 255);
     border-right: 16px solid transparent;
     border-left: 16px solid transparent;
   }
 
-  .popper-tooltip::before {
+  .popper-tooltip-arrow::before {
     position: absolute;
 
     display: block;
@@ -113,60 +112,5 @@
     border-top: 17px solid rgb(0, 0, 0);
     border-right: 17px solid transparent;
     border-left: 17px solid transparent;
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="top"]::after) {
-    bottom: -16px;
-    left: 50%;
-
-    transform: translateX(-16px) rotate(0);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="bottom"]::after) {
-    top: -15px;
-    left: 50%;
-
-    transform: translateX(-16px) rotate(180deg);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="left"]::after) {
-    top: 50%;
-    right: -22px;
-
-    transform: translateY(-8px) rotate(270deg);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="right"]::after) {
-    top: 50%;
-    left: -22px;
-
-    transform: translateY(-8px) rotate(90deg);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="top"]::before) {
-    bottom: -20px;
-    left: 50%;
-
-    transform: translateX(-17px) rotate(0);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="bottom"]::before) {
-    top: -19px;
-    left: 50%;
-    transform: translateX(-17px) rotate(180deg);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="left"]::before) {
-    top: 50%;
-    right: -26px;
-
-    transform: translateY(-8.5px) rotate(270deg);
-  }
-
-  :global(.popper-tooltip[data-popper-placement^="right"]::before) {
-    top: 50%;
-    left: -26px;
-
-    transform: translateY(-8.5px) rotate(90deg);
-  }
+  } */
 </style>

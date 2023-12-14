@@ -5,43 +5,63 @@ import { irovMavlinkInterface } from "./mavlinkWebsocket";
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { shutdownROV } from "./blueosAPIs/commander";
 
-
+let designated_driver_user_id: string | null = null
 function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_proto.RovAction) {
-
     if (msgProto.SimplepeerSignal && msgProto.SimplepeerSignal.Message) {
         internalConnManager.ingestSimplePeerSignallingMsg(senderId, msgProto.SimplepeerSignal.Message)
         return true;
+    } else if (msgProto.Move) {
+        if (designated_driver_user_id && designated_driver_user_id !== senderId) return false;
+        let x = (msgProto.Move.VelocityX || 0) * 500
+        let y = (msgProto.Move.VelocityY || 0) * 500
+        let z = (msgProto.Move.VelocityZ || 0) * 500 + 500
+        let r = (msgProto.Move.AngularVelocityYaw || 0) * 500
+        let buttonBitmask = msgProto.Move.ButtonBitmask || 0
+        irovMavlinkInterface.sendMessage(manualControl(x, y, z, r, buttonBitmask))
+        return true;
+    } else if (msgProto.ShutdownRov) {
+        shutdownROV("poweroff").then((msg) => {
+            internalConnManager.sendMessage(rov_actions_proto.RovResponse.create({
+                ExchangeId: msgProto.ExchangeId,
+                Done: { Message: msg }
+            }), false, [])
+        }).catch((err) => {
+            internalConnManager.sendMessage(rov_actions_proto.RovResponse.create({
+                ExchangeId: msgProto.ExchangeId,
+                Error: { Message: err.message }
+            }), false, [])
+        })
+        return true;
+    } else if (msgProto.RebootRov) {
+        shutdownROV("reboot")
+    } else if (msgProto.SetAutopilotMode) {
+        irovMavlinkInterface.sendMessage(setMode(msgProto.SetAutopilotMode.mode))
+        return true;
+    } else if (msgProto.Disarm) {
+        irovMavlinkInterface.sendMessage(disarm(true))
+        return true;
+    } else if (msgProto.TakeControl) {
+        designated_driver_user_id = senderId;
+        internalConnManager.sendMessage(rov_actions_proto.RovResponse.create({
+            DriverChanged: { DriverPeerId: senderId }
+        }), false, [])
+        irovMavlinkInterface.sendMessage(arm(true))
+        return true;
+    } else if (msgProto.Ping) {
+        internalConnManager.sendMessage(rov_actions_proto.RovResponse.create({
+            Pong: { Time: msgProto.Ping.Time }
+        }), false, [senderId])
+        irovMavlinkInterface.sendMessage(heartbeat())
+        return true;
     }
-    //  else if (msgProto.Move) {
-    //     let x = (msgProto.Move.VelocityX || 0) * 500
-    //     let y = (msgProto.Move.VelocityY || 0) * 500
-    //     let z = (msgProto.Move.VelocityZ || 0) * 500 + 500
-    //     let r = (msgProto.Move.AngularVelocityYaw || 0) * 500
-    //     irovMavlinkInterface.sendMessage(manualControl(x, y, z, r))
-    //     return true;
-    // } else if (msgProto.ShutdownRov) {
-    //     shutdownROV("poweroff")
-    // } else if (msgProto.RebootRov) {
-    //     shutdownROV("reboot")
-    // } else if (msgProto.SetAutopilotMode) {
-    //     irovMavlinkInterface.sendMessage(setMode(msgProto.SetAutopilotMode.mode))
-    //     return true;
-    // } else if (msgProto.Disarm) {
-    //     irovMavlinkInterface.sendMessage(disarm(true))
-    //     return true;
-    // } else if (msgProto.TakeControl) {
-    //     irovMavlinkInterface.sendMessage(arm(false))
-    //     return false;
-    // } else if (msgProto.Ping) {
-    //     irovMavlinkInterface.sendMessage(heartbeat())
-    //     return false;
-    // }
-    else return false;
+    else {
+        console.debug("Unhandled Message Recived: ", msgProto.toJSON());
+        return false;
+    }
 }
 
 /*
     Intended to handle messages coming FROM Livekit/The Internet
-    TODO We wish to send this data to the iROV python code
 */
 export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBufferLike) {
     let data = new Uint8Array(msgBytes)
@@ -49,7 +69,6 @@ export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBuff
 
     // Decode the protobuf object from bytes
     const msgProto = rov_actions_proto.RovAction.decode(data)
-    console.debug("Rcvd Msg: ", msgProto.toJSON());
     if (handleInternalWebpageActions(senderId, msgProto)) return;
 
     // Stuff the protobuff object with metadata

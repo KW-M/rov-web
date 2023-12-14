@@ -1,7 +1,8 @@
 import { enableIframeWebsocketProxying } from "./shared/iframeWsProxy/iframeWsProxy";
 import { waitfor } from "./shared/util";
 import { frontendConnMngr } from "./frontendConnManager";
-import { LIVEKIT_LOCAL_ENDPOINT } from "./shared/consts";
+import { URL_PARAMS } from "./frontendConsts";
+import { modalConfirm } from "./uiDialogs";
 
 
 export class FrontendStartupFlowClass {
@@ -19,14 +20,18 @@ export class FrontendStartupFlowClass {
                 await this.failedToConnectToLivekitCloud(err)
             }
         } else {
-            console.log("We are in an iframe, enabling iframe proxying to local Livekit...");
-            try {
-                enableIframeWebsocketProxying();
-                console.warn("TODO: Connect to local Livekit server...")
-                // await frontendConnMngr.initUsingLocalLivekitConnection()
-            } catch (err) {
-                await this.failedToConnectToLocalLivekit(err)
-            }
+            console.log("We are in an iframe, alerting user");
+            modalConfirm("Uh oh, rov control won't work here", "Click ok to open this page outside BlueOS", () => {
+                window.open(window.location.toString())
+            })
+            // console.log("We are in an iframe, enabling iframe proxying to local Livekit...");
+            // try {
+            //     enableIframeWebsocketProxying();
+            //     console.warn("TODO: Connect to local Livekit server...")
+            //     // await frontendConnMngr.initUsingLocalLivekitConnection()
+            // } catch (err) {
+            //     await this.failedToConnectToLocalLivekit(err)
+            // }
         }
     }
 
@@ -43,7 +48,7 @@ export class FrontendStartupFlowClass {
     }
 
     async navigateToROVLocalIframePage() {
-        window.location.href = LIVEKIT_LOCAL_ENDPOINT + "/offlineframe"
+        window.location.href = URL_PARAMS.LIVEKIT_LOCAL_ENDPOINT + "/offlineframe"
     }
 
 }

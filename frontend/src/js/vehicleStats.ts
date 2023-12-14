@@ -1,22 +1,23 @@
 import nStore from "./shared/libraries/nStore";
-import { FlightMode, FlightmodeNameMap, MavState } from "./shared/mavlink2RestMessages";
-import { showToastMessage } from "./toastMessageManager";
+import { FlightMode, FlightmodeNameMap } from "./shared/mavlink2RestMessages";
+import { MavState } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
+import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 
-export const networkLatencyMs = nStore<number>(0);
-export const batteryPercent = nStore<number>(0);
-export const batteryVoltage = nStore<number>(0);
-export const batteryCurrent = nStore<number>(0);
+export const networkLatencyMs = nStore<number>(Infinity);
+export const batteryPercent = nStore<number>(Infinity);
+export const batteryVoltage = nStore<number>(Infinity);
+export const batteryCurrent = nStore<number>(Infinity);
 
-export const autopilotLoad = nStore<number>(0);
+export const autopilotLoad = nStore<number>(Infinity);
 export const autopilotErrorCount = nStore<number>(0);
 export const autopilotMode = nStore<FlightMode>(FlightMode.unknown);
 export const autopilotMavState = nStore<MavState>(MavState.MAV_STATE_UNINIT);
 export const autopilotArmed = nStore<boolean>(false);
 
-export const cpuTempC = nStore<number>(0);
-export const cpuUsagePercent = nStore<number>(0);
-export const memUsagePercent = nStore<number>(0);
-export const diskUsagePercent = nStore<number>(0);
+export const cpuTempC = nStore<number>(Infinity);
+export const cpuUsagePercent = nStore<number>(Infinity);
+export const memUsagePercent = nStore<number>(Infinity);
+export const diskUsagePercent = nStore<number>(Infinity);
 
 export function updateSystemMonitorDisplay(cpuTemp: number, cpuUsage: number, MemUsage: number, DiskUsage: number, warnings: string[]) {
     cpuTempC.set(cpuTemp);
@@ -25,7 +26,7 @@ export function updateSystemMonitorDisplay(cpuTemp: number, cpuUsage: number, Me
     diskUsagePercent.set(DiskUsage);
     warnings.forEach((warning) => {
         console.warn("System Monitor Warning: " + warning)
-        showToastMessage(warning, 5000)
+        showToastMessage(warning, 5000, true, ToastSeverity.warning)
     });
 }
 
@@ -43,7 +44,7 @@ export function updateAutopilotFlightModeDisplay(mode: FlightMode) {
     if (mode in FlightmodeNameMap) {
         autopilotMode.set(mode);
     } else {
-        console.warn("Unknown flight mode number recived: ", mode);
+        showToastMessage("ROV is in unknown flight mode: " + String(mode), 4000, true, ToastSeverity.warning);
         autopilotMode.set(FlightMode.unknown)
     }
 }

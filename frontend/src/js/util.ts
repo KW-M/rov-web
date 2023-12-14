@@ -1,5 +1,5 @@
 import type { nStoreT } from './shared/libraries/nStore';
-import { EMOJI_MAP } from "./consts";
+import { EMOJI_MAP } from "./frontendConsts";
 import { changesSubscribe } from './shared/util';
 
 declare global {
