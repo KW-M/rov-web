@@ -19,7 +19,7 @@ export const EMOJI_MAP = ["🏔", "🏎", "🚃", "🕤", "🐔", "🛤", "🚖"
 export const MEMORABLE_PEER_ID_OFFSET = 74646;
 
 export const PING_INTERVAL = 1000 // 1 second in ms
-export const MOVE_MSG_TIMEOUT = 800 // 0.8 seconds in ms
+export const MOVE_MSG_TIMEOUT = 300 // 0.8 seconds in ms
 
 export enum ConnectionState {
     connecting = "Connecting",

@@ -8,7 +8,7 @@ import { calculateDesiredMotion } from "./rovUtil";
 import type { buttonChangeDetails } from "virtual-gamepad-lib";
 import { ConnectionStates } from "./shared/consts";
 import type { FlightMode } from "./shared/mavlink2RestMessages";
-import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT } from "./frontendConsts";
+import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
 
 class RovActionsClass {
 
@@ -32,6 +32,8 @@ class RovActionsClass {
         const BTN_Y = GPAD_STANDARD_BUTTON_INDEX.Y
         const BTN_LT = GPAD_STANDARD_BUTTON_INDEX.LT
         const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
+        const BTN_RB = GPAD_STANDARD_BUTTON_INDEX.RB
+        const BTN_LB = GPAD_STANDARD_BUTTON_INDEX.LB
 
         if (buttonsChangedMask[BTN_A] && buttonsChangedMask[BTN_A].released) {
             this.takeControl()
@@ -47,7 +49,8 @@ class RovActionsClass {
             // do something with throttle
         }
 
-        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT];
+        // FIXME: this is a hack to get the buttons to work with the mavlink message
+        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT, BTN_LB, BTN_RB];
         const pressedButtons = buttonsChangedMask.map((val, index) => {
             if (val === false) return false;
             if (rawExcludedButtons.includes(index)) return false;
@@ -90,7 +93,7 @@ class RovActionsClass {
         this.requiredMsgsLoopIntervalId = Number(setInterval(() => {
             if (frontendConnMngr.connectionState.get() != ConnectionStates.connected) return;
             const now = Date.now();
-            if (now - this.lastPingTime > MOVE_MSG_TIMEOUT) {
+            if (now - this.lastPingTime > PING_INTERVAL) {
                 frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
                 this.lastPingTime = now;
             }
@@ -132,13 +135,15 @@ class RovActionsClass {
     }
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, btnBitmask: number = -1) {
+        // FIXME: this is a hack to get the buttons to work with the mavlink message
         const ButtonBitmask = btnBitmask === -1 ? this.lastMove.ButtonBitmask : btnBitmask;
         const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
         const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
-        const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
-        if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
-        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } }, null);
-        this.lastMove = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask };
+        // const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
+        // if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
+        const move = { VelocityX: VelocityY * 2, VelocityY: VelocityX, VelocityZ, AngularVelocityYaw, ButtonBitmask }
+        frontendRovMsgHandler.sendRovMessage({ Move: move }, null);
+        this.lastMove = move;
         this.lastMovementTime = Date.now();
     }
 
