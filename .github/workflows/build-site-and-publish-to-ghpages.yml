@@ -66,6 +66,7 @@ jobs:
           run: |
             pnpm install
             pnpm run compile:proto
+            pnpm run build:frontend
             pnpm run build
 
         - name: Zip Repo to share as a Github Release
