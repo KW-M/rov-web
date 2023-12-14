@@ -80,7 +80,7 @@ message MoveAction {
     float VelocityY = 2;
     float VelocityZ = 3;
     float AngularVelocityYaw = 4;
-    optional int32 ButtonBitmask = 5;
+    int32 ButtonBitmask = 5; // optional
 }
 
 message BeginVideoStreamAction {
