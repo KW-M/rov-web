@@ -67,7 +67,6 @@ jobs:
             pnpm install
             pnpm run compile:proto
             pnpm run build
-            pnpm run build:frontend
 
         - name: Zip Repo to share as a Github Release
           uses: thedoctor0/zip-release@0.7.1
