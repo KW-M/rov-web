@@ -12,7 +12,7 @@
     "dev:internal": "cd rov-internal-website; vite dev --host",
     "build:frontend": "cd frontend; vite build",
     "build:internal": "cd rov-internal-website; vite build",
-    "preview:frontend": "cd frontend; vite preview --host",
+    "preview:frontend": "cd frontend; vite preview --host --base /rov-web",
     "preview:internal": "cd rov-internal-website; vite preview --host",
     "sveltekit:sync": "cd frontend; svelte-kit sync",
     "sveltekit:check": "cd frontend;svelte-kit sync && svelte-check --tsconfig ./frontend/tsconfig.json",

@@ -13,7 +13,7 @@ const config = {
 	},
 	kit: {
 		adapter: adapterStatic({ fallback: 'index.html', strict: false }),
-		paths: { relative: true },
+		paths: { relative: true, base: '/rov-web' },
 		serviceWorker: {
 			// files: "service-worker.ts"
 		},
