@@ -85,6 +85,9 @@ jobs:
             makeLatest: true
             allowUpdates: true
 
+        - name: Copy Internal Page for Debugging on Github Pages
+          run: cp -r ./rov-internal-website/build ./frontend/build/internal
+
         - name: Deploy Site to Github Pages Website Hosting 🚀
           uses: JamesIves/github-pages-deploy-action@v4.5.0
           with:
