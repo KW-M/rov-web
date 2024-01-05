@@ -57,18 +57,6 @@ class RovActionsClass {
             return val.pressed || val.heldDown;
         })
         this.sendButtonsToRov(pressedButtons);
-
-        // else if (gamepad.buttons[12].pressed) {
-        //     let delay = gpadCtrl.throttleDelay + 1;
-        //     // this.setInputThrottle(delay);
-        // } else if (gamepad.buttons[13].pressed) {
-        //     let delay = Math.max(this.throttleDelay - 1, 1);
-        //     this.setInputThrottle(delay);
-        // } else if (gamepad.buttons[14].pressed) {
-        //     this.setInputThrottle(10);
-        // } else if (gamepad.buttons[15].pressed) {
-        //     this.setInputThrottle(100);
-        // }
     }
 
     gamepadAxisTriggers(gamepad: Gamepad) {
@@ -98,7 +86,7 @@ class RovActionsClass {
                 this.lastPingTime = now;
             }
             if (now - this.lastMovementTime > MOVE_MSG_TIMEOUT) {
-                this.moveRov(0, 0, 0, 0, 0);
+                frontendRovMsgHandler.sendRovMessage({ Move: this.lastMove }, null);
                 this.lastMovementTime = now;
             }
         }, 10))
@@ -135,13 +123,13 @@ class RovActionsClass {
     }
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, btnBitmask: number = -1) {
-        // FIXME: this is a hack to get the buttons to work with the mavlink message
         const ButtonBitmask = btnBitmask === -1 ? this.lastMove.ButtonBitmask : btnBitmask;
         const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
         const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
         // const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
         // if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
-        const move = { VelocityX: VelocityY * 2, VelocityY: VelocityX, VelocityZ, AngularVelocityYaw, ButtonBitmask }
+        const move = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask }
+        console.log("MOVE:", move.VelocityX, move.VelocityY, move.VelocityZ, move.AngularVelocityYaw, move.ButtonBitmask)
         frontendRovMsgHandler.sendRovMessage({ Move: move }, null);
         this.lastMove = move;
         this.lastMovementTime = Date.now();

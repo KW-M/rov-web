@@ -14,12 +14,6 @@
   let collapsedMode = false; //$rovDataChannelConnState === ConnectionState.connected || $rovDataChannelConnState === ConnectionState.connecting || $rovDataChannelConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.connecting || $peerServerConnState === ConnectionState.reconnecting || $peerServerConnState === ConnectionState.disconnected;
 
   export let visible: boolean = false;
-  // export let disabled: boolean = false;
-  // $: if (visible && !disabled) {
-  //   gpadCtrl.clearExternalEventListenerCallbacks();
-  // } else {
-  //   gpadCtrl.setupGamepadEvents(10);
-  // }
 
   // TODO? switch to onMount()?
   onMount(() => {

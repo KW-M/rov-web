@@ -12,8 +12,8 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
         return true;
     } else if (msgProto.Move) {
         if (designated_driver_user_id && designated_driver_user_id !== senderId) return false;
-        let x = (msgProto.Move.VelocityX || 0) * 500
-        let y = (msgProto.Move.VelocityY || 0) * 500
+        let x = (msgProto.Move.VelocityX || 0) * 1000 // X is forward in the ROV
+        let y = (msgProto.Move.VelocityY || 0) * 1000 // Y is left/right in the ROV)
         let z = (msgProto.Move.VelocityZ || 0) * 500 + 500
         let r = (msgProto.Move.AngularVelocityYaw || 0) * 500
         let buttonBitmask = msgProto.Move.ButtonBitmask || 0

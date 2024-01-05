@@ -6,9 +6,9 @@ import { GAME_CONTROLLER_BUTTON_CONFIG } from "./frontendConsts";
 import { throttle } from "./util";
 import { RovActions } from "./rovActions";
 import { calculateDesiredMotion } from "./rovUtil";
-import { addTooltip } from "../components/HelpTooltips.svelte";
 import { showToastMessage } from "./toastMessageManager";
 import { frontendConnMngr } from './frontendConnManager';
+import { addTooltip } from '../components/HelpTooltips.svelte';
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
@@ -26,7 +26,6 @@ export class GamepadController {
     gpadEmulator: GamepadEmulator;
     gpadApiWrapper: GamepadApiWrapper;
     touchedGpadButtonCount: number = 0;
-    throttleDelay: number = 10;
     onAxisChange: null | ((gamepad: Gamepad) => void);
     onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void);
 
@@ -35,7 +34,7 @@ export class GamepadController {
         this.touchedGpadButtonCount = 0
     }
 
-    start(onAxisChange: null | ((gamepad: Gamepad) => void), onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void), throttleDelay: number) {
+    start(onAxisChange: null | ((gamepad: Gamepad) => void), onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void)) {
         this.gpadUi.start();
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
         // the emulator will either use the real gamepad api if a gamepad is plugged in or it will inject the onscreen gamepad as if it were comming from the gamepad api.
@@ -47,12 +46,17 @@ export class GamepadController {
         // initilize the GamepadInterface class with the config from the button consts file
         this.gpadApiWrapper = new GamepadApiWrapper({
             axisDeadZone: 0.05,
-            updateDelay: 10,
+            updateDelay: 28,
             buttonConfigs: GAME_CONTROLLER_BUTTON_CONFIG,
         });
+
+        // setup gpadApiWrapper gamepad events.
         this.onAxisChange = onAxisChange;
         this.onButtonChange = onButtonChange;
-        this.setupGamepadEvents(throttleDelay);
+        this.gpadApiWrapper.onGamepadConnect(this.gamepadConnectDisconnectHandler.bind(this));
+        this.gpadApiWrapper.onGamepadDisconnect(this.gamepadConnectDisconnectHandler.bind(this));
+        this.gpadApiWrapper.onGamepadAxisChange(this.handleAxisChange.bind(this));
+        this.gpadApiWrapper.onGamepadButtonChange(this.handleButtonChange.bind(this));
     }
 
     setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER) {
@@ -73,25 +77,9 @@ export class GamepadController {
         if (connectedGamepadCount > 1) console.log("WARNING: More than one gamepad connected!", gamepads);
     }
 
-    setInputThrottle(throttleDelay) {
-        this.throttleDelay = throttleDelay;
-        this.gpadApiWrapper.onGamepadAxisChange(throttle(this.handleAxisChange.bind(this), this.throttleDelay, { trailing: true, leading: true }));
-        this.gpadApiWrapper.onGamepadButtonChange(throttle(this.handleButtonChange.bind(this), this.throttleDelay, { trailing: true, leading: true }));
-    }
-
-    setupGamepadEvents(throttleDelay) {
-        // setup gpadApiWrapper gamepad events.
-        this.gpadApiWrapper.onGamepadConnect(this.gamepadConnectDisconnectHandler.bind(this));
-        this.gpadApiWrapper.onGamepadDisconnect(this.gamepadConnectDisconnectHandler.bind(this));
-        this.setInputThrottle(throttleDelay);
-    }
-
     handleButtonChange(gpadIndex, gamepad, buttonsChangedMask) {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
         if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
-        if ((buttonsChangedMask[8] && buttonsChangedMask[8].released) || (buttonsChangedMask[9] && buttonsChangedMask[9].released)) {
-            this.gpadUi.toggleGamepadHelpScreen();
-        }
 
         let noGamepadButtonTouched = true;
         for (let i = 0; i < buttonsChangedMask.length; i++) {

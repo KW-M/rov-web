@@ -4,8 +4,8 @@ export function calculateDesiredMotion(axes) {
     let strafe = Number(axes[2].toFixed(3));
     let vertical = -1 * Number(axes[3].toFixed(3));
     return {
-        VelocityX: strafe,
-        VelocityY: forward,
+        VelocityX: forward,
+        VelocityY: strafe,
         VelocityZ: vertical, // vector in the form [x,y,z]
         AngularVelocityYaw: turn,
     }

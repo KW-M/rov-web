@@ -23,73 +23,74 @@ export class FrontendRovMsgHandlerClass {
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
         const msgData = rov_actions_proto.RovResponse.decode(new Uint8Array(msgBytes));
+        const ExchangeId = msgData.ExchangeId;
 
-        this.runExchangeCallback(msgData.ExchangeId, msgData);
+        this.runExchangeCallback(msgData, ExchangeId);
         if (msgData.Done) {
-            return this.handleDoneMsgRecived(msgData.ExchangeId, msgData.Done);
+            return this.handleDoneMsgRecived(msgData.Done, ExchangeId);
         } else if (msgData.Error) {
-            return this.handleErrorMsgRecived(msgData.ExchangeId, msgData.Error);
+            return this.handleErrorMsgRecived(msgData.Error, ExchangeId);
         } else if (msgData.Pong) {
-            return this.handlePongMsgRecived(msgData.ExchangeId, msgData.Pong);
+            return this.handlePongMsgRecived(msgData.Pong, ExchangeId);
         } else if (msgData.ContinuedOutput) {
-            return this.handleContinuedOutputMsgRecived(msgData.ExchangeId, msgData.ContinuedOutput);
+            return this.handleContinuedOutputMsgRecived(msgData.ContinuedOutput, ExchangeId);
         } else if (msgData.SensorUpdates) {
-            return this.handleSensorUpdatesMsgRecived(msgData.ExchangeId, msgData.SensorUpdates);
+            return this.handleSensorUpdatesMsgRecived(msgData.SensorUpdates, ExchangeId);
         } else if (msgData.PasswordRequired) {
-            return this.handlePasswordRequiredMsgRecived(msgData.ExchangeId, msgData.PasswordRequired);
+            return this.handlePasswordRequiredMsgRecived(msgData.PasswordRequired, ExchangeId);
         } else if (msgData.PasswordAccepted) {
-            return this.handlePasswordAcceptedMsgRecived(msgData.ExchangeId, msgData.PasswordAccepted);
+            return this.handlePasswordAcceptedMsgRecived(msgData.PasswordAccepted, ExchangeId);
         } else if (msgData.PasswordInvalid) {
-            return this.handlePasswordInvalidMsgRecived(msgData.ExchangeId, msgData.PasswordInvalid);
+            return this.handlePasswordInvalidMsgRecived(msgData.PasswordInvalid, ExchangeId);
         } else if (msgData.DriverChanged) {
-            return this.handleDriverChangedMsgRecived(msgData.ExchangeId, msgData.DriverChanged);
+            return this.handleDriverChangedMsgRecived(msgData.DriverChanged, ExchangeId);
         } else if (msgData.ClientConnected) {
-            return this.handleClientConnectedMsgRecived(msgData.ExchangeId, msgData.ClientConnected);
+            return this.handleClientConnectedMsgRecived(msgData.ClientConnected, ExchangeId);
         } else if (msgData.ClientDisconnected) {
-            return this.handleClientDisconnectedMsgRecived(msgData.ExchangeId, msgData.ClientDisconnected);
+            return this.handleClientDisconnectedMsgRecived(msgData.ClientDisconnected, ExchangeId);
         } else if (msgData.SimplepeerSignal && msgData.SimplepeerSignal.Message) {
             frontendConnMngr.ingestSimplePeerSignallingMsg(msgData.SimplepeerSignal.Message);
         } else if (msgData.Mavlink) {
-            return this.handleMavlinkMessageRecived(msgData.ExchangeId, msgData.Mavlink);
+            return this.handleMavlinkMessageRecived(msgData.Mavlink, ExchangeId);
         } else if (msgData.SystemMonitor) {
-            return this.handleSystemMonitorMsgRecived(msgData.ExchangeId, msgData.SystemMonitor);
+            return this.handleSystemMonitorMsgRecived(msgData.SystemMonitor, ExchangeId);
         } else if (msgData.LogMessage) {
-            return this.handleLogMsgRecived(msgData.ExchangeId, msgData.LogMessage);
+            return this.handleLogMsgRecived(msgData.LogMessage, ExchangeId);
         } else {
             console.warn("Unhandled ROV message recived: ", msgData);
         }
     }
 
-    handleDoneMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IDoneResponse) {
+    handleDoneMsgRecived(msgData: rov_actions_proto.IDoneResponse, ExchangeId: number) {
         if (URL_PARAMS.DEBUG_MODE) console.debug("Done: ", msgData);
     }
 
-    handleErrorMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IErrorResponse) {
+    handleErrorMsgRecived(msgData: rov_actions_proto.IErrorResponse, ExchangeId: number) {
         console.warn("ROV Error: ", msgData);
         showToastMessage("ROV Error: " + msgData.Message, 2000, null);
     }
 
-    handlePongMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPongResponse) {
+    handlePongMsgRecived(msgData: rov_actions_proto.IPongResponse, ExchangeId: number) {
         lastTimeRecvdPong = Date.now();
         const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msgData.Time) // since the rpi replies with the ms time we sent in the ping in the pong message
         networkLatencyMs.set(networkPingDelay);
     }
 
-    handleContinuedOutputMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IContinuedOutputResponse) {
+    handleContinuedOutputMsgRecived(msgData: rov_actions_proto.IContinuedOutputResponse, ExchangeId: number) {
         if (URL_PARAMS.DEBUG_MODE) console.debug("ContinuedOutput: ", ExchangeId, msgData);
         // pass
     }
 
-    handleSensorUpdatesMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ISensorUpdatesResponse) {
+    handleSensorUpdatesMsgRecived(msgData: rov_actions_proto.ISensorUpdatesResponse, ExchangeId: number) {
         if (URL_PARAMS.DEBUG_MODE) console.debug("SensorUpdates: ", msgData);
         updateSensorValues(msgData);
     }
 
-    handleSystemMonitorMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ISystemMonitorResponse) {
+    handleSystemMonitorMsgRecived(msgData: rov_actions_proto.ISystemMonitorResponse, ExchangeId: number) {
         updateSystemMonitorDisplay(msgData.CpuTemp, msgData.CpuUsage, msgData.MemoryUsage, msgData.DiskUsage, msgData.Warnings);
     }
 
-    handlePasswordRequiredMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordRequiredResponse) {
+    handlePasswordRequiredMsgRecived(msgData: rov_actions_proto.IPasswordRequiredResponse, ExchangeId: number) {
         if (URL_PARAMS.DEBUG_MODE) console.debug("PasswordRequired for rovId:", msgData.RovId);
         // TODO: use the rovId to determine if we have authtoken
         modalPasswordPrompt("Enter ROV Password", "").then((password) => {
@@ -106,17 +107,17 @@ export class FrontendRovMsgHandlerClass {
         })
     }
 
-    handlePasswordAcceptedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordAcceptedResponse) {
+    handlePasswordAcceptedMsgRecived(msgData: rov_actions_proto.IPasswordAcceptedResponse, ExchangeId: number) {
         showToastMessage("Password Accepted", 1000, null);
     }
 
-    handlePasswordInvalidMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IPasswordInvalidResponse) {
+    handlePasswordInvalidMsgRecived(msgData: rov_actions_proto.IPasswordInvalidResponse, ExchangeId: number) {
         showToastMessage("Wrong Password", 1000, null);
-        this.handlePasswordRequiredMsgRecived(ExchangeId, msgData);
+        this.handlePasswordRequiredMsgRecived(msgData, ExchangeId);
     }
 
     // TODO:
-    handleDriverChangedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IDriverChangedResponse) {
+    handleDriverChangedMsgRecived(msgData: rov_actions_proto.IDriverChangedResponse, ExchangeId: number) {
         let ourLivekitIdentity = frontendConnMngr.currentLivekitIdentity.get();
         if (msgData.DriverPeerId == ourLivekitIdentity) {
             showToastMessage("You are now the driver");
@@ -127,7 +128,7 @@ export class FrontendRovMsgHandlerClass {
         }
     }
 
-    handleMavlinkMessageRecived(ExchangeId: number, msgData: rov_actions_proto.IMavlinkResponse) {
+    handleMavlinkMessageRecived(msgData: rov_actions_proto.IMavlinkResponse, ExchangeId: number) {
         if (!msgData.Message) return;
         const mavMessage = DECODE_TXT(msgData.Message)
         try {
@@ -138,21 +139,21 @@ export class FrontendRovMsgHandlerClass {
         }
     }
 
-    handleClientConnectedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IClientConnectedResponse) {
+    handleClientConnectedMsgRecived(msgData: rov_actions_proto.IClientConnectedResponse, ExchangeId: number) {
         showToastMessage(msgData.ClientPeerId + " Connected to ROV", 1500, null);
     }
 
-    handleClientDisconnectedMsgRecived(ExchangeId: number, msgData: rov_actions_proto.IClientConnectedResponse) {
+    handleClientDisconnectedMsgRecived(msgData: rov_actions_proto.IClientConnectedResponse, ExchangeId: number) {
         showToastMessage(msgData.ClientPeerId + " Disconnected from ROV", 1500, null);
     }
 
-    handleLogMsgRecived(ExchangeId: number, msgData: rov_actions_proto.ILogMessageResponse) {
+    handleLogMsgRecived(msgData: rov_actions_proto.ILogMessageResponse, ExchangeId: number) {
         if (URL_PARAMS.SHOW_REMOTE_LOGS) {
             let logArgs = JSON.parse(msgData.Message);
             if (!Array.isArray(logArgs)) logArgs = [logArgs];
             if (logArgs.length === 0) return;
             if (typeof logArgs[0] === 'string') logArgs[0] = "REMOTE LOG: " + logArgs[0];
-            else logArgs.unshift("REMOTE LOG: ");
+            else logArgs.unshift("REMOTE LOG: "); // add "REMOTE LOG: " to the start of the logArgs
             if (msgData.Level == rov_actions_proto.LogLevel.Debug) console.debug(...logArgs);
             else if (msgData.Level == rov_actions_proto.LogLevel.Info) console.info(...logArgs);
             else if (msgData.Level == rov_actions_proto.LogLevel.Warning) console.warn(...logArgs);
@@ -178,7 +179,7 @@ export class FrontendRovMsgHandlerClass {
         }
     }
 
-    runExchangeCallback(ExchangeId: number, msgData: rov_actions_proto.RovResponse) {
+    runExchangeCallback(msgData: rov_actions_proto.RovResponse, ExchangeId: number) {
         const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
         if (replyExchageData) {
             replyExchageData.callback && replyExchageData.callback(msgData);

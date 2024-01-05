@@ -307,10 +307,10 @@ export const heartbeat = () => {
 export const manualControl = (x: number, y: number, z: number, r: number, buttonBitmask: number) => {
     return addMessageHeader({
         type: "MANUAL_CONTROL",
-        x: Math.floor(x),
-        y: Math.floor(y),
-        z: Math.floor(z),
-        r: Math.floor(r),
+        x: Math.floor(x), // X is forward in the ROV
+        y: Math.floor(y), // Y is left/right in the ROV
+        z: Math.floor(z), // Z is up/down in the ROV
+        r: Math.floor(r), // R is yaw in the ROV
         buttons: buttonBitmask,
         target: 1,
     } as MavMessages.ManualControl)
