@@ -103,7 +103,7 @@ export class FrontendConnectionManager {
             this.openLivekitRoomInfo.set(openRoomInfo)
         }
         await listOpenRooms();
-        this.livekitRoomPollingInterval = Number(setInterval(listOpenRooms, 5000))
+        this.livekitRoomPollingInterval = window.setInterval(listOpenRooms, 5000)
     }
 
     /**

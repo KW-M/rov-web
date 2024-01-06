@@ -37,7 +37,7 @@ const sendLogToFronend = (logLevel, args) => {
 }
 
 if (URL_PARAMS.SEND_LOGS) {
-    // patchConsoleLogs(sendLogToFronend)
+    patchConsoleLogs(sendLogToFronend)
 }
 
 

@@ -168,7 +168,11 @@ export class LivekitGenericConnection {
                 appendLog(`LK: connection quality for ${participant ? participant.identity : "[no identity]"} changed to ${quality}`);
             })
             .on(RoomEvent.RoomMetadataChanged, (metadata) => {
-                appendLog('LK: new metadata for room', metadata);
+                try {
+                    appendLog('LK: New metadata for room', JSON.parse(metadata));
+                } catch {
+                    appendLog('LK: New metadata for room (NOT VALID JSON)', metadata);
+                }
             })
             .on(RoomEvent.MediaDevicesChanged, () => {
                 appendLog('LK: MediaDevicesChanged');

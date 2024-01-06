@@ -107,7 +107,10 @@ export class WebSocketRelay {
         Sends an arbitrary byte sequence through the WebSocket
     */
     sendMessage(message: Uint8Array | string) {
-        if (!this.socket || this.socket.readyState != this.socket.OPEN) return console.debug("Can't send WebSocket msg: " + (this.socket ? this.socket.readyState : "no socket"))
+        if (!this.socket || this.socket.readyState != this.socket.OPEN) {
+            console.debug("Can't send WebSocket msg: " + (this.socket ? this.socket.readyState : "no socket"))
+            return
+        }
         this.socket.send(message)
     }
 

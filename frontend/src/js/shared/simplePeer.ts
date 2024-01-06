@@ -46,12 +46,12 @@ export class SimplePeerConnection {
 
     constructor() { }
 
-    async start(simplePeerOpts: any, autoReconnect: boolean = true) {
+    async start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
         this._shouldReconnect = autoReconnect;
         simplePeerOpts = Object.assign({}, simplePeerOpts, SimplePeer.config);
         this._p = new SimplePeer(simplePeerOpts);
         this._p._debug = (...args: any[]) => console.debug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
-        this._reconnectAttemptCount = 0;
+        this._reconnectAttemptCount = reconnectAttemptCount;
 
         this.connectionState.set(ConnectionStates.connecting);
 
@@ -70,7 +70,7 @@ export class SimplePeerConnection {
 
         this._p.on('data', data => {
             // got a data channel message
-            console.log('SIMPLEPEER: got a dc message: ', data)
+            if (false) console.debug('SIMPLEPEER: got a dc message: ', data)
             this.lastMsgRecivedTimestamp = Date.now();
             this.latestRecivedDataMessage.set(data);
         })
@@ -108,7 +108,13 @@ export class SimplePeerConnection {
                 this._reconnectAttemptCount++;
                 if (this._reconnectAttemptCount < 10) {
                     setTimeout(() => {
-                        this._p.reconnect();
+                        if (!this._shouldReconnect) return;
+                        if (this._p && !this._p.destroyed && !this._p.destroying) {
+                            this._p.reconnect();
+                        } else {
+                            if (this._p) this._p.destroy();
+                            this.start(simplePeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
+                        }
                     }, 2000);
                     return
                 } else {
