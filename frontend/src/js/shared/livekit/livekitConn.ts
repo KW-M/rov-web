@@ -203,12 +203,12 @@ export class LivekitGenericConnection {
         console.log(`LK: Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         try {
             // setup timeout in case of connection hang
-            const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}`); this._reconnect() }, 16000);
+            const timeout = setTimeout(() => { console.log(`livekit connect timeout for ${this.config.hostUrl}. Reconnecting...`); this._reconnect() }, 16000);
             await this._connect();
             clearTimeout(timeout);
             console.log(`LK: Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
         } catch (err) {
-            console.log(`LK: Error connecting to ${this.config.hostUrl}`, err);
+            console.log(`LK: Error connecting to ${this.config.hostUrl}. Reconnecting...`, err);
             this._reconnect();
         }
     }
@@ -337,10 +337,25 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
         this._livekitApiKey = livekitApiKey;
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
-        await createLivekitRoom(this._livekitAdmin, rovRoomName);
+        // await createLivekitRoom(this._livekitAdmin, rovRoomName);
         const accessToken = await getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
-        await this.updateMetadataTokens();
         await super.start(rovRoomName, accessToken);
+        let alreadyConnected = false;
+        const unsub = this.connectionState.subscribe(async (state) => {
+            if (state == ConnectionStates.connected && !alreadyConnected) {
+                alreadyConnected = true;
+                while (true) {
+                    try {
+                        await this.updateMetadataTokens();
+                        break;
+                    } catch (e) {
+                        console.error("LK: Error updating metadata tokens", e)
+                    }
+                    await waitfor(2000);
+                }
+                unsub();
+            }
+        })
     }
 }
 

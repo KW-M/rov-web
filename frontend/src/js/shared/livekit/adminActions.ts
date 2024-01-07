@@ -1,6 +1,6 @@
 
 import { getFrontendAccessToken } from './livekitTokens';
-import { getHumanReadableId, getUniqueNumber } from '../util';
+import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
 import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
 
 export interface AuthTokenInfo {
@@ -16,6 +16,17 @@ export interface AuthTokenInfo {
     iv?: string,
 }
 
+let livekitApiRateLimitDelay = 1000;
+let lastLivekitApiCallTime = 0;
+
+export async function waitForRateLimit() {
+    const timeSinceLastCall = Date.now() - lastLivekitApiCallTime;
+    while (timeSinceLastCall < livekitApiRateLimitDelay) {
+        await waitfor(livekitApiRateLimitDelay - timeSinceLastCall);
+    }
+    lastLivekitApiCallTime = Date.now();
+}
+
 
 export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string, secretKey: string) {
     return new RoomServiceClient(host, apiKey, secretKey)
@@ -26,6 +37,7 @@ export function newLivekitAdminSDKEgressClient(host: string, apiKey: string, sec
 }
 
 export async function deleteLivekitRoom(client: RoomServiceClient, roomName: string) {
+    await waitForRateLimit();
     try {
         return await client.deleteRoom(roomName)
     } catch (e) {
@@ -34,7 +46,7 @@ export async function deleteLivekitRoom(client: RoomServiceClient, roomName: str
 }
 
 export async function createLivekitRoom(client: RoomServiceClient, roomName: string, metadata: string = "") {
-    // await deleteLivekitRoom(client, roomName)
+    await waitForRateLimit();
     return await client.createRoom({
         name: roomName,
         maxParticipants: 12,
@@ -44,12 +56,14 @@ export async function createLivekitRoom(client: RoomServiceClient, roomName: str
 }
 
 export async function listLivekitRooms(client: RoomServiceClient): Promise<Room[]> {
+    await waitForRateLimit();
     const rooms = await client.listRooms();
     return rooms.filter(room => room.numParticipants > 0)
 }
 
 
 export async function updateLivekitRoomMetadata(client: RoomServiceClient, roomName: string, metadata: string) {
+    await waitForRateLimit();
     return await client.updateRoomMetadata(roomName, metadata)
 }
 
@@ -69,7 +83,8 @@ export async function generateLivekitRoomTokens(APIKey: string, secretKey: strin
 }
 
 export async function refreshMetadata(cloudRoomClient: RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[], encryptionPassword: string | null = null) {
-    await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, JSON.stringify({
+    const metadata = JSON.stringify({
         accessTokens: await generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames, encryptionPassword)
-    }));
+    })
+    await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, metadata);
 }

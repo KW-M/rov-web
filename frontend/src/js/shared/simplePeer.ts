@@ -102,26 +102,26 @@ export class SimplePeerConnection {
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
             console.error('SIMPLEPEER: error ', err)
-            this.currentVideoStream.set(null);
-            if (this._shouldReconnect) {
-                this.connectionState.set(ConnectionStates.reconnecting);
-                this._reconnectAttemptCount++;
-                if (this._reconnectAttemptCount < 10) {
-                    setTimeout(() => {
-                        if (!this._shouldReconnect) return;
-                        if (this._p && !this._p.destroyed && !this._p.destroying) {
-                            this._p.reconnect();
-                        } else {
-                            if (this._p) this._p.destroy();
-                            this.start(simplePeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
-                        }
-                    }, 2000);
-                    return
-                } else {
-                    console.error('SIMPLEPEER: failed to reconnect after 10 attempts, giving up.')
-                }
-            }
-            this._p.destroy();
+            // this.currentVideoStream.set(null);
+            // if (this._shouldReconnect) {
+            //     this.connectionState.set(ConnectionStates.reconnecting);
+            //     this._reconnectAttemptCount++;
+            //     if (this._reconnectAttemptCount < 10) {
+            //         setTimeout(() => {
+            //             if (!this._shouldReconnect) return;
+            //             if (this._p && !this._p.destroyed && !this._p.destroying) {
+            //                 this._p.reconnect();
+            //             } else {
+            //                 if (this._p) this._p.destroy();
+            //                 this.start(simplePeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
+            //             }
+            //         }, 2000);
+            //         return
+            //     } else {
+            //         console.error('SIMPLEPEER: failed to reconnect after 10 attempts, giving up.')
+            //     }
+            // }
+            // this._p.destroy();
             this.connectionState.set(ConnectionStates.failed);
         })
     }

@@ -95,10 +95,10 @@ export class FrontendConnectionManager {
                 console.warn("LK Error: Could not retrive list of livekit rooms", e)
                 return this.openLivekitRoomInfo.set([])
             }
-            const validOpenRooms = openRooms.filter(room => room.num_participants > 0 && room.metadata.length > 0);
+            const validOpenRooms = openRooms //.filter(room => room.num_participants > 0 && room.metadata.length > 0);
             const openRoomInfo = validOpenRooms.map(room => ({
                 name: room.name,
-                token: getAuthTokenFromLivekitRoomMetadata(room.metadata)
+                token: room.metadata.length === 0 ? "" : getAuthTokenFromLivekitRoomMetadata(room.metadata)
             } as LivekitRoomInfo)).sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
             this.openLivekitRoomInfo.set(openRoomInfo)
         }
