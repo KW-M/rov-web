@@ -49,9 +49,9 @@ class WebdriverManager:
         chrome_options.add_argument("--v=1")
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-web-security")
-        chrome_options.add_argument("--allow-running-insecure-content")
-        chrome_options.add_argument("--user-data-dir=/tmp/user-data")
+        # chrome_options.add_argument("--disable-web-security")
+        # chrome_options.add_argument("--allow-running-insecure-content")
+        # chrome_options.add_argument("--user-data-dir=/tmp/user-data")
 
         # chrome_options.add_argument("--remote-debugging-port=9222") # Breaks chrome driver
         # chrome_options.add_argument("--remote-debugging-address=0.0.0.0")

@@ -8,7 +8,8 @@
 # RUN pnpm install
 # RUN pnpm run build
 
-FROM nginxinc/nginx-unprivileged:stable-bullseye-perl
+# FROM nginxinc/nginx-unprivileged:stable-bullseye-perl
+FROM nginxinc/nginx-unprivileged:stable-bullseye-perl@sha256:700ea2fcb7f1b5637e859883d89c4e4a9799f73eb864e0dd2f8a3e552d6b632e
 
 # COPY --from=webpage-build-stage /rov-web/rov-internal-website/dist /usr/share/nginx/html
 
@@ -36,7 +37,7 @@ RUN chmod +x /rov-web/rov-tooling/container-setup-scripts/* && \
     /rov-web/rov-tooling/container-setup-scripts/setup-container-config.sh
 
 EXPOSE 8080/tcp
-VOLUME [ "/rov-web" ]
+# VOLUME [ "/rov-web" ]
 ENTRYPOINT ["supervisord", "-c", "/rov-web/rov-tooling/config-files/supervisord.conf"]
 # supervisord -c /rov-web/rov-tooling/config-files/supervisord.conf
 # nano /rov-web/rov-python/playwright_test.py

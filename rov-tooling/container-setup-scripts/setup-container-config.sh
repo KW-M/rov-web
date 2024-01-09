@@ -22,15 +22,16 @@ setfacl -R -m u:nginx:rwx /rov-web;
 
 # ---- setup the rov-web folder to be a git repo fetching to github -----
 cd /rov-web
-BRANCH_NAME="${BRANCH_NAME:=main}"  # If variable not set or null, set it to default 'main'.
-if [ ! -e ".git/" ]; then
-    cp -r ./* /tmp/rov-web-tmp
-    git init -b $BRANCH_NAME
-    git remote add origin 'https://github.com/KW-M/rov-web.git'
-    git fetch origin $BRANCH_NAME
-        # git reset --hard origin/$BRANCH_NAME
-    git config --global user.email "rov@blueos.local"
-    git config --global user.name "Rov Docker Container"
-    git commit -a --allow-empty -m 'Base Commit from Docker Container Build'
-    git branch --set-upstream-to=origin/$BRANCH_NAME $BRANCH_NAME
-fi
+# BRANCH_NAME="${BRANCH_NAME:=main}"  # If variable not set or null, set it to default 'main'.
+# if [ ! -e ".git/" ]; then
+#     mkdir -p /tmp/rov-web-tmp
+#     cp -r ./* /tmp/rov-web-tmp
+#     git init -b $BRANCH_NAME
+#     git remote add origin 'https://github.com/KW-M/rov-web.git'
+#     git fetch origin $BRANCH_NAME
+#         # git reset --hard origin/$BRANCH_NAME
+#     git config --global user.email "rov@blueos.local"
+#     git config --global user.name "Rov Docker Container"
+#     git commit -a --allow-empty -m 'Base Commit from Docker Container Build'
+#     git branch --set-upstream-to=origin/$BRANCH_NAME $BRANCH_NAME
+# fi

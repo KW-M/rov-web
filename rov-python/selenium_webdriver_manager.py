@@ -67,6 +67,7 @@ class WebdriverManager:
         # chrome_options.add_argument("--disable-web-security")
         # chrome_options.add_argument("--allow-running-insecure-content")
         # chrome_options.add_argument("--user-data-dir=" + browser_data_dir)
+        print(chrome_options.arguments)
 
         if is_liniux:
             chrome_options.binary_location = browser_binary_path
