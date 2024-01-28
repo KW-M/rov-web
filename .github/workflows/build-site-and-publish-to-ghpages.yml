@@ -1,10 +1,18 @@
 # For more information see: https://github.com/marketplace/actions/deploy-to-github-pages
 
-name: Build Site and Deploy to Github Pages
+name: Build Webpage and Deploy to Github Pages and Docker
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+  #  schedule:
+  #   # Run every 6 days to keep caches alive
+  #   - cron: '0 0 */6 * *'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -23,73 +31,150 @@ defaults:
     shell: bash
 
 jobs:
-    build-and-deploy:
-      concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout 🛎️
-          uses: actions/checkout@v3
-          with:
-            submodules: recursive
+  build-website:
+    concurrency: ci-build-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-        - name: Setup pnpm
-          uses: pnpm/action-setup@v2.2.4
-        # with:
-        #   version: 8.5.1
-        #   dest: ./internal_website
-        #   run_install: |
-        #     - recursive: false
-        #     - cwd: ./internal_website
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
 
-        - name: Use Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: 'latest'
-            cache: 'pnpm'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+          cache: 'pnpm'
 
-        - name: Setup Protocol Buffer Compiler
-          uses: arduino/setup-protoc@v2
+      - name: Setup Protocol Buffer Compiler
+        uses: arduino/setup-protoc@v2
 
-        - name: Setup Python
-          uses: actions/setup-python@v4
-          with:
-            python-version: '3.10'
-            cache: 'pip' # caching pip dependencies
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip' # caching pip dependencies
 
-        - name: Install Betterproto
-          run: pip install "betterproto[compiler]"
+      - name: Install Betterproto
+        run: pip install "betterproto[compiler]"
 
-        # - name: Install Cython
-        #   run: pip install Cython
+      # - name: Install Cython
+      #   run: pip install Cython
 
-        - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-          run: |
-            pnpm install
-            pnpm run compile:proto
-            pnpm run build
+      - name: Install and Build 🔧 # This project is built using pnpm and outputs the result to the 'dist' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+          pnpm install
+          pnpm run compile:proto
+          pnpm run build
 
-        - name: Zip Repo to share as a Github Release
-          uses: thedoctor0/zip-release@0.7.1
-          with:
-            type: 'zip'
-            filename: 'project.zip'
-            exclusions: '/*node_modules/* .editorconfig *.git*'
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: project
+          path: |
+            ./
+            !*node_modules*
+            !.editorconfig
+            !*.git*
+          overwrite: true
 
-        - name: Upload Release
-          uses: ncipollo/release-action@v1.12.0
-          with:
-            artifacts: "project.zip"
-            tag: AutoRelease_${{ github.sha }}
-            commit: ${{ github.sha }}
-            token: ${{ secrets.GITHUB_TOKEN }}
-            makeLatest: true
-            allowUpdates: true
+  deploy-frontend:
+    concurrency: ci-frontend-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    needs: build-website
+    runs-on: ubuntu-latest
+    steps:
 
-        - name: Copy Internal Page for Debugging on Github Pages
-          run: cp -r ./rov-internal-website/build ./frontend/build/internal
+      - uses: actions/download-artifact@v4
+        with:
+          name: project
+          path: ./
 
-        - name: Deploy Site to Github Pages Website Hosting 🚀
-          uses: JamesIves/github-pages-deploy-action@v4.5.0
-          with:
-            folder: frontend/build # The folder the action should deploy.
-            branch: gh-pages # The branch the action should deploy to.
+      - name: Copy Internal Page for Debugging on Github Pages
+        run: cp -r ./rov-internal-website/build ./frontend/build/internal
+
+      - name: Deploy Site to Github Pages Website Hosting 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          folder: frontend/build # The folder the action should deploy.
+          branch: gh-pages # The branch the action should deploy to.
+
+  deploy-docker:
+    concurrency: ci-docker-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    needs: build-website
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ["rov-web"]
+        platforms: ["linux/arm/v7,linux/arm64/v8"]
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: project
+          path: ./
+
+      - name: Prepare
+        id: prepare
+        run: |
+          # Deploy image with the name of the branch, if the build is a git tag, replace tag with the tag name.
+          # If git tag matches semver, append latest tag to the push.
+          DOCKER_IMAGE=${DOCKER_USERNAME:-kywm}/${{ matrix.project }}
+          VERSION=${GITHUB_REF##*/}
+
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
+
+          TAGS="--tag ${DOCKER_IMAGE}:${VERSION}"
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            TAGS="$TAGS --tag ${DOCKER_IMAGE}:latest"
+          fi
+
+          echo "docker_image=${DOCKER_IMAGE}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "buildx_args=\
+            --build-arg GIT_DESCRIBE_TAGS=$(git describe --tags --long --always) \
+            --build-arg VITE_APP_GIT_DESCRIBE=$(git describe --long --always --dirty --all) \
+            --cache-from 'type=local,src=/tmp/.buildx-cache' \
+            --cache-to 'type=local,dest=/tmp/.buildx-cache' \
+            ${TAGS} \
+            --file Dockerfile ./" >> $GITHUB_OUTPUT
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: latest
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-buildx-cache
+          restore-keys: |
+            ${{ runner.os }}-docker-buildx-cache
+
+      - name: Docker Buildx (build)
+        run: |
+          # Pull latest version of image to help with build speed
+          for platform in $(echo ${{ matrix.platforms }} | tr ',' '\n'); do
+            docker pull --platform ${platform} ${DOCKER_USERNAME:-kywm}/${{ matrix.project }}:working || true
+          done
+          docker buildx build \
+            --output "type=image,push=true" \
+            --platform ${{ matrix.platforms }} \
+            ${{ steps.prepare.outputs.buildx_args }}
