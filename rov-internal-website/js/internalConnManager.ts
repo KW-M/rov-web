@@ -93,7 +93,10 @@ class InternalConnectionManager {
         })
         // await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
         // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
-        asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({ video: true, audio: false }).then(this.cameraReady.bind(this)).catch((e) => { console.error(e); window.location.reload() });
+        asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({
+            video: true, //{ width: 160, height: 90 },
+            audio: false
+        }).then(this.cameraReady.bind(this)).catch((e) => { console.error(e); window.location.reload() });
         console.info("Connection Manager Started")
         await waitforCondition(() => this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState && this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected)
     }
@@ -110,6 +113,7 @@ class InternalConnectionManager {
         changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
             this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])
         })
+
         await spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
             initiator: false,
             streams: [this._cameraMediaStream]

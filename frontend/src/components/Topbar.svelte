@@ -5,8 +5,7 @@
   import { fullscreenOpen } from "../js/globalContext";
 
   import GearIcon from "svelte-google-materialdesign-icons/Settings_power.svelte";
-  import HdIcon from "svelte-google-materialdesign-icons/Hd.svelte";
-  import HdrOffIcon from "svelte-google-materialdesign-icons/Hdr_off.svelte";
+
   import InfoIcon from "svelte-google-materialdesign-icons/Info.svelte";
   import ShutdownIcon from "svelte-google-materialdesign-icons/Power_settings_new.svelte";
   import RestartIcon from "svelte-google-materialdesign-icons/Restart_alt.svelte";
@@ -69,17 +68,7 @@
   <svelte:fragment slot="lead">
     <button on:click={openSideDrawer} disabled={!connected} class="btn btn-lg btn-icon bg-initial lg:hidden"> <MenuIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /></button>
     <FlightModeSelector disabled={!connected} />
-    {#if $autopilotArmed}
-      <button disabled={!connected} class="variant-filled-error mr-4 max-lg:btn-icon lg:btn btn-base" on:click={disarmVehicle}>
-        <DangerousIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
-        <span class="hidden lg:inline">Halt Thrusters</span>
-      </button>
-    {:else}
-      <button disabled={!connected} class="variant-filled-success mr-4 max-lg:btn-icon lg:btn btn-base" on:click={armVehicle}>
-        <span class="block text-2xl -my-2 pointer-events-none font-mono font-bold">GO</span>
-        <span class="hidden lg:inline">Enable Thrusters</span>
-      </button>
-    {/if}
+
     <div class="overflow-visible" style="max-width: 4em;">
       {#if powerMenuExpanded && connected}
         <div class="btn-group variant-filled-primary justify-evenly relative">
@@ -122,21 +111,24 @@
     </div>
   </svelte:fragment>
   <svelte:fragment slot="default">
-    <span class="px-2 fixed left-1/2 -top-1">MavState: {MavStateNameMap[$autopilotMavState]}</span>
+    <!-- <span class="px-2 fixed left-1/2 -top-1">MavState: {MavStateNameMap[$autopilotMavState]}</span> -->
     <CompassDial class="w-full flex-auto -z-10" />
   </svelte:fragment>
   <svelte:fragment slot="trail">
-    <button disabled={!connected} class="max-lg:btn-icon lg:btn variant-filled-warning text-white btn-base" on:click={() => frontendConnMngr.toggleSimplePeerConnection()}>
-      {#if usingHDVideo}
-        <HdrOffIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
-      {:else}
-        <HdIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
-      {/if}
-      <span class="hidden lg:inline">{usingHDVideo ? "Use SD Video" : "Use HD Video"}</span>
-    </button>
     <!-- <SlideToggle name="Arm Vehicle" background="bg-success-400" active="bg-error-500" disabled checked={$autopilotArmed}>
       <span class="whitespace-normal w-min inline-block">{$autopilotArmed ? "Motors ON" : "Motors OFF"}</span>
     </SlideToggle> -->
+    {#if $autopilotArmed}
+      <button disabled={!connected} class="variant-filled-error max-lg:btn-icon lg:btn btn-base" on:click={disarmVehicle}>
+        <DangerousIcon class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
+        <span class="hidden lg:inline">Halt Thrusters</span>
+      </button>
+    {:else}
+      <button disabled={!connected} class="variant-filled-success max-lg:btn-icon lg:btn btn-base" on:click={armVehicle}>
+        <span class="block text-2xl -my-2 pointer-events-none font-mono font-bold">GO</span>
+        <span class="hidden lg:inline">Enable Thrusters</span>
+      </button>
+    {/if}
     <button class="max-lg:btn-icon lg:btn variant-filled-secondary text-white btn-base"><HelpIcon class="text-2xl pointer-events-none" tabindex="-1" variation="round" /><span class="hidden lg:inline">Help</span> </button>
     <button
       class="btn btn-lg btn-icon bg-initial"

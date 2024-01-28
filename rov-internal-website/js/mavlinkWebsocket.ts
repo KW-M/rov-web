@@ -1,5 +1,5 @@
 import { DECODE_TXT, ENCODE_TXT } from "./shared/consts";
-import { type mavlink2RestFullMessage, type mavlink2RestMessageBody } from "./shared/mavlink2RestMessages";
+import type { Package as mavlink2RestFullMessage, Message } from "./shared/mavlink2rest-ts/messages/mavlink2rest";
 import { WebSocketRelay } from "./websocketRelay";
 
 // Available Mavlink Messages

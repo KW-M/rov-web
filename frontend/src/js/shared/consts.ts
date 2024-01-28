@@ -52,13 +52,13 @@ export const FRONTEND_HANDLED_MAVLINK_MESSAGE_TYPES = [
 export const LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: false,
     maxRetries: 2,
-    peerConnectionTimeout: 30_000, // miliseconds
+    peerConnectionTimeout: 30000, // miliseconds
 }
 
 export const LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG: RoomConnectOptions = {
     autoSubscribe: false,
     maxRetries: 6,
-    peerConnectionTimeout: 15_000, // miliseconds
+    peerConnectionTimeout: 15000, // miliseconds
 }
 
 export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
@@ -98,7 +98,7 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 
 export const SIMPLEPEER_BASE_CONFIG = {
     initiator: true,
-    trickle: true,
+    trickle: false,
     // @ts-ignore
     config: {
         bundlePolicy: "balanced",

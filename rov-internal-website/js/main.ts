@@ -69,6 +69,7 @@ if (URL_PARAMS.PYTHON_WEBSOCKET_PORT != 0) {
     iRovWebSocketRelay.start("ws://localhost:" + URL_PARAMS.PYTHON_WEBSOCKET_PORT, (msgBytes: Uint8Array | string) => {
         /*Callback to handle messages being received from the iROV python*/
 
+
         // Decode protobuf object from bytes
         if (msgBytes.length === 0) return;
         const msgProto = rov_actions_proto.RovResponse.decode(msgBytes as Uint8Array)

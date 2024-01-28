@@ -11,6 +11,10 @@ export class FrontendStartupFlowClass {
         await this.checkIfInIframe()
     }
 
+    async onConnectedActions() {
+        await frontendConnMngr.startSimplePeerConnection()
+    }
+
     async checkIfInIframe() {
         if (window.parent === window) {
             console.log("We are not in an iframe, trying to connect to Livekit Cloud...");

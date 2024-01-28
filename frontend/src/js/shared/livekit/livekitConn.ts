@@ -15,6 +15,7 @@ import {
     type RoomConnectOptions,
     RemoteTrack,
     Track,
+    ConnectionState,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { getWebsocketURL, waitfor } from '../util';
@@ -216,11 +217,14 @@ export class LivekitGenericConnection {
 
 
     async sendMessage(msgBytes: Uint8Array, reliable: boolean = true, toUserIds: string[] = []) {
+        if (!this._roomConn || this._roomConn.state !== ConnectionState.Connected || this.connectionState.get() != ConnectionStates.connected) return console.warn("LK: Can't send message, room not connected");
+        if (toUserIds.length == 0) toUserIds = [...(this._roomConn.participants.values())].map(p => p.identity);
         const participantSIDs = toUserIds.map((userId) => {
             const sid = this.getParticipantSid(userId)
             if (!sid) console.warn("LK: SendMessge: No participant found for livekit identity: ", userId)
-            return sid;
-        }) as string[];
+            return sid || null;
+        }).filter((s) => s != null) as string[];
+        if (participantSIDs.length == 0) return;
         await this._roomConn.localParticipant.publishData(
             msgBytes,
             reliable ? DataPacket_Kind.RELIABLE : DataPacket_Kind.LOSSY,
@@ -360,11 +364,12 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
 }
 
 export class LivekitViewerConnection extends LivekitGenericConnection {
-    remoteVideoTrack: nStoreT<RemoteTrack | null>;
+    // remote video tracks maps from the track source name to the livekit track object
+    remoteVideoTracks: nStoreT<Map<String, RemoteTrack | null>>;
 
     constructor() {
         super();
-        this.remoteVideoTrack = nStore<RemoteTrack | null>(null);
+        this.remoteVideoTracks = nStore<Map<String, RemoteTrack | null>>(new Map());
     }
 
     subscribeToTracks(participant: RemoteParticipant) {
@@ -402,29 +407,32 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
                 this.subscribeToTracks(participant)
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
-                if (track.kind === Track.Kind.Video) {
-                    const remoteVideo = this.remoteVideoTrack.get()
-                    if (remoteVideo) {
-                        console.warn("LK: already subscribed to video track, unsubscribing from old track", this.remoteVideoTrack.get())
-                        remoteVideo.stop()
-                    }
-                    appendLog('LK: subscribed to video', track.source);
-                    this.remoteVideoTrack.set(track)
-                    track.on('upstreamPaused', () => {
-                        console.log('LK: video upstream paused')
-                    })
-                    track.on('muted', () => {
-                        console.log('LK: video muted')
-                    })
-                    track.on('ended', () => {
-                        console.log('LK: video ended')
-                    })
-                } else {
-                    console.warn('LK: Subscribed to unknown track kind: ', track.kind, track.source);
+                if (track.kind !== Track.Kind.Video) return console.warn('LK: Subscribed to unknown track kind: ', track.kind, track.source);
+                const knownRemoteTracks = this.remoteVideoTracks.get()
+                if (knownRemoteTracks.has(track.source)) {
+                    if (knownRemoteTracks.get(track.source) == track) return; // already subscribed to this track
+                    console.warn("LK: already subscribed to video track " + track.source + ", unsubscribing from old track")
+                    knownRemoteTracks.get(track.source).stop();
                 }
+                appendLog('LK: subscribed to video', track.source);
+                knownRemoteTracks.set(track.source, track)
+                this.remoteVideoTracks.set(knownRemoteTracks)
+                track.on('upstreamPaused', () => {
+                    console.log('LK: video upstream paused')
+                })
+                track.on('muted', () => {
+                    console.log('LK: video muted')
+                })
+                track.on('ended', () => {
+                    console.log('LK: video ended')
+                })
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
-                appendLog('LK: Unsubscribed from track', pub.trackSid, " from participant: ", participant.identity);
+                appendLog('LK: Unsubscribed from track', pub.source, pub.trackSid, " from participant: ", participant.identity);
+                this.remoteVideoTracks.update((knownRemoteTracks) => {
+                    knownRemoteTracks.delete(pub.source)
+                    return knownRemoteTracks
+                })
             })
     }
 

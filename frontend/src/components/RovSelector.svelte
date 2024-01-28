@@ -11,13 +11,15 @@
   export let selectedRov = "";
 
   const connectionState = frontendConnMngr.connectionState;
-  $: collapsedMode = $connectionState === ConnectionStates.connected || $connectionState === ConnectionStates.connecting;
+  $: collapsedMode = selectedRov != "" && $connectionState !== ConnectionStates.disconnectedOk && $connectionState !== ConnectionStates.failed;
 
   const availableRovRooms = frontendConnMngr.openLivekitRoomInfo;
   const ourIdentity = frontendConnMngr.currentLivekitIdentity;
 
   async function connectToRov(rovRoomInfo: LivekitRoomInfo) {
     if (!rovRoomInfo.token) return showToastMessage("ROV is not available at the moment. Please wait & try again.", 5000, false, ToastSeverity.error);
+
+    selectedRov = rovRoomInfo.name;
     let authToken = "";
     if (rovRoomInfo.token.encrypted) {
       selectedRov = rovRoomInfo.name;
@@ -46,15 +48,16 @@
         }
       }
     } else {
+      // no password, just connect with token
       authToken = rovRoomInfo.token.token;
     }
-    // no password, just connect
-    selectedRov = rovRoomInfo.name;
+
     frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
   }
 
   function disconnect() {
     frontendConnMngr.disconnect();
+    selectedRov = "";
   }
 </script>
 

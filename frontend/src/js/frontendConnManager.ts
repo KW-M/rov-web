@@ -31,7 +31,7 @@ interface InternalLivekitSetupOptions {
 export class FrontendConnectionManager {
     connectionState = nStore<ConnectionStates>(ConnectionStates.init);
     livekitConnection = new LivekitViewerConnection();
-    mainVideoStream = nStore<MediaStream | undefined>(undefined);
+    videoStreams = nStore<MediaStream | undefined>(undefined);
     currentLivekitIdentity = nStore<string | null>(null);
     simplepeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
@@ -53,30 +53,6 @@ export class FrontendConnectionManager {
         changesSubscribe(this.simplepeerConnection.outgoingSignalingMessages, (msg) => {
             this.sendMessageToRov({ SimplepeerSignal: { Message: msg } }, true)
         })
-        changesSubscribe(this.simplepeerConnection.currentVideoStream, () => this.updateVideoStream())
-        changesSubscribe(this.livekitConnection.remoteVideoTrack, () => this.updateVideoStream())
-    }
-
-    private updateVideoStream() {
-        const livekitVideoStream = this.livekitConnection.remoteVideoTrack.get()
-        const simplepeerVideoStream = this.simplepeerConnection.currentVideoStream.get()
-        setTimeout(() => {
-            if (simplepeerVideoStream && simplepeerVideoStream.getVideoTracks().length > 0 && !simplepeerVideoStream.getVideoTracks()[0].muted) {
-                // /this.currentVideoStreamMethod.get() !== VideoStreamMethod.simplepeer
-                this.currentVideoStreamMethod.set(VideoStreamMethod.simplepeer)
-                showToastMessage("Using Direct Video", 1000, false)
-                if (livekitVideoStream) livekitVideoStream.stop();
-                this.mainVideoStream.set(simplepeerVideoStream)
-            } else if (livekitVideoStream) {
-                this.currentVideoStreamMethod.set(VideoStreamMethod.livekit)
-                showToastMessage("Using Livekit Video", 1000, false)
-                livekitVideoStream.start();
-                this.mainVideoStream.set(livekitVideoStream.mediaStream)
-            } else {
-                this.currentVideoStreamMethod.set(VideoStreamMethod.none)
-                showToastMessage("No Camera Stream", 1000, false, ToastSeverity.error)
-            }
-        }, 100)
     }
 
     /**
@@ -104,6 +80,12 @@ export class FrontendConnectionManager {
         }
         await listOpenRooms();
         this.livekitRoomPollingInterval = window.setInterval(listOpenRooms, 5000)
+    }
+
+    async onConnectedActions() {
+        await this.startSimplePeerConnection();
+
+
     }
 
     /**
@@ -174,8 +156,7 @@ export class FrontendConnectionManager {
         this._keepTrackOfConnectionState();
         await this.livekitConnection.start(roomName, authToken);
         this.currentLivekitIdentity.set(this.livekitConnection.getLivekitIdentitiy())
-
-        // oneShotSubscribe(this.livekitConnection.latestRecivedDataMessage, () => this.startSimplePeerConnection())
+        oneShotSubscribe(this.livekitConnection.latestRecivedDataMessage, () => this.onConnectedActions())
     }
 
     /**
@@ -185,7 +166,7 @@ export class FrontendConnectionManager {
      */
     public async startSimplePeerConnection() {
         if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplePeerConnection() called when livekitConnection was not fully connected!")
-        if (!this.simplepeerConnection) throw new Error("startSimplePeerConnection() called without simplepeerConnection in class!")
+        if (!this.simplepeerConnection) throw new Error("startSimplePeerConnection() called without initilized simplepeerConnection!")
         this.simplepeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true } }))
     }
 

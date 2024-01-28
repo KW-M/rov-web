@@ -1,7 +1,6 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-// import SimplePeer from '@thaunknown/simple-peer/full';
 import SimplePeer from 'simple-peer';
 
 enum SimplePeerErrorCodes {
@@ -21,6 +20,8 @@ interface SimplePeerError {
     code: SimplePeerErrorCodes
 }
 
+let globalConnId = 0;
+
 export class SimplePeerConnection {
 
     // timestamp in ms which is updated whenever a message is recived from another participant.
@@ -33,36 +34,52 @@ export class SimplePeerConnection {
     // thses messages should be sent to the other party via a already established side channel like a livekit or websocket data connection.
     outgoingSignalingMessages = nStore<string | null>(null);
     // the current video track being sent/recived through simplepeer.
-    currentVideoStream = nStore<MediaStream | null>(null);
+    remoteVideoStreams = nStore<Map<string, MediaStream | null>>(new Map());
 
     // the simplepeer instance used for this connection.
     _p: SimplePeer;
+    // the configuration used for the simplepeer instance.
+    _spConfig: any = null;
     // a queue of messages to be sent out over the data channel.
     _msgSendQueue: ArrayBufferLike[] = [];
     // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
     _reconnectAttemptCount: number;
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
+    // flag used to track if this side is the initiator (user) or not.
+    _initiator: boolean = false;
+    // the unique id of this connection.
+    _connectionId: number = -1;
+    // keeps track of how many signaling messages have been sent out.
+    _signalMsgSendCounter: number = 0;
+    // keeps track of how many signaling messages have been recived.
+    _signalMsgRecivedCounter: number = 0;
+
 
     constructor() { }
 
-    async start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+    start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
         this._shouldReconnect = autoReconnect;
-        simplePeerOpts = Object.assign({}, simplePeerOpts, SimplePeer.config);
-        this._p = new SimplePeer(simplePeerOpts);
+        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
+        console.debug("SIMPLEPEER: starting with opts: ", this._spConfig)
+        if (this._spConfig.initiator) this._connectionId = globalConnId++;
+        this._p = new SimplePeer(this._spConfig);
         this._p._debug = (...args: any[]) => console.debug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
         this._reconnectAttemptCount = reconnectAttemptCount;
-
+        this._initiator = this._spConfig.initiator || false;
         this.connectionState.set(ConnectionStates.connecting);
 
         this._p.on('signal', (signalData: Object) => {
-            console.info("SIMPLEPEER: signal out", signalData)
+            this._signalMsgSendCounter++;
+            if (this._connectionId === -1) return console.warn("SIMPLEPEER: sending signal message when connectionId is null, this should not happen!")
+            signalData = Object.assign({}, signalData, { connId: this._connectionId, msgNum: this._signalMsgSendCounter });
+            console.debug("SIMPLEPEER: signal out", signalData)
             this.outgoingSignalingMessages.set(JSON.stringify(signalData));
         })
 
         this._p.on('connect', () => {
             // wait for 'connect' event before using the data channel
-            console.count("SIMPLEPEER: Connected")
+            console.info("SIMPLEPEER: Connected")
             this._emptyMsgQueue();
             this._reconnectAttemptCount = 0;
             this.connectionState.set(ConnectionStates.connected);
@@ -78,29 +95,30 @@ export class SimplePeerConnection {
         this._p.on('stream', (stream: MediaStream) => {
             // got remote video stream, now let's show it in a video tag
             console.info('SIMPLEPEER: got video stream: ', stream)
-            this.currentVideoStream.set(stream);
-            for (let track of stream.getTracks()) {
-                if (track.kind === 'video') {
-                    track.onmute = () => this.currentVideoStream.set(null);
-                    track.onunmute = () => this.currentVideoStream.set(stream);
-                    track.onended = () => this.currentVideoStream.set(null);
-                    break;
-                }
-            }
+            this.remoteVideoStreams.update((streams) => {
+                // for (let track of stream.getTracks()) {
+                streams.set(stream.id, stream);
+                return streams;
+                // });
+            })
         })
 
         // Called when the peer connection has closed.
         this._p.on('close', () => {
-            console.log('SIMPLEPEER: connection closed')
-            this.currentVideoStream.set(null);
-            if (!this._shouldReconnect) {
-                this.connectionState.set(ConnectionStates.disconnectedOk);
-            }
+            // this.resetConnectionStats(); // TODO: check if this is the right place to reset the connection stats.
+            console.warn('SIMPLEPEER: connection closed')
+            // this.remoteVideoStreams.set(new Map());
+            // if (!this._shouldReconnect) {
+            //     this.resetConnectionStats();
+            //     this.connectionState.set(ConnectionStates.disconnectedOk);
+            // }
+            this.stop();
         })
 
 
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
+            this.resetConnectionStats();
             console.error('SIMPLEPEER: error ', err)
             // this.currentVideoStream.set(null);
             // if (this._shouldReconnect) {
@@ -126,18 +144,47 @@ export class SimplePeerConnection {
         })
     }
 
+    resetConnectionStats() {
+        this._connectionId = -1//Math.round(3600 * Math.random()).toString(36);
+        this._signalMsgRecivedCounter = 0;
+        this._signalMsgSendCounter = 0;
+    }
+
     stop() {
+        this.resetConnectionStats();
         this.connectionState.set(ConnectionStates.disconnectedOk);
-        this.currentVideoStream.set(null);
+        this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
         if (this._p) this._p.destroy();
+    }
+
+    restart(connectionId?: number, signalingMsg?: string) {
+        this.stop();
+        this._connectionId = connectionId || -1;
+        this.start(this._spConfig, this._shouldReconnect, this._reconnectAttemptCount);
+        if (signalingMsg) this.ingestSignalingMsg(signalingMsg);
     }
 
     ingestSignalingMsg(signalingMsg: string) {
         try {
             const signal = JSON.parse(signalingMsg);
-            if (this._p.destroyed) return;
-            console.info("SIMPLEPEER: signal in", signal)
+            console.info("SIMPLEPEER: signal in", signal, signal.connId, this._connectionId)
+            if (this._p.destroyed) return this.restart(signal.connId, signalingMsg);
+            if (this._connectionId === -1) this._connectionId = signal.connId;
+            else if (signal.connId < this._connectionId) {
+                console.log("SP: Err Older Remote ConnId!", signal.connId, "<", this._connectionId);
+                return
+            } else if (signal.connId > this._connectionId) {
+                if (this._initiator) {
+                    console.log("SP: Err Newer Remote ConnId!", signal.connId, ">", this._connectionId);
+                } else this.restart(signal.connId, signalingMsg);
+
+                return;
+            }
+            if (signal.msgNum <= this._signalMsgRecivedCounter) {
+                console.log("SP: Invalid MsgNum Order!", signal.msgNum, "<=", this._signalMsgRecivedCounter); return;
+            }
+            this._signalMsgRecivedCounter = signal.msgNum;
             this._p.signal(signal)
         } catch (err) {
             console.warn("failed to parse & ingest simplepeer signalling message: ", signalingMsg, err.message)
