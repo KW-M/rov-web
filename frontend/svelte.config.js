@@ -41,7 +41,7 @@ const config = {
 		// 			// "baseUrl": "./",
 		// 			// "noEmit": true,
 		// 		});
-		// 		console.log(config);
+		// 		log(config);
 		// 		return config
 		// 	}
 		// },

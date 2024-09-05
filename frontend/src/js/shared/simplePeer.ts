@@ -1,7 +1,9 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-import SimplePeer from 'simple-peer';
+import SimplePeer from '@thaunknown/simple-peer';
+import type SimplePeerT from 'simple-peer';
+import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 
 enum SimplePeerErrorCodes {
     ERR_WEBRTC_SUPPORT = 'ERR_WEBRTC_SUPPORT',
@@ -37,7 +39,7 @@ export class SimplePeerConnection {
     remoteVideoStreams = nStore<Map<string, MediaStream | null>>(new Map());
 
     // the simplepeer instance used for this connection.
-    _p: SimplePeer;
+    _p: SimplePeerT.Instance;
     // the configuration used for the simplepeer instance.
     _spConfig: any = null;
     // a queue of messages to be sent out over the data channel.
@@ -54,6 +56,8 @@ export class SimplePeerConnection {
     _signalMsgSendCounter: number = 0;
     // keeps track of how many signaling messages have been recived.
     _signalMsgRecivedCounter: number = 0;
+    // keeps track of the js interval id used for the WebRTC GetStats call.
+    _StatsGatherInterval: number;
 
 
     constructor() { }
@@ -61,25 +65,33 @@ export class SimplePeerConnection {
     start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
         this._shouldReconnect = autoReconnect;
         this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
-        console.debug("SIMPLEPEER: starting with opts: ", this._spConfig)
+        logDebug("SP starting with opts: ", this._spConfig)
         if (this._spConfig.initiator) this._connectionId = globalConnId++;
         this._p = new SimplePeer(this._spConfig);
-        this._p._debug = (...args: any[]) => console.debug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
+        this._p._debug = (...args: any[]) => logDebug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
         this._reconnectAttemptCount = reconnectAttemptCount;
         this._initiator = this._spConfig.initiator || false;
         this.connectionState.set(ConnectionStates.connecting);
 
+        // this._StatsGatherInterval = setInterval(async () => {
+        //     if (this._p) {
+        //         const peerConnection = (this._p as any)._pc as RTCPeerConnection;
+        //         const stats = await peerConnection.getStats(null)
+        //         logDebug("SP stats: ", stats)
+        //     }
+        // }, 4000) as any as number;
+
         this._p.on('signal', (signalData: Object) => {
             this._signalMsgSendCounter++;
-            if (this._connectionId === -1) return console.warn("SIMPLEPEER: sending signal message when connectionId is null, this should not happen!")
+            if (this._connectionId === -1) return logWarn("SP sending signal message when connectionId is null, this should not happen!")
             signalData = Object.assign({}, signalData, { connId: this._connectionId, msgNum: this._signalMsgSendCounter });
-            console.debug("SIMPLEPEER: signal out", signalData)
+            logDebug("SP signal out", signalData)
             this.outgoingSignalingMessages.set(JSON.stringify(signalData));
         })
 
         this._p.on('connect', () => {
             // wait for 'connect' event before using the data channel
-            console.info("SIMPLEPEER: Connected")
+            logInfo("SP Connected")
             this._emptyMsgQueue();
             this._reconnectAttemptCount = 0;
             this.connectionState.set(ConnectionStates.connected);
@@ -87,26 +99,24 @@ export class SimplePeerConnection {
 
         this._p.on('data', data => {
             // got a data channel message
-            if (false) console.debug('SIMPLEPEER: got a dc message: ', data)
+            if (false) logDebug('SP got a dc message: ', data)
             this.lastMsgRecivedTimestamp = Date.now();
             this.latestRecivedDataMessage.set(data);
         })
 
         this._p.on('stream', (stream: MediaStream) => {
             // got remote video stream, now let's show it in a video tag
-            console.info('SIMPLEPEER: got video stream: ', stream)
+            logInfo('SP got video stream: ', stream)
             this.remoteVideoStreams.update((streams) => {
-                // for (let track of stream.getTracks()) {
                 streams.set(stream.id, stream);
                 return streams;
-                // });
             })
         })
 
         // Called when the peer connection has closed.
         this._p.on('close', () => {
             // this.resetConnectionStats(); // TODO: check if this is the right place to reset the connection stats.
-            console.warn('SIMPLEPEER: connection closed')
+            logWarn('SP connection closed')
             // this.remoteVideoStreams.set(new Map());
             // if (!this._shouldReconnect) {
             //     this.resetConnectionStats();
@@ -119,7 +129,11 @@ export class SimplePeerConnection {
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
             this.resetConnectionStats();
-            console.error('SIMPLEPEER: error ', err)
+            logError('SP error ', err)
+            this.remoteVideoStreams.set(new Map());
+            this._shouldReconnect = false;
+            clearInterval(this._StatsGatherInterval);
+
             // this.currentVideoStream.set(null);
             // if (this._shouldReconnect) {
             //     this.connectionState.set(ConnectionStates.reconnecting);
@@ -136,7 +150,7 @@ export class SimplePeerConnection {
             //         }, 2000);
             //         return
             //     } else {
-            //         console.error('SIMPLEPEER: failed to reconnect after 10 attempts, giving up.')
+            //         logError('SP failed to reconnect after 10 attempts, giving up.')
             //     }
             // }
             // this._p.destroy();
@@ -151,14 +165,17 @@ export class SimplePeerConnection {
     }
 
     stop() {
+        logDebug("SP Stop", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
         this.resetConnectionStats();
         this.connectionState.set(ConnectionStates.disconnectedOk);
         this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
+        clearInterval(this._StatsGatherInterval);
         if (this._p) this._p.destroy();
     }
 
     restart(connectionId?: number, signalingMsg?: string) {
+        logDebug("SP Restart", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
         this.stop();
         this._connectionId = connectionId || -1;
         this.start(this._spConfig, this._shouldReconnect, this._reconnectAttemptCount);
@@ -168,26 +185,26 @@ export class SimplePeerConnection {
     ingestSignalingMsg(signalingMsg: string) {
         try {
             const signal = JSON.parse(signalingMsg);
-            console.info("SIMPLEPEER: signal in", signal, signal.connId, this._connectionId)
+            logInfo("SP signal in", signal, signal.connId, this._connectionId)
             if (this._p.destroyed) return this.restart(signal.connId, signalingMsg);
             if (this._connectionId === -1) this._connectionId = signal.connId;
             else if (signal.connId < this._connectionId) {
-                console.log("SP: Err Older Remote ConnId!", signal.connId, "<", this._connectionId);
+                log("SP Err Older Remote ConnId!", signal.connId, "<", this._connectionId);
                 return
             } else if (signal.connId > this._connectionId) {
                 if (this._initiator) {
-                    console.log("SP: Err Newer Remote ConnId!", signal.connId, ">", this._connectionId);
+                    log("SP Err Newer Remote ConnId!", signal.connId, ">", this._connectionId);
                 } else this.restart(signal.connId, signalingMsg);
 
                 return;
             }
             if (signal.msgNum <= this._signalMsgRecivedCounter) {
-                console.log("SP: Invalid MsgNum Order!", signal.msgNum, "<=", this._signalMsgRecivedCounter); return;
+                log("SP Invalid MsgNum Order!", signal.msgNum, "<=", this._signalMsgRecivedCounter); return;
             }
             this._signalMsgRecivedCounter = signal.msgNum;
             this._p.signal(signal)
         } catch (err) {
-            console.warn("failed to parse & ingest simplepeer signalling message: ", signalingMsg, err.message)
+            logWarn("failed to parse & ingest simplepeer signalling message: ", signalingMsg, err.message)
         };
     }
 
@@ -204,7 +221,7 @@ export class SimplePeerConnection {
             try {
                 this._p.send(msg);
             } catch (err) {
-                console.error("failed to send message over simplepeer data channel: ", err.message)
+                logError("failed to send message over simplepeer data channel: ", err.message)
                 this._msgSendQueue.unshift(msg);
             }
         }

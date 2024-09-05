@@ -1,4 +1,5 @@
 import { type proxyInterchangeFormat, proxyMessageTypes } from "./iframeWsProxy";
+import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 import { DECODE_TXT, ENCODE_TXT } from "../consts";
 
 const openHttpConnections: { [key: string]: Promise<Response> } = {}
@@ -23,10 +24,10 @@ function openWebsocket(url: string) {
         } as proxyInterchangeFormat)))
     })
     ws.addEventListener('error', (ev) => {
-        console.warn('ws err ' + url, ev)
+        logWarn('ws err ' + url, ev)
     })
     ws.addEventListener('close', (ev) => {
-        console.warn('ws close ' + url, ev)
+        logWarn('ws close ' + url, ev)
     })
     return ws;
 }
@@ -35,10 +36,10 @@ function sendWebsocketMsg(url: string, data: ArrayBufferLike) {
     let ws = openWebsocketConnections[url];
     if (!ws) ws = openWebsocket(url)
     if (ws.readyState !== WebSocket.OPEN) {
-        console.log("osending", DECODE_TXT(data), ws.readyState, WebSocket.OPEN)
+        log("osending", DECODE_TXT(data), ws.readyState, WebSocket.OPEN)
         ws.addEventListener('open', () => ws.send(data))
     } else {
-        console.log("sending")
+        log("sending")
         ws.send(data);
     }
 }
@@ -47,7 +48,7 @@ function sendHttpRequest(url: string, fetchOptions: object) {
     if (openHttpConnections[url] != undefined) return;
     const f = openHttpConnections[url] = fetch(url, fetchOptions);
     f.then(async (result) => {
-        console.log("fetch result", result)
+        log("fetch result", result)
         let body = new Uint8Array(await result.arrayBuffer())
         if (sendProxyMessageCallback) sendProxyMessageCallback(ENCODE_TXT(JSON.stringify({
             type: proxyMessageTypes.outgoingHttpReq,
@@ -56,13 +57,13 @@ function sendHttpRequest(url: string, fetchOptions: object) {
             url: url,
         } as proxyInterchangeFormat)))
     }).catch((err) => {
-        console.log("fetch err", err)
+        log("fetch err", err)
     });
 }
 
 export function receiveProxiedMsg(rawMsg: ArrayBufferLike) {
     const proxiedMsg = JSON.parse(DECODE_TXT(rawMsg)) as proxyInterchangeFormat;
-    console.log("Received Proxy Message", proxiedMsg)
+    log("Received Proxy Message", proxiedMsg)
     if (proxiedMsg.type === proxyMessageTypes.openWebsocket) {
         openWebsocket(proxiedMsg.url)
     } else if (proxiedMsg.type === proxyMessageTypes.socketMsg) {

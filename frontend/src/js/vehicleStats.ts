@@ -25,7 +25,7 @@ export function updateSystemMonitorDisplay(cpuTemp: number, cpuUsage: number, Me
     memUsagePercent.set(MemUsage);
     diskUsagePercent.set(DiskUsage);
     warnings.forEach((warning) => {
-        console.warn("System Monitor Warning: " + warning)
+        logWarn("System Monitor Warning: " + warning)
         showToastMessage(warning, 5000, true, ToastSeverity.warning)
     });
 }

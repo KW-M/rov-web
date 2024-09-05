@@ -1,6 +1,7 @@
 // Modals Utils
 import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 import { getModalStore } from '@skeletonlabs/skeleton';
+import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 
 // Variants ---
 
@@ -11,17 +12,15 @@ export const setupModals = () => {
 }
 
 export function modalAlert(title: string, body: string): void {
-    console.log("modalAlert", title, body)
     const modal: ModalSettings = {
         type: 'alert',
         title: title,
-        body: body
+        body: body,
     };
     modalTool.trigger(modal);
 }
 
 export function modalConfirm(title: string, body: string, callback: () => void): void {
-    console.log("modalConfirm", title, body)
     const modal: ModalSettings = {
         type: 'confirm',
         title: title,
@@ -43,7 +42,7 @@ export function modalPasswordPrompt(title: string, body: string = ""): Promise<s
             valueAttr: { type: 'text', placeholder: "password", required: true },
 
             response: (r: string) => {
-                console.log("modalPasswordPrompt response", r)
+                log("modalPasswordPrompt response", r)
                 passwordModalOpen = false; resolve(r)
             }
         };

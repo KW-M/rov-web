@@ -9,6 +9,9 @@ import type { buttonChangeDetails } from "virtual-gamepad-lib";
 import { ConnectionStates } from "./shared/consts";
 import type { FlightMode } from "./shared/mavlink2RestMessages";
 import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
+import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
+import { rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
+import { openControlTutModal } from "../components/Modals/modals";
 
 class RovActionsClass {
 
@@ -22,7 +25,9 @@ class RovActionsClass {
     };
     lastMovementTime = 0;
     lastPingTime = 0;
-    sensitivity = 1;
+
+    /** triggerNextFlightModeUi is function that is assigned in the pilot page flight mode dropdown selector ui to trigger a change to the next flight mode */
+    triggerNextFlightModeUi: (delta: number) => void = null;
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
 
@@ -34,6 +39,35 @@ class RovActionsClass {
         const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
         const BTN_RB = GPAD_STANDARD_BUTTON_INDEX.RB
         const BTN_LB = GPAD_STANDARD_BUTTON_INDEX.LB
+        const BTN_LSTICK = GPAD_STANDARD_BUTTON_INDEX.LSTICK
+        const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
+        const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
+
+
+
+        if (buttonsChangedMask[BTN_LB] && buttonsChangedMask[BTN_LB].released) {
+            throttleGain.update((val) => Math.min(Math.max(10, val - 10), 100))
+            showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
+        } else if (buttonsChangedMask[BTN_RB] && buttonsChangedMask[BTN_RB].released) {
+            throttleGain.update((val) => Math.min(Math.max(10, val + 10), 100))
+            showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
+        }
+
+        if (buttonsChangedMask[BTN_Y] && buttonsChangedMask[BTN_Y].released && this.triggerNextFlightModeUi) {
+            this.triggerNextFlightModeUi(1)
+        }
+
+        if (buttonsChangedMask[BTN_HELP] && buttonsChangedMask[BTN_HELP].released) {
+            openControlTutModal()
+        }
+
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+
+        if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
+            const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
+            const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
+            // do something with the claw
+        }
 
         if (buttonsChangedMask[BTN_A] && buttonsChangedMask[BTN_A].released) {
             this.takeControl()
@@ -41,16 +75,8 @@ class RovActionsClass {
             this.disarm()
         }
 
-        if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
-            const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
-            const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
-            // const throttle = Math.round((LT - RT) * 100);
-            this.sensitivity = 1 - Math.max(LT, RT) * 0.8
-            // do something with throttle
-        }
-
         // FIXME: this is a hack to get the buttons to work with the mavlink message
-        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT, BTN_LB, BTN_RB];
+        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT, BTN_LB, BTN_RB, BTN_LSTICK, BTN_RSTICK];
         const pressedButtons = buttonsChangedMask.map((val, index) => {
             if (val === false) return false;
             if (rawExcludedButtons.includes(index)) return false;
@@ -60,10 +86,10 @@ class RovActionsClass {
     }
 
     gamepadAxisTriggers(gamepad: Gamepad) {
-        const sensitivity = this.sensitivity;
+        const gain = throttleGain.get() / 100;
         const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
-        if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) console.info("GAMEPAD MOTION: STOPed")
-        this.moveRov(VelocityX * sensitivity, VelocityY * sensitivity, VelocityZ * sensitivity, AngularVelocityYaw * sensitivity);
+        if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) logInfo("GAMEPAD MOTION: STOPed")
+        this.moveRov(VelocityX * gain, VelocityY * gain, VelocityZ * gain, AngularVelocityYaw * gain);
     }
 
     // ==== Helpers =====
@@ -109,16 +135,22 @@ class RovActionsClass {
 
     // ======= Actions ========
 
+
+
+    /** attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized */
     takeControl() {
-        // attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ TakeControl: {} }, null);
     }
 
+    /** disarm the rov, this will stop all motors and prevent any movement */
     disarm() {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ Disarm: {} }, null);
     }
 
     setFlightMode(mode: FlightMode) {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ SetAutopilotMode: { mode: mode } }, null);
     }
 
@@ -128,10 +160,10 @@ class RovActionsClass {
         const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
         // const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
         // if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
-        const move = { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask }
-        console.log("MOVE:", move.VelocityX, move.VelocityY, move.VelocityZ, move.AngularVelocityYaw, move.ButtonBitmask)
-        frontendRovMsgHandler.sendRovMessage({ Move: move }, null);
-        this.lastMove = move;
+        rovDrivingVector.set({ VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask })
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+        frontendRovMsgHandler.sendRovMessage({ Move: rovDrivingVector.get() }, null);
+        this.lastMove = rovDrivingVector.get();
         this.lastMovementTime = Date.now();
     }
 
@@ -148,6 +180,7 @@ class RovActionsClass {
         }, 0)
         const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
         if (this.lastMove.ButtonBitmask === ButtonBitmask && timeSinceLastMoveCmd < 700) return;
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
         this.lastMove.ButtonBitmask = ButtonBitmask;
         this.lastMovementTime = Date.now();
@@ -158,18 +191,22 @@ class RovActionsClass {
     }
 
     toggleLights() {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ ToogleLights: {} }, null);
     }
 
     takePhoto() {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ TakePhoto: {} }, null);
     }
 
     startVideoRecording() {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ StartVideoRec: {} }, null);
     }
 
     stopVideoRecording() {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ StopVideoRec: {} }, null);
     }
 

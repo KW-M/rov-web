@@ -4,6 +4,7 @@
   import * as twgl from "twgl.js";
   import { onMount } from "svelte";
   import { getColors } from "../js/colorsVariety";
+  import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
 
   let canvas: HTMLCanvasElement;
   const varietyColor = getColors();
@@ -21,7 +22,7 @@ void main() {
   $: if (programInfo && gl) {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-    // console.log("rovHeading: ", $rovHeading, "rovPitch: ", $rovPitch, "rovRoll: ", $rovRoll);
+    // log("rovHeading: ", $rovHeading, "rovPitch: ", $rovPitch, "rovRoll: ", $rovRoll);
 
     const uniforms = {
       yaw: $rovHeading * (3.14 / 180) * -1,
@@ -39,7 +40,7 @@ void main() {
   onMount(() => {
     gl = canvas.getContext("webgl");
     if (!gl) {
-      console.warn("Unable to initialize WebGL. Your browser or machine may not support it.");
+      logWarn("Unable to initialize WebGL. Your browser or machine may not support it.");
       return;
     }
     programInfo = twgl.createProgramInfo(gl, [vertexShader, fragmentShader]);

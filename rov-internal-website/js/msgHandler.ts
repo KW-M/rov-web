@@ -7,6 +7,7 @@ import { internalConnManager } from "./internalConnManager";
 import { irovMavlinkInterface } from "./mavlinkWebsocket";
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { shutdownROV } from "./blueosAPIs/commander";
+import { logDebug } from "./shared/logging"
 
 let designated_driver_user_id: string | null = null
 let should_be_armed = false;
@@ -64,7 +65,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
         return true;
     }
     else {
-        console.debug("Unhandled Message Recived: ", msgProto.toJSON());
+        logDebug("Unhandled Message Recived: ", msgProto.toJSON());
         return false;
     }
 }

@@ -1,6 +1,7 @@
 import type { nStoreT } from './shared/libraries/nStore';
 import { EMOJI_MAP } from "./frontendConsts";
 import { changesSubscribe } from './shared/util';
+import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 
 declare global {
     interface Element {
@@ -53,7 +54,7 @@ export function bindNumberSvelteStoreToLocalStorage(label: string, store: nStore
 
 /** wrap the callback for a keyboard event so it only fires on Enter or Space.
  * The output of this function should be passed to a keyboard event listener.
- * eg: body.addEventListener('keydown',selectKeypressFactory(console.log));
+ * eg: body.addEventListener('keydown',selectKeypressFactory(log));
  * @param callback your callback function to run when the key enter or space is pressed
  * @returns return a function  will call the callback if the key is enter or space.
  */
@@ -94,7 +95,7 @@ export function getURLQueryStringVariable(variable) {
             return decodeURIComponent(pair[1]);
         }
     }
-    // console.log('Query variable %s not found', variable);
+    logWarn(`Query variable ${variable} not found`);
 }
 
 // https://stackoverflow.com/questions/27078285/simple-throttle-in-javascript

@@ -1,4 +1,4 @@
-
+import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 import type { AuthTokenInfo as ATI } from "./adminActions";
 export type AuthTokenInfo = ATI;
 
@@ -47,7 +47,7 @@ export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokens
         const metadata = JSON.parse(roomMetadata);
         const tokens = metadata["accessTokens"];
         if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
-            console.warn("Failed to get tokens list from livekit room metadata");
+            logWarn("Failed to get tokens list from livekit room metadata");
             return null;
         } else {
             const token = tokens[Math.floor(Math.random() * 100000) % tokens.length];
@@ -60,13 +60,13 @@ export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, tokens
                 const [givenIdentity, unencryptedToken] = tokenBits;
                 return { encrypted: false, token: unencryptedToken, userGivenIdentity: givenIdentity };
             } else {
-                console.log("Invalid auth token found in metadata: " + token);
+                log("Invalid auth token found in metadata: " + token);
                 return null;
             }
 
         }
     } catch (e) {
-        console.warn("Error parsing livekit room metadata: " + roomMetadata, e);
+        logWarn("Error parsing livekit room metadata: " + roomMetadata, e);
         return null;
     }
 }

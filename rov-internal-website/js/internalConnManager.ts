@@ -7,6 +7,7 @@ import { SimplePeerConnection } from "./shared/simplePeer"
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
 import { URL_PARAMS } from "./constsInternal";
+import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -34,7 +35,8 @@ class InternalConnectionManager {
             publishVideo: true,
             reconnectAttempts: 300,
             roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
-            roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
+            roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG,
+            tokenEncryptionPassword: URL_PARAMS.ROV_CONTROL_PASSWORD
         })
         changesSubscribe(this._cloudLivekitConnection.latestRecivedDataMessage, (msgObj) => {
             if (!msgObj) return;
@@ -42,13 +44,14 @@ class InternalConnectionManager {
             backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         changesSubscribe(this._cloudLivekitConnection.connectionState, (state) => {
-            console.log("Cloud Conn State Changed: " + state)
+            log("Cloud Conn State Changed: " + state)
             if (state == ConnectionStates.connected) {
                 twitchStream.startStream()
+                // this._cloudLivekitConnection
             }
         })
         changesSubscribe(this._cloudLivekitConnection.participantConnectionEvents, (evt) => {
-            console.log("Cloud Conn Participant Event: ", evt)
+            log("Cloud Conn Participant Event: ", evt)
         })
 
         // Initlize (but don't start) the local livekit connection:
@@ -66,10 +69,10 @@ class InternalConnectionManager {
         //     backendHandleWebrtcMsgRcvd(senderId, msg)
         // })
         // changesSubscribe(this._localLivekitConnection.connectionState, (state) => {
-        //     console.log("Local Conn State Changed: " + state)
+        //     log("Local Conn State Changed: " + state)
         // })
         // changesSubscribe(this._localLivekitConnection.participantConnectionEvents, (evt) => {
-        //     console.log("Local Conn Participant Event: ", evt)
+        //     log("Local Conn Participant Event: ", evt)
         // })
     }
 
@@ -83,21 +86,26 @@ class InternalConnectionManager {
         let lastCloudConnState = this._cloudLivekitConnection.connectionState.get();
         if (livekitSetup.LivekitCloudURL) this._cloudLivekitConnection.connectionState.subscribe((state) => {
             if (state === ConnectionStates.failed || state === ConnectionStates.init) {
-                console.info("Creating & Starting Livekit Room: " + livekitSetup.RovName)
+                logInfo("Creating & Starting Livekit Room: " + livekitSetup.RovName)
                 const backoff = asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3);
-                backoff(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey).catch((e) => { console.error(e); console.log("Too many errors: Triggering Page Reload"); window.location.reload() });
+                backoff(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey).catch((e) => { logError(e); log("Too many errors: Triggering Page Reload"); window.location.reload() });
             } else if (state === ConnectionStates.connected && lastCloudConnState !== ConnectionStates.init) {
                 this._cloudLivekitConnection.updateMetadataTokens()
             }
             lastCloudConnState = state;
         })
-        // await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
-        // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { console.error(e); window.location.reload() });
+        // await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { logError(e); window.location.reload() });
+        // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { logError(e); window.location.reload() });
         asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({
-            video: true, //{ width: 160, height: 90 },
+            video: {
+                width: 1920,
+                height: 1080,
+                frameRate: 60,
+                facingMode: "environment"
+            },
             audio: false
-        }).then(this.cameraReady.bind(this)).catch((e) => { console.error(e); window.location.reload() });
-        console.info("Connection Manager Started")
+        }).then(this.cameraReady.bind(this)).catch((e) => { logError(e); window.location.reload() });
+        logInfo("Connection Manager Started")
         await waitforCondition(() => this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState && this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected)
     }
 
@@ -127,7 +135,7 @@ class InternalConnectionManager {
         const spConn = this._simplePeerConnections[userId]
         if (spConn) {
             if ([ConnectionStates.failed, ConnectionStates.disconnectedOk].includes(spConn.connectionState.get())) {
-                console.log("SP: Reconnecting to " + userId + " after signalling message received connectionState: " + spConn.connectionState.get())
+                log("SP: Reconnecting to " + userId + " after signalling message received connectionState: " + spConn.connectionState.get())
                 await this.startSimplePeerConnection(userId, signallingMsg);
             } else spConn.ingestSignalingMsg(signallingMsg);
         } else await this.startSimplePeerConnection(userId, signallingMsg);
@@ -141,10 +149,10 @@ class InternalConnectionManager {
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
         if (!msg) return false;
         if (this._cloudLivekitConnection.connectionState.get() !== ConnectionStates.connected) {
-            if (URL_PARAMS.DEBUG_MODE) console.debug("LK: Message Not Sent, Livekit Not Connected",);
+            if (URL_PARAMS.DEBUG_MODE) logDebug("LK: Message Not Sent, Livekit Not Connected",);
             return false;
         }
-        if (URL_PARAMS.DEBUG_MODE) console.debug("LK/SP: " + (toUserIds.length == 0 ? "Broadcasting msg " : "Sending msg to [" + toUserIds.join(", ") + "]") + (reliable ? "reliably" : "unreliably") + ":", msg);
+        if (URL_PARAMS.DEBUG_MODE) logDebug("LK/SP: " + (toUserIds.length == 0 ? "Broadcasting msg " : "Sending msg to [" + toUserIds.join(", ") + "]") + (reliable ? "reliably" : "unreliably") + ":", msg);
         msg.BackendMetadata = new rov_actions_proto.ResponseBackendMetadata({}); // Strip out backend metadata if present
         const msgBytes = rov_actions_proto.RovResponse.encode(msg).finish();
         // if (!reliable) {

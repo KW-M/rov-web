@@ -266,7 +266,7 @@ class Quaternion {
 				break;
 
 			default:
-				console.warn('THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order);
+				logWarn('THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order);
 
 		}
 
@@ -492,7 +492,7 @@ class Quaternion {
 
 		if (p !== undefined) {
 
-			console.warn('THREE.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.');
+			logWarn('THREE.Quaternion: .multiply() now only accepts one argument. Use .multiplyQuaternions( a, b ) instead.');
 			return this.multiplyQuaternions(q, p);
 
 		}

@@ -2,6 +2,7 @@
 import { AccessToken } from "livekit-server-sdk";
 import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
 import { encrypt } from "../encryption";
+import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 
 /**
  * Get a livekit auth token that's valid for 24 hrs and allows all actions.
@@ -58,7 +59,7 @@ export async function getFrontendAccessToken(apiKey: string, secretKey: string, 
     });
     const unencryptedToken = await token.toJwt();
     if (encryptionPassword && encryptionPassword.length > 0) {
-        console.debug("AuthToken before encryption for " + userName, unencryptedToken)
+        logDebug("AuthToken before encryption for " + userName, unencryptedToken)
         return userName + "|" + await encryptAccessToken(ENCRYPTED_AUTH_TOKEN_PREFIX + unencryptedToken, encryptionPassword);
     } else {
         return userName + "|" + unencryptedToken;

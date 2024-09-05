@@ -11,7 +11,7 @@
   export const showLoadingUi = (msgId: LOADING_MESSAGE, customLoadingMessage?: string) => {
     const message = customLoadingMessage || msgId || LOADING_MESSAGE.default;
     currentMsg.set(message);
-    console.debug("showLoadingUi", message);
+    logDebug("showLoadingUi", message);
     loadingStack[msgId] = message;
   };
 
@@ -30,7 +30,7 @@
       currentMsg.set(null);
     } else {
       currentMsg.set(loadingStack[loadingStackMsgIds[loadingStackMsgIds.length - 1]]);
-      console.debug("hideLoadingUi Nonempty stack", msgId);
+      logDebug("hideLoadingUi Nonempty stack", msgId);
     }
   };
 </script>

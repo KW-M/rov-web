@@ -24,7 +24,7 @@ document.addEventListener("visibilitychange", function logData() {
 
 // let uglyHax = function () {
 //     let done = function () {
-//         console.log("cb", iframe.contentWindow.location, iframe.contentWindow.document.readyState);
+//         log("cb", iframe.contentWindow.location, iframe.contentWindow.document.readyState);
 //         uglyHax();
 //     };
 //     iframe.contentWindow.addEventListener("unload", function unloadListener() {
@@ -81,5 +81,5 @@ function iframeURLChange(iframe, callback) {
 
 // Usage:
 iframeURLChange(iframe, function (newURL) {
-    console.log("URL changed:", newURL);
+    log("URL changed:", newURL);
 });

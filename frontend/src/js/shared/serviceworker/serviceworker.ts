@@ -1,18 +1,18 @@
-import { cacheNames, clientsClaim } from 'workbox-core'
-import { registerRoute, setCatchHandler, setDefaultHandler } from 'workbox-routing'
-import type { StrategyHandler } from 'workbox-strategies'
-import {
-    NetworkFirst,
-    NetworkOnly,
-    Strategy
-} from 'workbox-strategies'
-import type { ManifestEntry } from 'workbox-build'
+// import { cacheNames, clientsClaim } from 'workbox-core'
+// import { registerRoute, setCatchHandler, setDefaultHandler } from 'workbox-routing'
+// import type { StrategyHandler } from 'workbox-strategies'
+// import {
+//     NetworkFirst,
+//     NetworkOnly,
+//     Strategy
+// } from 'workbox-strategies'
+// import type { ManifestEntry } from 'workbox-build'
 
 /// <reference path="
 
 
 // Give TypeScript the correct global.
-declare let self: WorkerGlobalScope
+// declare let self: WorkerGlobalScope
 
 addEventListener('install', event => {
     // https://betterprogramming.pub/how-to-run-a-proxy-server-inside-your-browser-8b96ea2ef1ea

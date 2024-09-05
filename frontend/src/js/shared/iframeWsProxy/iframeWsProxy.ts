@@ -4,6 +4,7 @@
 // Some Ideas
 
 import { DECODE_TXT, ENCODE_TXT, PROXY_PREFIX } from "../consts";
+import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 import hookWebsockets from "../libraries/websocketHook/wsHook";
 
 export enum proxyMessageTypes {
@@ -21,7 +22,7 @@ export type proxyInterchangeFormat = {
 }
 
 export function enableIframeWebsocketProxying() {
-    if (!window.parent || window.parent === window) return console.warn("enableFrameProxy() called without this page being inside an iframe!")
+    if (!window.parent || window.parent === window) return logWarn("enableFrameProxy() called without this page being inside an iframe!")
 
     // const origin = window.parent.location.protocol.replace(":", "") + "://" + window.parent.location.host;
     const receiveProxiedMsg = startWebsocketProxying((url: string) => true, (data) => {
@@ -29,7 +30,7 @@ export function enableIframeWebsocketProxying() {
     })
     window.addEventListener('message', (msg) => {
         // if (msg.origin === origin) { // security check
-        console.log("Got iframe parent message", msg)
+        log("Got iframe parent message", msg)
         receiveProxiedMsg(msg.data)
         // }
     })
@@ -42,9 +43,9 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
     const wsHook = hookWebsockets();
 
     wsHook.allowNewSocket = (url) => {
-        console.log("Checking ws url: ", url)
+        log("Checking ws url: ", url)
         if (isProxiedUrl(url)) {
-            console.log("Proxying ws url: ", url)
+            log("Proxying ws url: ", url)
             return false;
         } else return true;
     };
@@ -52,7 +53,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
     wsHook.modifyUrl = (url: string | URL) => {
         url = url.toString();
         if (isProxiedUrl(url)) url = url.substring(PROXY_PREFIX.length)
-        console.log("modifyUrl: ", url)
+        log("modifyUrl: ", url)
         return url
     };
 
@@ -73,7 +74,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
         if (wsObject.isReal) {
             return data;
         } else {
-            console.log("beforeSend: ", wsObject.isReal, wsObject.url, data)
+            log("beforeSend: ", wsObject.isReal, wsObject.url, data)
             sendDataThruProxy(url, new Uint8Array(data as ArrayBuffer))
             return null
         }
@@ -84,7 +85,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
             type: proxyMessageTypes.openWebsocket,
             url: url,
         } as proxyInterchangeFormat
-        console.log("Sending openWebsocket msg Thru Proxy", proxiedMsg)
+        log("Sending openWebsocket msg Thru Proxy", proxiedMsg)
         if (sendProxyMessageCallback) sendProxyMessageCallback(ENCODE_TXT(JSON.stringify(proxiedMsg)))
     }
 
@@ -95,7 +96,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
             url: url,
             body: new Array(...binary)
         } as proxyInterchangeFormat
-        console.log("Sending Data Thru Proxy", proxiedMsg)
+        log("Sending Data Thru Proxy", proxiedMsg)
         if (sendProxyMessageCallback) sendProxyMessageCallback(ENCODE_TXT(JSON.stringify(proxiedMsg)))
     }
 
@@ -104,7 +105,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
         if (proxiedMsg.type === proxyMessageTypes.socketMsg) {
             const ws = proxiedWsObjects[proxiedMsg.url]
             const body = new Uint8Array(proxiedMsg.body)
-            console.log("Received Proxy Message", proxiedMsg, body)
+            log("Received Proxy Message", proxiedMsg, body)
             if (ws) wsHook.triggerOnMessage(ws, body)
         }
     }

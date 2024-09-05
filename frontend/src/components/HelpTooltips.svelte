@@ -56,9 +56,9 @@
 </script>
 
 {#each $savedTooltips as tooltip}
-  <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-filled-primary z-40 pointer-events-none select-none" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
+  <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-filled z-40 pointer-events-none select-none" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
     {tooltip.label}
-    <div class="arrow variant-filled-primary popper-tooltip-arrow" />
+    <div class="arrow variant-filled popper-tooltip-arrow" />
   </div>
 {/each}
 

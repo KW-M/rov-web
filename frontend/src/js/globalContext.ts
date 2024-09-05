@@ -34,17 +34,36 @@ export type dialogInfoType = {
 //     addTooltip: null,
 // };
 
-export const appReady: nStoreT<boolean> = nStore(false);
+export interface RovMovementVector {
+    VelocityX: number,
+    VelocityY: number,
+    VelocityZ: number,
+    AngularVelocityYaw: number,
+    ButtonBitmask: number,
+}
+
+export enum VideoSource {
+    None = "",
+    Livekit = "LK",
+    Simplepeer = "SP",
+}
+
 export const debugPageModeActive: nStoreT<boolean> = nStore(false);
-export const stressTest: nStoreT<boolean> = nStore(false);
 export const fullscreenOpen: nStoreT<boolean> = nStore(false);
 export const sidebarExpanded: nStoreT<boolean> = nStore(false);
+export const tutorialModeActive: nStoreT<boolean> = nStore(false);
+export const throttleGain: nStoreT<number> = nStore(50);
 
-export const peerServerConfig: nStoreT<any | null> = nStore(null);
-export const rovIpAddr: nStoreT<string> = nStore("raspberrypi.local");
-export const rovPeerIdEndNumber: nStoreT<number> = nStore(0);
+
 export const attemptingNewRovPeerId: nStoreT<boolean> = nStore(false);
 export const isRovDriver: nStoreT<boolean> = nStore(false);
 export const ourPeerId: nStoreT<string> = nStore("No Peer Id");
-export const rovMainVideoTrack: nStoreT<MediaStreamTrack | null> = nStore(null);
-export const rovVideoStream: nStoreT<MediaStream | null> = nStore(null);
+export const currentVideoSource: nStoreT<VideoSource> = nStore(VideoSource.None);
+
+export const rovDrivingVector: nStoreT<RovMovementVector> = nStore({
+    VelocityX: 0,
+    VelocityY: 0,
+    VelocityZ: 0,
+    AngularVelocityYaw: 0,
+    ButtonBitmask: 0,
+});

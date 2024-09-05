@@ -1,3 +1,4 @@
+import { log, logDebug, logError } from "./shared/logging"
 
 /*
     Wrapper class for the WebSocket built-in javascript module. Acts as a proxy for communication
@@ -50,12 +51,12 @@ export class WebSocketRelay {
         WebSocket and assigning callbacks. Arbitrary delays occur in the event of a di
     */
     connect() {
-        console.log("Attempting to connect to websocket: " + this.serverAddress)
+        log("Attempting to connect to websocket: " + this.serverAddress)
         this.socket = new WebSocket(this.serverAddress);
         this.socket.binaryType = "arraybuffer"
 
         const openTimeout = setTimeout(() => {
-            console.error("WebSocket connection timed out after 10 seconds")
+            logError("WebSocket connection timed out after 10 seconds")
             this.stop()
             this.queueConnect()
         }, 10000)
@@ -67,19 +68,19 @@ export class WebSocketRelay {
         });
 
         this.socket.addEventListener('close', (event) => {
-            console.log('WebSocket connection closed with code: ', event.code);
+            log('WebSocket connection closed with code: ', event.code);
             this.isConnected = false
             if (this.isRunning) this.queueConnect()
         });
 
         this.socket.addEventListener('error', (error) => {
-            console.error('WebSocket error:', error);
+            logError('WebSocket error:', error);
             this.isConnected = false
             if (this.isRunning) this.queueConnect()
         });
 
         this.socket.addEventListener("message", (msgEvent: MessageEvent<string | ArrayBufferLike>) => {
-            if (!this.msgReceivedFn) return console.error("No msgReceivedFn defined for WebSocketRelay");
+            if (!this.msgReceivedFn) return logError("No msgReceivedFn defined for WebSocketRelay");
             if (typeof msgEvent.data === "string") this.msgReceivedFn(msgEvent.data as string)
             else if (msgEvent.data instanceof ArrayBuffer) this.msgReceivedFn(new Uint8Array(msgEvent.data as ArrayBuffer))
             else if (msgEvent.data instanceof Blob) throw new Error("WebSocketRelay received Blob type, which is not supported!")
@@ -93,10 +94,10 @@ export class WebSocketRelay {
         asynchronously. Used for trying to reconnect if the server is unresponsive
     */
     queueConnect() {
-        // console.log("queuing connect(), clearing ID=", this.connectionTimerId)
+        // log("queuing connect(), clearing ID=", this.connectionTimerId)
         clearTimeout(this.connectionTimerId) // Unqueue any current connection events.
         this.connectionTimerId = setTimeout(this.connect.bind(this), 2000); // Attempt to reconnect after a delay
-        // console.log("finished queuing connect(), new ID=", this.connectionTimerId)
+        // log("finished queuing connect(), new ID=", this.connectionTimerId)
     }
 
     getIsConnected() {
@@ -107,8 +108,9 @@ export class WebSocketRelay {
         Sends an arbitrary byte sequence through the WebSocket
     */
     sendMessage(message: Uint8Array | string) {
-        if (!this.socket || this.socket.readyState != this.socket.OPEN) {
-            console.debug("Can't send WebSocket msg: " + (this.socket ? this.socket.readyState : "no socket"))
+        if (!this.socket) return;
+        if (this.socket.readyState != this.socket.OPEN) {
+            logDebug("Can't send WebSocket msg: " + this.socket.readyState)
             return
         }
         this.socket.send(message)

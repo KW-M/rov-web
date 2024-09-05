@@ -20,7 +20,7 @@ export async function shutdownROV(shutdownType: 'reboot' | 'poweroff'): Promise<
         if (error.code === 'ECONNABORTED') return "Shutting Down... ";
 
         const message = `Could not execute shutdown: ${error.code} - ${error.message} - ${error.message ?? error.response?.data}.`
-        console.warn(message)
+        logWarn(message)
         throw new Error(message);
     })
 }
@@ -57,10 +57,10 @@ export async function poweroffArdupilot(shutdownType: 'reboot' | 'poweroff'): Pr
         "mode": "cors",
         "credentials": "include"
     }).then(response => response.json()).then((response) => {
-        console.log(response)
+        log(response)
         return true;
     }).catch((e) => {
-        console.log(e)
+        log(e)
         return false;
     });
 }

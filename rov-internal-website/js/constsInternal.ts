@@ -8,7 +8,7 @@ export const URL_PARAMS = {
     ROV_CONTROL_PASSWORD: getStringQueryParam("ROV_CONTROL_PASSWORD"),
     LIVEKIT_API_KEY: getStringQueryParam("LIVEKIT_API_KEY"),
     LIVEKIT_SECRET_KEY: getStringQueryParam("LIVEKIT_SECRET_KEY"),
-    TWITCH_STREM_KEY: getStringQueryParam("TWITCH_STREM_KEY", "None"),
+    TWITCH_STREAM_KEY: getStringQueryParam("TWITCH_STREAM_KEY", "None"),
     PYTHON_WEBSOCKET_PORT: getIntegerQueryParam("PYTHON_WEBSOCKET_PORT", 0),
     AUTH_TOKEN_TIMEOUT: getIntegerQueryParam("AUTH_TOKEN_TIMEOUT", SECONDS_IN_DAY),
     BLUEOS_APIS_ENDPOINT: getStringQueryParam("BLUEOS_APIS_ENDPOINT", ""), // EG: http://blueos.local

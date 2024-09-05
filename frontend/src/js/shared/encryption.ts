@@ -1,6 +1,6 @@
 // Taken from example here:
 // https://github.com/mdn/dom-examples/blob/main/web-crypto/derive-key/pbkdf2.js
-
+import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { DECODE_TXT, ENCODE_TXT } from "./consts";
 const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
@@ -72,7 +72,7 @@ If there was an error decrypting,
 update the "decryptedValue" box with an error message.
 */
 export async function decrypt(encryptedText: string, saltText: string, ivText: string, password: string) {
-    console.log("decrypting", encryptedText, saltText, ivText, password);
+    log("decrypting", encryptedText, saltText, ivText, password);
     const encryptedBytes = base64ToBytes(encryptedText);
     const salt = base64ToBytes(saltText);
     const iv = base64ToBytes(ivText);
@@ -87,7 +87,7 @@ export async function decrypt(encryptedText: string, saltText: string, ivText: s
         }, key, encryptedBytes);
         return DECODE_TXT(decryptedBytes);
     } catch (e) {
-        console.warn("Failed to decrypt", e);
+        logWarn("Failed to decrypt", e);
     }
 }
 

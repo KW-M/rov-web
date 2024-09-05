@@ -11,6 +11,7 @@ from utilities import is_in_docker
 from websocket_server import websocket_server
 from mesage_handler import message_handler
 from sensors.sensors_controller import sensor_ctrl
+
 # from sensors.sensors_datalog import sensor_log
 from gpio.gpio_interface import GPIO_ctrl
 
@@ -21,8 +22,9 @@ readAuthStateFromDisk()
 ############################
 
 # set the Loglevel from command line argument or config file. Use --LogLevel=DEBUG
-logging.basicConfig(level=get_log_level(rov_config['LogLevel']))
+logging.basicConfig(level=get_log_level(rov_config["LogLevel"]))
 log = logging.getLogger(__name__)
+
 
 ######## Main Program Loop ###########
 ######################################
@@ -46,7 +48,7 @@ async def main():
     # sensor_log.start()
 
     parallel_tasks = [
-        websocket_server.start_wss(port=rov_config.get('PythonWebsocketPort', 8765)),
+        websocket_server.start_wss(port=rov_config.get("PythonWebsocketPort", 8765)),
         message_handler.status_broadcast_loop(),
         motion_ctrl.motor_setup_loop(),
         # start_aiohttp_api_server(),
@@ -54,14 +56,18 @@ async def main():
     ]
 
     if not is_in_docker():
-        parallel_tasks.extend([
-            sensor_ctrl.sensor_setup_loop(),
-        ])
+        parallel_tasks.extend(
+            [
+                sensor_ctrl.sensor_setup_loop(),
+            ]
+        )
     else:
-        parallel_tasks.extend([
-            rov_web_mavlink.send_heartbeat_loop(),
-            rov_web_mavlink.handle_mavlink_msgs(),
-        ])
+        parallel_tasks.extend(
+            [
+                rov_web_mavlink.send_heartbeat_loop(),
+                rov_web_mavlink.handle_mavlink_msgs(),
+            ]
+        )
 
     # setup the asyncio loop to run each of these async functions aka "tasks" aka "coroutines" concurently
     await asyncio.gather(*parallel_tasks)

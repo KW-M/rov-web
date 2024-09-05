@@ -1,13 +1,14 @@
+<script lang="ts" context="module">
+  gpadCtrl.start(RovActions.gamepadAxisTriggers.bind(RovActions), RovActions.gamepadButtonTriggers.bind(RovActions));
+</script>
+
 <script lang="ts">
-  import { ConnectionState } from "../js/frontendConsts";
-  import { appReady } from "../js/globalContext";
   import GamepadLeftSvg from "../assets/gamepad/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/gamepad/optimized/display-gamepad-right.svg?raw";
   import { gpadCtrl } from "../js/gamepad";
-  import type { nStoreT } from "../js/shared/libraries/nStore";
-  import { oneShotSubscribe } from "../js/shared/util";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
+  import { RovActions } from "../js/rovActions";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;
@@ -19,10 +20,10 @@
   onMount(() => {
     gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
   });
-  // oneShotSubscribe(appReady, () => {
-  //   gpadCtrl.start();
-  //   gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
-  // });
+
+  onDestroy(() => {
+    gpadCtrl.cleanup();
+  });
 </script>
 
 <!-- <button

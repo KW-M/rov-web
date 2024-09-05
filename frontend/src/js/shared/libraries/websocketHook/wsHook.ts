@@ -93,7 +93,7 @@ const wsHook = {
   triggerOnMessage: (wsObject: WebSocket, data: socketMsgDataTypes) => {
     // @ts-ignore
     if (!(typeof data === typeof '' || data instanceof ArrayBuffer)) data = (data as Uint8Array).buffer;
-    console.log("triggerOnMessage", data, wsObject);
+    log("triggerOnMessage", data, wsObject);
     const ev = new MessageEvent("mesage", { data: data, origin: wsObject.url, bubbles: false, cancelable: false, composed: false })
     if (wsObject._onmessage) wsObject._onmessage(ev);
   },
@@ -139,7 +139,7 @@ export function hookWebsockets() {
 
   // prevent double patching
   if (monkeyPatchDone) {
-    console.warn("hookWebsockets() can only be called once!");
+    logWarn("hookWebsockets() can only be called once!");
     return wsHook;
   }
   monkeyPatchDone = true;
@@ -175,7 +175,7 @@ export function hookWebsockets() {
     // Hook the websocket send function
     let _send = WSObject.send
     WSObject.send = function (data) {
-      console.log("hook send")
+      log("hook send")
       arguments[0] = wsHook.beforeSend(data, WSObject.url, this) || null;
       if (arguments[0] == null) return;
       _send.apply(this, arguments)
@@ -236,13 +236,13 @@ export function hookWebsockets() {
         let userFunc = arguments[0]
         WSObject._onmessage = userFunc
         let onMessageHandler = userFunc ? function () {
-          if (!WSObject.isReal) console.log('onMessageHandler', arguments)
+          if (!WSObject.isReal) log('onMessageHandler', arguments)
           arguments[0] = wsHook.afterRecive(MakeMutableMessageEvent(arguments[0]), WSObject.url, WSObject)
           if (arguments[0] === null) return
           userFunc.apply(eventThis, arguments)
         } : null;
 
-        console.log('onMsgHandler', arguments)
+        log('onMsgHandler', arguments)
         WSObject._addEventListener?.apply(this, ['message', onMessageHandler, false])
       }
     })
@@ -253,12 +253,12 @@ export function hookWebsockets() {
         let userFunc = arguments[0]
         WSObject._onopen = userFunc
         let onOpenHandler = userFunc ? function () {
-          if (!WSObject.isReal) console.log('onOpenHandler', arguments)
+          if (!WSObject.isReal) log('onOpenHandler', arguments)
           arguments[0] = wsHook.beforeOpen(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return
           userFunc.apply(eventThis, arguments)
         } : null;
-        console.log('onOpenHandler', arguments)
+        log('onOpenHandler', arguments)
         WSObject._addEventListener?.apply(this, ['open', onOpenHandler, false])
       }
     })
@@ -269,7 +269,7 @@ export function hookWebsockets() {
         let userFunc = arguments[0]
         WSObject._onerror = userFunc
         let onErrorHandler = userFunc ? function () {
-          if (!WSObject.isReal) console.log('onErrorHandler', arguments)
+          if (!WSObject.isReal) log('onErrorHandler', arguments)
           arguments[0] = wsHook.beforeError(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return
           userFunc.apply(eventThis, arguments)
@@ -284,7 +284,7 @@ export function hookWebsockets() {
         let userFunc = arguments[0]
         WSObject._onclose = userFunc
         let onCloseHandler = userFunc ? function () {
-          if (!WSObject.isReal) console.log('onCloseHandler', arguments)
+          if (!WSObject.isReal) log('onCloseHandler', arguments)
           arguments[0] = wsHook.beforeClose(arguments[0], WSObject.url, WSObject)
           if (arguments[0] === null) return
           userFunc.apply(eventThis, arguments)

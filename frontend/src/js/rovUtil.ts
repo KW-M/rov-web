@@ -1,3 +1,6 @@
+
+import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
+
 export function calculateDesiredMotion(axes) {
     let turn = Number(axes[0].toFixed(3));
     let forward = -1 * Number(axes[1].toFixed(3));
@@ -29,16 +32,16 @@ export function scanForRovIp() {
         let foundIp = false;
         let interval = setInterval(() => {
             let currentlyTestingIp = ipCombos[currentIpComboArrayIndex];
-            console.log(`Testing IP ${currentIpComboArrayIndex}/${ipCombos.length}: ${currentlyTestingIp} ...`)
+            log(`Testing IP ${currentIpComboArrayIndex}/${ipCombos.length}: ${currentlyTestingIp} ...`)
             try {
                 let s = new WebSocket("wss://" + currentlyTestingIp)
                 if (s) {
-                    s.addEventListener("error", console.warn)
-                    s.addEventListener("open", (o) => console.log("open", o))
+                    s.addEventListener("error", logWarn)
+                    s.addEventListener("open", (o) => log("open", o))
                 }
-                else console.log("WebSocket is undefined");
+                else log("WebSocket is undefined");
             } catch (e) {
-                console.log(currentlyTestingIp, e)
+                log(currentlyTestingIp, e)
             }
             if (foundIp) {
                 clearInterval(interval);
@@ -55,7 +58,7 @@ export function scanForRovIp() {
 
 
 
-//scanForRovIp().then(console.log, console.warn);
+//scanForRovIp().then(log, logWarn);
 
 // function findRovLocalIp() {
 
@@ -235,12 +238,12 @@ export function scanForRovIp() {
 // let rovIpFound = false;
 // function findRovLocalIp() {
 //     // try to brute force search for raspberrypi's ip address
-//     console.info("Searching for raspberrypi local ip address...")
+//     logInfo("Searching for raspberrypi local ip address...")
 //     currentThirdOctet = -1
 //     let scriptElem = null
 //     function testIp(ipAddress) {
 //         return new Promise(function (resolve, reject) {
-//             console.info("Testing: ", ipAddress)
+//             logInfo("Testing: ", ipAddress)
 //             if (scriptElem) document.body.removeChild(scriptElem)
 //             scriptElem = document.createElement("SCRIPT")
 //             scriptElem.setAttribute("src", "http://" + ipAddress)
@@ -259,7 +262,7 @@ export function scanForRovIp() {
 //     }
 //     testIp("192.168." + 0 + ".88/alive").then((localIp) => {
 //         rovLocalIp = localIp;
-//         console.info("ROV IP FOUND! " + rovLocalIp)
+//         logInfo("ROV IP FOUND! " + rovLocalIp)
 //     })
 // }
 
@@ -267,17 +270,17 @@ export function scanForRovIp() {
 // let media = document.getElementById('video-livestream');
 
 // // Playing event
-// let isStalled = function (e) { console.log(e, "Playback Stalled"); };
+// let isStalled = function (e) { log(e, "Playback Stalled"); };
 
-// let isWaiting = function (e) { console.log(e, "Waiting for content"); };
+// let isWaiting = function (e) { log(e, "Waiting for content"); };
 
-// let isPlaying = function (e) { console.log(e, "Playing event triggered"); };
+// let isPlaying = function (e) { log(e, "Playing event triggered"); };
 
 // // Pause event
-// let onPause = function (e) { console.log(e, "Pause event triggered"); };
+// let onPause = function (e) { log(e, "Pause event triggered"); };
 
 // // Volume changed event
-// let onVolumechange = function (e) { console.log(e, "Volumechange event triggered"); };
+// let onVolumechange = function (e) { log(e, "Volumechange event triggered"); };
 
 // media.addEventListener("playing", isPlaying, false);
 // media.addEventListener("stalled", isStalled, false);

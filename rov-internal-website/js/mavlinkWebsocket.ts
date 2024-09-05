@@ -1,6 +1,7 @@
 import { DECODE_TXT, ENCODE_TXT } from "./shared/consts";
 import type { Package as mavlink2RestFullMessage, Message } from "./shared/mavlink2rest-ts/messages/mavlink2rest";
 import { WebSocketRelay } from "./websocketRelay";
+import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 
 // Available Mavlink Messages
 // https://gist.github.com/patrickelectric/26a407c4e7749cdaa58d06b52212cb1e
@@ -31,7 +32,7 @@ export class mavlinkInterface {
             const msgJson = JSON.parse(msgTxt) as mavlink2RestFullMessage
             this.onMessage(msgJson)
         } catch (e) {
-            console.error("Failed to parse recived mavlink2rest json: " + msgTxt, e)
+            logError("Failed to parse recived mavlink2rest json: " + msgTxt, e)
         }
     }
 

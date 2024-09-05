@@ -1,5 +1,5 @@
 import type { nStoreT } from "./libraries/nStore";
-
+import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 
 export function waitfor(millisec: number) {
     return new Promise<void>(resolve => {
@@ -33,7 +33,7 @@ export function asyncExpBackoff<F extends (...args: any[]) => Promise<any>>(fn: 
                 return await fn.apply(thisArg, args)
             } catch (err) {
                 error = err;
-                console.warn("err:", error)
+                logWarn("err:", error)
                 await waitfor(initialDelay * Math.pow(rate, retries));
                 retries++;
             }
@@ -66,9 +66,9 @@ export function oneShotSubscribe<V>(store: nStoreT<V>, callback: (value: V) => v
 }
 
 
-export const appendLog = console.log
+export const appendLog = log
 // (...args: any[]) {
-//     console.log(...args)
+//     log(...args)
 //     const txtElem = document.createElement('p');
 //     txtElem.innerText = args.map(arg => JSON.stringify(arg)).join(' | ');
 //     document.body.appendChild(txtElem)

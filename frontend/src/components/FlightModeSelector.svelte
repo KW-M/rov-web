@@ -1,15 +1,16 @@
 <script lang="ts">
   import { FlightMode, FlightmodeNameMap } from "../js/shared/mavlink2RestMessages";
-  import ChevronDownIcon from "svelte-google-materialdesign-icons/Expand_more.svelte";
+  import { Expand_more as ChevronDownIcon } from "svelte-google-materialdesign-icons";
   import { autopilotMode } from "../js/vehicleStats";
   import { RovActions } from "../js/rovActions";
+  import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
 
   export let disabled = false;
   export let selectedMode: FlightMode = FlightMode.unknown;
   $: selectedMode = $autopilotMode;
   let onModeChange = (mode: string) => {
     const modeNum = parseInt(mode) as FlightMode;
-    console.log("Flightmode change: ", modeNum);
+    log("Flightmode change: ", modeNum);
     autopilotMode.set(FlightMode.unknown);
     RovActions.setFlightMode(modeNum);
   };
@@ -17,8 +18,8 @@
   let modes = Object.values(FlightMode).filter((v) => typeof v == "number") as FlightMode[];
 </script>
 
-<div class="rounded-full bg-slate-50 relative mx-2 mr-4">
-  <select {disabled} class="select variant-outline-primary appearance-none md:pl-4" value={selectedMode} on:change={(e) => onModeChange(e.currentTarget.value)}>
+<div class="rounded-full bg-slate-50 relative">
+  <select {disabled} class="select h-11 variant-outline-primary appearance-none md:pl-4" value={selectedMode} on:change={(e) => onModeChange(e.currentTarget.value)}>
     {#each modes as mode}
       {#if mode == FlightMode.unknown}
         <option value={mode} disabled>Flight Mode</option>

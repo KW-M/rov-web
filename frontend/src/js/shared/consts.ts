@@ -1,4 +1,4 @@
-import { VideoPresets, type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } from "livekit-client"
+import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions, VideoPresets } from "livekit-client"
 import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum.ts";
 
 declare global {
@@ -30,7 +30,7 @@ export const SEA_LEVEL_PRESSURE = 1013.25; // mbar
 // export let ROV_CONTROL_PASSWORD = ''
 // export let LIVEKIT_API_KEY = ''
 // export let LIVEKIT_SECRET_KEY = ''
-// export let TWITCH_STREM_KEY = 'None'
+// export let TWITCH_STREAM_KEY = 'None'
 // export let ENABLE_LIVEKIT_LOCAL = false
 // export let ENABLE_LIVEKIT_CLOUD = true
 // export let PYTHON_WEBSOCKET_PORT = 0
@@ -69,19 +69,40 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
     // optimize publishing bandwidth and CPU for published tracks
     dynacast: true,
 
+    adaptiveStream: true,
+
     // default capture settings
     videoCaptureDefaults: {
         resolution: {
-            width: 800,
-            height: 600,
-            frameRate: 15,
+            width: 1920,
+            height: 1080,
+            frameRate: 60,
         },
         // facingMode: 'environment',
         // deviceId: //get device id beforehand
+
     },
 
     publishDefaults: {
-        videoCodec: "h264",
+        videoCodec: "vp8",
+        videoEncoding: {
+            maxBitrate: 2_000_000,
+            maxFramerate: 60,
+            priority: "high",
+        },
+
+        // videoEncoding: {
+        //     maxBitrate: 160_000,
+        //     maxFramerate: 30,
+        //     priority: "high",
+        // },
+
+        simulcast: false,
+        // videoSimulcastLayers: [
+        //     // VideoPresets.h540,
+        //     VideoPresets.h360,
+        // ]
+
     },
 }
 
@@ -98,7 +119,7 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 
 export const SIMPLEPEER_BASE_CONFIG = {
     initiator: true,
-    trickle: false,
+    trickle: true,
     // @ts-ignore
     config: {
         bundlePolicy: "balanced",

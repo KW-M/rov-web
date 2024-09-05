@@ -5,7 +5,7 @@ const iframeHost = window.location.protocol.replace(":", "") + '://' + window.lo
 iframe.src = iframeHost + '/frontend/index.html'
 iframe.setAttribute("sandbox", "allow-scripts")
 iframe.onload = () => {
-    console.info("iframe loaded")
+    logInfo("iframe loaded")
 }
 document.body.appendChild(iframe);
 setSendProxyMessageCallback((data) => {
@@ -13,7 +13,7 @@ setSendProxyMessageCallback((data) => {
 })
 window.addEventListener('message', (msg) => {
     if (msg.origin === iframeHost) {
-        console.log("Got message", msg.data)
+        log("Got message", msg.data)
         receiveProxiedMsg(msg.data)
     }
 })

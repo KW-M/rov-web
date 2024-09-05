@@ -8,6 +8,7 @@ import { modalPasswordPrompt } from "./uiDialogs";
 import { handleMavlinkMessage } from "./mavlinkMessageHandler";
 import { updateSystemMonitorDisplay } from "./vehicleStats";
 import { URL_PARAMS } from "./frontendConsts";
+import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 
 let lastTimeRecvdPong = NaN;
 
@@ -57,16 +58,16 @@ export class FrontendRovMsgHandlerClass {
         } else if (msgData.LogMessage) {
             return this.handleLogMsgRecived(msgData.LogMessage, ExchangeId);
         } else {
-            console.warn("Unhandled ROV message recived: ", msgData);
+            logWarn("Unhandled ROV message recived: ", msgData);
         }
     }
 
     handleDoneMsgRecived(msgData: rov_actions_proto.IDoneResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) console.debug("Done: ", msgData);
+        if (URL_PARAMS.DEBUG_MODE) logDebug("Done: ", msgData);
     }
 
     handleErrorMsgRecived(msgData: rov_actions_proto.IErrorResponse, ExchangeId: number) {
-        console.warn("ROV Error: ", msgData);
+        logWarn("ROV Error: ", msgData);
         showToastMessage("ROV Error: " + msgData.Message, 2000, null);
     }
 
@@ -77,12 +78,12 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handleContinuedOutputMsgRecived(msgData: rov_actions_proto.IContinuedOutputResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) console.debug("ContinuedOutput: ", ExchangeId, msgData);
+        if (URL_PARAMS.DEBUG_MODE) logDebug("ContinuedOutput: ", ExchangeId, msgData);
         // pass
     }
 
     handleSensorUpdatesMsgRecived(msgData: rov_actions_proto.ISensorUpdatesResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) console.debug("SensorUpdates: ", msgData);
+        if (URL_PARAMS.DEBUG_MODE) logDebug("SensorUpdates: ", msgData);
         updateSensorValues(msgData);
     }
 
@@ -91,7 +92,7 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handlePasswordRequiredMsgRecived(msgData: rov_actions_proto.IPasswordRequiredResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) console.debug("PasswordRequired for rovId:", msgData.RovId);
+        if (URL_PARAMS.DEBUG_MODE) logDebug("PasswordRequired for rovId:", msgData.RovId);
         // TODO: use the rovId to determine if we have authtoken
         modalPasswordPrompt("Enter ROV Password", "").then((password) => {
             if (password) {
@@ -135,7 +136,7 @@ export class FrontendRovMsgHandlerClass {
             const msg = JSON.parse(mavMessage);
             handleMavlinkMessage(msg);
         } catch (e) {
-            console.warn("@ Mav MSG RECIVED W INVALID JSON: ", mavMessage);
+            logWarn("@ Mav MSG RECIVED W INVALID JSON: ", mavMessage);
         }
     }
 
@@ -154,11 +155,11 @@ export class FrontendRovMsgHandlerClass {
             if (logArgs.length === 0) return;
             if (typeof logArgs[0] === 'string') logArgs[0] = "REMOTE LOG: " + logArgs[0];
             else logArgs.unshift("REMOTE LOG: "); // add "REMOTE LOG: " to the start of the logArgs
-            if (msgData.Level == rov_actions_proto.LogLevel.Debug) console.debug(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Info) console.info(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Warning) console.warn(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Error) console.error(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Critical) console.error(...logArgs);
+            if (msgData.Level == rov_actions_proto.LogLevel.Debug) logDebug(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Info) logInfo(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Warning) logWarn(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Error) logError(...logArgs);
+            else if (msgData.Level == rov_actions_proto.LogLevel.Critical) logError(...logArgs);
         }
     }
 
@@ -172,10 +173,10 @@ export class FrontendRovMsgHandlerClass {
     resendMessage(ExchangeId: number) {
         const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
         if (replyExchageData && replyExchageData.originalMsgData) {
-            console.info("Resending message: ", replyExchageData.originalMsgData)
+            logInfo("Resending message: ", replyExchageData.originalMsgData)
             this.sendRovMessage(replyExchageData.originalMsgData, replyExchageData.callback);
         } else {
-            console.warn("resendMessage(): No message to resend for ExchangeId: ", ExchangeId)
+            logWarn("resendMessage(): No message to resend for ExchangeId: ", ExchangeId)
         }
     }
 

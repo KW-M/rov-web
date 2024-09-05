@@ -60,10 +60,10 @@ export function popup(triggerNode: HTMLElement | SVGElement, args: PopupSettings
                 shift(args.middleware?.shift ?? { padding: 8 }),
                 // https://floating-ui.com/docs/flip
                 flip(args.middleware?.flip),
-                // https://floating-ui.com/docs/arrow
+                // // https://floating-ui.com/docs/arrow
                 arrow(args.middleware?.arrow ?? { element: elemArrow || null }),
-                // Implement optional middleware
-                ...optionalMiddleware
+                // // Implement optional middleware
+                // ...optionalMiddleware
             ]
         }).then(({ x, y, placement, middlewareData }: any) => {
             Object.assign(elemPopup.style, {
@@ -117,7 +117,7 @@ export function popup(triggerNode: HTMLElement | SVGElement, args: PopupSettings
         }, args.delay ?? 0);
     }
     function close(callback?: () => void): void {
-        if (!elemPopup) return;
+        if (!elemPopup || args.forceOpen) return;
         shouldOpen = false;
         // Set transition duration
         const cssTransitionDuration = parseFloat(window.getComputedStyle(elemPopup).transitionDuration.replace('s', '')) * 1000;

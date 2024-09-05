@@ -7,6 +7,7 @@
   import { modalPasswordPrompt } from "../js/uiDialogs";
   import { decrypt } from "../js/shared/encryption";
   import { waitfor } from "../js/shared/util";
+  import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
 
   export let selectedRov = "";
 
@@ -17,7 +18,7 @@
   const ourIdentity = frontendConnMngr.currentLivekitIdentity;
 
   async function connectToRov(rovRoomInfo: LivekitRoomInfo) {
-    if (!rovRoomInfo.token) return showToastMessage("ROV is not available at the moment. Please wait & try again.", 5000, false, ToastSeverity.error);
+    if (!rovRoomInfo.token) return showToastMessage("ROV is not ready. Please wait & try again.", 5000, false, ToastSeverity.error);
 
     selectedRov = rovRoomInfo.name;
     let authToken = "";
@@ -33,7 +34,7 @@
         // decrypt the token
         try {
           const decryptedToken = await decrypt(rovRoomInfo.token.token, salt, iv, password);
-          console.log('Decrypted Token:"' + decryptedToken + '"', rovRoomInfo.name);
+          log('Decrypted Token:"' + decryptedToken + '"', rovRoomInfo.name);
           if (!decryptedToken || !decryptedToken.startsWith(ENCRYPTED_AUTH_TOKEN_PREFIX)) {
             showToastMessage("Incorrect password. Please try again.", 2000, false, ToastSeverity.warning);
             continue;
@@ -42,7 +43,7 @@
           authToken = decryptedToken.substring(ENCRYPTED_AUTH_TOKEN_PREFIX.length);
           break;
         } catch (e) {
-          console.error("Token Decryption Failure:", e);
+          logError("Token Decryption Failure:", e);
           showToastMessage("Incorrect password. Please try again. (Token Decryption Failure)", 2000, false, ToastSeverity.warning);
           continue;
         }
@@ -61,7 +62,7 @@
   }
 </script>
 
-<div id="rov_chooser" class={`absolute left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-visible z-50  ${!collapsedMode ? "disconnected  top-0" : " "} `}>
+<div id="rov_chooser" class={`absolute left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-visible z-40 pointer-events-none select-none  ${!collapsedMode ? "disconnected  top-0" : " "} `}>
   <!-- {#if collapsedMode}
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourIdentity}</span></p>
   {/if} -->
@@ -72,7 +73,7 @@
       <h2 class="text-center py-4 px-6 font-bold">Connect to a ROV:</h2>
       <div class="flex flex-col align-stretch overflow-y-auto w-full p-3 pt-0">
         {#each $availableRovRooms as rovRoom}
-          <button in:fade disabled={!rovRoom.token} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1"
+          <button in:fade disabled={!rovRoom.token} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1 pointer-events-all"
             >{rovRoom.name}
             <ChevronRight variant="round" class="text-2xl inline-block pointer-events-none" tabindex="-1" />
           </button>
@@ -81,7 +82,7 @@
     {:else}
       <span class=" px-3 align-middle text-right text-white">
         <p class="m-0 p-0 font-bold">{selectedRov}</p>
-        <p class="m-0 p-0 text-primary-200">You Are: <span class="font-bold">{$ourIdentity}</span></p>
+        <p class="m-0 p-0 text-primary-200">You Are: <span class="font-bold">{$ourIdentity || "..."}</span></p>
       </span>
       <button in:fade class={`btn mr-3 btn-md variant-filled-error align-top`} on:click={() => disconnect()}>
         <span class="whitespace-nowrap inline">{!collapsedMode ? "Connect" : "Disconnect"}</span>

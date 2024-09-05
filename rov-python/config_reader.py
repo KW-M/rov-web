@@ -21,7 +21,7 @@ rov_config = {
     },
     "AuthStateStorageFilepath": "./rov-auth-state.json",
     "AuthTokenTimeout": SECONDS_IN_A_DAY,
-    "EnabledSensors": [], # list of sensor to enable by name (see "name" attribute of python classes in sensor folder)
+    "EnabledSensors": [],  # list of sensor to enable by name (see "name" attribute of python classes in sensor folder)
 }
 
 
@@ -33,11 +33,13 @@ def read_config_file():
 
     # parse the command line arguments
     programArgsParser = argparse.ArgumentParser()
-    programArgsParser.add_argument('--config-file',
-                                   metavar='FILE_PATH',
-                                   type=str,
-                                   required=True,
-                                   help='Path to the config file.')
+    programArgsParser.add_argument(
+        "--config-file",
+        metavar="FILE_PATH",
+        type=str,
+        required=True,
+        help="Path to the config file.",
+    )
     args = programArgsParser.parse_args(sys.argv[1:])
 
     # get the config file path from the program arguments or use the default
@@ -45,7 +47,7 @@ def read_config_file():
     expanded_path = os.path.expanduser(config_file_path)
 
     # open and read the config file:
-    with open(expanded_path, 'r', encoding="utf-8") as f:
+    with open(expanded_path, "r", encoding="utf-8") as f:
         file_config_dict = json.load(f)
         for key in rov_config:
             if key in file_config_dict:
@@ -57,11 +59,11 @@ def read_config_file():
 
 def get_log_level(log_level_string):
     levels = {
-        'critical': logging.CRITICAL,
-        'error': logging.ERROR,
-        'warn': logging.WARNING,
-        'warning': logging.WARNING,
-        'info': logging.INFO,
-        'debug': logging.DEBUG
+        "critical": logging.CRITICAL,
+        "error": logging.ERROR,
+        "warn": logging.WARNING,
+        "warning": logging.WARNING,
+        "info": logging.INFO,
+        "debug": logging.DEBUG,
     }
     return levels.get(log_level_string.lower())

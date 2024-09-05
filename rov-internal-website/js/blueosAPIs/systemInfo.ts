@@ -208,7 +208,7 @@ export async function getSystemAllInfo(): Promise<System> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch blueos system info: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -222,7 +222,7 @@ export async function getSystemCpu(): Promise<CPU> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system cpu: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -235,7 +235,7 @@ export async function getSystemDisk(): Promise<Disk> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system disk: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -248,7 +248,7 @@ export async function getSystemInfo(): Promise<Info> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system info: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -261,7 +261,7 @@ export async function getSystemMemory(): Promise<Memory> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system memory: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -274,7 +274,7 @@ export async function getSystemNetwork(): Promise<Network> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system network: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -287,7 +287,7 @@ export async function getSystemProcess(): Promise<Process> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system proceses: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -300,7 +300,7 @@ export async function getSystemTemperature(): Promise<Temperature> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system temperature: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }
@@ -313,7 +313,7 @@ export async function getSystemUnixTimeSeconds(): Promise<number> {
     }).then((response) => response.data)
         .catch((error) => {
             const message = `Could not fetch system unix time seconds: ${error.message}`
-            console.warn(message)
+            logWarn(message)
             return message;
         })
 }

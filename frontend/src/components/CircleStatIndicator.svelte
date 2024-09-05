@@ -22,7 +22,7 @@
   };
 </script>
 
-<div class={"border-2 shadow-md rounded-md p-4 " + varietyColor.bg + " " + varietyColor.border}>
+<div class={"border-2 shadow-md rounded-md p-4 w-36 flex-none " + varietyColor.bg + " " + varietyColor.border}>
   <ProgressRadial value={percent} strokeLinecap="round" font={126} width="w-full" class="mb-4">
     <tspan x="50%" dy="-0.5em">{renderNumber(value)}</tspan>
     <tspan x="50%" dy="1em" font-weight="normal">{unit}</tspan>

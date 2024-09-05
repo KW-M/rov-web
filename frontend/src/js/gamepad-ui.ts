@@ -1,4 +1,5 @@
 import { ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './frontendConsts';
+import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 
 export class GamepadUi {
     gpadButtonHighlightElements: HTMLElement[];
@@ -161,7 +162,7 @@ export class GamepadUi {
     }
 
     getButtonHighlightElements() {
-        console.log("getButtonHighlightElements", this.gpadButtonHighlightElements);
+        log("getButtonHighlightElements", this.gpadButtonHighlightElements);
         return this.gpadButtonHighlightElements
     }
 

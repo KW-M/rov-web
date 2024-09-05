@@ -13,7 +13,7 @@ import { MavModeFlag, MavSeverity, MavState } from "./shared/mavlink2rest-ts/mes
 
 export const handleMavlinkMessage = (msg: Package) => {
     if (!msg.message) return;
-    if (!msg.message.type) return console.debug("@ invalid mavlink message rcvd: ", msg);
+    if (!msg.message.type) return logDebug("@ invalid mavlink message rcvd: ", msg);
     const mavMsg = msg.message;
     switch (mavMsg.type) {
         case "HEARTBEAT":
@@ -35,7 +35,7 @@ export const handleMavlinkMessage = (msg: Package) => {
             handleScaledPressure2Recived(mavMsg as Message.ScaledPressure2)
             break;
         default:
-            if (URL_PARAMS.DEBUG_MODE) console.debug("@ unhandled mavlink message " + String(mavMsg.type), mavMsg)
+            if (URL_PARAMS.DEBUG_MODE) logDebug("@ unhandled mavlink message " + String(mavMsg.type), mavMsg)
     }
 }
 
@@ -55,11 +55,11 @@ export const handleHearbeatRecived = (msg: Message.Heartbeat) => {
     const auto_enabled = (currentFlightFlags & MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED) > 0;
     const test_enabled = (currentFlightFlags & MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED) > 0;
 
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  autopilot state", currentAutopilotState, "flight mode", currentFlightMode, "armed", armed, "manual_enabled", manual_enabled, "hil_enabled", hil_enabled, "stabilize_enabled", stabilize_enabled, "guided_enabled", guided_enabled, "auto_enabled", auto_enabled, "test_enabled", test_enabled)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  autopilot state", currentAutopilotState, "flight mode", currentFlightMode, "armed", armed, "manual_enabled", manual_enabled, "hil_enabled", hil_enabled, "stabilize_enabled", stabilize_enabled, "guided_enabled", guided_enabled, "auto_enabled", auto_enabled, "test_enabled", test_enabled)
 }
 
 export const handleAttitudeRecived = (msg: Message.Attitude) => {
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  attitude", msg)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  attitude", msg)
     updateSensorValues({
         MeasurementUpdates: [
             { MeasurementType: rov_actions_proto.SensorMeasurmentTypes.yaw_degrees, Value: msg.yaw / Math.PI * 180 },
@@ -70,21 +70,21 @@ export const handleAttitudeRecived = (msg: Message.Attitude) => {
 }
 
 export const handleScaledPressureRecived = (msg: Message.ScaledPressure) => {
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  scaled pressure", msg)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  scaled pressure", msg)
     pressureMbar.set(msg.press_abs)
     depthM.set((msg.press_abs - SEA_LEVEL_PRESSURE) * 0.009962143853); // milibar to meters of sea water depth
     internalTempC.set(msg.temperature / 100) // 5834
 }
 
 export const handleScaledPressure2Recived = (msg: Message.ScaledPressure2) => {
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  scaled pressure 2", msg)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  scaled pressure 2", msg)
     waterTempC.set(msg.temperature / 100) // 5834
 }
 
 
 
 export const handleSystemStatusRecived = (msg: Message.SysStatus) => {
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  system status", msg)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  system status", msg)
     const voltage = msg.voltage_battery / 1000;
     const current = msg.current_battery / 100;
     const all_error_count = msg.errors_comm + msg.errors_count1 + msg.errors_count2 + msg.errors_count3 + msg.errors_count4;
@@ -100,7 +100,7 @@ export const handleSystemStatusRecived = (msg: Message.SysStatus) => {
 export const handleStatusTextRecived = (msg: Message.Statustext) => {
     const severity = msg.severity.type
     const text = msg.text.join("")
-    if (URL_PARAMS.DEBUG_MODE) console.debug("@  status text", msg)
+    if (URL_PARAMS.DEBUG_MODE) logDebug("@  status text", msg)
     const severityMap = {
         [MavSeverity.MAV_SEVERITY_INFO]: ToastSeverity.info,
         [MavSeverity.MAV_SEVERITY_DEBUG]: ToastSeverity.info,

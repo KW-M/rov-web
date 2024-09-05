@@ -10,7 +10,7 @@
   requestAnimationFrame(anim);
 </script> -->
 
-<div class={"compass  bg-surface-900 rounded-full overflow-clip border-surface-900 border-x-4 " + $$props.class || ""} style="height:34px; min-width: 200px;">
+<div class={"compass left-1/2 -translate-x-1/2 overflow-hidden bg-surface-900 rounded-full box-content border-slate-700 border-2 " + $$props.class || ""} style="height:34px; min-width: 200px;">
   <div class="line" />
   <div class="bg" id="compassDiscImg" style:transform={`translateX(${$rovHeading}px)`} />
 </div>
@@ -19,17 +19,8 @@
   /* ********* Compass Display ********* */
 
   .compass {
-    position: relative;
-
-    overflow: hidden;
+    /* position: relative; */
     max-width: 280px;
-    box-sizing: border-box;
-    margin: 0 auto;
-    width: 100%;
-    height: 100%;
-    /*
-    border: 2px solid #000;
-    border-radius: 20px 20px 0 0; */
   }
 
   .compass::before {
@@ -38,10 +29,11 @@
     top: 0;
     z-index: 1;
     left: 0;
-    width: 58px;
+    width: 88px;
     max-width: 40%;
     height: 100%;
-    background: linear-gradient(to right, rgb(var(--color-surface-900) / 1), rgb(var(--color-surface-900) / 0));
+    /* background: linear-gradient(to right, rgb(var(--color-surface-900) / 1), rgb(var(--color-surface-900) / 0)); */
+    background: linear-gradient(to right, rgb(0 0 0 / 1), rgb(0 0 0 / 0));
   }
 
   .compass::after {
@@ -50,10 +42,11 @@
     top: 0;
     right: 0;
     z-index: 1;
-    width: 58px;
+    width: 88px;
     max-width: 40%;
     height: 100%;
-    background: linear-gradient(to left, rgb(var(--color-surface-900) / 1), rgb(var(--color-surface-900) / 0));
+    /* background: linear-gradient(to left, rgb(var(--color-surface-900) / 1), rgb(var(--color-surface-900) / 0)); */
+    background: linear-gradient(to left, rgb(0 0 0 / 1), rgb(0 0 0 / 0));
   }
 
   .compass .bg {

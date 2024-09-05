@@ -2,6 +2,7 @@
 import { getFrontendAccessToken } from './livekitTokens';
 import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
 import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
+import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 
 export interface AuthTokenInfo {
     // the name/id we will have (according to livekit) if we use this token.
@@ -41,7 +42,7 @@ export async function deleteLivekitRoom(client: RoomServiceClient, roomName: str
     try {
         return await client.deleteRoom(roomName)
     } catch (e) {
-        console.warn("Failed to delete room: " + roomName, e)
+        logWarn("Failed to delete room: " + roomName, e)
     }
 }
 
