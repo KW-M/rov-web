@@ -1,5 +1,5 @@
 
-import { getFrontendAccessToken } from './livekitTokens';
+import { getFrontendAccessToken, silenceFalseSecurityNotice } from './livekitTokens';
 import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
 import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
@@ -17,13 +17,13 @@ export interface AuthTokenInfo {
     iv?: string,
 }
 
-let livekitApiRateLimitDelay = 1000;
+const LIVEKIT_API_MIN_DELAY = 1000;
 let lastLivekitApiCallTime = 0;
 
 export async function waitForRateLimit() {
-    const timeSinceLastCall = Date.now() - lastLivekitApiCallTime;
-    while (timeSinceLastCall < livekitApiRateLimitDelay) {
-        await waitfor(livekitApiRateLimitDelay - timeSinceLastCall);
+    while ((Date.now() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
+        console.log("Waiting for rate limit...", Date.now() - lastLivekitApiCallTime);
+        await waitfor(LIVEKIT_API_MIN_DELAY);
     }
     lastLivekitApiCallTime = Date.now();
 }
@@ -46,14 +46,19 @@ export async function deleteLivekitRoom(client: RoomServiceClient, roomName: str
     }
 }
 
-export async function createLivekitRoom(client: RoomServiceClient, roomName: string, metadata: string = "") {
+export async function createLivekitRoom(client: RoomServiceClient, roomName: string, apiKey: string, secretKey: string, alreadyTakenNames: string[], encryptionPassword: string | null = null) {
+    const metadata = await generateLivekitRoomMetadata(roomName, apiKey, secretKey, alreadyTakenNames, encryptionPassword)
     await waitForRateLimit();
-    return await client.createRoom({
+    const roomCreated = await silenceFalseSecurityNotice(() => client.createRoom({
         name: roomName,
-        maxParticipants: 12,
-        emptyTimeout: 30, // 30 seconds
-        metadata: metadata
-    })
+        maxParticipants: 8,
+        metadata: metadata,
+        syncStreams: false,
+        emptyTimeout: 60, // 60 seconds
+        departureTimeout: 30, // 30 seconds
+    }))
+    logInfo("LK: Created room: " + roomName, roomCreated)
+    return roomCreated
 }
 
 export async function listLivekitRooms(client: RoomServiceClient): Promise<Room[]> {
@@ -65,27 +70,26 @@ export async function listLivekitRooms(client: RoomServiceClient): Promise<Room[
 
 export async function updateLivekitRoomMetadata(client: RoomServiceClient, roomName: string, metadata: string) {
     await waitForRateLimit();
-    return await client.updateRoomMetadata(roomName, metadata)
+    try {
+        return await silenceFalseSecurityNotice(() => client.updateRoomMetadata(roomName, metadata))
+    } catch (e) {
+        throw new Error("LK: Failed to update metadata for room " + roomName + e.toString())
+    }
 }
 
-export async function generateLivekitRoomTokens(APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[], encryptionPassword: string | null = null): Promise<string[]> {
-    const num_tokens_to_generate = 10;
-    const tokens: string[] = [];
-    for (let i = 0; i < num_tokens_to_generate; i++) {
-        let userName = getHumanReadableId(getUniqueNumber());
-        while (alreadyTakenNames.includes(userName)) {
+export async function generateLivekitRoomMetadata(rovRoomName: string, APIKey: string, secretKey: string, alreadyTakenNames: string[], encryptionPassword: string | null = null): Promise<string> {
+    const NUM_TOKENS_TO_GENERATE = 3;
+    let tokens: string[] = [], userName;
+    for (let i = 0; i < NUM_TOKENS_TO_GENERATE; i++) {
+        do {
             userName = getHumanReadableId(getUniqueNumber());
-        }
+        } while (alreadyTakenNames.includes(userName))
         alreadyTakenNames.push(userName);
         const frontendAccessToken = await getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName, encryptionPassword);
         tokens.push(frontendAccessToken);
     }
-    return tokens
-}
-
-export async function refreshMetadata(cloudRoomClient: RoomServiceClient, APIKey: string, secretKey: string, rovRoomName, alreadyTakenNames: string[], encryptionPassword: string | null = null) {
     const metadata = JSON.stringify({
-        accessTokens: await generateLivekitRoomTokens(APIKey, secretKey, rovRoomName, alreadyTakenNames, encryptionPassword)
-    })
-    await updateLivekitRoomMetadata(cloudRoomClient, rovRoomName, metadata);
+        accessTokens: tokens
+    });
+    return metadata;
 }

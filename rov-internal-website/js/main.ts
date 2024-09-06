@@ -41,7 +41,8 @@ if (URL_PARAMS.SEND_LOGS) {
     mainLogr.enableSendLogs(sendLogToFronend)
 }
 const showLogsBtn = document.getElementById("show_recent_logs_btn")
-if (showLogsBtn) showLogsBtn.addEventListener("click", () => mainLogr.printRecentLogs())
+const logsDiv = document.getElementById("recent_logs")
+if (showLogsBtn && logsDiv) showLogsBtn.addEventListener("click", () => mainLogr.printRecentLogs(logsDiv))
 
 
 //// ------------------------------------
@@ -58,7 +59,10 @@ internalConnManager.start({
     if (URL_PARAMS.SEND_LOGS) {
         mainLogr.sendQueuedLogs(sendLogToFronend);
     }
-
+    const statsDiv = document.getElementById("video_stats")
+    internalConnManager.subscribeToVideoStats((stats) => {
+        if (statsDiv) statsDiv.innerText = JSON.stringify(stats, null, 2)
+    })
 })
 
 // Initialize Twitch Stream

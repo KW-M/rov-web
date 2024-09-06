@@ -151,7 +151,7 @@ export class Logger {
         }
     }
 
-    printRecentLogs(n: number = 100) {
+    consoleRecentLogs(n: number = 100) {
         console.clear();
         console.groupCollapsed("Recent Logs");
         const min = Math.max(this.logsStore.length - n, 0);
@@ -160,6 +160,70 @@ export class Logger {
             this.printLog(log);
         }
         console.groupEnd();
+    }
+
+    printRecentLogs(element: HTMLElement, n: number = 1000) {
+        element.innerHTML = "";
+        const min = Math.max(this.logsStore.length - n, 0);
+        for (let i = this.logsStore.length - 1; i > min; i--) {
+            const log = this.logsStore[i];
+            const [header, body] = this.logToText(log);
+            const div = document.createElement("div");
+            div.innerHTML = `<details style="font-size: 1.1em; font-weight: bold; padding: 0.2em; ${this._getLevelColor(log.level)}"><summary><small>${log.timestamp} </small> <span>${header}</span></summary><pre>${body}</pre></details>`;
+            element.appendChild(div);
+        }
+    }
+
+
+    logToText(log: LogEntry) {
+        let header = "";
+        let body = "";
+        let i = 0;
+
+        for (; i < log.args.length; i++) {
+            const arg = log.args[i];
+            try {
+                if (arg === null) {
+                    header += " null";
+                } else if (arg === undefined) {
+                    header += " undefined";
+                } else if (arg instanceof Error) {
+                    header += arg.name + " " + arg.message + " " + arg.cause;
+                    body += arg.stack;
+                } else if (arg instanceof Object) {
+                    body += "\n" + JSON.stringify(arg, null, 2) + "\n";
+                    break;
+                } else {
+                    header += " " + arg.toString();
+                }
+            } catch (e) {
+                body += " STRINGFAIL:" + typeof arg + " ";
+                console.error("Failed to stringify logs arg: " + e.message, typeof arg, arg);
+            }
+        }
+        for (; i < log.args.length; i++) {
+            const arg = log.args[i];
+            try {
+                if (arg === null) {
+                    body += " null";
+                } else if (arg === undefined) {
+                    body += " undefined";
+                } else if (arg instanceof Error) {
+                    body += arg.name + " " + arg.message + " " + arg.cause + "\n" + arg.stack;
+                } else if (arg instanceof Object) {
+                    body += "\n" + JSON.stringify(arg, null, 2) + "\n";
+                } else {
+                    body += " " + arg.toString();
+                }
+            } catch (e) {
+                body += " STRINGFAIL:" + typeof arg + " ";
+                console.error("Failed to stringify logs arg: " + e.message, typeof arg, arg);
+            }
+        }
+        if (log.trace && log.trace.length > 0) {
+            body += "\n" + log.trace.join("\n");
+        }
+        return [header, body];
     }
 
 

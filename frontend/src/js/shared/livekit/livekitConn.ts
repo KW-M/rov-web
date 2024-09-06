@@ -16,11 +16,17 @@ import {
     RemoteTrack,
     Track,
     ConnectionState,
+    type VideoSenderStats,
+    type VideoReceiverStats,
+    RemoteTrackPublication,
+    RemoteVideoTrack,
+    LocalVideoTrack,
+    VideoQuality,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { getWebsocketURL, waitfor } from '../util';
 import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
-import { createLivekitRoom, newLivekitAdminSDKRoomServiceClient, refreshMetadata } from './adminActions';
+import { createLivekitRoom, generateLivekitRoomMetadata, newLivekitAdminSDKRoomServiceClient, updateLivekitRoomMetadata } from './adminActions';
 import { getPublisherAccessToken } from './livekitTokens';
 import type { RoomServiceClient } from 'livekit-server-sdk';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
@@ -71,6 +77,8 @@ export class LivekitGenericConnection {
     _shouldReconnect: boolean;
     // the livekit room object
     _roomConn: Room;
+
+
 
     constructor() {
         this.config = {} as LivekitConfig;
@@ -289,6 +297,10 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
     _livekitSecretKey: string;
     _livekitAdmin: RoomServiceClient | undefined;
     camTrack: LocalTrackPublication | undefined;
+    // subscribe to get updates on the state of the video channel webrtc connection.
+    videoStats = nStore<(VideoSenderStats | any)[]>([]);
+    // interval id for checking video stats loop
+    _videoStatsIntervalId: NodeJS.Timeout | null;
 
 
     constructor() {
@@ -301,10 +313,6 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
         // set up more specific event listeners for video publisher (the rov)
         this._roomConn
             .on(RoomEvent.SignalConnected, async () => {
-                // while (!this.camTrack) {
-
-                // }
-                this.camTrack.videoTrack?.getSenderStats()
             })
             .on(RoomEvent.DataReceived, async (msg: Uint8Array, participant?: RemoteParticipant) => {
                 if (!participant) return logWarn("LK: Ignoring received data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
@@ -323,47 +331,94 @@ export class LivekitPublisherConnection extends LivekitGenericConnection {
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
                 logWarn('LK: Unsubscribed from track', pub.trackSid, " from participant: ", participant.identity, ' _THIS SHOULDNT HAPPEN on BACKEND_ ');
             }).on(RoomEvent.ParticipantConnected, () => {
-                this.updateMetadataTokens();
+                this.updateRoomMetadata();
             })
     }
 
-    async updateMetadataTokens() {
+    async updateRoomMetadata() {
         if (!this._livekitAdmin) return logWarn("LK: Can't update metadata tokens, livekit admin client not initialized");
-        const existingParticipantIds = [...(this._roomConn.remoteParticipants.values())].map(p => p.identity);
-        await refreshMetadata(this._livekitAdmin, this._livekitApiKey, this._livekitSecretKey, this._rovRoomName, existingParticipantIds, this.config.tokenEncryptionPassword);
+        const alreadyTakenNames = [...(this._roomConn.remoteParticipants.values())].map(p => p.identity);
+        const metadata = await generateLivekitRoomMetadata(this._rovRoomName, this._livekitApiKey, this._livekitSecretKey, alreadyTakenNames, this.config.tokenEncryptionPassword)
+        await updateLivekitRoomMetadata(this._livekitAdmin, this._rovRoomName, metadata);
     }
 
+    async createLivekitRoom() {
+        if (!this._livekitAdmin) return logWarn("LK: Can't create livekit room, livekit admin client not initialized");
+        const existingParticipantIds = [...(this._roomConn.remoteParticipants.values())].map(p => p.identity);
+        await createLivekitRoom(this._livekitAdmin, this._rovRoomName, this._livekitApiKey, this._livekitSecretKey, existingParticipantIds, this.config.tokenEncryptionPassword);
+    }
+
+    async enableCamera() {
+        if (!this._roomConn) throw new Error("LK: Can't enable camera, room not initialized");
+        while (true) {
+            try {
+                if (this.connectionState.get() === ConnectionStates.failed) return logWarn("LK: Can't enable camera, room connection failed");
+                this.camTrack = await this._roomConn.localParticipant.setCameraEnabled(true);
+                if (this.camTrack) return logInfo("LK: Camera enabled");
+            } catch (e) {
+                logError(e.message);
+            }
+            await waitfor(1000);
+        }
+    }
 
     async startRoom(rovRoomName: string, livekitApiKey: string, livekitSecretKey: string) {
         this._rovRoomName = rovRoomName;
         this._livekitApiKey = livekitApiKey;
         this._livekitSecretKey = livekitSecretKey;
         this._livekitAdmin = newLivekitAdminSDKRoomServiceClient(this.config.hostUrl, livekitApiKey, livekitSecretKey)
-        await createLivekitRoom(this._livekitAdmin, rovRoomName);
-        const accessToken = await getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
-        await super.start(rovRoomName, accessToken);
-        let alreadyConnected = false;
-        const unsub = this.connectionState.subscribe(async (state) => {
-            if (state == ConnectionStates.connected && !alreadyConnected) {
-                alreadyConnected = true;
-                while (true) {
-                    try {
-                        await this.updateMetadataTokens();
-                        break;
-                    } catch (e) {
-                        logError("LK: Error updating metadata tokens", e)
-                    }
-                    await waitfor(2000);
-                }
-                unsub();
-            }
-        })
+        this.createLivekitRoom();
+        const pubAccessToken = await getPublisherAccessToken(livekitApiKey, livekitSecretKey, rovRoomName);
+        await super.start(rovRoomName, pubAccessToken);
+
+        // try to enable camera until successful
+        log("LK: Enabling camera")
+        await Promise.allSettled([this.enableCamera(), this.updateRoomMetadata()]);
+        console.log("LK: Room started: ", rovRoomName, livekitApiKey, livekitSecretKey)
+        this.checkVideoStats();
     }
+
+    checkVideoStats() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        this._videoStatsIntervalId = setInterval(async () => {
+            if (!this.camTrack || !this.camTrack.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
+            const videoTrack = (this.camTrack.videoTrack as LocalVideoTrack);
+            let statsArray = [{
+                bitrate: videoTrack.currentBitrate,
+                streamState: videoTrack.streamState,
+                simulcasted: this.camTrack.simulcasted,
+                codec: videoTrack.codec,
+                dimensions: this.camTrack.dimensions,
+            }, this.camTrack.trackInfo.toJson()];
+            const senderStats = await this.camTrack.videoTrack.getSenderStats();
+            if (senderStats) statsArray = statsArray.concat(senderStats);
+            const RTCStats = await this.camTrack.videoTrack.getRTCStatsReport();
+            if (RTCStats) for (const stat of RTCStats.values()) {
+                statsArray.push(stat);
+            }
+            this.videoStats.set(statsArray);
+        }, 500)
+    }
+
+    async close() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        await super.close();
+    }
+
+    async fail() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        await super._fail();
+    }
+
 }
 
 export class LivekitViewerConnection extends LivekitGenericConnection {
     // remote video tracks maps from the track source name to the livekit track object
     remoteVideoTracks: nStoreT<Map<String, RemoteTrack | null>>;
+    // subscribe to get updates on the state of the video channel webrtc connection.
+    videoStats = nStore<any[] | undefined>(undefined);
+    // interval id for checking video stats loop
+    _videoStatsIntervalId: NodeJS.Timeout | null;
 
     constructor() {
         super();
@@ -372,10 +427,49 @@ export class LivekitViewerConnection extends LivekitGenericConnection {
 
     subscribeToTracks(participant: RemoteParticipant) {
         if (this._rovRoomName === participant.identity) {
-            participant.trackPublications.forEach((pub) => {
-                pub.setSubscribed(true)
+            participant.videoTrackPublications.forEach((pub: RemoteTrackPublication) => {
+                pub.setSubscribed(true);
+                this.checkVideoStats(pub);
             })
         }
+    }
+
+    checkVideoStats(pub: RemoteTrackPublication) {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        this._videoStatsIntervalId = setInterval(async () => {
+            if (!pub || !pub.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
+            const videoTrack = (pub.videoTrack as RemoteVideoTrack);
+            // videoTrack.setPlayoutDelay(0.01)
+            const myStats = {
+                bitrate: videoTrack.currentBitrate,
+                streamState: videoTrack.streamState,
+                simulcasted: pub.simulcasted,
+                videoQuality: pub.videoQuality,
+                dimensions: pub.dimensions,
+                playoutDelay: videoTrack.getPlayoutDelay(),
+                numAttachedElements: pub.videoTrack.attachedElements.length,
+            }
+            let statsArray = [myStats, pub.trackInfo.toJson()];
+            const RTCStats = await pub.videoTrack.getRTCStatsReport();
+            if (RTCStats) for (const stat of RTCStats.values()) {
+                statsArray.push(stat);
+            }
+            this.videoStats.set(statsArray);
+
+            if (videoTrack.streamState != 'active') {
+                pub.setVideoQuality(VideoQuality.LOW)
+            }
+        }, 100)
+    }
+
+    async close() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        await super.close();
+    }
+
+    async fail() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        await super._fail();
     }
 
     async init(config: LivekitConfig) {

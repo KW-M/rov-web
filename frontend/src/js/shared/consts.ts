@@ -69,7 +69,8 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
     // optimize publishing bandwidth and CPU for published tracks
     dynacast: true,
 
-    adaptiveStream: true,
+    // adaptive stream only applies to client side receiving video.
+    adaptiveStream: false,
 
     // default capture settings
     videoCaptureDefaults: {
@@ -78,28 +79,30 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
             height: 1080,
             frameRate: 60,
         },
-        // facingMode: 'environment',
-        // deviceId: //get device id beforehand
-
+        facingMode: 'environment',
     },
 
     publishDefaults: {
-        videoCodec: "vp8",
+        videoCodec: "vp9",
         videoEncoding: {
-            maxBitrate: 2_000_000,
+            maxBitrate: 700_000,
             maxFramerate: 60,
             priority: "high",
         },
-
-        // videoEncoding: {
-        //     maxBitrate: 160_000,
-        //     maxFramerate: 30,
-        //     priority: "high",
+        backupCodec: false,
+        simulcast: false,
+        // backupCodec: {
+        //     codec: "h264",
+        //     encoding: {
+        //         maxBitrate: 700_000,
+        //         maxFramerate: 24,
+        //         priority: "low",
+        //     }
         // },
 
-        simulcast: false,
+        // simulcast: true,
         // videoSimulcastLayers: [
-        //     // VideoPresets.h540,
+        //     VideoPresets.h720,
         //     VideoPresets.h360,
         // ]
 
@@ -114,6 +117,7 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
     dynacast: true,
     disconnectOnPageLeave: true,
     adaptiveStream: true,
+
 
 }
 

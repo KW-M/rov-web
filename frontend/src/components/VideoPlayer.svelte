@@ -41,13 +41,11 @@
     if (!videoContainerElem) return;
     videoSwitchInProgress = false;
     if (videoIsReady(simplePeerVideoStream)) {
+      logInfo("VideoPlayer: Stopping livekit video stream", livekitVideoStream.stream);
       if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).stop();
-      // simplePeerVideoStream.videoElem.classList.add("!opacity-100");
-      // if (livekitVideoStream.videoElem) livekitVideoStream.videoElem.classList.remove("!opacity-100");
     } else {
+      logInfo("VideoPlayer: Starting livekit video stream", livekitVideoStream.stream);
       if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).start();
-      // if (simplePeerVideoStream.videoElem) simplePeerVideoStream.videoElem.classList.remove("!opacity-100");
-      // if (livekitVideoStream.videoElem) livekitVideoStream.videoElem.classList.remove("!opacity-100");
       if (livekitVideoStream.stream == null) {
         showToastMessage("Waiting for livekit video stream...", 1000, false, ToastSeverity.info);
       }
@@ -94,8 +92,12 @@
     };
   };
 
-  let lkUnsub, spUnsub;
+  let lkUnsub, spUnsub, statsUnsub, videoStats;
   onMount(() => {
+    statsUnsub = frontendConnMngr.subscribeToVideoStats((stats) => {
+      if (!stats) return;
+      videoStats = Array.from(stats.values()); //.filter((stat) => stat.type == "inbound-rtp");
+    });
     lkUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((streams) => {
       const stream = streams.values().next().value as RemoteTrack;
       if (livekitVideoStream.stream && (livekitVideoStream.stream as RemoteTrack).detach != undefined) {
@@ -180,13 +182,25 @@
 </script>
 
 <!-- {#if currentVideoStream} -->
-<div id="livestream_container" class="px-2" class:full={$fullscreenOpen} bind:this={videoContainerElem}>
+<div class="absolute top-0 left-0 max-h-full max-w-full overflow-x-scroll overflow-y-scroll py-80">
+  VideoStats
+  <p>
+    {(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}
+  </p>
+  {#if videoStats}
+    {#each videoStats as stat}
+      <pre class="block p-2 text-white">{JSON.stringify(stat, null, 2)}</pre>
+    {/each}
+  {/if}
+</div>
+<div id="livestream_container" class="px-2 pointer-events-none" class:full={$fullscreenOpen} bind:this={videoContainerElem}>
   <!-- svelte-ignore a11y-media-has-caption -->
   <!-- max-lg:btn-icon lg: -->
   <CompassDial class="absolute top-0 w-full z-10 -translate-y-1/2" />
 
-  <div class="relative top-0 mx-auto" use:resizeToFitVideo={livekitVideoStream.videoElem}>
-    <span class="chip variant-filled bg-black absolute top-2 left-2 z-10">{(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}</span>
+  <div class="relative top-0 ml-auto pointer-events-auto" use:resizeToFitVideo={livekitVideoStream.videoElem}>
+    <!-- <span class="chip variant-filled bg-black absolute top-2 left-2 z-10">{(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}</span> -->
+
     <button
       class="hd-video-btn btn variant-filled-warning text-white btn-base shadow-md absolute top-3 right-2"
       use:blurOnClick
@@ -295,8 +309,6 @@
     position: absolute;
     box-sizing: border-box;
     overflow: visible;
-
-    pointer-events: all;
     inset: 0 0.25rem;
     bottom: 28px;
 

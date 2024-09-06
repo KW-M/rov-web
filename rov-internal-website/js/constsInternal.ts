@@ -5,7 +5,7 @@ export const URL_PARAMS = {
     DEBUG_MODE: getBooleanQueryParam("DEBUG_MODE", false),
     SEND_LOGS: getBooleanQueryParam("SEND_LOGS", false),
     ROV_NAME: getStringQueryParam("ROV_NAME", 'Default-ROV'),
-    ROV_CONTROL_PASSWORD: getStringQueryParam("ROV_CONTROL_PASSWORD"),
+    ROV_CONTROL_PASSWORD: getStringQueryParam("ROV_CONTROL_PASSWORD", ""),
     LIVEKIT_API_KEY: getStringQueryParam("LIVEKIT_API_KEY"),
     LIVEKIT_SECRET_KEY: getStringQueryParam("LIVEKIT_SECRET_KEY"),
     TWITCH_STREAM_KEY: getStringQueryParam("TWITCH_STREAM_KEY", "None"),

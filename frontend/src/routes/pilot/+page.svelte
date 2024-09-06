@@ -97,5 +97,5 @@
   {#if connected}
     <VideoPlayer />
   {/if}
-  <OnscreenGamepads />
+  <!-- <OnscreenGamepads /> -->
 </AppShell>

@@ -1,8 +1,36 @@
 
-import { AccessToken } from "livekit-server-sdk";
+import { AccessToken, type AccessTokenOptions, } from "livekit-server-sdk";
 import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
 import { encrypt } from "../encryption";
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
+
+
+/** A hack to silence false warnings about including the secret key in the web bundle
+ * This is fine so long as the secret key is only found in the rov internal/backend chromium instance!!
+ * @param toRun any function
+ * @returns the result of calling toRun */
+export const silenceFalseSecurityNotice = (toRun: (...args: any) => any) => {
+    const realConsoleError = console.error;
+    Object.assign(console, {
+        error: (...args) => {
+            if (!args[0] || !args[0].toString || !args[0].toString().includes("You should not include your API secret in your web client bundle")) realConsoleError.apply(console, args);
+        }
+    });
+    const result = toRun();
+    Object.assign(console, { error: realConsoleError });
+    return result;
+}
+
+/** Get an access token JWT for livekit.
+ * This function should ONLY be called from the backend server.
+ * Includes a hack to silence false warnings about including the secret key in the web bundle
+ * @param apiKey livekit api key to use
+ * @param secretKey livekit api secret key to use
+ * @param options the access token options passed to new AccessToken().
+ * @returns {AccessToken} livekit access token object*/
+const getAccessToken = (apiKey: string, secretKey: string, options: AccessTokenOptions) => {
+    return silenceFalseSecurityNotice(() => new AccessToken(apiKey, secretKey, options));
+}
 
 /**
  * Get a livekit auth token that's valid for 24 hrs and allows all actions.
@@ -12,7 +40,7 @@ import { log, logDebug, logInfo, logWarn, logError } from "../logging"
  * @returns {string} JWT access token
  */
 export async function getPublisherAccessToken(apiKey: string, secretKey: string, rovName: string): Promise<string> {
-    const token = new AccessToken(apiKey, secretKey, {
+    const token = getAccessToken(apiKey, secretKey, {
         identity: rovName,
         ttl: 86400, // (seconds in 24hrs),
     })
@@ -43,7 +71,7 @@ export async function encryptAccessToken(accessToken: string, password: string):
  * @param {string} userName  user name & identity that this user will get when joining the room / using livekit.
  * @returns {string} JWT access token */
 export async function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string, encryptionPassword: string | null = null) {
-    const token = new AccessToken(apiKey, secretKey, {
+    const token = getAccessToken(apiKey, secretKey, {
         identity: userName,
         name: userName,
         ttl: 21600 // 6 hours in seconds,
@@ -59,7 +87,7 @@ export async function getFrontendAccessToken(apiKey: string, secretKey: string, 
     });
     const unencryptedToken = await token.toJwt();
     if (encryptionPassword && encryptionPassword.length > 0) {
-        logDebug("AuthToken before encryption for " + userName, unencryptedToken)
+        // logDebug("AuthToken before encryption for " + userName, unencryptedToken)
         return userName + "|" + await encryptAccessToken(ENCRYPTED_AUTH_TOKEN_PREFIX + unencryptedToken, encryptionPassword);
     } else {
         return userName + "|" + unencryptedToken;
@@ -72,7 +100,7 @@ export async function getFrontendAccessToken(apiKey: string, secretKey: string, 
  * @param {string} secretKey livekit api secret key to use
  * @returns {string} JWT token */
 export async function getLongTermStarterAccessToken(apiKey: string, secretKey: string): Promise<string> {
-    const token = new AccessToken(apiKey, secretKey, {
+    const token = getAccessToken(apiKey, secretKey, {
         identity: 'lt',
         ttl: 9460800000 // 300 years
     })

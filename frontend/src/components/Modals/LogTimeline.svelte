@@ -29,45 +29,12 @@
     //   logDebug("Log Timeline Open", logs.length);
     // }, 900);
   });
-
-  const getLogText = (log: LogEntry) => {
-    let header = "";
-    let body = "";
-    let i = 0;
-
-    for (; i < log.args.length; i++) {
-      const arg = log.args[i];
-      if (arg instanceof Error) {
-        header += arg.name + " " + arg.message + " " + arg.cause;
-        body += arg.stack;
-      } else if (arg instanceof Object) {
-        body += "\n" + JSON.stringify(arg, null, 2) + "\n";
-        break;
-      } else {
-        header += " " + arg ? arg.toString() : "";
-      }
-    }
-    for (; i < log.args.length; i++) {
-      const arg = log.args[i];
-      if (arg instanceof Error) {
-        body += arg.name + " " + arg.message + " " + arg.cause + "\n" + arg.stack;
-      } else if (arg instanceof Object) {
-        body += "\n" + JSON.stringify(arg, null, 2) + "\n";
-      } else {
-        body += " " + arg ? arg.toString() : "";
-      }
-    }
-    if (log.trace && log.trace.length > 0) {
-      body += "\n" + log.trace.join("\n");
-    }
-    return [header, body];
-  };
 </script>
 
-<div class="bg-slate-800/50 w-full box-border rounded-xl h-full flex-col-reverse overflow-scroll">
+<div class="bg-slate-800/50 w-full box-border rounded-xl h-full flex-col-reverse overflow-scroll py-20">
   <!-- <div class=""> -->
   {#each logs as log, i (i)}
-    {@const [header, body] = getLogText(log)}
+    {@const [header, body] = mainLogr.logToText(log)}
     <div class="px-2 mt-px bg-opacity-50 border-l-8 border-b-2 border-b-white/20 -order-1" in:fade class:bg-sky-700={log.level === LogLevelConsole.Info} class:bg-yellow-600={log.level === LogLevelConsole.Warn} class:bg-red-700={log.level === LogLevelConsole.Error} class:bg-green-700={log.level === LogLevelConsole.Debug} class:bg-slate-800={log.level === LogLevelConsole.Console} class:border-l-sky-600={log.level === LogLevelConsole.Info} class:border-l-yellow-500={log.level === LogLevelConsole.Warn} class:border-l-red-600={log.level === LogLevelConsole.Error} class:border-l-green-600={log.level === LogLevelConsole.Debug} class:border-l-purple-800={log.level === LogLevelConsole.Console}>
       {#if body && body.length > 0}
         <details>

@@ -8,6 +8,7 @@ import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
 import { URL_PARAMS } from "./constsInternal";
 import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
+import { type VideoSenderStats } from "livekit-client";
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -76,10 +77,8 @@ class InternalConnectionManager {
         // })
     }
 
-    private async cameraReady(stream: MediaStream) {
-        this._cameraMediaStream = stream;
-        if (this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._cloudLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
-        // if (this._localLivekitConnection && this._localLivekitConnection.connectionState.get() == ConnectionStates.connected && this._cameraMediaStream) await this._localLivekitConnection._roomConn.localParticipant.setCameraEnabled(true)
+    public subscribeToVideoStats(callback: (stats: VideoSenderStats[]) => void) {
+        this._cloudLivekitConnection.videoStats.subscribe(callback);
     }
 
     public async start(livekitSetup: InternalLivekitSetupOptions) {
@@ -90,30 +89,36 @@ class InternalConnectionManager {
                 const backoff = asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3);
                 backoff(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey).catch((e) => { logError(e); log("Too many errors: Triggering Page Reload"); window.location.reload() });
             } else if (state === ConnectionStates.connected && lastCloudConnState !== ConnectionStates.init) {
-                this._cloudLivekitConnection.updateMetadataTokens()
+                this._cloudLivekitConnection.updateRoomMetadata()
             }
             lastCloudConnState = state;
         })
-        // await asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { logError(e); window.location.reload() });
-        // if (livekitSetup.EnableLivekitLocal) await asyncExpBackoff(this._localLivekitConnection.startRoom, this._localLivekitConnection, 10, 1000, 1.3)(livekitSetup.RovName, livekitSetup.LivekitAPIKey, livekitSetup.LivekitSecretKey).catch((e) => { logError(e); window.location.reload() });
-        asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({
-            video: {
-                width: 1920,
-                height: 1080,
-                frameRate: 60,
-                facingMode: "environment"
-            },
-            audio: false
-        }).then(this.cameraReady.bind(this)).catch((e) => { logError(e); window.location.reload() });
+
         logInfo("Connection Manager Started")
         await waitforCondition(() => this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState && this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected)
     }
 
     public async startSimplePeerConnection(userId: string, firstSignallingMessage?: string) {
+
+        // Stop any existing simplepeer connection to this user
         if (this._simplePeerConnections[userId]) {
             this._simplePeerConnections[userId].stop();
             delete this._simplePeerConnections[userId];
         }
+
+        // Get a separate video stream for simplePeer
+        if (!this._cameraMediaStream) {
+            this._cameraMediaStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)({
+                video: {
+                    width: 1920,
+                    height: 1080,
+                    frameRate: 60,
+                    facingMode: "environment"
+                },
+                audio: false
+            })
+        }
+
         const spConn = new SimplePeerConnection();
         changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
             if (msg) backendHandleWebrtcMsgRcvd(userId, msg)
@@ -133,17 +138,11 @@ class InternalConnectionManager {
 
     public async ingestSimplePeerSignallingMsg(userId: string, signallingMsg: string) {
         const spConn = this._simplePeerConnections[userId]
-        if (spConn) {
-            if ([ConnectionStates.failed, ConnectionStates.disconnectedOk].includes(spConn.connectionState.get())) {
-                log("SP: Reconnecting to " + userId + " after signalling message received connectionState: " + spConn.connectionState.get())
-                await this.startSimplePeerConnection(userId, signallingMsg);
-            } else spConn.ingestSignalingMsg(signallingMsg);
-        } else await this.startSimplePeerConnection(userId, signallingMsg);
-    }
-
-    public async _sendMessageViaLivekit(msg: Uint8Array, reliable: boolean, toUserIds: string[]) {
-        await this._cloudLivekitConnection.sendMessage(msg, reliable, toUserIds);
-        // await this._localLivekitConnection.sendMessage(msg, reliable, toUserIds);
+        if (!spConn) await this.startSimplePeerConnection(userId, signallingMsg);
+        else if ([ConnectionStates.failed, ConnectionStates.disconnectedOk].includes(spConn.connectionState.get())) {
+            log("SP: Connecting to " + userId + " after signalling message received. SP ConnectionState: " + spConn.connectionState.get())
+            await this.startSimplePeerConnection(userId, signallingMsg);
+        } else spConn.ingestSignalingMsg(signallingMsg);
     }
 
     public async sendMessage(msg: rov_actions_proto.IRovResponse, reliable: boolean, toUserIds: string[]) {
@@ -167,7 +166,6 @@ class InternalConnectionManager {
         // }
         const notSentPeers = toUserIds; //toUserIds.filter((userId) => !sentToParticpants.includes(userId));
         await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
-        // await this._localLivekitConnection.sendMessage(msgBytes, reliable, notSentPeers);
         return true;
     }
 

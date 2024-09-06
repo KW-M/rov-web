@@ -1,6 +1,7 @@
 import { EgressClient, EgressInfo, StreamOutput, StreamProtocol } from 'livekit-server-sdk';
 import { waitfor } from './shared/util';
 import { log, logInfo, logWarn } from "./shared/logging"
+import { silenceFalseSecurityNotice } from './shared/livekit/livekitTokens';
 
 class TwitchStream {
     private _twitchStreamKey?: string;
@@ -42,7 +43,7 @@ class TwitchStream {
 
     async startStream() {
         if (!this._twitchStreamKey || !this._egressClient || !this.roomName) return logWarn("startStream() err: Twitch stream key not set or twitchStream class not initilized!");
-        let egressList = await this.listRunningEgress();
+        let egressList = await silenceFalseSecurityNotice(() => this.listRunningEgress());
         let currentEgress = this.getCurrentEgress(egressList);
         if (currentEgress !== undefined) {
             log("Found current twitch egress: ", currentEgress);
@@ -66,11 +67,9 @@ class TwitchStream {
                 protocol: StreamProtocol.RTMP,
                 urls: ['rtmp://live.twitch.tv/app/' + this._twitchStreamKey]
             });
-            var info = await this._egressClient.startRoomCompositeEgress(this.roomName, output);
+            var info = await silenceFalseSecurityNotice(() => { return this._egressClient?.startRoomCompositeEgress(this.roomName as string, output) });
             this.streamEgressID = info.egressId;
             logInfo("Twitch stream started: ", info);
-            egressList = await this.listRunningEgress();
-            log("Egress list: ", egressList);
         }
 
     }

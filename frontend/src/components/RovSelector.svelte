@@ -62,7 +62,7 @@
   }
 </script>
 
-<div id="rov_chooser" class={`absolute left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-visible z-40 pointer-events-none select-none  ${!collapsedMode ? "disconnected  top-0" : " "} `}>
+<div id="rov_chooser" class={`absolute left-1/2 bottom-0  -translate-x-1/2 transition-all overflow-visible pointer-events-none select-none  ${!collapsedMode ? "disconnected  top-0" : " "} `}>
   <!-- {#if collapsedMode}
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourIdentity}</span></p>
   {/if} -->
@@ -73,7 +73,7 @@
       <h2 class="text-center py-4 px-6 font-bold">Connect to a ROV:</h2>
       <div class="flex flex-col align-stretch overflow-y-auto w-full p-3 pt-0">
         {#each $availableRovRooms as rovRoom}
-          <button in:fade disabled={!rovRoom.token} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1 pointer-events-all"
+          <button in:fade disabled={!rovRoom.token} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1 pointer-events-auto"
             >{rovRoom.name}
             <ChevronRight variant="round" class="text-2xl inline-block pointer-events-none" tabindex="-1" />
           </button>
@@ -84,7 +84,7 @@
         <p class="m-0 p-0 font-bold">{selectedRov}</p>
         <p class="m-0 p-0 text-primary-200">You Are: <span class="font-bold">{$ourIdentity || "..."}</span></p>
       </span>
-      <button in:fade class={`btn mr-3 btn-md variant-filled-error align-top`} on:click={() => disconnect()}>
+      <button in:fade class={`btn mr-3 btn-md variant-filled-error align-top pointer-events-auto`} on:click={() => disconnect()}>
         <span class="whitespace-nowrap inline">{!collapsedMode ? "Connect" : "Disconnect"}</span>
       </button>
     {/if}

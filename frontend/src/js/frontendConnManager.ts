@@ -84,9 +84,14 @@ export class FrontendConnectionManager {
     }
 
     async onConnectedActions() {
-        await this.startSimplePeerConnection();
+        // await this.startSimplePeerConnection();
+        showToastMessage(`Connected to ROV ${this.livekitConnection._roomConn.name}!`, 2000, false, ToastSeverity.success)
+    }
 
 
+
+    public subscribeToVideoStats(callback: (stats: RTCStatsReport | null) => void) {
+        return this.livekitConnection.videoStats.subscribe(callback);
     }
 
     /**
