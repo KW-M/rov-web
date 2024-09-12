@@ -9,7 +9,7 @@ import { handleMavlinkMessage } from "./mavlinkMessageHandler";
 import { updateSystemMonitorDisplay } from "./vehicleStats";
 import { URL_PARAMS } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
-import { onLivekitVideoOptionsChange, onSimplepeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
+import { onLivekitVideoOptionsChange, onSimplePeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
 
 let lastTimeRecvdPong = NaN;
 
@@ -50,8 +50,8 @@ export class FrontendRovMsgHandlerClass {
             return this.handleClientConnectedMsgRecived(msgData.ClientConnected, ExchangeId);
         } else if (msgData.ClientDisconnected) {
             return this.handleClientDisconnectedMsgRecived(msgData.ClientDisconnected, ExchangeId);
-        } else if (msgData.SimplepeerSignal && msgData.SimplepeerSignal.Message) {
-            frontendConnMngr.ingestSimplepeerSignallingMsg(msgData.SimplepeerSignal.Message);
+        } else if (msgData.SimplePeerSignal && msgData.SimplePeerSignal.Message) {
+            frontendConnMngr.ingestSimplePeerSignallingMsg(msgData.SimplePeerSignal.Message);
         } else if (msgData.Mavlink) {
             return this.handleMavlinkMessageRecived(msgData.Mavlink, ExchangeId);
         } else if (msgData.SystemMonitor) {
@@ -60,8 +60,8 @@ export class FrontendRovMsgHandlerClass {
             return this.handleLogMsgRecived(msgData.LogMessage, ExchangeId);
         } else if (msgData.LivekitVideoStats) {
             return this.handleLivekitVideoStatsMsgRecived(msgData.LivekitVideoStats, ExchangeId);
-        } else if (msgData.SimplepeerVideoStats) {
-            return this.handleSimplepeerVideoStatsMsgRecived(msgData.SimplepeerVideoStats, ExchangeId);
+        } else if (msgData.SimplePeerVideoStats) {
+            return this.handleSimplePeerVideoStatsMsgRecived(msgData.SimplePeerVideoStats, ExchangeId);
         } else {
             logWarn("Unhandled ROV message recived: ", msgData);
         }
@@ -170,9 +170,9 @@ export class FrontendRovMsgHandlerClass {
         onLivekitVideoOptionsChange(msgData);
     };
 
-    handleSimplepeerVideoStatsMsgRecived(msgData: rov_actions_proto.ISimplepeerVideoStatsResponse, ExchangeId: number) {
-        logDebug("SimplepeerVideoStats: ", msgData);
-        onSimplepeerVideoOptionsChange(msgData);
+    handleSimplePeerVideoStatsMsgRecived(msgData: rov_actions_proto.ISimplePeerVideoStatsResponse, ExchangeId: number) {
+        logDebug("SimplePeerVideoStats: ", msgData);
+        onSimplePeerVideoOptionsChange(msgData);
     }
 
     sendRovMessage(msg: rov_actions_proto.IRovAction, replyCallback: null | ((replyMsgData: rov_actions_proto.RovResponse) => void) = null) {

@@ -17,7 +17,7 @@
   import VideoSettings from "../../components/Modals/VideoSettings.svelte";
 
   const videoMethod = frontendConnMngr.currentVideoStreamMethod;
-  $: usingHDVideo = $videoMethod === VideoStreamMethod.simplepeer;
+  $: usingHDVideo = $videoMethod === VideoStreamMethod.simplePeer;
 
   const connectionState = frontendConnMngr.connectionState;
   $: connected = $connectionState === ConnectionStates.connected;

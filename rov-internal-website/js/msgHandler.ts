@@ -29,9 +29,9 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
     }
 
     // SIMPLEPEER SIGNAL Message - Pass it to the internalConnManager
-    else if (msgProto.SimplepeerSignal && msgProto.SimplepeerSignal.Message) {
-        const signal = msgProto.SimplepeerSignal.Message
-        internalConnManager.ingestSimplepeerSignalMsg(senderId, signal)
+    else if (msgProto.SimplePeerSignal && msgProto.SimplePeerSignal.Message) {
+        const signal = msgProto.SimplePeerSignal.Message
+        internalConnManager.ingestSimplePeerSignalMsg(senderId, signal)
         return true;
     }
 
@@ -206,16 +206,16 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
         return true;
     }
 
-    else if (msgProto.SetSimplepeerVideoOptions) {
+    else if (msgProto.SetSimplePeerVideoOptions) {
         const vcDefaults = LIVEKIT_BACKEND_ROOM_CONFIG.videoCaptureDefaults;
         const pubDefaults = LIVEKIT_BACKEND_ROOM_CONFIG.publishDefaults
 
-        const opts = msgProto.SetSimplepeerVideoOptions;
+        const opts = msgProto.SetSimplePeerVideoOptions;
         const baseStream = opts.BaseStream;
-        logInfo("Got Simplepeer Video Options: ", opts)
+        logInfo("Got SimplePeer Video Options: ", opts)
 
         if (!opts.Enabled) {
-            internalConnManager.setSimplepeerVideoOptions(false, senderId)
+            internalConnManager.setSimplePeerVideoOptions(false, senderId)
             return true;
         }
 
@@ -239,7 +239,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
             },
         }
 
-        internalConnManager.setSimplepeerVideoOptions(true, senderId, videoCaptureOpts, videoPubOpts)
+        internalConnManager.setSimplePeerVideoOptions(true, senderId, videoCaptureOpts, videoPubOpts)
         return true;
     }
 

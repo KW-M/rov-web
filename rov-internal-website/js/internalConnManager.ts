@@ -2,7 +2,7 @@ import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_P
 import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor, waitforCondition } from './shared/util';
 import { getPublisherAccessToken } from './shared/livekit/livekitTokens';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
-import { SimplepeerConnection } from "./shared/simplepeer"
+import { SimplePeerConnection } from "./shared/simplePeer"
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
 import { URL_PARAMS } from "./constsInternal";
@@ -26,12 +26,12 @@ export interface InternalLivekitSetupOptions {
  */
 class InternalConnectionManager {
     private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
-    private _simplepeerConnections: Map<string, SimplepeerConnection> = new Map();
-    private _simplepeerCameraStream: MediaStream | null = null;
+    private _simplePeerConnections: Map<string, SimplePeerConnection> = new Map();
+    private _simplePeerCameraStream: MediaStream | null = null;
     private _videoStatsCheckTimer: NodeJS.Timeout | null = null;
 
-    // keeps track of the current parameters of the video stream being sent to all simplepeer clients/users.
-    simplepeerCameraOptions = nStore<MediaStreamConstraints>(SIMPLEPEER_CAPTURE_CONFIG);
+    // keeps track of the current parameters of the video stream being sent to all simplePeer clients/users.
+    simplePeerCameraOptions = nStore<MediaStreamConstraints>(SIMPLEPEER_CAPTURE_CONFIG);
 
     constructor() {
 
@@ -133,11 +133,11 @@ class InternalConnectionManager {
                 }) || [],
             }
         }, false, [])
-        const spCameraOpts = this.simplepeerCameraOptions.get();
-        for (const [userId, spConn] of this._simplepeerConnections) {
+        const spCameraOpts = this.simplePeerCameraOptions.get();
+        for (const [userId, spConn] of this._simplePeerConnections) {
             const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return [e] });
             this.sendMessage({
-                SimplepeerVideoStats: {
+                SimplePeerVideoStats: {
                     Enabled: !!spConn,
                     RtcSenderStatsJson: JSON.stringify(spStats),
                     BaseStream: {
@@ -154,49 +154,49 @@ class InternalConnectionManager {
         this._cloudLivekitConnection.enableCamera(enabled, captureOptions, publishOptions);
     }
 
-    createSimplepeer(userId: string, firstSignalMsg?: string) {
-        // Stop any existing simplepeer connection to this user
-        const existing = this._simplepeerConnections.get(userId);
+    createSimplePeer(userId: string, firstSignalMsg?: string) {
+        // Stop any existing simplePeer connection to this user
+        const existing = this._simplePeerConnections.get(userId);
         if (existing) {
-            logWarn("SP: createSimplepeer() err - Connection already exists for user: " + userId);
+            logWarn("SP: createSimplePeer() err - Connection already exists for user: " + userId);
             return existing;
         }
         //     existing.stop();
-        //     this._simplepeerConnections.delete(userId);
+        //     this._simplePeerConnections.delete(userId);
         // }
 
-        // Create a new simplepeer connection
-        const spConn = new SimplepeerConnection();
-        this._simplepeerConnections.set(userId, spConn);
+        // Create a new simplePeer connection
+        const spConn = new SimplePeerConnection();
+        this._simplePeerConnections.set(userId, spConn);
         if (firstSignalMsg) spConn.ingestSignalingMsg(firstSignalMsg);
         changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
             if (msg) backendHandleWebrtcMsgRcvd(userId, msg)
         })
         changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
-            this.sendMessage({ SimplepeerSignal: { Message: msg } }, true, [userId])
+            this.sendMessage({ SimplePeerSignal: { Message: msg } }, true, [userId])
         })
         return spConn;
     }
 
-    public async startSimplepeerConnection(userId: string) {
-        // Get a separate video stream for simplepeer
-        if (!this._simplepeerCameraStream) {
-            this._simplepeerCameraStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)(this.simplepeerCameraOptions.get())
+    public async startSimplePeerConnection(userId: string) {
+        // Get a separate video stream for simplePeer
+        if (!this._simplePeerCameraStream) {
+            this._simplePeerCameraStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)(this.simplePeerCameraOptions.get())
         }
 
-        const spConn = this._simplepeerConnections.get(userId);
-        if (!spConn) throw new Error("Simplepeer Connection not created for user: " + userId);
+        const spConn = this._simplePeerConnections.get(userId);
+        if (!spConn) throw new Error("SimplePeer Connection not created for user: " + userId);
 
         await spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
             initiator: false,
-            streams: [this._simplepeerCameraStream]
+            streams: [this._simplePeerCameraStream]
         }), false)
     }
 
-    public async setSimplepeerVideoOptions(enabled: boolean, userId: string, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
+    public async setSimplePeerVideoOptions(enabled: boolean, userId: string, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
         if (enabled) {
-            console.log("Setting Simplepeer Video Options for " + userId + ":", captureOptions, publishOptions);
-            this.simplepeerCameraOptions.update((opts) => {
+            console.log("Setting SimplePeer Video Options for " + userId + ":", captureOptions, publishOptions);
+            this.simplePeerCameraOptions.update((opts) => {
                 const video = (opts?.video ? opts.video : SIMPLEPEER_CAPTURE_CONFIG.video) as MediaTrackConstraints;
                 return {
                     ...opts,
@@ -208,32 +208,32 @@ class InternalConnectionManager {
                     },
                 }
             });
-            const newCameraStream = await navigator.mediaDevices.getUserMedia(this.simplepeerCameraOptions.get());
-            const oldStream = this._simplepeerCameraStream;
-            this._simplepeerCameraStream = newCameraStream;
-            let spConn = this._simplepeerConnections.get(userId)
+            const newCameraStream = await navigator.mediaDevices.getUserMedia(this.simplePeerCameraOptions.get());
+            const oldStream = this._simplePeerCameraStream;
+            this._simplePeerCameraStream = newCameraStream;
+            let spConn = this._simplePeerConnections.get(userId)
             if (!spConn) {
-                spConn = this.createSimplepeer(userId);
+                spConn = this.createSimplePeer(userId);
                 spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
                     initiator: false,
-                    streams: [this._simplepeerCameraStream]
+                    streams: [this._simplePeerCameraStream]
                 }), false)
             } else {
-                spConn.changeMediaStream(this._simplepeerCameraStream);
+                spConn.changeMediaStream(this._simplePeerCameraStream);
             }
             // spConn.setCodecPreferences([publishOptions?.videoCodec || "vp9"]);
         } else {
-            this._simplepeerCameraStream?.getTracks().forEach((track) => track.stop())
-            this._simplepeerCameraStream = null;
+            this._simplePeerCameraStream?.getTracks().forEach((track) => track.stop())
+            this._simplePeerCameraStream = null;
         }
     }
 
-    public async ingestSimplepeerSignalMsg(userId: string, signalMsg: string) {
-        const spConn = this._simplepeerConnections.get(userId);
+    public async ingestSimplePeerSignalMsg(userId: string, signalMsg: string) {
+        const spConn = this._simplePeerConnections.get(userId);
         // log("SP: Ingesting Signalling Message from " + userId + ":", spConn ? spConn.connectionState.get() : "No SP Conn");
         if (spConn === undefined) {
-            this.createSimplepeer(userId, signalMsg);
-            await this.startSimplepeerConnection(userId);
+            this.createSimplePeer(userId, signalMsg);
+            await this.startSimplePeerConnection(userId);
         } else {
             spConn.ingestSignalingMsg(signalMsg);
         }
@@ -250,7 +250,7 @@ class InternalConnectionManager {
         msg.BackendMetadata = rov_actions_proto.ResponseBackendMetadata.create({}); // Strip out backend metadata if present
         const msgBytes = rov_actions_proto.RovResponse.encode(msg).finish();
 
-        // Send the message via the cloud livekit connection (for simplicity we don't use simplepeer for sending messages to pilot etc..)
+        // Send the message via the cloud livekit connection (for simplicity we don't use simplePeer for sending messages to pilot etc..)
         await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
         return true;
     }
@@ -258,7 +258,7 @@ class InternalConnectionManager {
     public async stop() {
         clearInterval(this._videoStatsCheckTimer!);
         this._cloudLivekitConnection.close();
-        for (const [userId, spConn] of this._simplepeerConnections) {
+        for (const [userId, spConn] of this._simplePeerConnections) {
             spConn.stop();
         }
     }

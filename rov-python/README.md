@@ -33,15 +33,15 @@ python3 ./rov_backend/python/main.py --config-file ./tooling/rasberry_pi_setup_s
 > Script to run all the commands to install everything and put it in the right places. After first successful run, it puts a marker file on the desktop, so that subsequent runs of the script will only update changed config files from the /new-config-files folder in the rov code folder and restart all the systemd services, instead of downloading everything again. I tried to comment it well so please see the links for more info about each part inside the script.
 
 **internal-backend-webpage**
->
+
 > \- configured using URL parameters when the internal-webpage is opened on the PI.
 >
 > Relay that handles sending the video and two way data over the wire using the webRTC protocol.
-Behind the scenes it initially opens a "web socket" to our livekit cloud signalling server instance that allow the remote driver's computer and the raspberry pi locate and talk to each other over the internet. Then the livekit sdk establishes a connection to the livekit cloud server for video and data transport. Then the remote driver's browser opens a webRTC data channel that go directly between the driver’s computer and the raspberry pi (no server in between). Then the rov opens (aka "media calls") the driver with the vide stream in a WEBRTC "media channel". The website Javascript uses the Livekit that handles all the handshakes and keeps a steady connection and also simplepeer for the direct webRTC connection.
+> Behind the scenes it initially opens a "web socket" to our livekit cloud signalling server instance that allow the remote driver's computer and the raspberry pi locate and talk to each other over the internet. Then the livekit sdk establishes a connection to the livekit cloud server for video and data transport. Then the remote driver's browser opens a webRTC data channel that go directly between the driver’s computer and the raspberry pi (no server in between). Then the rov opens (aka "media calls") the driver with the vide stream in a WEBRTC "media channel". The website Javascript uses the Livekit that handles all the handshakes and keeps a steady connection and also simplePeer for the direct webRTC connection.
 
 **Python3**
 
-> Recives and sends "wrapped" protobuf messages with the internal-webpage through a *LOCAL* websocket connection. The internal-webpage then forwards these messages over webRTC to any drivers spectators depending on the metadata sent by the python. The python code is also responsible for keeping track of authenticated drivers and handling all the user actions and rov control logic.
+> Recives and sends "wrapped" protobuf messages with the internal-webpage through a _LOCAL_ websocket connection. The internal-webpage then forwards these messages over webRTC to any drivers spectators depending on the metadata sent by the python. The python code is also responsible for keeping track of authenticated drivers and handling all the user actions and rov control logic.
 
 > The frontend sends updates as protobuf encoded bytes whenever the driver moves the game controller joysticks with the calculated desired velocity of the rov. The python then drives the motor controllers such that the rov achives that thrust direction. If no driver is connected, no driver messages are recived recently, or exceptions are raised in the python code, it stops all motors until one of those conditions changes (see bottom of message_handler.py).
 
@@ -66,7 +66,6 @@ Each service is supossed to be restarted by systemd if it crashes.
 > 2. Show various logs/debugging stuff on convenient url paths locally.
 >
 > 3. (If we use ngrok in the future) Funnel all the connections we need to/from the raspberry pi through the default internet port (:80) because ngrok can only tunnel one port. Also "proxy-pass" the ngrok dashboard to url path /ngrok_dashboard/ on port 80
-
 
 ### Building the ROV
 

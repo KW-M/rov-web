@@ -1,6 +1,6 @@
 import nStore, { type nStoreT } from "./shared/libraries/nStore";
 import { type LivekitConfig, LivekitBaseConnection } from "./shared/livekit/livekitBaseConn";
-import { DisconnectReason, RemoteParticipant, RemoteTrack, RemoteTrackPublication, RemoteVideoTrack, RoomEvent, Track } from "livekit-client";
+import { DisconnectReason, type RemoteParticipant, type RemoteTrack, type RemoteTrackPublication, type RemoteVideoTrack, RoomEvent, Track } from "livekit-client";
 import { log, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";

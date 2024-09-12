@@ -26,7 +26,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @property {number} Error=3 Error value
      * @property {number} Critical=4 Critical value
      */
-    rov_actions_proto.LogLevel = (function() {
+    rov_actions_proto.LogLevel = (function () {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "Debug"] = 0;
         values[valuesById[1] = "Info"] = 1;
@@ -53,7 +53,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @property {number} battery_current_amps=10 battery_current_amps value
      * @property {number} internal_temp_celsius=11 internal_temp_celsius value
      */
-    rov_actions_proto.SensorMeasurmentTypes = (function() {
+    rov_actions_proto.SensorMeasurmentTypes = (function () {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "depth_meters"] = 0;
         values[valuesById[1] = "water_temp_celsius"] = 1;
@@ -79,7 +79,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @property {number} DirectReliable=2 DirectReliable value
      * @property {number} DirectUnreliable=3 DirectUnreliable value
      */
-    rov_actions_proto.DataTransportMethod = (function() {
+    rov_actions_proto.DataTransportMethod = (function () {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "LivekitReliable"] = 0;
         values[valuesById[1] = "LivekitUnreliable"] = 1;
@@ -98,7 +98,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @property {number} UserConnected=3 UserConnected value
      * @property {number} UserDisconnected=4 UserDisconnected value
      */
-    rov_actions_proto.InternalWebpageEvent = (function() {
+    rov_actions_proto.InternalWebpageEvent = (function () {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "Nothing"] = 0;
         values[valuesById[1] = "RovConnected"] = 1;
@@ -117,7 +117,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
      * @property {number} VP9=2 VP9 value
      * @property {number} AV1=3 AV1 value
      */
-    rov_actions_proto.VideoCodec = (function() {
+    rov_actions_proto.VideoCodec = (function () {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "H264"] = 0;
         values[valuesById[1] = "VP8"] = 1;
@@ -126,7 +126,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return values;
     })();
 
-    rov_actions_proto.VideoStreamOptions = (function() {
+    rov_actions_proto.VideoStreamOptions = (function () {
 
         /**
          * Properties of a VideoStreamOptions.
@@ -251,25 +251,25 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Height = reader.uint32();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Width = reader.uint32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.Fps = reader.uint32();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.MaxBitrate = reader.uint32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -399,7 +399,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return VideoStreamOptions;
     })();
 
-    rov_actions_proto.SetLivekitVideoOptionsAction = (function() {
+    rov_actions_proto.SetLivekitVideoOptionsAction = (function () {
 
         /**
          * Properties of a SetLivekitVideoOptionsAction.
@@ -537,31 +537,31 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Enabled = reader.bool();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Codec = reader.int32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.AllowBackupCodec = reader.bool();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
-                case 5: {
+                    case 5: {
                         if (!(message.SimulcastLayers && message.SimulcastLayers.length))
                             message.SimulcastLayers = [];
                         message.SimulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -599,13 +599,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "Enabled: boolean expected";
             if (message.Codec != null && message.hasOwnProperty("Codec"))
                 switch (message.Codec) {
-                default:
-                    return "Codec: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    break;
+                    default:
+                        return "Codec: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
                 }
             if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
                 if (typeof message.AllowBackupCodec !== "boolean")
@@ -642,28 +642,28 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object.Enabled != null)
                 message.Enabled = Boolean(object.Enabled);
             switch (object.Codec) {
-            default:
-                if (typeof object.Codec === "number") {
-                    message.Codec = object.Codec;
+                default:
+                    if (typeof object.Codec === "number") {
+                        message.Codec = object.Codec;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "H264":
-            case 0:
-                message.Codec = 0;
-                break;
-            case "VP8":
-            case 1:
-                message.Codec = 1;
-                break;
-            case "VP9":
-            case 2:
-                message.Codec = 2;
-                break;
-            case "AV1":
-            case 3:
-                message.Codec = 3;
-                break;
+                case "H264":
+                case 0:
+                    message.Codec = 0;
+                    break;
+                case "VP8":
+                case 1:
+                    message.Codec = 1;
+                    break;
+                case "VP9":
+                case 2:
+                    message.Codec = 2;
+                    break;
+                case "AV1":
+                case 3:
+                    message.Codec = 3;
+                    break;
             }
             if (object.AllowBackupCodec != null)
                 message.AllowBackupCodec = Boolean(object.AllowBackupCodec);
@@ -751,27 +751,27 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SetLivekitVideoOptionsAction;
     })();
 
-    rov_actions_proto.SetSimplepeerVideoOptionsAction = (function() {
+    rov_actions_proto.SetSimplePeerVideoOptionsAction = (function () {
 
         /**
-         * Properties of a SetSimplepeerVideoOptionsAction.
+         * Properties of a SetSimplePeerVideoOptionsAction.
          * @memberof rov_actions_proto
-         * @interface ISetSimplepeerVideoOptionsAction
-         * @property {boolean|null} [Enabled] SetSimplepeerVideoOptionsAction Enabled
-         * @property {number|null} [Bitrate] SetSimplepeerVideoOptionsAction Bitrate
-         * @property {rov_actions_proto.VideoCodec|null} [Codec] SetSimplepeerVideoOptionsAction Codec
-         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SetSimplepeerVideoOptionsAction BaseStream
+         * @interface ISetSimplePeerVideoOptionsAction
+         * @property {boolean|null} [Enabled] SetSimplePeerVideoOptionsAction Enabled
+         * @property {number|null} [Bitrate] SetSimplePeerVideoOptionsAction Bitrate
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] SetSimplePeerVideoOptionsAction Codec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SetSimplePeerVideoOptionsAction BaseStream
          */
 
         /**
-         * Constructs a new SetSimplepeerVideoOptionsAction.
+         * Constructs a new SetSimplePeerVideoOptionsAction.
          * @memberof rov_actions_proto
-         * @classdesc Represents a SetSimplepeerVideoOptionsAction.
-         * @implements ISetSimplepeerVideoOptionsAction
+         * @classdesc Represents a SetSimplePeerVideoOptionsAction.
+         * @implements ISetSimplePeerVideoOptionsAction
          * @constructor
-         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ISetSimplePeerVideoOptionsAction=} [properties] Properties to set
          */
-        function SetSimplepeerVideoOptionsAction(properties) {
+        function SetSimplePeerVideoOptionsAction(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -779,59 +779,59 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * SetSimplepeerVideoOptionsAction Enabled.
+         * SetSimplePeerVideoOptionsAction Enabled.
          * @member {boolean} Enabled
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @instance
          */
-        SetSimplepeerVideoOptionsAction.prototype.Enabled = false;
+        SetSimplePeerVideoOptionsAction.prototype.Enabled = false;
 
         /**
-         * SetSimplepeerVideoOptionsAction Bitrate.
+         * SetSimplePeerVideoOptionsAction Bitrate.
          * @member {number} Bitrate
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @instance
          */
-        SetSimplepeerVideoOptionsAction.prototype.Bitrate = 0;
+        SetSimplePeerVideoOptionsAction.prototype.Bitrate = 0;
 
         /**
-         * SetSimplepeerVideoOptionsAction Codec.
+         * SetSimplePeerVideoOptionsAction Codec.
          * @member {rov_actions_proto.VideoCodec} Codec
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @instance
          */
-        SetSimplepeerVideoOptionsAction.prototype.Codec = 0;
+        SetSimplePeerVideoOptionsAction.prototype.Codec = 0;
 
         /**
-         * SetSimplepeerVideoOptionsAction BaseStream.
+         * SetSimplePeerVideoOptionsAction BaseStream.
          * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @instance
          */
-        SetSimplepeerVideoOptionsAction.prototype.BaseStream = null;
+        SetSimplePeerVideoOptionsAction.prototype.BaseStream = null;
 
         /**
-         * Creates a new SetSimplepeerVideoOptionsAction instance using the specified properties.
+         * Creates a new SetSimplePeerVideoOptionsAction instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
-         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction instance
+         * @param {rov_actions_proto.ISetSimplePeerVideoOptionsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SetSimplePeerVideoOptionsAction} SetSimplePeerVideoOptionsAction instance
          */
-        SetSimplepeerVideoOptionsAction.create = function create(properties) {
-            return new SetSimplepeerVideoOptionsAction(properties);
+        SetSimplePeerVideoOptionsAction.create = function create(properties) {
+            return new SetSimplePeerVideoOptionsAction(properties);
         };
 
         /**
-         * Encodes the specified SetSimplepeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * Encodes the specified SetSimplePeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplePeerVideoOptionsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
-         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param {rov_actions_proto.ISetSimplePeerVideoOptionsAction} message SetSimplePeerVideoOptionsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SetSimplepeerVideoOptionsAction.encode = function encode(message, writer) {
+        SetSimplePeerVideoOptionsAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
@@ -846,85 +846,85 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Encodes the specified SetSimplepeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * Encodes the specified SetSimplePeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplePeerVideoOptionsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
-         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param {rov_actions_proto.ISetSimplePeerVideoOptionsAction} message SetSimplePeerVideoOptionsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SetSimplepeerVideoOptionsAction.encodeDelimited = function encodeDelimited(message, writer) {
+        SetSimplePeerVideoOptionsAction.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer.
+         * Decodes a SetSimplePeerVideoOptionsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         * @returns {rov_actions_proto.SetSimplePeerVideoOptionsAction} SetSimplePeerVideoOptionsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SetSimplepeerVideoOptionsAction.decode = function decode(reader, length) {
+        SetSimplePeerVideoOptionsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SetSimplepeerVideoOptionsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SetSimplePeerVideoOptionsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Enabled = reader.bool();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Bitrate = reader.uint32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.Codec = reader.int32();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
         };
 
         /**
-         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * Decodes a SetSimplePeerVideoOptionsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         * @returns {rov_actions_proto.SetSimplePeerVideoOptionsAction} SetSimplePeerVideoOptionsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SetSimplepeerVideoOptionsAction.decodeDelimited = function decodeDelimited(reader) {
+        SetSimplePeerVideoOptionsAction.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a SetSimplepeerVideoOptionsAction message.
+         * Verifies a SetSimplePeerVideoOptionsAction message.
          * @function verify
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        SetSimplepeerVideoOptionsAction.verify = function verify(message) {
+        SetSimplePeerVideoOptionsAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Enabled != null && message.hasOwnProperty("Enabled"))
@@ -935,13 +935,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "Bitrate: integer expected";
             if (message.Codec != null && message.hasOwnProperty("Codec"))
                 switch (message.Codec) {
-                default:
-                    return "Codec: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    break;
+                    default:
+                        return "Codec: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
                 }
             if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
                 let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
@@ -952,63 +952,63 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Creates a SetSimplepeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SetSimplePeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         * @returns {rov_actions_proto.SetSimplePeerVideoOptionsAction} SetSimplePeerVideoOptionsAction
          */
-        SetSimplepeerVideoOptionsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.SetSimplepeerVideoOptionsAction)
+        SetSimplePeerVideoOptionsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SetSimplePeerVideoOptionsAction)
                 return object;
-            let message = new $root.rov_actions_proto.SetSimplepeerVideoOptionsAction();
+            let message = new $root.rov_actions_proto.SetSimplePeerVideoOptionsAction();
             if (object.Enabled != null)
                 message.Enabled = Boolean(object.Enabled);
             if (object.Bitrate != null)
                 message.Bitrate = object.Bitrate >>> 0;
             switch (object.Codec) {
-            default:
-                if (typeof object.Codec === "number") {
-                    message.Codec = object.Codec;
+                default:
+                    if (typeof object.Codec === "number") {
+                        message.Codec = object.Codec;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "H264":
-            case 0:
-                message.Codec = 0;
-                break;
-            case "VP8":
-            case 1:
-                message.Codec = 1;
-                break;
-            case "VP9":
-            case 2:
-                message.Codec = 2;
-                break;
-            case "AV1":
-            case 3:
-                message.Codec = 3;
-                break;
+                case "H264":
+                case 0:
+                    message.Codec = 0;
+                    break;
+                case "VP8":
+                case 1:
+                    message.Codec = 1;
+                    break;
+                case "VP9":
+                case 2:
+                    message.Codec = 2;
+                    break;
+                case "AV1":
+                case 3:
+                    message.Codec = 3;
+                    break;
             }
             if (object.BaseStream != null) {
                 if (typeof object.BaseStream !== "object")
-                    throw TypeError(".rov_actions_proto.SetSimplepeerVideoOptionsAction.BaseStream: object expected");
+                    throw TypeError(".rov_actions_proto.SetSimplePeerVideoOptionsAction.BaseStream: object expected");
                 message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
             }
             return message;
         };
 
         /**
-         * Creates a plain object from a SetSimplepeerVideoOptionsAction message. Also converts values to other types if specified.
+         * Creates a plain object from a SetSimplePeerVideoOptionsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
-         * @param {rov_actions_proto.SetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction
+         * @param {rov_actions_proto.SetSimplePeerVideoOptionsAction} message SetSimplePeerVideoOptionsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        SetSimplepeerVideoOptionsAction.toObject = function toObject(message, options) {
+        SetSimplePeerVideoOptionsAction.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -1030,35 +1030,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Converts this SetSimplepeerVideoOptionsAction to JSON.
+         * Converts this SetSimplePeerVideoOptionsAction to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        SetSimplepeerVideoOptionsAction.prototype.toJSON = function toJSON() {
+        SetSimplePeerVideoOptionsAction.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for SetSimplepeerVideoOptionsAction
+         * Gets the default type url for SetSimplePeerVideoOptionsAction
          * @function getTypeUrl
-         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @memberof rov_actions_proto.SetSimplePeerVideoOptionsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        SetSimplepeerVideoOptionsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        SetSimplePeerVideoOptionsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.SetSimplepeerVideoOptionsAction";
+            return typeUrlPrefix + "/rov_actions_proto.SetSimplePeerVideoOptionsAction";
         };
 
-        return SetSimplepeerVideoOptionsAction;
+        return SetSimplePeerVideoOptionsAction;
     })();
 
-    rov_actions_proto.PingAction = (function() {
+    rov_actions_proto.PingAction = (function () {
 
         /**
          * Properties of a PingAction.
@@ -1088,7 +1088,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto.PingAction
          * @instance
          */
-        PingAction.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        PingAction.prototype.Time = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
 
         /**
          * Creates a new PingAction instance using the specified properties.
@@ -1150,13 +1150,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Time = reader.int64();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -1275,7 +1275,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PingAction;
     })();
 
-    rov_actions_proto.PasswordAttemptAction = (function() {
+    rov_actions_proto.PasswordAttemptAction = (function () {
 
         /**
          * Properties of a PasswordAttemptAction.
@@ -1367,13 +1367,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Password = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -1478,7 +1478,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PasswordAttemptAction;
     })();
 
-    rov_actions_proto.AuthTokenAttemptAction = (function() {
+    rov_actions_proto.AuthTokenAttemptAction = (function () {
 
         /**
          * Properties of an AuthTokenAttemptAction.
@@ -1570,13 +1570,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Token = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -1681,7 +1681,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return AuthTokenAttemptAction;
     })();
 
-    rov_actions_proto.TakeControlAction = (function() {
+    rov_actions_proto.TakeControlAction = (function () {
 
         /**
          * Properties of a TakeControlAction.
@@ -1762,9 +1762,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -1856,7 +1856,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return TakeControlAction;
     })();
 
-    rov_actions_proto.MoveAction = (function() {
+    rov_actions_proto.MoveAction = (function () {
 
         /**
          * Properties of a MoveAction.
@@ -1992,29 +1992,29 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.VelocityX = reader.float();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.VelocityY = reader.float();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.VelocityZ = reader.float();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.AngularVelocityYaw = reader.float();
                         break;
                     }
-                case 5: {
+                    case 5: {
                         message.ButtonBitmask = reader.int32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -2152,7 +2152,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return MoveAction;
     })();
 
-    rov_actions_proto.TakePhotoAction = (function() {
+    rov_actions_proto.TakePhotoAction = (function () {
 
         /**
          * Properties of a TakePhotoAction.
@@ -2233,9 +2233,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -2327,7 +2327,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return TakePhotoAction;
     })();
 
-    rov_actions_proto.StartVideoRecAction = (function() {
+    rov_actions_proto.StartVideoRecAction = (function () {
 
         /**
          * Properties of a StartVideoRecAction.
@@ -2408,9 +2408,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -2502,7 +2502,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return StartVideoRecAction;
     })();
 
-    rov_actions_proto.StopVideoRecAction = (function() {
+    rov_actions_proto.StopVideoRecAction = (function () {
 
         /**
          * Properties of a StopVideoRecAction.
@@ -2583,9 +2583,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -2677,7 +2677,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return StopVideoRecAction;
     })();
 
-    rov_actions_proto.ToggleLightsAction = (function() {
+    rov_actions_proto.ToggleLightsAction = (function () {
 
         /**
          * Properties of a ToggleLightsAction.
@@ -2758,9 +2758,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -2852,7 +2852,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ToggleLightsAction;
     })();
 
-    rov_actions_proto.ShutdownRovAction = (function() {
+    rov_actions_proto.ShutdownRovAction = (function () {
 
         /**
          * Properties of a ShutdownRovAction.
@@ -2933,9 +2933,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3027,7 +3027,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ShutdownRovAction;
     })();
 
-    rov_actions_proto.RebootRovAction = (function() {
+    rov_actions_proto.RebootRovAction = (function () {
 
         /**
          * Properties of a RebootRovAction.
@@ -3108,9 +3108,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3202,7 +3202,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RebootRovAction;
     })();
 
-    rov_actions_proto.EnableWifiAction = (function() {
+    rov_actions_proto.EnableWifiAction = (function () {
 
         /**
          * Properties of an EnableWifiAction.
@@ -3283,9 +3283,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3377,7 +3377,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return EnableWifiAction;
     })();
 
-    rov_actions_proto.DisableWifiAction = (function() {
+    rov_actions_proto.DisableWifiAction = (function () {
 
         /**
          * Properties of a DisableWifiAction.
@@ -3458,9 +3458,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3552,7 +3552,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return DisableWifiAction;
     })();
 
-    rov_actions_proto.RovStatusReportAction = (function() {
+    rov_actions_proto.RovStatusReportAction = (function () {
 
         /**
          * Properties of a RovStatusReportAction.
@@ -3633,9 +3633,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3727,7 +3727,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RovStatusReportAction;
     })();
 
-    rov_actions_proto.RestartRovServicesAction = (function() {
+    rov_actions_proto.RestartRovServicesAction = (function () {
 
         /**
          * Properties of a RestartRovServicesAction.
@@ -3808,9 +3808,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -3902,7 +3902,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RestartRovServicesAction;
     })();
 
-    rov_actions_proto.SendRovLogsAction = (function() {
+    rov_actions_proto.SendRovLogsAction = (function () {
 
         /**
          * Properties of a SendRovLogsAction.
@@ -3983,9 +3983,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -4077,7 +4077,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SendRovLogsAction;
     })();
 
-    rov_actions_proto.RefreshAllSensorsAction = (function() {
+    rov_actions_proto.RefreshAllSensorsAction = (function () {
 
         /**
          * Properties of a RefreshAllSensorsAction.
@@ -4158,9 +4158,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -4252,7 +4252,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RefreshAllSensorsAction;
     })();
 
-    rov_actions_proto.MoveClawAction = (function() {
+    rov_actions_proto.MoveClawAction = (function () {
 
         /**
          * Properties of a MoveClawAction.
@@ -4344,13 +4344,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Value = reader.float();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -4455,24 +4455,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return MoveClawAction;
     })();
 
-    rov_actions_proto.SimplepeerSignalAction = (function() {
+    rov_actions_proto.SimplePeerSignalAction = (function () {
 
         /**
-         * Properties of a SimplepeerSignalAction.
+         * Properties of a SimplePeerSignalAction.
          * @memberof rov_actions_proto
-         * @interface ISimplepeerSignalAction
-         * @property {string|null} [Message] SimplepeerSignalAction Message
+         * @interface ISimplePeerSignalAction
+         * @property {string|null} [Message] SimplePeerSignalAction Message
          */
 
         /**
-         * Constructs a new SimplepeerSignalAction.
+         * Constructs a new SimplePeerSignalAction.
          * @memberof rov_actions_proto
-         * @classdesc Represents a SimplepeerSignalAction.
-         * @implements ISimplepeerSignalAction
+         * @classdesc Represents a SimplePeerSignalAction.
+         * @implements ISimplePeerSignalAction
          * @constructor
-         * @param {rov_actions_proto.ISimplepeerSignalAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ISimplePeerSignalAction=} [properties] Properties to set
          */
-        function SimplepeerSignalAction(properties) {
+        function SimplePeerSignalAction(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -4480,35 +4480,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * SimplepeerSignalAction Message.
+         * SimplePeerSignalAction Message.
          * @member {string} Message
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @instance
          */
-        SimplepeerSignalAction.prototype.Message = "";
+        SimplePeerSignalAction.prototype.Message = "";
 
         /**
-         * Creates a new SimplepeerSignalAction instance using the specified properties.
+         * Creates a new SimplePeerSignalAction instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction instance
+         * @param {rov_actions_proto.ISimplePeerSignalAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplePeerSignalAction} SimplePeerSignalAction instance
          */
-        SimplepeerSignalAction.create = function create(properties) {
-            return new SimplepeerSignalAction(properties);
+        SimplePeerSignalAction.create = function create(properties) {
+            return new SimplePeerSignalAction(properties);
         };
 
         /**
-         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplePeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplePeerSignalAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerSignalAction} message SimplePeerSignalAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerSignalAction.encode = function encode(message, writer) {
+        SimplePeerSignalAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
@@ -4517,73 +4517,73 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
+         * Encodes the specified SimplePeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerSignalAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalAction} message SimplepeerSignalAction message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerSignalAction} message SimplePeerSignalAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerSignalAction.encodeDelimited = function encodeDelimited(message, writer) {
+        SimplePeerSignalAction.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
+         * Decodes a SimplePeerSignalAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplePeerSignalAction} SimplePeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerSignalAction.decode = function decode(reader, length) {
+        SimplePeerSignalAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerSignalAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplePeerSignalAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
         };
 
         /**
-         * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerSignalAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplePeerSignalAction} SimplePeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerSignalAction.decodeDelimited = function decodeDelimited(reader) {
+        SimplePeerSignalAction.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a SimplepeerSignalAction message.
+         * Verifies a SimplePeerSignalAction message.
          * @function verify
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        SimplepeerSignalAction.verify = function verify(message) {
+        SimplePeerSignalAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Message != null && message.hasOwnProperty("Message"))
@@ -4593,32 +4593,32 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Creates a SimplepeerSignalAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerSignalAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.SimplepeerSignalAction} SimplepeerSignalAction
+         * @returns {rov_actions_proto.SimplePeerSignalAction} SimplePeerSignalAction
          */
-        SimplepeerSignalAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.SimplepeerSignalAction)
+        SimplePeerSignalAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SimplePeerSignalAction)
                 return object;
-            let message = new $root.rov_actions_proto.SimplepeerSignalAction();
+            let message = new $root.rov_actions_proto.SimplePeerSignalAction();
             if (object.Message != null)
                 message.Message = String(object.Message);
             return message;
         };
 
         /**
-         * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
+         * Creates a plain object from a SimplePeerSignalAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
-         * @param {rov_actions_proto.SimplepeerSignalAction} message SimplepeerSignalAction
+         * @param {rov_actions_proto.SimplePeerSignalAction} message SimplePeerSignalAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        SimplepeerSignalAction.toObject = function toObject(message, options) {
+        SimplePeerSignalAction.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -4630,35 +4630,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Converts this SimplepeerSignalAction to JSON.
+         * Converts this SimplePeerSignalAction to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        SimplepeerSignalAction.prototype.toJSON = function toJSON() {
+        SimplePeerSignalAction.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for SimplepeerSignalAction
+         * Gets the default type url for SimplePeerSignalAction
          * @function getTypeUrl
-         * @memberof rov_actions_proto.SimplepeerSignalAction
+         * @memberof rov_actions_proto.SimplePeerSignalAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        SimplepeerSignalAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        SimplePeerSignalAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.SimplepeerSignalAction";
+            return typeUrlPrefix + "/rov_actions_proto.SimplePeerSignalAction";
         };
 
-        return SimplepeerSignalAction;
+        return SimplePeerSignalAction;
     })();
 
-    rov_actions_proto.DisarmAction = (function() {
+    rov_actions_proto.DisarmAction = (function () {
 
         /**
          * Properties of a DisarmAction.
@@ -4739,9 +4739,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -4833,7 +4833,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return DisarmAction;
     })();
 
-    rov_actions_proto.SetAutopilotModeAction = (function() {
+    rov_actions_proto.SetAutopilotModeAction = (function () {
 
         /**
          * Properties of a SetAutopilotModeAction.
@@ -4925,13 +4925,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.mode = reader.int32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -5036,7 +5036,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SetAutopilotModeAction;
     })();
 
-    rov_actions_proto.SetLivestreamingEnabledAction = (function() {
+    rov_actions_proto.SetLivestreamingEnabledAction = (function () {
 
         /**
          * Properties of a SetLivestreamingEnabledAction.
@@ -5128,13 +5128,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Enabled = reader.bool();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -5239,7 +5239,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SetLivestreamingEnabledAction;
     })();
 
-    rov_actions_proto.ActionBackendMetadata = (function() {
+    rov_actions_proto.ActionBackendMetadata = (function () {
 
         /**
          * Properties of an ActionBackendMetadata.
@@ -5342,17 +5342,17 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.FromUserId = reader.string();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.InternalWebpageEvt = reader.int32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -5390,14 +5390,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "FromUserId: string expected";
             if (message.InternalWebpageEvt != null && message.hasOwnProperty("InternalWebpageEvt"))
                 switch (message.InternalWebpageEvt) {
-                default:
-                    return "InternalWebpageEvt: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    break;
+                    default:
+                        return "InternalWebpageEvt: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
                 }
             return null;
         };
@@ -5417,32 +5417,32 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object.FromUserId != null)
                 message.FromUserId = String(object.FromUserId);
             switch (object.InternalWebpageEvt) {
-            default:
-                if (typeof object.InternalWebpageEvt === "number") {
-                    message.InternalWebpageEvt = object.InternalWebpageEvt;
+                default:
+                    if (typeof object.InternalWebpageEvt === "number") {
+                        message.InternalWebpageEvt = object.InternalWebpageEvt;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "Nothing":
-            case 0:
-                message.InternalWebpageEvt = 0;
-                break;
-            case "RovConnected":
-            case 1:
-                message.InternalWebpageEvt = 1;
-                break;
-            case "RovDisconnected":
-            case 2:
-                message.InternalWebpageEvt = 2;
-                break;
-            case "UserConnected":
-            case 3:
-                message.InternalWebpageEvt = 3;
-                break;
-            case "UserDisconnected":
-            case 4:
-                message.InternalWebpageEvt = 4;
-                break;
+                case "Nothing":
+                case 0:
+                    message.InternalWebpageEvt = 0;
+                    break;
+                case "RovConnected":
+                case 1:
+                    message.InternalWebpageEvt = 1;
+                    break;
+                case "RovDisconnected":
+                case 2:
+                    message.InternalWebpageEvt = 2;
+                    break;
+                case "UserConnected":
+                case 3:
+                    message.InternalWebpageEvt = 3;
+                    break;
+                case "UserDisconnected":
+                case 4:
+                    message.InternalWebpageEvt = 4;
+                    break;
             }
             return message;
         };
@@ -5500,7 +5500,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ActionBackendMetadata;
     })();
 
-    rov_actions_proto.RovAction = (function() {
+    rov_actions_proto.RovAction = (function () {
 
         /**
          * Properties of a RovAction.
@@ -5526,11 +5526,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.ISendRovLogsAction|null} [SendRovLogs] RovAction SendRovLogs
          * @property {rov_actions_proto.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
          * @property {rov_actions_proto.IMoveClawAction|null} [MoveClaw] RovAction MoveClaw
-         * @property {rov_actions_proto.ISimplepeerSignalAction|null} [SimplepeerSignal] RovAction SimplepeerSignal
+         * @property {rov_actions_proto.ISimplePeerSignalAction|null} [SimplePeerSignal] RovAction SimplePeerSignal
          * @property {rov_actions_proto.IDisarmAction|null} [Disarm] RovAction Disarm
          * @property {rov_actions_proto.ISetAutopilotModeAction|null} [SetAutopilotMode] RovAction SetAutopilotMode
          * @property {rov_actions_proto.ISetLivekitVideoOptionsAction|null} [SetLivekitVideoOptions] RovAction SetLivekitVideoOptions
-         * @property {rov_actions_proto.ISetSimplepeerVideoOptionsAction|null} [SetSimplepeerVideoOptions] RovAction SetSimplepeerVideoOptions
+         * @property {rov_actions_proto.ISetSimplePeerVideoOptionsAction|null} [SetSimplePeerVideoOptions] RovAction SetSimplePeerVideoOptions
          * @property {rov_actions_proto.ISetLivestreamingEnabledAction|null} [SetLivestreamingEnabled] RovAction SetLivestreamingEnabled
          */
 
@@ -5710,12 +5710,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.MoveClaw = null;
 
         /**
-         * RovAction SimplepeerSignal.
-         * @member {rov_actions_proto.ISimplepeerSignalAction|null|undefined} SimplepeerSignal
+         * RovAction SimplePeerSignal.
+         * @member {rov_actions_proto.ISimplePeerSignalAction|null|undefined} SimplePeerSignal
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.SimplepeerSignal = null;
+        RovAction.prototype.SimplePeerSignal = null;
 
         /**
          * RovAction Disarm.
@@ -5742,12 +5742,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.SetLivekitVideoOptions = null;
 
         /**
-         * RovAction SetSimplepeerVideoOptions.
-         * @member {rov_actions_proto.ISetSimplepeerVideoOptionsAction|null|undefined} SetSimplepeerVideoOptions
+         * RovAction SetSimplePeerVideoOptions.
+         * @member {rov_actions_proto.ISetSimplePeerVideoOptionsAction|null|undefined} SetSimplePeerVideoOptions
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.SetSimplepeerVideoOptions = null;
+        RovAction.prototype.SetSimplePeerVideoOptions = null;
 
         /**
          * RovAction SetLivestreamingEnabled.
@@ -5762,12 +5762,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
 
         /**
          * RovAction Body.
-         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToggleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"SendRovLogs"|"RefreshAllSensors"|"MoveClaw"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode"|"SetLivekitVideoOptions"|"SetSimplepeerVideoOptions"|"SetLivestreamingEnabled"|undefined} Body
+         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToggleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"SendRovLogs"|"RefreshAllSensors"|"MoveClaw"|"SimplePeerSignal"|"Disarm"|"SetAutopilotMode"|"SetLivekitVideoOptions"|"SetSimplePeerVideoOptions"|"SetLivestreamingEnabled"|undefined} Body
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
         Object.defineProperty(RovAction.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToggleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "SendRovLogs", "RefreshAllSensors", "MoveClaw", "SimplepeerSignal", "Disarm", "SetAutopilotMode", "SetLivekitVideoOptions", "SetSimplepeerVideoOptions", "SetLivestreamingEnabled"]),
+            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToggleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "SendRovLogs", "RefreshAllSensors", "MoveClaw", "SimplePeerSignal", "Disarm", "SetAutopilotMode", "SetLivekitVideoOptions", "SetSimplePeerVideoOptions", "SetLivestreamingEnabled"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -5835,16 +5835,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             if (message.MoveClaw != null && Object.hasOwnProperty.call(message, "MoveClaw"))
                 $root.rov_actions_proto.MoveClawAction.encode(message.MoveClaw, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
-            if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
-                $root.rov_actions_proto.SimplepeerSignalAction.encode(message.SimplepeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+            if (message.SimplePeerSignal != null && Object.hasOwnProperty.call(message, "SimplePeerSignal"))
+                $root.rov_actions_proto.SimplePeerSignalAction.encode(message.SimplePeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             if (message.Disarm != null && Object.hasOwnProperty.call(message, "Disarm"))
                 $root.rov_actions_proto.DisarmAction.encode(message.Disarm, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
             if (message.SetAutopilotMode != null && Object.hasOwnProperty.call(message, "SetAutopilotMode"))
                 $root.rov_actions_proto.SetAutopilotModeAction.encode(message.SetAutopilotMode, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
             if (message.SetLivekitVideoOptions != null && Object.hasOwnProperty.call(message, "SetLivekitVideoOptions"))
                 $root.rov_actions_proto.SetLivekitVideoOptionsAction.encode(message.SetLivekitVideoOptions, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
-            if (message.SetSimplepeerVideoOptions != null && Object.hasOwnProperty.call(message, "SetSimplepeerVideoOptions"))
-                $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.encode(message.SetSimplepeerVideoOptions, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+            if (message.SetSimplePeerVideoOptions != null && Object.hasOwnProperty.call(message, "SetSimplePeerVideoOptions"))
+                $root.rov_actions_proto.SetSimplePeerVideoOptionsAction.encode(message.SetSimplePeerVideoOptions, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
             if (message.SetLivestreamingEnabled != null && Object.hasOwnProperty.call(message, "SetLivestreamingEnabled"))
                 $root.rov_actions_proto.SetLivestreamingEnabledAction.encode(message.SetLivestreamingEnabled, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
             return writer;
@@ -5881,113 +5881,113 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.BackendMetadata = $root.rov_actions_proto.ActionBackendMetadata.decode(reader, reader.uint32());
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.ExchangeId = reader.int32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.Ping = $root.rov_actions_proto.PingAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.PasswordAttempt = $root.rov_actions_proto.PasswordAttemptAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 5: {
+                    case 5: {
                         message.AuthTokenAttempt = $root.rov_actions_proto.AuthTokenAttemptAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 6: {
+                    case 6: {
                         message.TakeControl = $root.rov_actions_proto.TakeControlAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 7: {
+                    case 7: {
                         message.Move = $root.rov_actions_proto.MoveAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 9: {
+                    case 9: {
                         message.TakePhoto = $root.rov_actions_proto.TakePhotoAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 10: {
+                    case 10: {
                         message.StartVideoRec = $root.rov_actions_proto.StartVideoRecAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 11: {
+                    case 11: {
                         message.StopVideoRec = $root.rov_actions_proto.StopVideoRecAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 12: {
+                    case 12: {
                         message.ToggleLights = $root.rov_actions_proto.ToggleLightsAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 13: {
+                    case 13: {
                         message.ShutdownRov = $root.rov_actions_proto.ShutdownRovAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 14: {
+                    case 14: {
                         message.RebootRov = $root.rov_actions_proto.RebootRovAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 15: {
+                    case 15: {
                         message.EnableWifi = $root.rov_actions_proto.EnableWifiAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 16: {
+                    case 16: {
                         message.DisableWifi = $root.rov_actions_proto.DisableWifiAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 17: {
+                    case 17: {
                         message.RovStatusReport = $root.rov_actions_proto.RovStatusReportAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 18: {
+                    case 18: {
                         message.RestartRovServices = $root.rov_actions_proto.RestartRovServicesAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 19: {
+                    case 19: {
                         message.SendRovLogs = $root.rov_actions_proto.SendRovLogsAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 20: {
+                    case 20: {
                         message.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 21: {
+                    case 21: {
                         message.MoveClaw = $root.rov_actions_proto.MoveClawAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 22: {
-                        message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.decode(reader, reader.uint32());
+                    case 22: {
+                        message.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 23: {
+                    case 23: {
                         message.Disarm = $root.rov_actions_proto.DisarmAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 24: {
+                    case 24: {
                         message.SetAutopilotMode = $root.rov_actions_proto.SetAutopilotModeAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 25: {
+                    case 25: {
                         message.SetLivekitVideoOptions = $root.rov_actions_proto.SetLivekitVideoOptionsAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 26: {
-                        message.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.decode(reader, reader.uint32());
+                    case 26: {
+                        message.SetSimplePeerVideoOptions = $root.rov_actions_proto.SetSimplePeerVideoOptionsAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 27: {
+                    case 27: {
                         message.SetLivestreamingEnabled = $root.rov_actions_proto.SetLivestreamingEnabledAction.decode(reader, reader.uint32());
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -6207,14 +6207,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "MoveClaw." + error;
                 }
             }
-            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+            if (message.SimplePeerSignal != null && message.hasOwnProperty("SimplePeerSignal")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.SimplepeerSignalAction.verify(message.SimplepeerSignal);
+                    let error = $root.rov_actions_proto.SimplePeerSignalAction.verify(message.SimplePeerSignal);
                     if (error)
-                        return "SimplepeerSignal." + error;
+                        return "SimplePeerSignal." + error;
                 }
             }
             if (message.Disarm != null && message.hasOwnProperty("Disarm")) {
@@ -6247,14 +6247,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "SetLivekitVideoOptions." + error;
                 }
             }
-            if (message.SetSimplepeerVideoOptions != null && message.hasOwnProperty("SetSimplepeerVideoOptions")) {
+            if (message.SetSimplePeerVideoOptions != null && message.hasOwnProperty("SetSimplePeerVideoOptions")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.verify(message.SetSimplepeerVideoOptions);
+                    let error = $root.rov_actions_proto.SetSimplePeerVideoOptionsAction.verify(message.SetSimplePeerVideoOptions);
                     if (error)
-                        return "SetSimplepeerVideoOptions." + error;
+                        return "SetSimplePeerVideoOptions." + error;
                 }
             }
             if (message.SetLivestreamingEnabled != null && message.hasOwnProperty("SetLivestreamingEnabled")) {
@@ -6379,10 +6379,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.MoveClaw: object expected");
                 message.MoveClaw = $root.rov_actions_proto.MoveClawAction.fromObject(object.MoveClaw);
             }
-            if (object.SimplepeerSignal != null) {
-                if (typeof object.SimplepeerSignal !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.SimplepeerSignal: object expected");
-                message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.fromObject(object.SimplepeerSignal);
+            if (object.SimplePeerSignal != null) {
+                if (typeof object.SimplePeerSignal !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SimplePeerSignal: object expected");
+                message.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalAction.fromObject(object.SimplePeerSignal);
             }
             if (object.Disarm != null) {
                 if (typeof object.Disarm !== "object")
@@ -6399,10 +6399,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.SetLivekitVideoOptions: object expected");
                 message.SetLivekitVideoOptions = $root.rov_actions_proto.SetLivekitVideoOptionsAction.fromObject(object.SetLivekitVideoOptions);
             }
-            if (object.SetSimplepeerVideoOptions != null) {
-                if (typeof object.SetSimplepeerVideoOptions !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.SetSimplepeerVideoOptions: object expected");
-                message.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.fromObject(object.SetSimplepeerVideoOptions);
+            if (object.SetSimplePeerVideoOptions != null) {
+                if (typeof object.SetSimplePeerVideoOptions !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SetSimplePeerVideoOptions: object expected");
+                message.SetSimplePeerVideoOptions = $root.rov_actions_proto.SetSimplePeerVideoOptionsAction.fromObject(object.SetSimplePeerVideoOptions);
             }
             if (object.SetLivestreamingEnabled != null) {
                 if (typeof object.SetLivestreamingEnabled !== "object")
@@ -6523,10 +6523,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "MoveClaw";
             }
-            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
-                object.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.toObject(message.SimplepeerSignal, options);
+            if (message.SimplePeerSignal != null && message.hasOwnProperty("SimplePeerSignal")) {
+                object.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalAction.toObject(message.SimplePeerSignal, options);
                 if (options.oneofs)
-                    object.Body = "SimplepeerSignal";
+                    object.Body = "SimplePeerSignal";
             }
             if (message.Disarm != null && message.hasOwnProperty("Disarm")) {
                 object.Disarm = $root.rov_actions_proto.DisarmAction.toObject(message.Disarm, options);
@@ -6543,10 +6543,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "SetLivekitVideoOptions";
             }
-            if (message.SetSimplepeerVideoOptions != null && message.hasOwnProperty("SetSimplepeerVideoOptions")) {
-                object.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.toObject(message.SetSimplepeerVideoOptions, options);
+            if (message.SetSimplePeerVideoOptions != null && message.hasOwnProperty("SetSimplePeerVideoOptions")) {
+                object.SetSimplePeerVideoOptions = $root.rov_actions_proto.SetSimplePeerVideoOptionsAction.toObject(message.SetSimplePeerVideoOptions, options);
                 if (options.oneofs)
-                    object.Body = "SetSimplepeerVideoOptions";
+                    object.Body = "SetSimplePeerVideoOptions";
             }
             if (message.SetLivestreamingEnabled != null && message.hasOwnProperty("SetLivestreamingEnabled")) {
                 object.SetLivestreamingEnabled = $root.rov_actions_proto.SetLivestreamingEnabledAction.toObject(message.SetLivestreamingEnabled, options);
@@ -6585,7 +6585,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RovAction;
     })();
 
-    rov_actions_proto.DoneResponse = (function() {
+    rov_actions_proto.DoneResponse = (function () {
 
         /**
          * Properties of a DoneResponse.
@@ -6677,13 +6677,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -6788,7 +6788,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return DoneResponse;
     })();
 
-    rov_actions_proto.ErrorResponse = (function() {
+    rov_actions_proto.ErrorResponse = (function () {
 
         /**
          * Properties of an ErrorResponse.
@@ -6880,13 +6880,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -6991,7 +6991,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ErrorResponse;
     })();
 
-    rov_actions_proto.PongResponse = (function() {
+    rov_actions_proto.PongResponse = (function () {
 
         /**
          * Properties of a PongResponse.
@@ -7021,7 +7021,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto.PongResponse
          * @instance
          */
-        PongResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        PongResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
 
         /**
          * Creates a new PongResponse instance using the specified properties.
@@ -7083,13 +7083,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Time = reader.int64();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -7208,7 +7208,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PongResponse;
     })();
 
-    rov_actions_proto.Measurement = (function() {
+    rov_actions_proto.Measurement = (function () {
 
         /**
          * Properties of a Measurement.
@@ -7311,17 +7311,17 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.MeasurementType = reader.int32();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Value = reader.float();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -7356,21 +7356,21 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 return "object expected";
             if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
                 switch (message.MeasurementType) {
-                default:
-                    return "MeasurementType: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                    break;
+                    default:
+                        return "MeasurementType: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                        break;
                 }
             if (message.Value != null && message.hasOwnProperty("Value"))
                 if (typeof message.Value !== "number")
@@ -7391,60 +7391,60 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 return object;
             let message = new $root.rov_actions_proto.Measurement();
             switch (object.MeasurementType) {
-            default:
-                if (typeof object.MeasurementType === "number") {
-                    message.MeasurementType = object.MeasurementType;
+                default:
+                    if (typeof object.MeasurementType === "number") {
+                        message.MeasurementType = object.MeasurementType;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "depth_meters":
-            case 0:
-                message.MeasurementType = 0;
-                break;
-            case "water_temp_celsius":
-            case 1:
-                message.MeasurementType = 1;
-                break;
-            case "pressure_mbar":
-            case 2:
-                message.MeasurementType = 2;
-                break;
-            case "yaw_degrees":
-            case 3:
-                message.MeasurementType = 3;
-                break;
-            case "pitch_degrees":
-            case 4:
-                message.MeasurementType = 4;
-                break;
-            case "roll_degrees":
-            case 5:
-                message.MeasurementType = 5;
-                break;
-            case "x_acceleration_m_s2":
-            case 6:
-                message.MeasurementType = 6;
-                break;
-            case "y_acceleration_m_s2":
-            case 7:
-                message.MeasurementType = 7;
-                break;
-            case "z_acceleration_m_s2":
-            case 8:
-                message.MeasurementType = 8;
-                break;
-            case "battery_voltage":
-            case 9:
-                message.MeasurementType = 9;
-                break;
-            case "battery_current_amps":
-            case 10:
-                message.MeasurementType = 10;
-                break;
-            case "internal_temp_celsius":
-            case 11:
-                message.MeasurementType = 11;
-                break;
+                case "depth_meters":
+                case 0:
+                    message.MeasurementType = 0;
+                    break;
+                case "water_temp_celsius":
+                case 1:
+                    message.MeasurementType = 1;
+                    break;
+                case "pressure_mbar":
+                case 2:
+                    message.MeasurementType = 2;
+                    break;
+                case "yaw_degrees":
+                case 3:
+                    message.MeasurementType = 3;
+                    break;
+                case "pitch_degrees":
+                case 4:
+                    message.MeasurementType = 4;
+                    break;
+                case "roll_degrees":
+                case 5:
+                    message.MeasurementType = 5;
+                    break;
+                case "x_acceleration_m_s2":
+                case 6:
+                    message.MeasurementType = 6;
+                    break;
+                case "y_acceleration_m_s2":
+                case 7:
+                    message.MeasurementType = 7;
+                    break;
+                case "z_acceleration_m_s2":
+                case 8:
+                    message.MeasurementType = 8;
+                    break;
+                case "battery_voltage":
+                case 9:
+                    message.MeasurementType = 9;
+                    break;
+                case "battery_current_amps":
+                case 10:
+                    message.MeasurementType = 10;
+                    break;
+                case "internal_temp_celsius":
+                case 11:
+                    message.MeasurementType = 11;
+                    break;
             }
             if (object.Value != null)
                 message.Value = Number(object.Value);
@@ -7504,7 +7504,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return Measurement;
     })();
 
-    rov_actions_proto.SensorUpdatesResponse = (function() {
+    rov_actions_proto.SensorUpdatesResponse = (function () {
 
         /**
          * Properties of a SensorUpdatesResponse.
@@ -7598,15 +7598,15 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         if (!(message.MeasurementUpdates && message.MeasurementUpdates.length))
                             message.MeasurementUpdates = [];
                         message.MeasurementUpdates.push($root.rov_actions_proto.Measurement.decode(reader, reader.uint32()));
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -7728,7 +7728,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SensorUpdatesResponse;
     })();
 
-    rov_actions_proto.PasswordRequiredResponse = (function() {
+    rov_actions_proto.PasswordRequiredResponse = (function () {
 
         /**
          * Properties of a PasswordRequiredResponse.
@@ -7820,13 +7820,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.RovId = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -7931,7 +7931,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PasswordRequiredResponse;
     })();
 
-    rov_actions_proto.PasswordAcceptedResponse = (function() {
+    rov_actions_proto.PasswordAcceptedResponse = (function () {
 
         /**
          * Properties of a PasswordAcceptedResponse.
@@ -8023,13 +8023,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.AuthToken = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -8134,7 +8134,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PasswordAcceptedResponse;
     })();
 
-    rov_actions_proto.PasswordInvalidResponse = (function() {
+    rov_actions_proto.PasswordInvalidResponse = (function () {
 
         /**
          * Properties of a PasswordInvalidResponse.
@@ -8215,9 +8215,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -8309,7 +8309,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PasswordInvalidResponse;
     })();
 
-    rov_actions_proto.PilotChangedResponse = (function() {
+    rov_actions_proto.PilotChangedResponse = (function () {
 
         /**
          * Properties of a PilotChangedResponse.
@@ -8401,13 +8401,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.PilotIdentity = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -8512,7 +8512,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PilotChangedResponse;
     })();
 
-    rov_actions_proto.ClientConnectedResponse = (function() {
+    rov_actions_proto.ClientConnectedResponse = (function () {
 
         /**
          * Properties of a ClientConnectedResponse.
@@ -8604,13 +8604,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.ClientPeerId = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -8715,7 +8715,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ClientConnectedResponse;
     })();
 
-    rov_actions_proto.ClientDisconnectedResponse = (function() {
+    rov_actions_proto.ClientDisconnectedResponse = (function () {
 
         /**
          * Properties of a ClientDisconnectedResponse.
@@ -8807,13 +8807,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.ClientPeerId = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -8918,7 +8918,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ClientDisconnectedResponse;
     })();
 
-    rov_actions_proto.HeartbeatResponse = (function() {
+    rov_actions_proto.HeartbeatResponse = (function () {
 
         /**
          * Properties of a HeartbeatResponse.
@@ -8948,7 +8948,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @memberof rov_actions_proto.HeartbeatResponse
          * @instance
          */
-        HeartbeatResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        HeartbeatResponse.prototype.Time = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
 
         /**
          * Creates a new HeartbeatResponse instance using the specified properties.
@@ -9010,13 +9010,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Time = reader.int64();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -9135,7 +9135,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return HeartbeatResponse;
     })();
 
-    rov_actions_proto.ContinuedOutputResponse = (function() {
+    rov_actions_proto.ContinuedOutputResponse = (function () {
 
         /**
          * Properties of a ContinuedOutputResponse.
@@ -9227,13 +9227,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -9338,7 +9338,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ContinuedOutputResponse;
     })();
 
-    rov_actions_proto.MavlinkResponse = (function() {
+    rov_actions_proto.MavlinkResponse = (function () {
 
         /**
          * Properties of a MavlinkResponse.
@@ -9430,13 +9430,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.bytes();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -9550,24 +9550,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return MavlinkResponse;
     })();
 
-    rov_actions_proto.SimplepeerSignalResponse = (function() {
+    rov_actions_proto.SimplePeerSignalResponse = (function () {
 
         /**
-         * Properties of a SimplepeerSignalResponse.
+         * Properties of a SimplePeerSignalResponse.
          * @memberof rov_actions_proto
-         * @interface ISimplepeerSignalResponse
-         * @property {string|null} [Message] SimplepeerSignalResponse Message
+         * @interface ISimplePeerSignalResponse
+         * @property {string|null} [Message] SimplePeerSignalResponse Message
          */
 
         /**
-         * Constructs a new SimplepeerSignalResponse.
+         * Constructs a new SimplePeerSignalResponse.
          * @memberof rov_actions_proto
-         * @classdesc Represents a SimplepeerSignalResponse.
-         * @implements ISimplepeerSignalResponse
+         * @classdesc Represents a SimplePeerSignalResponse.
+         * @implements ISimplePeerSignalResponse
          * @constructor
-         * @param {rov_actions_proto.ISimplepeerSignalResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.ISimplePeerSignalResponse=} [properties] Properties to set
          */
-        function SimplepeerSignalResponse(properties) {
+        function SimplePeerSignalResponse(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -9575,35 +9575,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * SimplepeerSignalResponse Message.
+         * SimplePeerSignalResponse Message.
          * @member {string} Message
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @instance
          */
-        SimplepeerSignalResponse.prototype.Message = "";
+        SimplePeerSignalResponse.prototype.Message = "";
 
         /**
-         * Creates a new SimplepeerSignalResponse instance using the specified properties.
+         * Creates a new SimplePeerSignalResponse instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalResponse=} [properties] Properties to set
-         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse instance
+         * @param {rov_actions_proto.ISimplePeerSignalResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplePeerSignalResponse} SimplePeerSignalResponse instance
          */
-        SimplepeerSignalResponse.create = function create(properties) {
-            return new SimplepeerSignalResponse(properties);
+        SimplePeerSignalResponse.create = function create(properties) {
+            return new SimplePeerSignalResponse(properties);
         };
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplePeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplePeerSignalResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerSignalResponse} message SimplePeerSignalResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerSignalResponse.encode = function encode(message, writer) {
+        SimplePeerSignalResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
@@ -9612,73 +9612,73 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
+         * Encodes the specified SimplePeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerSignalResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerSignalResponse} message SimplepeerSignalResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerSignalResponse} message SimplePeerSignalResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerSignalResponse.encodeDelimited = function encodeDelimited(message, writer) {
+        SimplePeerSignalResponse.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
+         * Decodes a SimplePeerSignalResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplePeerSignalResponse} SimplePeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerSignalResponse.decode = function decode(reader, length) {
+        SimplePeerSignalResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerSignalResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplePeerSignalResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
         };
 
         /**
-         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerSignalResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplePeerSignalResponse} SimplePeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerSignalResponse.decodeDelimited = function decodeDelimited(reader) {
+        SimplePeerSignalResponse.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a SimplepeerSignalResponse message.
+         * Verifies a SimplePeerSignalResponse message.
          * @function verify
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        SimplepeerSignalResponse.verify = function verify(message) {
+        SimplePeerSignalResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Message != null && message.hasOwnProperty("Message"))
@@ -9688,32 +9688,32 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Creates a SimplepeerSignalResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerSignalResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.SimplepeerSignalResponse} SimplepeerSignalResponse
+         * @returns {rov_actions_proto.SimplePeerSignalResponse} SimplePeerSignalResponse
          */
-        SimplepeerSignalResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.SimplepeerSignalResponse)
+        SimplePeerSignalResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SimplePeerSignalResponse)
                 return object;
-            let message = new $root.rov_actions_proto.SimplepeerSignalResponse();
+            let message = new $root.rov_actions_proto.SimplePeerSignalResponse();
             if (object.Message != null)
                 message.Message = String(object.Message);
             return message;
         };
 
         /**
-         * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
+         * Creates a plain object from a SimplePeerSignalResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
-         * @param {rov_actions_proto.SimplepeerSignalResponse} message SimplepeerSignalResponse
+         * @param {rov_actions_proto.SimplePeerSignalResponse} message SimplePeerSignalResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        SimplepeerSignalResponse.toObject = function toObject(message, options) {
+        SimplePeerSignalResponse.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -9725,35 +9725,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Converts this SimplepeerSignalResponse to JSON.
+         * Converts this SimplePeerSignalResponse to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        SimplepeerSignalResponse.prototype.toJSON = function toJSON() {
+        SimplePeerSignalResponse.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for SimplepeerSignalResponse
+         * Gets the default type url for SimplePeerSignalResponse
          * @function getTypeUrl
-         * @memberof rov_actions_proto.SimplepeerSignalResponse
+         * @memberof rov_actions_proto.SimplePeerSignalResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        SimplepeerSignalResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        SimplePeerSignalResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.SimplepeerSignalResponse";
+            return typeUrlPrefix + "/rov_actions_proto.SimplePeerSignalResponse";
         };
 
-        return SimplepeerSignalResponse;
+        return SimplePeerSignalResponse;
     })();
 
-    rov_actions_proto.SystemMonitorResponse = (function() {
+    rov_actions_proto.SystemMonitorResponse = (function () {
 
         /**
          * Properties of a SystemMonitorResponse.
@@ -9891,31 +9891,31 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.CpuTemp = reader.float();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.CpuUsage = reader.float();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.MemoryUsage = reader.float();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.DiskUsage = reader.float();
                         break;
                     }
-                case 5: {
+                    case 5: {
                         if (!(message.Warnings && message.Warnings.length))
                             message.Warnings = [];
                         message.Warnings.push(reader.string());
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -10066,7 +10066,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SystemMonitorResponse;
     })();
 
-    rov_actions_proto.LogMessageResponse = (function() {
+    rov_actions_proto.LogMessageResponse = (function () {
 
         /**
          * Properties of a LogMessageResponse.
@@ -10169,17 +10169,17 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Message = reader.string();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Level = reader.int32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -10217,14 +10217,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "Message: string expected";
             if (message.Level != null && message.hasOwnProperty("Level"))
                 switch (message.Level) {
-                default:
-                    return "Level: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    break;
+                    default:
+                        return "Level: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
                 }
             return null;
         };
@@ -10244,32 +10244,32 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object.Message != null)
                 message.Message = String(object.Message);
             switch (object.Level) {
-            default:
-                if (typeof object.Level === "number") {
-                    message.Level = object.Level;
+                default:
+                    if (typeof object.Level === "number") {
+                        message.Level = object.Level;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "Debug":
-            case 0:
-                message.Level = 0;
-                break;
-            case "Info":
-            case 1:
-                message.Level = 1;
-                break;
-            case "Warning":
-            case 2:
-                message.Level = 2;
-                break;
-            case "Error":
-            case 3:
-                message.Level = 3;
-                break;
-            case "Critical":
-            case 4:
-                message.Level = 4;
-                break;
+                case "Debug":
+                case 0:
+                    message.Level = 0;
+                    break;
+                case "Info":
+                case 1:
+                    message.Level = 1;
+                    break;
+                case "Warning":
+                case 2:
+                    message.Level = 2;
+                    break;
+                case "Error":
+                case 3:
+                    message.Level = 3;
+                    break;
+                case "Critical":
+                case 4:
+                    message.Level = 4;
+                    break;
             }
             return message;
         };
@@ -10327,7 +10327,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return LogMessageResponse;
     })();
 
-    rov_actions_proto.LivekitVideoStatsResponse = (function() {
+    rov_actions_proto.LivekitVideoStatsResponse = (function () {
 
         /**
          * Properties of a LivekitVideoStatsResponse.
@@ -10476,35 +10476,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Enabled = reader.bool();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Codec = reader.int32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.AllowBackupCodec = reader.bool();
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
-                case 5: {
+                    case 5: {
                         if (!(message.SimulcastLayers && message.SimulcastLayers.length))
                             message.SimulcastLayers = [];
                         message.SimulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
                         break;
                     }
-                case 6: {
+                    case 6: {
                         message.RtcSenderStatsJson = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -10542,13 +10542,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "Enabled: boolean expected";
             if (message.Codec != null && message.hasOwnProperty("Codec"))
                 switch (message.Codec) {
-                default:
-                    return "Codec: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    break;
+                    default:
+                        return "Codec: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
                 }
             if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
                 if (typeof message.AllowBackupCodec !== "boolean")
@@ -10588,28 +10588,28 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object.Enabled != null)
                 message.Enabled = Boolean(object.Enabled);
             switch (object.Codec) {
-            default:
-                if (typeof object.Codec === "number") {
-                    message.Codec = object.Codec;
+                default:
+                    if (typeof object.Codec === "number") {
+                        message.Codec = object.Codec;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "H264":
-            case 0:
-                message.Codec = 0;
-                break;
-            case "VP8":
-            case 1:
-                message.Codec = 1;
-                break;
-            case "VP9":
-            case 2:
-                message.Codec = 2;
-                break;
-            case "AV1":
-            case 3:
-                message.Codec = 3;
-                break;
+                case "H264":
+                case 0:
+                    message.Codec = 0;
+                    break;
+                case "VP8":
+                case 1:
+                    message.Codec = 1;
+                    break;
+                case "VP9":
+                case 2:
+                    message.Codec = 2;
+                    break;
+                case "AV1":
+                case 3:
+                    message.Codec = 3;
+                    break;
             }
             if (object.AllowBackupCodec != null)
                 message.AllowBackupCodec = Boolean(object.AllowBackupCodec);
@@ -10702,27 +10702,27 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return LivekitVideoStatsResponse;
     })();
 
-    rov_actions_proto.SimplepeerVideoStatsResponse = (function() {
+    rov_actions_proto.SimplePeerVideoStatsResponse = (function () {
 
         /**
-         * Properties of a SimplepeerVideoStatsResponse.
+         * Properties of a SimplePeerVideoStatsResponse.
          * @memberof rov_actions_proto
-         * @interface ISimplepeerVideoStatsResponse
-         * @property {boolean|null} [Enabled] SimplepeerVideoStatsResponse Enabled
-         * @property {rov_actions_proto.VideoCodec|null} [Codec] SimplepeerVideoStatsResponse Codec
-         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SimplepeerVideoStatsResponse BaseStream
-         * @property {string|null} [RtcSenderStatsJson] SimplepeerVideoStatsResponse RtcSenderStatsJson
+         * @interface ISimplePeerVideoStatsResponse
+         * @property {boolean|null} [Enabled] SimplePeerVideoStatsResponse Enabled
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] SimplePeerVideoStatsResponse Codec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SimplePeerVideoStatsResponse BaseStream
+         * @property {string|null} [RtcSenderStatsJson] SimplePeerVideoStatsResponse RtcSenderStatsJson
          */
 
         /**
-         * Constructs a new SimplepeerVideoStatsResponse.
+         * Constructs a new SimplePeerVideoStatsResponse.
          * @memberof rov_actions_proto
-         * @classdesc Represents a SimplepeerVideoStatsResponse.
-         * @implements ISimplepeerVideoStatsResponse
+         * @classdesc Represents a SimplePeerVideoStatsResponse.
+         * @implements ISimplePeerVideoStatsResponse
          * @constructor
-         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.ISimplePeerVideoStatsResponse=} [properties] Properties to set
          */
-        function SimplepeerVideoStatsResponse(properties) {
+        function SimplePeerVideoStatsResponse(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -10730,59 +10730,59 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * SimplepeerVideoStatsResponse Enabled.
+         * SimplePeerVideoStatsResponse Enabled.
          * @member {boolean} Enabled
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplepeerVideoStatsResponse.prototype.Enabled = false;
+        SimplePeerVideoStatsResponse.prototype.Enabled = false;
 
         /**
-         * SimplepeerVideoStatsResponse Codec.
+         * SimplePeerVideoStatsResponse Codec.
          * @member {rov_actions_proto.VideoCodec} Codec
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplepeerVideoStatsResponse.prototype.Codec = 0;
+        SimplePeerVideoStatsResponse.prototype.Codec = 0;
 
         /**
-         * SimplepeerVideoStatsResponse BaseStream.
+         * SimplePeerVideoStatsResponse BaseStream.
          * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplepeerVideoStatsResponse.prototype.BaseStream = null;
+        SimplePeerVideoStatsResponse.prototype.BaseStream = null;
 
         /**
-         * SimplepeerVideoStatsResponse RtcSenderStatsJson.
+         * SimplePeerVideoStatsResponse RtcSenderStatsJson.
          * @member {string} RtcSenderStatsJson
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplepeerVideoStatsResponse.prototype.RtcSenderStatsJson = "";
+        SimplePeerVideoStatsResponse.prototype.RtcSenderStatsJson = "";
 
         /**
-         * Creates a new SimplepeerVideoStatsResponse instance using the specified properties.
+         * Creates a new SimplePeerVideoStatsResponse instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse=} [properties] Properties to set
-         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse instance
+         * @param {rov_actions_proto.ISimplePeerVideoStatsResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplePeerVideoStatsResponse} SimplePeerVideoStatsResponse instance
          */
-        SimplepeerVideoStatsResponse.create = function create(properties) {
-            return new SimplepeerVideoStatsResponse(properties);
+        SimplePeerVideoStatsResponse.create = function create(properties) {
+            return new SimplePeerVideoStatsResponse(properties);
         };
 
         /**
-         * Encodes the specified SimplepeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * Encodes the specified SimplePeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplePeerVideoStatsResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerVideoStatsResponse} message SimplePeerVideoStatsResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerVideoStatsResponse.encode = function encode(message, writer) {
+        SimplePeerVideoStatsResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
@@ -10797,85 +10797,85 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Encodes the specified SimplepeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * Encodes the specified SimplePeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerVideoStatsResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
-         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param {rov_actions_proto.ISimplePeerVideoStatsResponse} message SimplePeerVideoStatsResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        SimplepeerVideoStatsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+        SimplePeerVideoStatsResponse.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer.
+         * Decodes a SimplePeerVideoStatsResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         * @returns {rov_actions_proto.SimplePeerVideoStatsResponse} SimplePeerVideoStatsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerVideoStatsResponse.decode = function decode(reader, length) {
+        SimplePeerVideoStatsResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerVideoStatsResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplePeerVideoStatsResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.Enabled = reader.bool();
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.Codec = reader.int32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.RtcSenderStatsJson = reader.string();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
         };
 
         /**
-         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerVideoStatsResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         * @returns {rov_actions_proto.SimplePeerVideoStatsResponse} SimplePeerVideoStatsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        SimplepeerVideoStatsResponse.decodeDelimited = function decodeDelimited(reader) {
+        SimplePeerVideoStatsResponse.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a SimplepeerVideoStatsResponse message.
+         * Verifies a SimplePeerVideoStatsResponse message.
          * @function verify
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        SimplepeerVideoStatsResponse.verify = function verify(message) {
+        SimplePeerVideoStatsResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             if (message.Enabled != null && message.hasOwnProperty("Enabled"))
@@ -10883,13 +10883,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "Enabled: boolean expected";
             if (message.Codec != null && message.hasOwnProperty("Codec"))
                 switch (message.Codec) {
-                default:
-                    return "Codec: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    break;
+                    default:
+                        return "Codec: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
                 }
             if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
                 let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
@@ -10903,46 +10903,46 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Creates a SimplepeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         * @returns {rov_actions_proto.SimplePeerVideoStatsResponse} SimplePeerVideoStatsResponse
          */
-        SimplepeerVideoStatsResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.SimplepeerVideoStatsResponse)
+        SimplePeerVideoStatsResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SimplePeerVideoStatsResponse)
                 return object;
-            let message = new $root.rov_actions_proto.SimplepeerVideoStatsResponse();
+            let message = new $root.rov_actions_proto.SimplePeerVideoStatsResponse();
             if (object.Enabled != null)
                 message.Enabled = Boolean(object.Enabled);
             switch (object.Codec) {
-            default:
-                if (typeof object.Codec === "number") {
-                    message.Codec = object.Codec;
+                default:
+                    if (typeof object.Codec === "number") {
+                        message.Codec = object.Codec;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "H264":
-            case 0:
-                message.Codec = 0;
-                break;
-            case "VP8":
-            case 1:
-                message.Codec = 1;
-                break;
-            case "VP9":
-            case 2:
-                message.Codec = 2;
-                break;
-            case "AV1":
-            case 3:
-                message.Codec = 3;
-                break;
+                case "H264":
+                case 0:
+                    message.Codec = 0;
+                    break;
+                case "VP8":
+                case 1:
+                    message.Codec = 1;
+                    break;
+                case "VP9":
+                case 2:
+                    message.Codec = 2;
+                    break;
+                case "AV1":
+                case 3:
+                    message.Codec = 3;
+                    break;
             }
             if (object.BaseStream != null) {
                 if (typeof object.BaseStream !== "object")
-                    throw TypeError(".rov_actions_proto.SimplepeerVideoStatsResponse.BaseStream: object expected");
+                    throw TypeError(".rov_actions_proto.SimplePeerVideoStatsResponse.BaseStream: object expected");
                 message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
             }
             if (object.RtcSenderStatsJson != null)
@@ -10951,15 +10951,15 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Creates a plain object from a SimplepeerVideoStatsResponse message. Also converts values to other types if specified.
+         * Creates a plain object from a SimplePeerVideoStatsResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
-         * @param {rov_actions_proto.SimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse
+         * @param {rov_actions_proto.SimplePeerVideoStatsResponse} message SimplePeerVideoStatsResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        SimplepeerVideoStatsResponse.toObject = function toObject(message, options) {
+        SimplePeerVideoStatsResponse.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
@@ -10981,35 +10981,35 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Converts this SimplepeerVideoStatsResponse to JSON.
+         * Converts this SimplePeerVideoStatsResponse to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        SimplepeerVideoStatsResponse.prototype.toJSON = function toJSON() {
+        SimplePeerVideoStatsResponse.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for SimplepeerVideoStatsResponse
+         * Gets the default type url for SimplePeerVideoStatsResponse
          * @function getTypeUrl
-         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        SimplepeerVideoStatsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        SimplePeerVideoStatsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.SimplepeerVideoStatsResponse";
+            return typeUrlPrefix + "/rov_actions_proto.SimplePeerVideoStatsResponse";
         };
 
-        return SimplepeerVideoStatsResponse;
+        return SimplePeerVideoStatsResponse;
     })();
 
-    rov_actions_proto.ResponseBackendMetadata = (function() {
+    rov_actions_proto.ResponseBackendMetadata = (function () {
 
         /**
          * Properties of a ResponseBackendMetadata.
@@ -11114,19 +11114,19 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         if (!(message.TargetUserIds && message.TargetUserIds.length))
                             message.TargetUserIds = [];
                         message.TargetUserIds.push(reader.string());
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.TransportMethod = reader.int32();
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -11168,13 +11168,13 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             }
             if (message.TransportMethod != null && message.hasOwnProperty("TransportMethod"))
                 switch (message.TransportMethod) {
-                default:
-                    return "TransportMethod: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                    break;
+                    default:
+                        return "TransportMethod: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
                 }
             return null;
         };
@@ -11199,28 +11199,28 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     message.TargetUserIds[i] = String(object.TargetUserIds[i]);
             }
             switch (object.TransportMethod) {
-            default:
-                if (typeof object.TransportMethod === "number") {
-                    message.TransportMethod = object.TransportMethod;
+                default:
+                    if (typeof object.TransportMethod === "number") {
+                        message.TransportMethod = object.TransportMethod;
+                        break;
+                    }
                     break;
-                }
-                break;
-            case "LivekitReliable":
-            case 0:
-                message.TransportMethod = 0;
-                break;
-            case "LivekitUnreliable":
-            case 1:
-                message.TransportMethod = 1;
-                break;
-            case "DirectReliable":
-            case 2:
-                message.TransportMethod = 2;
-                break;
-            case "DirectUnreliable":
-            case 3:
-                message.TransportMethod = 3;
-                break;
+                case "LivekitReliable":
+                case 0:
+                    message.TransportMethod = 0;
+                    break;
+                case "LivekitUnreliable":
+                case 1:
+                    message.TransportMethod = 1;
+                    break;
+                case "DirectReliable":
+                case 2:
+                    message.TransportMethod = 2;
+                    break;
+                case "DirectUnreliable":
+                case 3:
+                    message.TransportMethod = 3;
+                    break;
             }
             return message;
         };
@@ -11281,7 +11281,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return ResponseBackendMetadata;
     })();
 
-    rov_actions_proto.RovResponse = (function() {
+    rov_actions_proto.RovResponse = (function () {
 
         /**
          * Properties of a RovResponse.
@@ -11302,11 +11302,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
          * @property {rov_actions_proto.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
          * @property {rov_actions_proto.IMavlinkResponse|null} [Mavlink] RovResponse Mavlink
-         * @property {rov_actions_proto.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
+         * @property {rov_actions_proto.ISimplePeerSignalResponse|null} [SimplePeerSignal] RovResponse SimplePeerSignal
          * @property {rov_actions_proto.ISystemMonitorResponse|null} [SystemMonitor] RovResponse SystemMonitor
          * @property {rov_actions_proto.ILogMessageResponse|null} [LogMessage] RovResponse LogMessage
          * @property {rov_actions_proto.ILivekitVideoStatsResponse|null} [LivekitVideoStats] RovResponse LivekitVideoStats
-         * @property {rov_actions_proto.ISimplepeerVideoStatsResponse|null} [SimplepeerVideoStats] RovResponse SimplepeerVideoStats
+         * @property {rov_actions_proto.ISimplePeerVideoStatsResponse|null} [SimplePeerVideoStats] RovResponse SimplePeerVideoStats
          */
 
         /**
@@ -11445,12 +11445,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovResponse.prototype.Mavlink = null;
 
         /**
-         * RovResponse SimplepeerSignal.
-         * @member {rov_actions_proto.ISimplepeerSignalResponse|null|undefined} SimplepeerSignal
+         * RovResponse SimplePeerSignal.
+         * @member {rov_actions_proto.ISimplePeerSignalResponse|null|undefined} SimplePeerSignal
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
-        RovResponse.prototype.SimplepeerSignal = null;
+        RovResponse.prototype.SimplePeerSignal = null;
 
         /**
          * RovResponse SystemMonitor.
@@ -11477,24 +11477,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovResponse.prototype.LivekitVideoStats = null;
 
         /**
-         * RovResponse SimplepeerVideoStats.
-         * @member {rov_actions_proto.ISimplepeerVideoStatsResponse|null|undefined} SimplepeerVideoStats
+         * RovResponse SimplePeerVideoStats.
+         * @member {rov_actions_proto.ISimplePeerVideoStatsResponse|null|undefined} SimplePeerVideoStats
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
-        RovResponse.prototype.SimplepeerVideoStats = null;
+        RovResponse.prototype.SimplePeerVideoStats = null;
 
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovResponse Body.
-         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"PilotChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|"LivekitVideoStats"|"SimplepeerVideoStats"|undefined} Body
+         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"PilotChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplePeerSignal"|"SystemMonitor"|"LogMessage"|"LivekitVideoStats"|"SimplePeerVideoStats"|undefined} Body
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "PilotChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal", "SystemMonitor", "LogMessage", "LivekitVideoStats", "SimplepeerVideoStats"]),
+            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "PilotChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplePeerSignal", "SystemMonitor", "LogMessage", "LivekitVideoStats", "SimplePeerVideoStats"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -11552,16 +11552,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.HeartbeatResponse.encode(message.Heartbeat, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
                 $root.rov_actions_proto.MavlinkResponse.encode(message.Mavlink, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
-            if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
-                $root.rov_actions_proto.SimplepeerSignalResponse.encode(message.SimplepeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+            if (message.SimplePeerSignal != null && Object.hasOwnProperty.call(message, "SimplePeerSignal"))
+                $root.rov_actions_proto.SimplePeerSignalResponse.encode(message.SimplePeerSignal, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
             if (message.SystemMonitor != null && Object.hasOwnProperty.call(message, "SystemMonitor"))
                 $root.rov_actions_proto.SystemMonitorResponse.encode(message.SystemMonitor, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.LogMessage != null && Object.hasOwnProperty.call(message, "LogMessage"))
                 $root.rov_actions_proto.LogMessageResponse.encode(message.LogMessage, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             if (message.LivekitVideoStats != null && Object.hasOwnProperty.call(message, "LivekitVideoStats"))
                 $root.rov_actions_proto.LivekitVideoStatsResponse.encode(message.LivekitVideoStats, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
-            if (message.SimplepeerVideoStats != null && Object.hasOwnProperty.call(message, "SimplepeerVideoStats"))
-                $root.rov_actions_proto.SimplepeerVideoStatsResponse.encode(message.SimplepeerVideoStats, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+            if (message.SimplePeerVideoStats != null && Object.hasOwnProperty.call(message, "SimplePeerVideoStats"))
+                $root.rov_actions_proto.SimplePeerVideoStatsResponse.encode(message.SimplePeerVideoStats, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             return writer;
         };
 
@@ -11596,89 +11596,89 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
-                case 1: {
+                    case 1: {
                         message.BackendMetadata = $root.rov_actions_proto.ResponseBackendMetadata.decode(reader, reader.uint32());
                         break;
                     }
-                case 2: {
+                    case 2: {
                         message.ExchangeId = reader.int32();
                         break;
                     }
-                case 3: {
+                    case 3: {
                         message.Done = $root.rov_actions_proto.DoneResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 4: {
+                    case 4: {
                         message.Error = $root.rov_actions_proto.ErrorResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 5: {
+                    case 5: {
                         message.Pong = $root.rov_actions_proto.PongResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 6: {
+                    case 6: {
                         message.ContinuedOutput = $root.rov_actions_proto.ContinuedOutputResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 7: {
+                    case 7: {
                         message.SensorUpdates = $root.rov_actions_proto.SensorUpdatesResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 8: {
+                    case 8: {
                         message.PasswordRequired = $root.rov_actions_proto.PasswordRequiredResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 9: {
+                    case 9: {
                         message.PasswordAccepted = $root.rov_actions_proto.PasswordAcceptedResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 10: {
+                    case 10: {
                         message.PasswordInvalid = $root.rov_actions_proto.PasswordInvalidResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 13: {
+                    case 13: {
                         message.PilotChanged = $root.rov_actions_proto.PilotChangedResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 14: {
+                    case 14: {
                         message.ClientConnected = $root.rov_actions_proto.ClientConnectedResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 15: {
+                    case 15: {
                         message.ClientDisconnected = $root.rov_actions_proto.ClientDisconnectedResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 16: {
+                    case 16: {
                         message.Heartbeat = $root.rov_actions_proto.HeartbeatResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 17: {
+                    case 17: {
                         message.Mavlink = $root.rov_actions_proto.MavlinkResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 18: {
-                        message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.decode(reader, reader.uint32());
+                    case 18: {
+                        message.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 19: {
+                    case 19: {
                         message.SystemMonitor = $root.rov_actions_proto.SystemMonitorResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 20: {
+                    case 20: {
                         message.LogMessage = $root.rov_actions_proto.LogMessageResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 21: {
+                    case 21: {
                         message.LivekitVideoStats = $root.rov_actions_proto.LivekitVideoStatsResponse.decode(reader, reader.uint32());
                         break;
                     }
-                case 22: {
-                        message.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.decode(reader, reader.uint32());
+                    case 22: {
+                        message.SimplePeerVideoStats = $root.rov_actions_proto.SimplePeerVideoStatsResponse.decode(reader, reader.uint32());
                         break;
                     }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
                 }
             }
             return message;
@@ -11848,14 +11848,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "Mavlink." + error;
                 }
             }
-            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
+            if (message.SimplePeerSignal != null && message.hasOwnProperty("SimplePeerSignal")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.SimplepeerSignalResponse.verify(message.SimplepeerSignal);
+                    let error = $root.rov_actions_proto.SimplePeerSignalResponse.verify(message.SimplePeerSignal);
                     if (error)
-                        return "SimplepeerSignal." + error;
+                        return "SimplePeerSignal." + error;
                 }
             }
             if (message.SystemMonitor != null && message.hasOwnProperty("SystemMonitor")) {
@@ -11888,14 +11888,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "LivekitVideoStats." + error;
                 }
             }
-            if (message.SimplepeerVideoStats != null && message.hasOwnProperty("SimplepeerVideoStats")) {
+            if (message.SimplePeerVideoStats != null && message.hasOwnProperty("SimplePeerVideoStats")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.SimplepeerVideoStatsResponse.verify(message.SimplepeerVideoStats);
+                    let error = $root.rov_actions_proto.SimplePeerVideoStatsResponse.verify(message.SimplePeerVideoStats);
                     if (error)
-                        return "SimplepeerVideoStats." + error;
+                        return "SimplePeerVideoStats." + error;
                 }
             }
             return null;
@@ -11985,10 +11985,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovResponse.Mavlink: object expected");
                 message.Mavlink = $root.rov_actions_proto.MavlinkResponse.fromObject(object.Mavlink);
             }
-            if (object.SimplepeerSignal != null) {
-                if (typeof object.SimplepeerSignal !== "object")
-                    throw TypeError(".rov_actions_proto.RovResponse.SimplepeerSignal: object expected");
-                message.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.fromObject(object.SimplepeerSignal);
+            if (object.SimplePeerSignal != null) {
+                if (typeof object.SimplePeerSignal !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.SimplePeerSignal: object expected");
+                message.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalResponse.fromObject(object.SimplePeerSignal);
             }
             if (object.SystemMonitor != null) {
                 if (typeof object.SystemMonitor !== "object")
@@ -12005,10 +12005,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovResponse.LivekitVideoStats: object expected");
                 message.LivekitVideoStats = $root.rov_actions_proto.LivekitVideoStatsResponse.fromObject(object.LivekitVideoStats);
             }
-            if (object.SimplepeerVideoStats != null) {
-                if (typeof object.SimplepeerVideoStats !== "object")
-                    throw TypeError(".rov_actions_proto.RovResponse.SimplepeerVideoStats: object expected");
-                message.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.fromObject(object.SimplepeerVideoStats);
+            if (object.SimplePeerVideoStats != null) {
+                if (typeof object.SimplePeerVideoStats !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.SimplePeerVideoStats: object expected");
+                message.SimplePeerVideoStats = $root.rov_actions_proto.SimplePeerVideoStatsResponse.fromObject(object.SimplePeerVideoStats);
             }
             return message;
         };
@@ -12099,10 +12099,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "Mavlink";
             }
-            if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
-                object.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalResponse.toObject(message.SimplepeerSignal, options);
+            if (message.SimplePeerSignal != null && message.hasOwnProperty("SimplePeerSignal")) {
+                object.SimplePeerSignal = $root.rov_actions_proto.SimplePeerSignalResponse.toObject(message.SimplePeerSignal, options);
                 if (options.oneofs)
-                    object.Body = "SimplepeerSignal";
+                    object.Body = "SimplePeerSignal";
             }
             if (message.SystemMonitor != null && message.hasOwnProperty("SystemMonitor")) {
                 object.SystemMonitor = $root.rov_actions_proto.SystemMonitorResponse.toObject(message.SystemMonitor, options);
@@ -12119,10 +12119,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "LivekitVideoStats";
             }
-            if (message.SimplepeerVideoStats != null && message.hasOwnProperty("SimplepeerVideoStats")) {
-                object.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.toObject(message.SimplepeerVideoStats, options);
+            if (message.SimplePeerVideoStats != null && message.hasOwnProperty("SimplePeerVideoStats")) {
+                object.SimplePeerVideoStats = $root.rov_actions_proto.SimplePeerVideoStatsResponse.toObject(message.SimplePeerVideoStats, options);
                 if (options.oneofs)
-                    object.Body = "SimplepeerVideoStats";
+                    object.Body = "SimplePeerVideoStats";
             }
             return object;
         };

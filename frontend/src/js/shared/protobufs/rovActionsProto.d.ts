@@ -57,16 +57,16 @@ export namespace rov_actions_proto {
     interface IVideoStreamOptions {
 
         /** VideoStreamOptions Height */
-        Height?: (number|null);
+        Height?: (number | null);
 
         /** VideoStreamOptions Width */
-        Width?: (number|null);
+        Width?: (number | null);
 
         /** VideoStreamOptions Fps */
-        Fps?: (number|null);
+        Fps?: (number | null);
 
         /** VideoStreamOptions MaxBitrate */
-        MaxBitrate?: (number|null);
+        MaxBitrate?: (number | null);
     }
 
     /** Represents a VideoStreamOptions. */
@@ -121,7 +121,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.VideoStreamOptions;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.VideoStreamOptions;
 
         /**
          * Decodes a VideoStreamOptions message from the specified reader or buffer, length delimited.
@@ -130,14 +130,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.VideoStreamOptions;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.VideoStreamOptions;
 
         /**
          * Verifies a VideoStreamOptions message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a VideoStreamOptions message from a plain object. Also converts values to their respective internal types.
@@ -172,19 +172,19 @@ export namespace rov_actions_proto {
     interface ISetLivekitVideoOptionsAction {
 
         /** SetLivekitVideoOptionsAction Enabled */
-        Enabled?: (boolean|null);
+        Enabled?: (boolean | null);
 
         /** SetLivekitVideoOptionsAction Codec */
-        Codec?: (rov_actions_proto.VideoCodec|null);
+        Codec?: (rov_actions_proto.VideoCodec | null);
 
         /** SetLivekitVideoOptionsAction AllowBackupCodec */
-        AllowBackupCodec?: (boolean|null);
+        AllowBackupCodec?: (boolean | null);
 
         /** SetLivekitVideoOptionsAction BaseStream */
-        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
         /** SetLivekitVideoOptionsAction SimulcastLayers */
-        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[]|null);
+        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[] | null);
     }
 
     /** Represents a SetLivekitVideoOptionsAction. */
@@ -206,7 +206,7 @@ export namespace rov_actions_proto {
         public AllowBackupCodec: boolean;
 
         /** SetLivekitVideoOptionsAction BaseStream. */
-        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
         /** SetLivekitVideoOptionsAction SimulcastLayers. */
         public SimulcastLayers: rov_actions_proto.IVideoStreamOptions[];
@@ -242,7 +242,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetLivekitVideoOptionsAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SetLivekitVideoOptionsAction;
 
         /**
          * Decodes a SetLivekitVideoOptionsAction message from the specified reader or buffer, length delimited.
@@ -251,14 +251,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetLivekitVideoOptionsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SetLivekitVideoOptionsAction;
 
         /**
          * Verifies a SetLivekitVideoOptionsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SetLivekitVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
@@ -289,115 +289,115 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a SetSimplepeerVideoOptionsAction. */
-    interface ISetSimplepeerVideoOptionsAction {
+    /** Properties of a SetSimplePeerVideoOptionsAction. */
+    interface ISetSimplePeerVideoOptionsAction {
 
-        /** SetSimplepeerVideoOptionsAction Enabled */
-        Enabled?: (boolean|null);
+        /** SetSimplePeerVideoOptionsAction Enabled */
+        Enabled?: (boolean | null);
 
-        /** SetSimplepeerVideoOptionsAction Bitrate */
-        Bitrate?: (number|null);
+        /** SetSimplePeerVideoOptionsAction Bitrate */
+        Bitrate?: (number | null);
 
-        /** SetSimplepeerVideoOptionsAction Codec */
-        Codec?: (rov_actions_proto.VideoCodec|null);
+        /** SetSimplePeerVideoOptionsAction Codec */
+        Codec?: (rov_actions_proto.VideoCodec | null);
 
-        /** SetSimplepeerVideoOptionsAction BaseStream */
-        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        /** SetSimplePeerVideoOptionsAction BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
     }
 
-    /** Represents a SetSimplepeerVideoOptionsAction. */
-    class SetSimplepeerVideoOptionsAction implements ISetSimplepeerVideoOptionsAction {
+    /** Represents a SetSimplePeerVideoOptionsAction. */
+    class SetSimplePeerVideoOptionsAction implements ISetSimplePeerVideoOptionsAction {
 
         /**
-         * Constructs a new SetSimplepeerVideoOptionsAction.
+         * Constructs a new SetSimplePeerVideoOptionsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.ISetSimplepeerVideoOptionsAction);
+        constructor(properties?: rov_actions_proto.ISetSimplePeerVideoOptionsAction);
 
-        /** SetSimplepeerVideoOptionsAction Enabled. */
+        /** SetSimplePeerVideoOptionsAction Enabled. */
         public Enabled: boolean;
 
-        /** SetSimplepeerVideoOptionsAction Bitrate. */
+        /** SetSimplePeerVideoOptionsAction Bitrate. */
         public Bitrate: number;
 
-        /** SetSimplepeerVideoOptionsAction Codec. */
+        /** SetSimplePeerVideoOptionsAction Codec. */
         public Codec: rov_actions_proto.VideoCodec;
 
-        /** SetSimplepeerVideoOptionsAction BaseStream. */
-        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        /** SetSimplePeerVideoOptionsAction BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
         /**
-         * Creates a new SetSimplepeerVideoOptionsAction instance using the specified properties.
+         * Creates a new SetSimplePeerVideoOptionsAction instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns SetSimplepeerVideoOptionsAction instance
+         * @returns SetSimplePeerVideoOptionsAction instance
          */
-        public static create(properties?: rov_actions_proto.ISetSimplepeerVideoOptionsAction): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+        public static create(properties?: rov_actions_proto.ISetSimplePeerVideoOptionsAction): rov_actions_proto.SetSimplePeerVideoOptionsAction;
 
         /**
-         * Encodes the specified SetSimplepeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
-         * @param message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * Encodes the specified SetSimplePeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplePeerVideoOptionsAction.verify|verify} messages.
+         * @param message SetSimplePeerVideoOptionsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.ISetSimplepeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISetSimplePeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SetSimplepeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
-         * @param message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * Encodes the specified SetSimplePeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplePeerVideoOptionsAction.verify|verify} messages.
+         * @param message SetSimplePeerVideoOptionsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.ISetSimplepeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISetSimplePeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer.
+         * Decodes a SetSimplePeerVideoOptionsAction message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns SetSimplepeerVideoOptionsAction
+         * @returns SetSimplePeerVideoOptionsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SetSimplePeerVideoOptionsAction;
 
         /**
-         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * Decodes a SetSimplePeerVideoOptionsAction message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns SetSimplepeerVideoOptionsAction
+         * @returns SetSimplePeerVideoOptionsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SetSimplePeerVideoOptionsAction;
 
         /**
-         * Verifies a SetSimplepeerVideoOptionsAction message.
+         * Verifies a SetSimplePeerVideoOptionsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
-         * Creates a SetSimplepeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SetSimplePeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns SetSimplepeerVideoOptionsAction
+         * @returns SetSimplePeerVideoOptionsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SetSimplePeerVideoOptionsAction;
 
         /**
-         * Creates a plain object from a SetSimplepeerVideoOptionsAction message. Also converts values to other types if specified.
-         * @param message SetSimplepeerVideoOptionsAction
+         * Creates a plain object from a SetSimplePeerVideoOptionsAction message. Also converts values to other types if specified.
+         * @param message SetSimplePeerVideoOptionsAction
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.SetSimplepeerVideoOptionsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SetSimplePeerVideoOptionsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this SetSimplepeerVideoOptionsAction to JSON.
+         * Converts this SetSimplePeerVideoOptionsAction to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for SetSimplepeerVideoOptionsAction
+         * Gets the default type url for SetSimplePeerVideoOptionsAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -408,7 +408,7 @@ export namespace rov_actions_proto {
     interface IPingAction {
 
         /** PingAction Time */
-        Time?: (number|Long|null);
+        Time?: (number | Long | null);
     }
 
     /** Represents a PingAction. */
@@ -421,7 +421,7 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.IPingAction);
 
         /** PingAction Time. */
-        public Time: (number|Long);
+        public Time: (number | Long);
 
         /**
          * Creates a new PingAction instance using the specified properties.
@@ -454,7 +454,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PingAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PingAction;
 
         /**
          * Decodes a PingAction message from the specified reader or buffer, length delimited.
@@ -463,14 +463,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PingAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PingAction;
 
         /**
          * Verifies a PingAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PingAction message from a plain object. Also converts values to their respective internal types.
@@ -505,7 +505,7 @@ export namespace rov_actions_proto {
     interface IPasswordAttemptAction {
 
         /** PasswordAttemptAction Password */
-        Password?: (string|null);
+        Password?: (string | null);
     }
 
     /** Represents a PasswordAttemptAction. */
@@ -551,7 +551,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordAttemptAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PasswordAttemptAction;
 
         /**
          * Decodes a PasswordAttemptAction message from the specified reader or buffer, length delimited.
@@ -560,14 +560,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordAttemptAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PasswordAttemptAction;
 
         /**
          * Verifies a PasswordAttemptAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PasswordAttemptAction message from a plain object. Also converts values to their respective internal types.
@@ -602,7 +602,7 @@ export namespace rov_actions_proto {
     interface IAuthTokenAttemptAction {
 
         /** AuthTokenAttemptAction Token */
-        Token?: (string|null);
+        Token?: (string | null);
     }
 
     /** Represents an AuthTokenAttemptAction. */
@@ -648,7 +648,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.AuthTokenAttemptAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
          * Decodes an AuthTokenAttemptAction message from the specified reader or buffer, length delimited.
@@ -657,14 +657,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.AuthTokenAttemptAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.AuthTokenAttemptAction;
 
         /**
          * Verifies an AuthTokenAttemptAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates an AuthTokenAttemptAction message from a plain object. Also converts values to their respective internal types.
@@ -739,7 +739,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.TakeControlAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.TakeControlAction;
 
         /**
          * Decodes a TakeControlAction message from the specified reader or buffer, length delimited.
@@ -748,14 +748,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.TakeControlAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.TakeControlAction;
 
         /**
          * Verifies a TakeControlAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a TakeControlAction message from a plain object. Also converts values to their respective internal types.
@@ -790,19 +790,19 @@ export namespace rov_actions_proto {
     interface IMoveAction {
 
         /** MoveAction VelocityX */
-        VelocityX?: (number|null);
+        VelocityX?: (number | null);
 
         /** MoveAction VelocityY */
-        VelocityY?: (number|null);
+        VelocityY?: (number | null);
 
         /** MoveAction VelocityZ */
-        VelocityZ?: (number|null);
+        VelocityZ?: (number | null);
 
         /** MoveAction AngularVelocityYaw */
-        AngularVelocityYaw?: (number|null);
+        AngularVelocityYaw?: (number | null);
 
         /** MoveAction ButtonBitmask */
-        ButtonBitmask?: (number|null);
+        ButtonBitmask?: (number | null);
     }
 
     /** Represents a MoveAction. */
@@ -860,7 +860,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MoveAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.MoveAction;
 
         /**
          * Decodes a MoveAction message from the specified reader or buffer, length delimited.
@@ -869,14 +869,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MoveAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.MoveAction;
 
         /**
          * Verifies a MoveAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a MoveAction message from a plain object. Also converts values to their respective internal types.
@@ -951,7 +951,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.TakePhotoAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.TakePhotoAction;
 
         /**
          * Decodes a TakePhotoAction message from the specified reader or buffer, length delimited.
@@ -960,14 +960,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.TakePhotoAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.TakePhotoAction;
 
         /**
          * Verifies a TakePhotoAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a TakePhotoAction message from a plain object. Also converts values to their respective internal types.
@@ -1042,7 +1042,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.StartVideoRecAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.StartVideoRecAction;
 
         /**
          * Decodes a StartVideoRecAction message from the specified reader or buffer, length delimited.
@@ -1051,14 +1051,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.StartVideoRecAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.StartVideoRecAction;
 
         /**
          * Verifies a StartVideoRecAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a StartVideoRecAction message from a plain object. Also converts values to their respective internal types.
@@ -1133,7 +1133,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.StopVideoRecAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.StopVideoRecAction;
 
         /**
          * Decodes a StopVideoRecAction message from the specified reader or buffer, length delimited.
@@ -1142,14 +1142,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.StopVideoRecAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.StopVideoRecAction;
 
         /**
          * Verifies a StopVideoRecAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a StopVideoRecAction message from a plain object. Also converts values to their respective internal types.
@@ -1224,7 +1224,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ToggleLightsAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ToggleLightsAction;
 
         /**
          * Decodes a ToggleLightsAction message from the specified reader or buffer, length delimited.
@@ -1233,14 +1233,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ToggleLightsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ToggleLightsAction;
 
         /**
          * Verifies a ToggleLightsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ToggleLightsAction message from a plain object. Also converts values to their respective internal types.
@@ -1315,7 +1315,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ShutdownRovAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ShutdownRovAction;
 
         /**
          * Decodes a ShutdownRovAction message from the specified reader or buffer, length delimited.
@@ -1324,14 +1324,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ShutdownRovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ShutdownRovAction;
 
         /**
          * Verifies a ShutdownRovAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ShutdownRovAction message from a plain object. Also converts values to their respective internal types.
@@ -1406,7 +1406,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RebootRovAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RebootRovAction;
 
         /**
          * Decodes a RebootRovAction message from the specified reader or buffer, length delimited.
@@ -1415,14 +1415,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RebootRovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RebootRovAction;
 
         /**
          * Verifies a RebootRovAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RebootRovAction message from a plain object. Also converts values to their respective internal types.
@@ -1497,7 +1497,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.EnableWifiAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.EnableWifiAction;
 
         /**
          * Decodes an EnableWifiAction message from the specified reader or buffer, length delimited.
@@ -1506,14 +1506,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.EnableWifiAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.EnableWifiAction;
 
         /**
          * Verifies an EnableWifiAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates an EnableWifiAction message from a plain object. Also converts values to their respective internal types.
@@ -1588,7 +1588,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DisableWifiAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.DisableWifiAction;
 
         /**
          * Decodes a DisableWifiAction message from the specified reader or buffer, length delimited.
@@ -1597,14 +1597,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DisableWifiAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.DisableWifiAction;
 
         /**
          * Verifies a DisableWifiAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a DisableWifiAction message from a plain object. Also converts values to their respective internal types.
@@ -1679,7 +1679,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovStatusReportAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RovStatusReportAction;
 
         /**
          * Decodes a RovStatusReportAction message from the specified reader or buffer, length delimited.
@@ -1688,14 +1688,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovStatusReportAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RovStatusReportAction;
 
         /**
          * Verifies a RovStatusReportAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RovStatusReportAction message from a plain object. Also converts values to their respective internal types.
@@ -1770,7 +1770,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RestartRovServicesAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RestartRovServicesAction;
 
         /**
          * Decodes a RestartRovServicesAction message from the specified reader or buffer, length delimited.
@@ -1779,14 +1779,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RestartRovServicesAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RestartRovServicesAction;
 
         /**
          * Verifies a RestartRovServicesAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RestartRovServicesAction message from a plain object. Also converts values to their respective internal types.
@@ -1861,7 +1861,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SendRovLogsAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SendRovLogsAction;
 
         /**
          * Decodes a SendRovLogsAction message from the specified reader or buffer, length delimited.
@@ -1870,14 +1870,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SendRovLogsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SendRovLogsAction;
 
         /**
          * Verifies a SendRovLogsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SendRovLogsAction message from a plain object. Also converts values to their respective internal types.
@@ -1952,7 +1952,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RefreshAllSensorsAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
          * Decodes a RefreshAllSensorsAction message from the specified reader or buffer, length delimited.
@@ -1961,14 +1961,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RefreshAllSensorsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RefreshAllSensorsAction;
 
         /**
          * Verifies a RefreshAllSensorsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RefreshAllSensorsAction message from a plain object. Also converts values to their respective internal types.
@@ -2003,7 +2003,7 @@ export namespace rov_actions_proto {
     interface IMoveClawAction {
 
         /** MoveClawAction Value */
-        Value?: (number|null);
+        Value?: (number | null);
     }
 
     /** Represents a MoveClawAction. */
@@ -2049,7 +2049,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MoveClawAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.MoveClawAction;
 
         /**
          * Decodes a MoveClawAction message from the specified reader or buffer, length delimited.
@@ -2058,14 +2058,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MoveClawAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.MoveClawAction;
 
         /**
          * Verifies a MoveClawAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a MoveClawAction message from a plain object. Also converts values to their respective internal types.
@@ -2096,97 +2096,97 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a SimplepeerSignalAction. */
-    interface ISimplepeerSignalAction {
+    /** Properties of a SimplePeerSignalAction. */
+    interface ISimplePeerSignalAction {
 
-        /** SimplepeerSignalAction Message */
-        Message?: (string|null);
+        /** SimplePeerSignalAction Message */
+        Message?: (string | null);
     }
 
-    /** Represents a SimplepeerSignalAction. */
-    class SimplepeerSignalAction implements ISimplepeerSignalAction {
+    /** Represents a SimplePeerSignalAction. */
+    class SimplePeerSignalAction implements ISimplePeerSignalAction {
 
         /**
-         * Constructs a new SimplepeerSignalAction.
+         * Constructs a new SimplePeerSignalAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.ISimplepeerSignalAction);
+        constructor(properties?: rov_actions_proto.ISimplePeerSignalAction);
 
-        /** SimplepeerSignalAction Message. */
+        /** SimplePeerSignalAction Message. */
         public Message: string;
 
         /**
-         * Creates a new SimplepeerSignalAction instance using the specified properties.
+         * Creates a new SimplePeerSignalAction instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns SimplepeerSignalAction instance
+         * @returns SimplePeerSignalAction instance
          */
-        public static create(properties?: rov_actions_proto.ISimplepeerSignalAction): rov_actions_proto.SimplepeerSignalAction;
+        public static create(properties?: rov_actions_proto.ISimplePeerSignalAction): rov_actions_proto.SimplePeerSignalAction;
 
         /**
-         * Encodes the specified SimplepeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
-         * @param message SimplepeerSignalAction message or plain object to encode
+         * Encodes the specified SimplePeerSignalAction message. Does not implicitly {@link rov_actions_proto.SimplePeerSignalAction.verify|verify} messages.
+         * @param message SimplePeerSignalAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISimplePeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SimplepeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalAction.verify|verify} messages.
-         * @param message SimplepeerSignalAction message or plain object to encode
+         * Encodes the specified SimplePeerSignalAction message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerSignalAction.verify|verify} messages.
+         * @param message SimplePeerSignalAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.ISimplepeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISimplePeerSignalAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a SimplepeerSignalAction message from the specified reader or buffer.
+         * Decodes a SimplePeerSignalAction message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns SimplepeerSignalAction
+         * @returns SimplePeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerSignalAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SimplePeerSignalAction;
 
         /**
-         * Decodes a SimplepeerSignalAction message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerSignalAction message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns SimplepeerSignalAction
+         * @returns SimplePeerSignalAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerSignalAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SimplePeerSignalAction;
 
         /**
-         * Verifies a SimplepeerSignalAction message.
+         * Verifies a SimplePeerSignalAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
-         * Creates a SimplepeerSignalAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerSignalAction message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns SimplepeerSignalAction
+         * @returns SimplePeerSignalAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerSignalAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplePeerSignalAction;
 
         /**
-         * Creates a plain object from a SimplepeerSignalAction message. Also converts values to other types if specified.
-         * @param message SimplepeerSignalAction
+         * Creates a plain object from a SimplePeerSignalAction message. Also converts values to other types if specified.
+         * @param message SimplePeerSignalAction
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.SimplepeerSignalAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SimplePeerSignalAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this SimplepeerSignalAction to JSON.
+         * Converts this SimplePeerSignalAction to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for SimplepeerSignalAction
+         * Gets the default type url for SimplePeerSignalAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2237,7 +2237,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DisarmAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.DisarmAction;
 
         /**
          * Decodes a DisarmAction message from the specified reader or buffer, length delimited.
@@ -2246,14 +2246,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DisarmAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.DisarmAction;
 
         /**
          * Verifies a DisarmAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a DisarmAction message from a plain object. Also converts values to their respective internal types.
@@ -2288,7 +2288,7 @@ export namespace rov_actions_proto {
     interface ISetAutopilotModeAction {
 
         /** SetAutopilotModeAction mode */
-        mode?: (number|null);
+        mode?: (number | null);
     }
 
     /** Represents a SetAutopilotModeAction. */
@@ -2334,7 +2334,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetAutopilotModeAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SetAutopilotModeAction;
 
         /**
          * Decodes a SetAutopilotModeAction message from the specified reader or buffer, length delimited.
@@ -2343,14 +2343,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetAutopilotModeAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SetAutopilotModeAction;
 
         /**
          * Verifies a SetAutopilotModeAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SetAutopilotModeAction message from a plain object. Also converts values to their respective internal types.
@@ -2385,7 +2385,7 @@ export namespace rov_actions_proto {
     interface ISetLivestreamingEnabledAction {
 
         /** SetLivestreamingEnabledAction Enabled */
-        Enabled?: (boolean|null);
+        Enabled?: (boolean | null);
     }
 
     /** Represents a SetLivestreamingEnabledAction. */
@@ -2431,7 +2431,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetLivestreamingEnabledAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SetLivestreamingEnabledAction;
 
         /**
          * Decodes a SetLivestreamingEnabledAction message from the specified reader or buffer, length delimited.
@@ -2440,14 +2440,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetLivestreamingEnabledAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SetLivestreamingEnabledAction;
 
         /**
          * Verifies a SetLivestreamingEnabledAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SetLivestreamingEnabledAction message from a plain object. Also converts values to their respective internal types.
@@ -2482,10 +2482,10 @@ export namespace rov_actions_proto {
     interface IActionBackendMetadata {
 
         /** ActionBackendMetadata FromUserId */
-        FromUserId?: (string|null);
+        FromUserId?: (string | null);
 
         /** ActionBackendMetadata InternalWebpageEvt */
-        InternalWebpageEvt?: (rov_actions_proto.InternalWebpageEvent|null);
+        InternalWebpageEvt?: (rov_actions_proto.InternalWebpageEvent | null);
     }
 
     /** Represents an ActionBackendMetadata. */
@@ -2534,7 +2534,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ActionBackendMetadata;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ActionBackendMetadata;
 
         /**
          * Decodes an ActionBackendMetadata message from the specified reader or buffer, length delimited.
@@ -2543,14 +2543,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ActionBackendMetadata;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ActionBackendMetadata;
 
         /**
          * Verifies an ActionBackendMetadata message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates an ActionBackendMetadata message from a plain object. Also converts values to their respective internal types.
@@ -2585,82 +2585,82 @@ export namespace rov_actions_proto {
     interface IRovAction {
 
         /** RovAction BackendMetadata */
-        BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
+        BackendMetadata?: (rov_actions_proto.IActionBackendMetadata | null);
 
         /** RovAction ExchangeId */
-        ExchangeId?: (number|null);
+        ExchangeId?: (number | null);
 
         /** RovAction Ping */
-        Ping?: (rov_actions_proto.IPingAction|null);
+        Ping?: (rov_actions_proto.IPingAction | null);
 
         /** RovAction PasswordAttempt */
-        PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction|null);
+        PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction | null);
 
         /** RovAction AuthTokenAttempt */
-        AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction|null);
+        AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction | null);
 
         /** RovAction TakeControl */
-        TakeControl?: (rov_actions_proto.ITakeControlAction|null);
+        TakeControl?: (rov_actions_proto.ITakeControlAction | null);
 
         /** RovAction Move */
-        Move?: (rov_actions_proto.IMoveAction|null);
+        Move?: (rov_actions_proto.IMoveAction | null);
 
         /** RovAction TakePhoto */
-        TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
+        TakePhoto?: (rov_actions_proto.ITakePhotoAction | null);
 
         /** RovAction StartVideoRec */
-        StartVideoRec?: (rov_actions_proto.IStartVideoRecAction|null);
+        StartVideoRec?: (rov_actions_proto.IStartVideoRecAction | null);
 
         /** RovAction StopVideoRec */
-        StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
+        StopVideoRec?: (rov_actions_proto.IStopVideoRecAction | null);
 
         /** RovAction ToggleLights */
-        ToggleLights?: (rov_actions_proto.IToggleLightsAction|null);
+        ToggleLights?: (rov_actions_proto.IToggleLightsAction | null);
 
         /** RovAction ShutdownRov */
-        ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
+        ShutdownRov?: (rov_actions_proto.IShutdownRovAction | null);
 
         /** RovAction RebootRov */
-        RebootRov?: (rov_actions_proto.IRebootRovAction|null);
+        RebootRov?: (rov_actions_proto.IRebootRovAction | null);
 
         /** RovAction EnableWifi */
-        EnableWifi?: (rov_actions_proto.IEnableWifiAction|null);
+        EnableWifi?: (rov_actions_proto.IEnableWifiAction | null);
 
         /** RovAction DisableWifi */
-        DisableWifi?: (rov_actions_proto.IDisableWifiAction|null);
+        DisableWifi?: (rov_actions_proto.IDisableWifiAction | null);
 
         /** RovAction RovStatusReport */
-        RovStatusReport?: (rov_actions_proto.IRovStatusReportAction|null);
+        RovStatusReport?: (rov_actions_proto.IRovStatusReportAction | null);
 
         /** RovAction RestartRovServices */
-        RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
+        RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction | null);
 
         /** RovAction SendRovLogs */
-        SendRovLogs?: (rov_actions_proto.ISendRovLogsAction|null);
+        SendRovLogs?: (rov_actions_proto.ISendRovLogsAction | null);
 
         /** RovAction RefreshAllSensors */
-        RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
+        RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction | null);
 
         /** RovAction MoveClaw */
-        MoveClaw?: (rov_actions_proto.IMoveClawAction|null);
+        MoveClaw?: (rov_actions_proto.IMoveClawAction | null);
 
-        /** RovAction SimplepeerSignal */
-        SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
+        /** RovAction SimplePeerSignal */
+        SimplePeerSignal?: (rov_actions_proto.ISimplePeerSignalAction | null);
 
         /** RovAction Disarm */
-        Disarm?: (rov_actions_proto.IDisarmAction|null);
+        Disarm?: (rov_actions_proto.IDisarmAction | null);
 
         /** RovAction SetAutopilotMode */
-        SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction|null);
+        SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction | null);
 
         /** RovAction SetLivekitVideoOptions */
-        SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction|null);
+        SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction | null);
 
-        /** RovAction SetSimplepeerVideoOptions */
-        SetSimplepeerVideoOptions?: (rov_actions_proto.ISetSimplepeerVideoOptionsAction|null);
+        /** RovAction SetSimplePeerVideoOptions */
+        SetSimplePeerVideoOptions?: (rov_actions_proto.ISetSimplePeerVideoOptionsAction | null);
 
         /** RovAction SetLivestreamingEnabled */
-        SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction|null);
+        SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction | null);
     }
 
     /** Represents a RovAction. */
@@ -2673,85 +2673,85 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.IRovAction);
 
         /** RovAction BackendMetadata. */
-        public BackendMetadata?: (rov_actions_proto.IActionBackendMetadata|null);
+        public BackendMetadata?: (rov_actions_proto.IActionBackendMetadata | null);
 
         /** RovAction ExchangeId. */
         public ExchangeId: number;
 
         /** RovAction Ping. */
-        public Ping?: (rov_actions_proto.IPingAction|null);
+        public Ping?: (rov_actions_proto.IPingAction | null);
 
         /** RovAction PasswordAttempt. */
-        public PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction|null);
+        public PasswordAttempt?: (rov_actions_proto.IPasswordAttemptAction | null);
 
         /** RovAction AuthTokenAttempt. */
-        public AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction|null);
+        public AuthTokenAttempt?: (rov_actions_proto.IAuthTokenAttemptAction | null);
 
         /** RovAction TakeControl. */
-        public TakeControl?: (rov_actions_proto.ITakeControlAction|null);
+        public TakeControl?: (rov_actions_proto.ITakeControlAction | null);
 
         /** RovAction Move. */
-        public Move?: (rov_actions_proto.IMoveAction|null);
+        public Move?: (rov_actions_proto.IMoveAction | null);
 
         /** RovAction TakePhoto. */
-        public TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
+        public TakePhoto?: (rov_actions_proto.ITakePhotoAction | null);
 
         /** RovAction StartVideoRec. */
-        public StartVideoRec?: (rov_actions_proto.IStartVideoRecAction|null);
+        public StartVideoRec?: (rov_actions_proto.IStartVideoRecAction | null);
 
         /** RovAction StopVideoRec. */
-        public StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
+        public StopVideoRec?: (rov_actions_proto.IStopVideoRecAction | null);
 
         /** RovAction ToggleLights. */
-        public ToggleLights?: (rov_actions_proto.IToggleLightsAction|null);
+        public ToggleLights?: (rov_actions_proto.IToggleLightsAction | null);
 
         /** RovAction ShutdownRov. */
-        public ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
+        public ShutdownRov?: (rov_actions_proto.IShutdownRovAction | null);
 
         /** RovAction RebootRov. */
-        public RebootRov?: (rov_actions_proto.IRebootRovAction|null);
+        public RebootRov?: (rov_actions_proto.IRebootRovAction | null);
 
         /** RovAction EnableWifi. */
-        public EnableWifi?: (rov_actions_proto.IEnableWifiAction|null);
+        public EnableWifi?: (rov_actions_proto.IEnableWifiAction | null);
 
         /** RovAction DisableWifi. */
-        public DisableWifi?: (rov_actions_proto.IDisableWifiAction|null);
+        public DisableWifi?: (rov_actions_proto.IDisableWifiAction | null);
 
         /** RovAction RovStatusReport. */
-        public RovStatusReport?: (rov_actions_proto.IRovStatusReportAction|null);
+        public RovStatusReport?: (rov_actions_proto.IRovStatusReportAction | null);
 
         /** RovAction RestartRovServices. */
-        public RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
+        public RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction | null);
 
         /** RovAction SendRovLogs. */
-        public SendRovLogs?: (rov_actions_proto.ISendRovLogsAction|null);
+        public SendRovLogs?: (rov_actions_proto.ISendRovLogsAction | null);
 
         /** RovAction RefreshAllSensors. */
-        public RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
+        public RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction | null);
 
         /** RovAction MoveClaw. */
-        public MoveClaw?: (rov_actions_proto.IMoveClawAction|null);
+        public MoveClaw?: (rov_actions_proto.IMoveClawAction | null);
 
-        /** RovAction SimplepeerSignal. */
-        public SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
+        /** RovAction SimplePeerSignal. */
+        public SimplePeerSignal?: (rov_actions_proto.ISimplePeerSignalAction | null);
 
         /** RovAction Disarm. */
-        public Disarm?: (rov_actions_proto.IDisarmAction|null);
+        public Disarm?: (rov_actions_proto.IDisarmAction | null);
 
         /** RovAction SetAutopilotMode. */
-        public SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction|null);
+        public SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction | null);
 
         /** RovAction SetLivekitVideoOptions. */
-        public SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction|null);
+        public SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction | null);
 
-        /** RovAction SetSimplepeerVideoOptions. */
-        public SetSimplepeerVideoOptions?: (rov_actions_proto.ISetSimplepeerVideoOptionsAction|null);
+        /** RovAction SetSimplePeerVideoOptions. */
+        public SetSimplePeerVideoOptions?: (rov_actions_proto.ISetSimplePeerVideoOptionsAction | null);
 
         /** RovAction SetLivestreamingEnabled. */
-        public SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction|null);
+        public SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction | null);
 
         /** RovAction Body. */
-        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToggleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"SendRovLogs"|"RefreshAllSensors"|"MoveClaw"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode"|"SetLivekitVideoOptions"|"SetSimplepeerVideoOptions"|"SetLivestreamingEnabled");
+        public Body?: ("Ping" | "PasswordAttempt" | "AuthTokenAttempt" | "TakeControl" | "Move" | "TakePhoto" | "StartVideoRec" | "StopVideoRec" | "ToggleLights" | "ShutdownRov" | "RebootRov" | "EnableWifi" | "DisableWifi" | "RovStatusReport" | "RestartRovServices" | "SendRovLogs" | "RefreshAllSensors" | "MoveClaw" | "SimplePeerSignal" | "Disarm" | "SetAutopilotMode" | "SetLivekitVideoOptions" | "SetSimplePeerVideoOptions" | "SetLivestreamingEnabled");
 
         /**
          * Creates a new RovAction instance using the specified properties.
@@ -2784,7 +2784,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovAction;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RovAction;
 
         /**
          * Decodes a RovAction message from the specified reader or buffer, length delimited.
@@ -2793,14 +2793,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovAction;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RovAction;
 
         /**
          * Verifies a RovAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RovAction message from a plain object. Also converts values to their respective internal types.
@@ -2835,7 +2835,7 @@ export namespace rov_actions_proto {
     interface IDoneResponse {
 
         /** DoneResponse Message */
-        Message?: (string|null);
+        Message?: (string | null);
     }
 
     /** Represents a DoneResponse. */
@@ -2881,7 +2881,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DoneResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.DoneResponse;
 
         /**
          * Decodes a DoneResponse message from the specified reader or buffer, length delimited.
@@ -2890,14 +2890,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DoneResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.DoneResponse;
 
         /**
          * Verifies a DoneResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a DoneResponse message from a plain object. Also converts values to their respective internal types.
@@ -2932,7 +2932,7 @@ export namespace rov_actions_proto {
     interface IErrorResponse {
 
         /** ErrorResponse Message */
-        Message?: (string|null);
+        Message?: (string | null);
     }
 
     /** Represents an ErrorResponse. */
@@ -2978,7 +2978,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ErrorResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ErrorResponse;
 
         /**
          * Decodes an ErrorResponse message from the specified reader or buffer, length delimited.
@@ -2987,14 +2987,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ErrorResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ErrorResponse;
 
         /**
          * Verifies an ErrorResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates an ErrorResponse message from a plain object. Also converts values to their respective internal types.
@@ -3029,7 +3029,7 @@ export namespace rov_actions_proto {
     interface IPongResponse {
 
         /** PongResponse Time */
-        Time?: (number|Long|null);
+        Time?: (number | Long | null);
     }
 
     /** Represents a PongResponse. */
@@ -3042,7 +3042,7 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.IPongResponse);
 
         /** PongResponse Time. */
-        public Time: (number|Long);
+        public Time: (number | Long);
 
         /**
          * Creates a new PongResponse instance using the specified properties.
@@ -3075,7 +3075,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PongResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PongResponse;
 
         /**
          * Decodes a PongResponse message from the specified reader or buffer, length delimited.
@@ -3084,14 +3084,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PongResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PongResponse;
 
         /**
          * Verifies a PongResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PongResponse message from a plain object. Also converts values to their respective internal types.
@@ -3126,10 +3126,10 @@ export namespace rov_actions_proto {
     interface IMeasurement {
 
         /** Measurement MeasurementType */
-        MeasurementType?: (rov_actions_proto.SensorMeasurmentTypes|null);
+        MeasurementType?: (rov_actions_proto.SensorMeasurmentTypes | null);
 
         /** Measurement Value */
-        Value?: (number|null);
+        Value?: (number | null);
     }
 
     /** Represents a Measurement. */
@@ -3178,7 +3178,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.Measurement;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.Measurement;
 
         /**
          * Decodes a Measurement message from the specified reader or buffer, length delimited.
@@ -3187,14 +3187,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.Measurement;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.Measurement;
 
         /**
          * Verifies a Measurement message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
@@ -3229,7 +3229,7 @@ export namespace rov_actions_proto {
     interface ISensorUpdatesResponse {
 
         /** SensorUpdatesResponse MeasurementUpdates */
-        MeasurementUpdates?: (rov_actions_proto.IMeasurement[]|null);
+        MeasurementUpdates?: (rov_actions_proto.IMeasurement[] | null);
     }
 
     /** Represents a SensorUpdatesResponse. */
@@ -3275,7 +3275,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SensorUpdatesResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SensorUpdatesResponse;
 
         /**
          * Decodes a SensorUpdatesResponse message from the specified reader or buffer, length delimited.
@@ -3284,14 +3284,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SensorUpdatesResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SensorUpdatesResponse;
 
         /**
          * Verifies a SensorUpdatesResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SensorUpdatesResponse message from a plain object. Also converts values to their respective internal types.
@@ -3326,7 +3326,7 @@ export namespace rov_actions_proto {
     interface IPasswordRequiredResponse {
 
         /** PasswordRequiredResponse RovId */
-        RovId?: (string|null);
+        RovId?: (string | null);
     }
 
     /** Represents a PasswordRequiredResponse. */
@@ -3372,7 +3372,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordRequiredResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PasswordRequiredResponse;
 
         /**
          * Decodes a PasswordRequiredResponse message from the specified reader or buffer, length delimited.
@@ -3381,14 +3381,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordRequiredResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PasswordRequiredResponse;
 
         /**
          * Verifies a PasswordRequiredResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PasswordRequiredResponse message from a plain object. Also converts values to their respective internal types.
@@ -3423,7 +3423,7 @@ export namespace rov_actions_proto {
     interface IPasswordAcceptedResponse {
 
         /** PasswordAcceptedResponse AuthToken */
-        AuthToken?: (string|null);
+        AuthToken?: (string | null);
     }
 
     /** Represents a PasswordAcceptedResponse. */
@@ -3469,7 +3469,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordAcceptedResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
          * Decodes a PasswordAcceptedResponse message from the specified reader or buffer, length delimited.
@@ -3478,14 +3478,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordAcceptedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PasswordAcceptedResponse;
 
         /**
          * Verifies a PasswordAcceptedResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PasswordAcceptedResponse message from a plain object. Also converts values to their respective internal types.
@@ -3560,7 +3560,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PasswordInvalidResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PasswordInvalidResponse;
 
         /**
          * Decodes a PasswordInvalidResponse message from the specified reader or buffer, length delimited.
@@ -3569,14 +3569,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PasswordInvalidResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PasswordInvalidResponse;
 
         /**
          * Verifies a PasswordInvalidResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PasswordInvalidResponse message from a plain object. Also converts values to their respective internal types.
@@ -3611,7 +3611,7 @@ export namespace rov_actions_proto {
     interface IPilotChangedResponse {
 
         /** PilotChangedResponse PilotIdentity */
-        PilotIdentity?: (string|null);
+        PilotIdentity?: (string | null);
     }
 
     /** Represents a PilotChangedResponse. */
@@ -3657,7 +3657,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PilotChangedResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.PilotChangedResponse;
 
         /**
          * Decodes a PilotChangedResponse message from the specified reader or buffer, length delimited.
@@ -3666,14 +3666,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PilotChangedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.PilotChangedResponse;
 
         /**
          * Verifies a PilotChangedResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a PilotChangedResponse message from a plain object. Also converts values to their respective internal types.
@@ -3708,7 +3708,7 @@ export namespace rov_actions_proto {
     interface IClientConnectedResponse {
 
         /** ClientConnectedResponse ClientPeerId */
-        ClientPeerId?: (string|null);
+        ClientPeerId?: (string | null);
     }
 
     /** Represents a ClientConnectedResponse. */
@@ -3754,7 +3754,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ClientConnectedResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ClientConnectedResponse;
 
         /**
          * Decodes a ClientConnectedResponse message from the specified reader or buffer, length delimited.
@@ -3763,14 +3763,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ClientConnectedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ClientConnectedResponse;
 
         /**
          * Verifies a ClientConnectedResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ClientConnectedResponse message from a plain object. Also converts values to their respective internal types.
@@ -3805,7 +3805,7 @@ export namespace rov_actions_proto {
     interface IClientDisconnectedResponse {
 
         /** ClientDisconnectedResponse ClientPeerId */
-        ClientPeerId?: (string|null);
+        ClientPeerId?: (string | null);
     }
 
     /** Represents a ClientDisconnectedResponse. */
@@ -3851,7 +3851,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ClientDisconnectedResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
          * Decodes a ClientDisconnectedResponse message from the specified reader or buffer, length delimited.
@@ -3860,14 +3860,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ClientDisconnectedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ClientDisconnectedResponse;
 
         /**
          * Verifies a ClientDisconnectedResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ClientDisconnectedResponse message from a plain object. Also converts values to their respective internal types.
@@ -3902,7 +3902,7 @@ export namespace rov_actions_proto {
     interface IHeartbeatResponse {
 
         /** HeartbeatResponse Time */
-        Time?: (number|Long|null);
+        Time?: (number | Long | null);
     }
 
     /** Represents a HeartbeatResponse. */
@@ -3915,7 +3915,7 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.IHeartbeatResponse);
 
         /** HeartbeatResponse Time. */
-        public Time: (number|Long);
+        public Time: (number | Long);
 
         /**
          * Creates a new HeartbeatResponse instance using the specified properties.
@@ -3948,7 +3948,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.HeartbeatResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.HeartbeatResponse;
 
         /**
          * Decodes a HeartbeatResponse message from the specified reader or buffer, length delimited.
@@ -3957,14 +3957,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.HeartbeatResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.HeartbeatResponse;
 
         /**
          * Verifies a HeartbeatResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a HeartbeatResponse message from a plain object. Also converts values to their respective internal types.
@@ -3999,7 +3999,7 @@ export namespace rov_actions_proto {
     interface IContinuedOutputResponse {
 
         /** ContinuedOutputResponse Message */
-        Message?: (string|null);
+        Message?: (string | null);
     }
 
     /** Represents a ContinuedOutputResponse. */
@@ -4045,7 +4045,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ContinuedOutputResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ContinuedOutputResponse;
 
         /**
          * Decodes a ContinuedOutputResponse message from the specified reader or buffer, length delimited.
@@ -4054,14 +4054,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ContinuedOutputResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ContinuedOutputResponse;
 
         /**
          * Verifies a ContinuedOutputResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ContinuedOutputResponse message from a plain object. Also converts values to their respective internal types.
@@ -4096,7 +4096,7 @@ export namespace rov_actions_proto {
     interface IMavlinkResponse {
 
         /** MavlinkResponse Message */
-        Message?: (Uint8Array|null);
+        Message?: (Uint8Array | null);
     }
 
     /** Represents a MavlinkResponse. */
@@ -4142,7 +4142,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MavlinkResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.MavlinkResponse;
 
         /**
          * Decodes a MavlinkResponse message from the specified reader or buffer, length delimited.
@@ -4151,14 +4151,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MavlinkResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.MavlinkResponse;
 
         /**
          * Verifies a MavlinkResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a MavlinkResponse message from a plain object. Also converts values to their respective internal types.
@@ -4189,97 +4189,97 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a SimplepeerSignalResponse. */
-    interface ISimplepeerSignalResponse {
+    /** Properties of a SimplePeerSignalResponse. */
+    interface ISimplePeerSignalResponse {
 
-        /** SimplepeerSignalResponse Message */
-        Message?: (string|null);
+        /** SimplePeerSignalResponse Message */
+        Message?: (string | null);
     }
 
-    /** Represents a SimplepeerSignalResponse. */
-    class SimplepeerSignalResponse implements ISimplepeerSignalResponse {
+    /** Represents a SimplePeerSignalResponse. */
+    class SimplePeerSignalResponse implements ISimplePeerSignalResponse {
 
         /**
-         * Constructs a new SimplepeerSignalResponse.
+         * Constructs a new SimplePeerSignalResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.ISimplepeerSignalResponse);
+        constructor(properties?: rov_actions_proto.ISimplePeerSignalResponse);
 
-        /** SimplepeerSignalResponse Message. */
+        /** SimplePeerSignalResponse Message. */
         public Message: string;
 
         /**
-         * Creates a new SimplepeerSignalResponse instance using the specified properties.
+         * Creates a new SimplePeerSignalResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns SimplepeerSignalResponse instance
+         * @returns SimplePeerSignalResponse instance
          */
-        public static create(properties?: rov_actions_proto.ISimplepeerSignalResponse): rov_actions_proto.SimplepeerSignalResponse;
+        public static create(properties?: rov_actions_proto.ISimplePeerSignalResponse): rov_actions_proto.SimplePeerSignalResponse;
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
-         * @param message SimplepeerSignalResponse message or plain object to encode
+         * Encodes the specified SimplePeerSignalResponse message. Does not implicitly {@link rov_actions_proto.SimplePeerSignalResponse.verify|verify} messages.
+         * @param message SimplePeerSignalResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISimplePeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SimplepeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerSignalResponse.verify|verify} messages.
-         * @param message SimplepeerSignalResponse message or plain object to encode
+         * Encodes the specified SimplePeerSignalResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerSignalResponse.verify|verify} messages.
+         * @param message SimplePeerSignalResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.ISimplepeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISimplePeerSignalResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer.
+         * Decodes a SimplePeerSignalResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns SimplepeerSignalResponse
+         * @returns SimplePeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerSignalResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SimplePeerSignalResponse;
 
         /**
-         * Decodes a SimplepeerSignalResponse message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerSignalResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns SimplepeerSignalResponse
+         * @returns SimplePeerSignalResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerSignalResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SimplePeerSignalResponse;
 
         /**
-         * Verifies a SimplepeerSignalResponse message.
+         * Verifies a SimplePeerSignalResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
-         * Creates a SimplepeerSignalResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerSignalResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns SimplepeerSignalResponse
+         * @returns SimplePeerSignalResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerSignalResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplePeerSignalResponse;
 
         /**
-         * Creates a plain object from a SimplepeerSignalResponse message. Also converts values to other types if specified.
-         * @param message SimplepeerSignalResponse
+         * Creates a plain object from a SimplePeerSignalResponse message. Also converts values to other types if specified.
+         * @param message SimplePeerSignalResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.SimplepeerSignalResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SimplePeerSignalResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this SimplepeerSignalResponse to JSON.
+         * Converts this SimplePeerSignalResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for SimplepeerSignalResponse
+         * Gets the default type url for SimplePeerSignalResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -4290,19 +4290,19 @@ export namespace rov_actions_proto {
     interface ISystemMonitorResponse {
 
         /** SystemMonitorResponse CpuTemp */
-        CpuTemp?: (number|null);
+        CpuTemp?: (number | null);
 
         /** SystemMonitorResponse CpuUsage */
-        CpuUsage?: (number|null);
+        CpuUsage?: (number | null);
 
         /** SystemMonitorResponse MemoryUsage */
-        MemoryUsage?: (number|null);
+        MemoryUsage?: (number | null);
 
         /** SystemMonitorResponse DiskUsage */
-        DiskUsage?: (number|null);
+        DiskUsage?: (number | null);
 
         /** SystemMonitorResponse Warnings */
-        Warnings?: (string[]|null);
+        Warnings?: (string[] | null);
     }
 
     /** Represents a SystemMonitorResponse. */
@@ -4360,7 +4360,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SystemMonitorResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SystemMonitorResponse;
 
         /**
          * Decodes a SystemMonitorResponse message from the specified reader or buffer, length delimited.
@@ -4369,14 +4369,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SystemMonitorResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SystemMonitorResponse;
 
         /**
          * Verifies a SystemMonitorResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a SystemMonitorResponse message from a plain object. Also converts values to their respective internal types.
@@ -4411,10 +4411,10 @@ export namespace rov_actions_proto {
     interface ILogMessageResponse {
 
         /** LogMessageResponse Message */
-        Message?: (string|null);
+        Message?: (string | null);
 
         /** LogMessageResponse Level */
-        Level?: (rov_actions_proto.LogLevel|null);
+        Level?: (rov_actions_proto.LogLevel | null);
     }
 
     /** Represents a LogMessageResponse. */
@@ -4463,7 +4463,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.LogMessageResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.LogMessageResponse;
 
         /**
          * Decodes a LogMessageResponse message from the specified reader or buffer, length delimited.
@@ -4472,14 +4472,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.LogMessageResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.LogMessageResponse;
 
         /**
          * Verifies a LogMessageResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a LogMessageResponse message from a plain object. Also converts values to their respective internal types.
@@ -4514,22 +4514,22 @@ export namespace rov_actions_proto {
     interface ILivekitVideoStatsResponse {
 
         /** LivekitVideoStatsResponse Enabled */
-        Enabled?: (boolean|null);
+        Enabled?: (boolean | null);
 
         /** LivekitVideoStatsResponse Codec */
-        Codec?: (rov_actions_proto.VideoCodec|null);
+        Codec?: (rov_actions_proto.VideoCodec | null);
 
         /** LivekitVideoStatsResponse AllowBackupCodec */
-        AllowBackupCodec?: (boolean|null);
+        AllowBackupCodec?: (boolean | null);
 
         /** LivekitVideoStatsResponse BaseStream */
-        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
         /** LivekitVideoStatsResponse SimulcastLayers */
-        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[]|null);
+        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[] | null);
 
         /** LivekitVideoStatsResponse RtcSenderStatsJson */
-        RtcSenderStatsJson?: (string|null);
+        RtcSenderStatsJson?: (string | null);
     }
 
     /** Represents a LivekitVideoStatsResponse. */
@@ -4551,7 +4551,7 @@ export namespace rov_actions_proto {
         public AllowBackupCodec: boolean;
 
         /** LivekitVideoStatsResponse BaseStream. */
-        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
         /** LivekitVideoStatsResponse SimulcastLayers. */
         public SimulcastLayers: rov_actions_proto.IVideoStreamOptions[];
@@ -4590,7 +4590,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.LivekitVideoStatsResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.LivekitVideoStatsResponse;
 
         /**
          * Decodes a LivekitVideoStatsResponse message from the specified reader or buffer, length delimited.
@@ -4599,14 +4599,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.LivekitVideoStatsResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.LivekitVideoStatsResponse;
 
         /**
          * Verifies a LivekitVideoStatsResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a LivekitVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
@@ -4637,115 +4637,115 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a SimplepeerVideoStatsResponse. */
-    interface ISimplepeerVideoStatsResponse {
+    /** Properties of a SimplePeerVideoStatsResponse. */
+    interface ISimplePeerVideoStatsResponse {
 
-        /** SimplepeerVideoStatsResponse Enabled */
-        Enabled?: (boolean|null);
+        /** SimplePeerVideoStatsResponse Enabled */
+        Enabled?: (boolean | null);
 
-        /** SimplepeerVideoStatsResponse Codec */
-        Codec?: (rov_actions_proto.VideoCodec|null);
+        /** SimplePeerVideoStatsResponse Codec */
+        Codec?: (rov_actions_proto.VideoCodec | null);
 
-        /** SimplepeerVideoStatsResponse BaseStream */
-        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        /** SimplePeerVideoStatsResponse BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
-        /** SimplepeerVideoStatsResponse RtcSenderStatsJson */
-        RtcSenderStatsJson?: (string|null);
+        /** SimplePeerVideoStatsResponse RtcSenderStatsJson */
+        RtcSenderStatsJson?: (string | null);
     }
 
-    /** Represents a SimplepeerVideoStatsResponse. */
-    class SimplepeerVideoStatsResponse implements ISimplepeerVideoStatsResponse {
+    /** Represents a SimplePeerVideoStatsResponse. */
+    class SimplePeerVideoStatsResponse implements ISimplePeerVideoStatsResponse {
 
         /**
-         * Constructs a new SimplepeerVideoStatsResponse.
+         * Constructs a new SimplePeerVideoStatsResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.ISimplepeerVideoStatsResponse);
+        constructor(properties?: rov_actions_proto.ISimplePeerVideoStatsResponse);
 
-        /** SimplepeerVideoStatsResponse Enabled. */
+        /** SimplePeerVideoStatsResponse Enabled. */
         public Enabled: boolean;
 
-        /** SimplepeerVideoStatsResponse Codec. */
+        /** SimplePeerVideoStatsResponse Codec. */
         public Codec: rov_actions_proto.VideoCodec;
 
-        /** SimplepeerVideoStatsResponse BaseStream. */
-        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+        /** SimplePeerVideoStatsResponse BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
 
-        /** SimplepeerVideoStatsResponse RtcSenderStatsJson. */
+        /** SimplePeerVideoStatsResponse RtcSenderStatsJson. */
         public RtcSenderStatsJson: string;
 
         /**
-         * Creates a new SimplepeerVideoStatsResponse instance using the specified properties.
+         * Creates a new SimplePeerVideoStatsResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns SimplepeerVideoStatsResponse instance
+         * @returns SimplePeerVideoStatsResponse instance
          */
-        public static create(properties?: rov_actions_proto.ISimplepeerVideoStatsResponse): rov_actions_proto.SimplepeerVideoStatsResponse;
+        public static create(properties?: rov_actions_proto.ISimplePeerVideoStatsResponse): rov_actions_proto.SimplePeerVideoStatsResponse;
 
         /**
-         * Encodes the specified SimplepeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
-         * @param message SimplepeerVideoStatsResponse message or plain object to encode
+         * Encodes the specified SimplePeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplePeerVideoStatsResponse.verify|verify} messages.
+         * @param message SimplePeerVideoStatsResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.ISimplepeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISimplePeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified SimplepeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
-         * @param message SimplepeerVideoStatsResponse message or plain object to encode
+         * Encodes the specified SimplePeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplePeerVideoStatsResponse.verify|verify} messages.
+         * @param message SimplePeerVideoStatsResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.ISimplepeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISimplePeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer.
+         * Decodes a SimplePeerVideoStatsResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns SimplepeerVideoStatsResponse
+         * @returns SimplePeerVideoStatsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerVideoStatsResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.SimplePeerVideoStatsResponse;
 
         /**
-         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * Decodes a SimplePeerVideoStatsResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns SimplepeerVideoStatsResponse
+         * @returns SimplePeerVideoStatsResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerVideoStatsResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.SimplePeerVideoStatsResponse;
 
         /**
-         * Verifies a SimplepeerVideoStatsResponse message.
+         * Verifies a SimplePeerVideoStatsResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
-         * Creates a SimplepeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a SimplePeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns SimplepeerVideoStatsResponse
+         * @returns SimplePeerVideoStatsResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerVideoStatsResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplePeerVideoStatsResponse;
 
         /**
-         * Creates a plain object from a SimplepeerVideoStatsResponse message. Also converts values to other types if specified.
-         * @param message SimplepeerVideoStatsResponse
+         * Creates a plain object from a SimplePeerVideoStatsResponse message. Also converts values to other types if specified.
+         * @param message SimplePeerVideoStatsResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.SimplepeerVideoStatsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SimplePeerVideoStatsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this SimplepeerVideoStatsResponse to JSON.
+         * Converts this SimplePeerVideoStatsResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for SimplepeerVideoStatsResponse
+         * Gets the default type url for SimplePeerVideoStatsResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -4756,10 +4756,10 @@ export namespace rov_actions_proto {
     interface IResponseBackendMetadata {
 
         /** ResponseBackendMetadata TargetUserIds */
-        TargetUserIds?: (string[]|null);
+        TargetUserIds?: (string[] | null);
 
         /** ResponseBackendMetadata TransportMethod */
-        TransportMethod?: (rov_actions_proto.DataTransportMethod|null);
+        TransportMethod?: (rov_actions_proto.DataTransportMethod | null);
     }
 
     /** Represents a ResponseBackendMetadata. */
@@ -4808,7 +4808,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ResponseBackendMetadata;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.ResponseBackendMetadata;
 
         /**
          * Decodes a ResponseBackendMetadata message from the specified reader or buffer, length delimited.
@@ -4817,14 +4817,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ResponseBackendMetadata;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.ResponseBackendMetadata;
 
         /**
          * Verifies a ResponseBackendMetadata message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a ResponseBackendMetadata message from a plain object. Also converts values to their respective internal types.
@@ -4859,64 +4859,64 @@ export namespace rov_actions_proto {
     interface IRovResponse {
 
         /** RovResponse BackendMetadata */
-        BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
+        BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata | null);
 
         /** RovResponse ExchangeId */
-        ExchangeId?: (number|null);
+        ExchangeId?: (number | null);
 
         /** RovResponse Done */
-        Done?: (rov_actions_proto.IDoneResponse|null);
+        Done?: (rov_actions_proto.IDoneResponse | null);
 
         /** RovResponse Error */
-        Error?: (rov_actions_proto.IErrorResponse|null);
+        Error?: (rov_actions_proto.IErrorResponse | null);
 
         /** RovResponse Pong */
-        Pong?: (rov_actions_proto.IPongResponse|null);
+        Pong?: (rov_actions_proto.IPongResponse | null);
 
         /** RovResponse ContinuedOutput */
-        ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse|null);
+        ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse | null);
 
         /** RovResponse SensorUpdates */
-        SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse|null);
+        SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse | null);
 
         /** RovResponse PasswordRequired */
-        PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse|null);
+        PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse | null);
 
         /** RovResponse PasswordAccepted */
-        PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse|null);
+        PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse | null);
 
         /** RovResponse PasswordInvalid */
-        PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
+        PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse | null);
 
         /** RovResponse PilotChanged */
-        PilotChanged?: (rov_actions_proto.IPilotChangedResponse|null);
+        PilotChanged?: (rov_actions_proto.IPilotChangedResponse | null);
 
         /** RovResponse ClientConnected */
-        ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
+        ClientConnected?: (rov_actions_proto.IClientConnectedResponse | null);
 
         /** RovResponse ClientDisconnected */
-        ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse|null);
+        ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse | null);
 
         /** RovResponse Heartbeat */
-        Heartbeat?: (rov_actions_proto.IHeartbeatResponse|null);
+        Heartbeat?: (rov_actions_proto.IHeartbeatResponse | null);
 
         /** RovResponse Mavlink */
-        Mavlink?: (rov_actions_proto.IMavlinkResponse|null);
+        Mavlink?: (rov_actions_proto.IMavlinkResponse | null);
 
-        /** RovResponse SimplepeerSignal */
-        SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalResponse|null);
+        /** RovResponse SimplePeerSignal */
+        SimplePeerSignal?: (rov_actions_proto.ISimplePeerSignalResponse | null);
 
         /** RovResponse SystemMonitor */
-        SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse|null);
+        SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse | null);
 
         /** RovResponse LogMessage */
-        LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
+        LogMessage?: (rov_actions_proto.ILogMessageResponse | null);
 
         /** RovResponse LivekitVideoStats */
-        LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse|null);
+        LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse | null);
 
-        /** RovResponse SimplepeerVideoStats */
-        SimplepeerVideoStats?: (rov_actions_proto.ISimplepeerVideoStatsResponse|null);
+        /** RovResponse SimplePeerVideoStats */
+        SimplePeerVideoStats?: (rov_actions_proto.ISimplePeerVideoStatsResponse | null);
     }
 
     /** Represents a RovResponse. */
@@ -4929,67 +4929,67 @@ export namespace rov_actions_proto {
         constructor(properties?: rov_actions_proto.IRovResponse);
 
         /** RovResponse BackendMetadata. */
-        public BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata|null);
+        public BackendMetadata?: (rov_actions_proto.IResponseBackendMetadata | null);
 
         /** RovResponse ExchangeId. */
         public ExchangeId: number;
 
         /** RovResponse Done. */
-        public Done?: (rov_actions_proto.IDoneResponse|null);
+        public Done?: (rov_actions_proto.IDoneResponse | null);
 
         /** RovResponse Error. */
-        public Error?: (rov_actions_proto.IErrorResponse|null);
+        public Error?: (rov_actions_proto.IErrorResponse | null);
 
         /** RovResponse Pong. */
-        public Pong?: (rov_actions_proto.IPongResponse|null);
+        public Pong?: (rov_actions_proto.IPongResponse | null);
 
         /** RovResponse ContinuedOutput. */
-        public ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse|null);
+        public ContinuedOutput?: (rov_actions_proto.IContinuedOutputResponse | null);
 
         /** RovResponse SensorUpdates. */
-        public SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse|null);
+        public SensorUpdates?: (rov_actions_proto.ISensorUpdatesResponse | null);
 
         /** RovResponse PasswordRequired. */
-        public PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse|null);
+        public PasswordRequired?: (rov_actions_proto.IPasswordRequiredResponse | null);
 
         /** RovResponse PasswordAccepted. */
-        public PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse|null);
+        public PasswordAccepted?: (rov_actions_proto.IPasswordAcceptedResponse | null);
 
         /** RovResponse PasswordInvalid. */
-        public PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
+        public PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse | null);
 
         /** RovResponse PilotChanged. */
-        public PilotChanged?: (rov_actions_proto.IPilotChangedResponse|null);
+        public PilotChanged?: (rov_actions_proto.IPilotChangedResponse | null);
 
         /** RovResponse ClientConnected. */
-        public ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
+        public ClientConnected?: (rov_actions_proto.IClientConnectedResponse | null);
 
         /** RovResponse ClientDisconnected. */
-        public ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse|null);
+        public ClientDisconnected?: (rov_actions_proto.IClientDisconnectedResponse | null);
 
         /** RovResponse Heartbeat. */
-        public Heartbeat?: (rov_actions_proto.IHeartbeatResponse|null);
+        public Heartbeat?: (rov_actions_proto.IHeartbeatResponse | null);
 
         /** RovResponse Mavlink. */
-        public Mavlink?: (rov_actions_proto.IMavlinkResponse|null);
+        public Mavlink?: (rov_actions_proto.IMavlinkResponse | null);
 
-        /** RovResponse SimplepeerSignal. */
-        public SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalResponse|null);
+        /** RovResponse SimplePeerSignal. */
+        public SimplePeerSignal?: (rov_actions_proto.ISimplePeerSignalResponse | null);
 
         /** RovResponse SystemMonitor. */
-        public SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse|null);
+        public SystemMonitor?: (rov_actions_proto.ISystemMonitorResponse | null);
 
         /** RovResponse LogMessage. */
-        public LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
+        public LogMessage?: (rov_actions_proto.ILogMessageResponse | null);
 
         /** RovResponse LivekitVideoStats. */
-        public LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse|null);
+        public LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse | null);
 
-        /** RovResponse SimplepeerVideoStats. */
-        public SimplepeerVideoStats?: (rov_actions_proto.ISimplepeerVideoStatsResponse|null);
+        /** RovResponse SimplePeerVideoStats. */
+        public SimplePeerVideoStats?: (rov_actions_proto.ISimplePeerVideoStatsResponse | null);
 
         /** RovResponse Body. */
-        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"PilotChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|"LivekitVideoStats"|"SimplepeerVideoStats");
+        public Body?: ("Done" | "Error" | "Pong" | "ContinuedOutput" | "SensorUpdates" | "PasswordRequired" | "PasswordAccepted" | "PasswordInvalid" | "PilotChanged" | "ClientConnected" | "ClientDisconnected" | "Heartbeat" | "Mavlink" | "SimplePeerSignal" | "SystemMonitor" | "LogMessage" | "LivekitVideoStats" | "SimplePeerVideoStats");
 
         /**
          * Creates a new RovResponse instance using the specified properties.
@@ -5022,7 +5022,7 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovResponse;
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.RovResponse;
 
         /**
          * Decodes a RovResponse message from the specified reader or buffer, length delimited.
@@ -5031,14 +5031,14 @@ export namespace rov_actions_proto {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.RovResponse;
 
         /**
          * Verifies a RovResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
-        public static verify(message: { [k: string]: any }): (string|null);
+        public static verify(message: { [k: string]: any }): (string | null);
 
         /**
          * Creates a RovResponse message from a plain object. Also converts values to their respective internal types.

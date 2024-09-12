@@ -8,7 +8,7 @@
       allowBkupCodec.set(options.AllowBackupCodec);
       maxBitrate.set(options.BaseStream.MaxBitrate);
       keepFullResLayer.set(options.SimulcastLayers?.length > 0);
-      if (!useSimplepeer.get()) {
+      if (!useSimplePeer.get()) {
         size.set(options.BaseStream.Height);
         codec.set(rov_actions_proto.VideoCodec[options.Codec].toLowerCase());
       }
@@ -16,14 +16,14 @@
     lkSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
   };
 
-  export const onSimplepeerVideoOptionsChange = (options: rov_actions_proto.ISimplepeerVideoStatsResponse) => {
+  export const onSimplePeerVideoOptionsChange = (options: rov_actions_proto.ISimplePeerVideoStatsResponse) => {
     if (lastChangeTimestamp + 1000 > Date.now()) return;
-    const videoStream = frontendConnMngr.simplepeerConnection.remoteVideoStreams.get().values().next().value;
-    const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled && frontendConnMngr.simplepeerConnection.connectionState.get() === ConnectionStates.connected;
-    const preferedMimetypes = frontendConnMngr.simplepeerConnection.getCodecPreferences();
+    const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
+    const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled && frontendConnMngr.simplePeerConnection.connectionState.get() === ConnectionStates.connected;
+    const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
     const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toUpperCase()) : [];
     console.log(rov_actions_proto.VideoCodec[preferedCodecs[0]]);
-    useSimplepeer.set(enabled);
+    useSimplePeer.set(enabled);
     if (enabled) {
       size.set(options.BaseStream.Height);
       codec.set(preferedCodecs && preferedCodecs.length > 0 ? rov_actions_proto.VideoCodec[preferedCodecs[0]] : "unknown");
@@ -38,7 +38,7 @@
   const playoutDelay = nStore(0);
   const codec = nStore("vp9");
   const keepFullResLayer = nStore(false);
-  const useSimplepeer = nStore(false);
+  const useSimplePeer = nStore(false);
   const useLivekit = nStore(true);
   const useTwitch = nStore(false);
   const spSenderVideoStats = nStore([]);
@@ -136,16 +136,16 @@
     );
   };
 
-  const sendSimplepeerChange = (force?: boolean) => {
+  const sendSimplePeerChange = (force?: boolean) => {
     if (!useLivekit.get() && force === false) return;
     lastChangeTimestamp = Date.now();
 
     const mimeType = `video/${codec.get().toLowerCase()}`;
-    frontendConnMngr.setSimplepeerCodec(mimeType);
+    frontendConnMngr.setSimplePeerCodec(mimeType);
     frontendConnMngr.sendMessageToRov(
       rov_actions_proto.RovAction.create({
-        SetSimplepeerVideoOptions: {
-          Enabled: useSimplepeer.get(),
+        SetSimplePeerVideoOptions: {
+          Enabled: useSimplePeer.get(),
           Codec: rov_actions_proto.VideoCodec[codec.get().toUpperCase()],
           BaseStream: {
             Height: size.get(),
@@ -160,7 +160,7 @@
 
   const sendVideoUpdate = () => {
     sendLivekitChange();
-    sendSimplepeerChange();
+    sendSimplePeerChange();
   };
 
   const onSizeChange = () => {
@@ -168,18 +168,18 @@
     sendVideoUpdate();
   };
 
-  const onUseSimplepeerChange = (value?: boolean) => {
-    if (value !== undefined) useSimplepeer.set(value);
-    if (useSimplepeer.get()) {
+  const onUseSimplePeerChange = (value?: boolean) => {
+    if (value !== undefined) useSimplePeer.set(value);
+    if (useSimplePeer.get()) {
       onUseLivekitChange(false);
       onUseTwitchChange(false);
       onPlayoutDelayChange();
     } else {
       onUseLivekitChange(true);
     }
-    sendSimplepeerChange(true);
-    if (useSimplepeer.get()) frontendConnMngr.startSimplepeerConnection();
-    else if (frontendConnMngr.simplepeerConnection) frontendConnMngr.simplepeerConnection.stop();
+    sendSimplePeerChange(true);
+    if (useSimplePeer.get()) frontendConnMngr.startSimplePeerConnection();
+    else if (frontendConnMngr.simplePeerConnection) frontendConnMngr.simplePeerConnection.stop();
   };
 
   const onUseLivekitChange = (value?: boolean) => {
@@ -205,14 +205,14 @@
       });
     }
 
-    if (useSimplepeer.get()) {
-      const spDelay = frontendConnMngr.simplepeerConnection.getPlayoutDelay();
-      const streams = frontendConnMngr.simplepeerConnection.remoteVideoStreams.get();
+    if (useSimplePeer.get()) {
+      const spDelay = frontendConnMngr.simplePeerConnection.getPlayoutDelay();
+      const streams = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get();
       for (const [_, stream] of streams) {
         for (const track of stream.getTracks()) track.enabled = false;
       }
 
-      frontendConnMngr.simplepeerConnection.setPlayoutDelay(playoutDelay.get());
+      frontendConnMngr.simplePeerConnection.setPlayoutDelay(playoutDelay.get());
       await waitfor(Math.max(playoutDelay.get() * 1000 - spDelay * 1000, 0));
       for (const [_, stream] of streams) {
         for (const track of stream.getTracks()) {
@@ -234,7 +234,7 @@
     const livestreamRecordingUnsub = frontendConnMngr.livekitConnection.isLivestreamRecording.subscribe((isLivestreamRecording) => {
       useTwitch.set(isLivestreamRecording);
     });
-    const spStreamsUnsub = frontendConnMngr.simplepeerConnection.remoteVideoStreams.subscribe((streams) => {
+    const spStreamsUnsub = frontendConnMngr.simplePeerConnection.remoteVideoStreams.subscribe((streams) => {
       if (streams.size > 0) onPlayoutDelayChange();
       // const stream = streams.values().next().value;
       // if (stream.getTracks().length > 0) {
@@ -266,7 +266,7 @@
   </button>
   <h3 class="h3 mt-1 mb-6 text-left">Video Settings</h3>
 
-  <SlideToggle bind:checked={$useSimplepeer} name="Enable Direct Connection" active="bg-success-700" class="mb-6 mx-auto" on:change={() => onUseSimplepeerChange()}>Enable Direct Connection</SlideToggle>
+  <SlideToggle bind:checked={$useSimplePeer} name="Enable Direct Connection" active="bg-success-700" class="mb-6 mx-auto" on:change={() => onUseSimplePeerChange()}>Enable Direct Connection</SlideToggle>
   <SlideToggle bind:checked={$useLivekit} name="Enable Direct Connection" active="bg-orange-600" class="mb-6 mx-auto" on:change={() => onUseLivekitChange()}>Enable Livekit Connection</SlideToggle>
   {#if $useLivekit}
     <SlideToggle bind:checked={$useTwitch} disabled={!$useLivekit} name="Use Direct Connection" active="bg-red-700" class="mb-6 mx-auto" on:change={() => onUseTwitchChange()}>Record To Twitch</SlideToggle>

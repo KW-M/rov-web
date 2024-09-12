@@ -45,7 +45,7 @@ export interface RovMovementVector {
 export enum VideoSource {
     None = "",
     Livekit = "LK",
-    Simplepeer = "SP",
+    SimplePeer = "SP",
 }
 
 export const debugPageModeActive: nStoreT<boolean> = nStore(false);

@@ -1,12 +1,12 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-import Simplepeer from '@thaunknown/simple-peer/full.js';
-import type SimplepeerT from 'simple-peer';
+import SimplePeer from '@thaunknown/simple-peer/full.js';
+import type SimplePeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { waitfor } from './util';
 
-enum SimplepeerErrorCodes {
+enum SimplePeerErrorCodes {
     ERR_WEBRTC_SUPPORT = 'ERR_WEBRTC_SUPPORT',
     ERR_CREATE_OFFER = 'ERR_CREATE_OFFER',
     ERR_CREATE_ANSWER = 'ERR_CREATE_ANSWER',
@@ -19,8 +19,8 @@ enum SimplepeerErrorCodes {
     ERR_CONNECTION_FAILURE = 'ERR_CONNECTION_FAILURE'
 }
 
-interface SimplepeerError {
-    code: SimplepeerErrorCodes
+interface SimplePeerError {
+    code: SimplePeerErrorCodes
 }
 
 type VideoStatsPrevState = {
@@ -31,14 +31,14 @@ type VideoStatsPrevState = {
 }
 
 
-type SignalData = SimplepeerT.SignalData & {
+type SignalData = SimplePeerT.SignalData & {
     connId: number,
     msgNum: number,
 }
 
 let globalConnId = 0;
 
-export class SimplepeerConnection {
+export class SimplePeerConnection {
 
     // timestamp in ms which is updated whenever a message is recived from another participant.
     lastMsgRecivedTimestamp: number;
@@ -46,17 +46,17 @@ export class SimplepeerConnection {
     connectionState = nStore<ConnectionStates>(ConnectionStates.init); // TODO
     // subscribe to get new data messages as they are recived from the rov each message is an array of bytes.
     latestRecivedDataMessage = nStore<Uint8Array | null>(null);
-    // subscribe to get notified when the simplepeer connection is sending out a new signaling message to establish or maintain a connection.
+    // subscribe to get notified when the simplePeer connection is sending out a new signaling message to establish or maintain a connection.
     // thses messages should be sent to the other party via a already established side channel like a livekit or websocket data connection.
     outgoingSignalingMessages = nStore<string | null>(null);
-    // the current video track being sent/recived through simplepeer.
+    // the current video track being sent/recived through simplePeer.
     remoteVideoStreams = nStore<Map<string, MediaStream | null>>(new Map());
 
-    // the simplepeer instance used for this connection.
-    _p: Simplepeer | null = null;
-    // the configuration used for the simplepeer instance.
+    // the simplePeer instance used for this connection.
+    _p: SimplePeer | null = null;
+    // the configuration used for the simplePeer instance.
     _spConfig: any = null;
-    // a queue of signal messages recived to be processed by simplepeer.
+    // a queue of signal messages recived to be processed by simplePeer.
     _incomingSignalQueue: SignalData[] = [];
     // keeps track of how many signaling messages have been processed.
     _consecutiveSignalMsgsProcessed: number = 0;
@@ -90,16 +90,16 @@ export class SimplepeerConnection {
         })
     }
 
-    start(simplepeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+    start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
         if (this._p) this.stop();
         this._shouldReconnect = autoReconnect;
-        this._spConfig = Object.assign({}, simplepeerOpts, Simplepeer.config);
+        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
         logWarn("SP starting with opts: ", this._spConfig)
         if (this._spConfig.initiator) this._connectionId = globalConnId++ + Math.random();
         this._signalMsgRecivedCounter = 0;
         this._signalMsgSendCounter = 0;
-        this._p = new Simplepeer(this._spConfig) as any as SimplepeerT.Instance;
-        if (!this._p) return logError("Failed to create Simplepeer instance!");
+        this._p = new SimplePeer(this._spConfig) as any as SimplePeerT.Instance;
+        if (!this._p) return logError("Failed to create SimplePeer instance!");
 
         this._p._debug = (...args: any[]) => logDebug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
         this._reconnectAttemptCount = reconnectAttemptCount;
@@ -175,7 +175,7 @@ export class SimplepeerConnection {
 
 
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
-        this._p.on('error', (err: SimplepeerError) => {
+        this._p.on('error', (err: SimplePeerError) => {
             // this.resetConnectionStats();
             logError('SP error ', err)
             this.remoteVideoStreams.set(new Map());
@@ -193,7 +193,7 @@ export class SimplepeerConnection {
             //                 this._p.reconnect();
             //             } else {
             //                 if (this._p) this._p.destroy();
-            //                 this.start(simplepeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
+            //                 this.start(simplePeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
             //             }
             //         }, 2000);
             //         return
@@ -294,7 +294,7 @@ export class SimplepeerConnection {
     async getStats() {
         if (!this._p) return;
         return await new Promise((resolve, reject) => {
-            if (!this._p || !this._p._pc) reject("No active simplepeer instance found!")
+            if (!this._p || !this._p._pc) reject("No active simplePeer instance found!")
             this._p.getStats((err, stats) => {
                 if (err) reject(err);
                 resolve(stats);
@@ -396,7 +396,7 @@ export class SimplepeerConnection {
             try {
                 this._p.send(msg);
             } catch (err) {
-                logError("failed to send message over simplepeer data channel: ", err.message)
+                logError("failed to send message over simplePeer data channel: ", err.message)
                 this._msgSendQueue.unshift(msg);
             }
         }

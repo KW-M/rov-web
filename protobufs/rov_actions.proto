@@ -29,9 +29,9 @@ enum DataTransportMethod {
     LivekitReliable = 0;
     // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
     LivekitUnreliable = 1;
-    // !!DO NOT USE - NOT IMPLEMENTED!! Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    // !!DO NOT USE - NOT IMPLEMENTED!! Direct reliable messages are sent/recived over the simplePeer webrtc connection via TCP
     DirectReliable = 2;
-    // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
+    // Direct unreliable messages are sent/recived over the simplePeer webrtc connection via UDP (messages may get lost in transit)
     DirectUnreliable = 3;
 }
 
@@ -82,8 +82,8 @@ message SetLivekitVideoOptionsAction {
     repeated VideoStreamOptions SimulcastLayers = 5;
 }
 
-message SetSimplepeerVideoOptionsAction {
-    // Enable / disable publishing of the simplepeer video stream(s)
+message SetSimplePeerVideoOptionsAction {
+    // Enable / disable publishing of the simplePeer video stream(s)
     bool Enabled = 1;
     // Desired bitrate of the video stream in bits per second
     uint32 Bitrate = 2;
@@ -174,7 +174,7 @@ message MoveClawAction {
     float Value = 1;
 }
 
-message SimplepeerSignalAction {
+message SimplePeerSignalAction {
     string Message = 1;
 }
 
@@ -243,16 +243,16 @@ message RovAction {
         RefreshAllSensorsAction RefreshAllSensors = 20;
         // claw_move
         MoveClawAction MoveClaw = 21;
-        // simplepeer_signal
-        SimplepeerSignalAction SimplepeerSignal = 22;
+        // simplePeer_signal
+        SimplePeerSignalAction SimplePeerSignal = 22;
         // disarm
         DisarmAction Disarm = 23;
         // set_autopilot_mode
         SetAutopilotModeAction SetAutopilotMode = 24;
         // set_livekit_video_options
         SetLivekitVideoOptionsAction SetLivekitVideoOptions = 25;
-        // set_simplepeer_video_options
-        SetSimplepeerVideoOptionsAction SetSimplepeerVideoOptions = 26;
+        // set_simplePeer_video_options
+        SetSimplePeerVideoOptionsAction SetSimplePeerVideoOptions = 26;
         // set_livestreaming_enabled
         SetLivestreamingEnabledAction SetLivestreamingEnabled = 27;
     }
@@ -342,8 +342,8 @@ message MavlinkResponse {
     bytes Message = 1;
 }
 
-// used by the simplepeer signalling protocol to establish a direct webrtc connection between the rov and driver client (bypassing livekit).
-message SimplepeerSignalResponse {
+// used by the simplePeer signalling protocol to establish a direct webrtc connection between the rov and driver client (bypassing livekit).
+message SimplePeerSignalResponse {
     string Message = 1;
 }
 
@@ -381,7 +381,7 @@ message LivekitVideoStatsResponse {
     string RtcSenderStatsJson = 6;
 }
 
-message SimplepeerVideoStatsResponse {
+message SimplePeerVideoStatsResponse {
     bool Enabled = 1;
     VideoCodec Codec = 2;
     VideoStreamOptions BaseStream = 3;
@@ -431,13 +431,13 @@ message RovResponse {
         HeartbeatResponse Heartbeat = 16;
         // mavlink
         MavlinkResponse Mavlink = 17;
-        // simplepeer_signal
-        SimplepeerSignalResponse SimplepeerSignal = 18;
+        // simplePeer_signal
+        SimplePeerSignalResponse SimplePeerSignal = 18;
         // system_monitor
         SystemMonitorResponse SystemMonitor = 19;
         // log_message
         LogMessageResponse LogMessage = 20;
         LivekitVideoStatsResponse LivekitVideoStats = 21;
-        SimplepeerVideoStatsResponse SimplepeerVideoStats = 22;
+        SimplePeerVideoStatsResponse SimplePeerVideoStats = 22;
     }
 }

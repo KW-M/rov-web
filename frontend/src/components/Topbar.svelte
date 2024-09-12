@@ -15,7 +15,7 @@
   import { frontendConnMngr } from "../js/frontendConnManager";
   import { ConnectionStates } from "../js/shared/consts";
   $: role = Array.from($page.url.pathname.split("/")).pop();
-  const spState = frontendConnMngr.simplepeerConnection.connectionState;
+  const spState = frontendConnMngr.simplePeerConnection.connectionState;
   const lkState = frontendConnMngr.livekitConnection.connectionState;
 </script>
 

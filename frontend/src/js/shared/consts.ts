@@ -1,6 +1,6 @@
 import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } from "livekit-client"
 import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
-import type SimplepeerT from "simple-peer";
+import type SimplePeerT from "simple-peer";
 
 declare global {
     interface Window {
@@ -120,7 +120,7 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 
 }
 
-export const SIMPLEPEER_BASE_CONFIG: SimplepeerT.Options & { iceRestartEnabled: string | boolean } = {
+export const SIMPLEPEER_BASE_CONFIG: SimplePeerT.Options & { iceRestartEnabled: string | boolean } = {
     initiator: true,
     trickle: true,
     iceRestartEnabled: 'onDisconnect',

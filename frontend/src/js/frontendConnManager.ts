@@ -3,7 +3,7 @@ import { default as nStore } from "./shared/libraries/nStore";
 import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata, type AuthTokenInfo } from "./shared/livekit/adminlessActions";
 import { LivekitViewerConnection } from "./livekitViewerConn";
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
-import { SimplepeerConnection } from "./shared/simplepeer";
+import { SimplePeerConnection } from "./shared/simplePeer";
 import { changesSubscribe, oneShotSubscribe, waitfor } from "./shared/util";
 import { showToastMessage, ToastSeverity } from "./toastMessageManager";
 import { LIVEKIT_LIST_ONLY_TOKEN, URL_PARAMS } from "./frontendConsts";
@@ -19,7 +19,7 @@ export interface LivekitRoomInfo {
 export enum VideoStreamMethod {
     none = "none",
     livekit = "livekit",
-    simplepeer = "simplepeer",
+    simplePeer = "simplePeer",
 }
 
 export class FrontendConnectionManager {
@@ -27,24 +27,24 @@ export class FrontendConnectionManager {
     livekitConnection = new LivekitViewerConnection();
     videoStreams = nStore<MediaStream | undefined>(undefined);
     currentLivekitIdentity = nStore<string | null>(null);
-    simplepeerConnection: SimplepeerConnection;
+    simplePeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
     openLivekitRoomInfo = nStore<LivekitRoomInfo[]>([]);
     _cleanupFuncs: { [key: string]: () => void } = {};
     currentVideoStreamMethod = nStore<VideoStreamMethod>(VideoStreamMethod.none);
 
     constructor() {
-        this.simplepeerConnection = new SimplepeerConnection();
+        this.simplePeerConnection = new SimplePeerConnection();
         changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
             const { senderId, msg } = msgInfo;
             if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not rov)
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
-        changesSubscribe(this.simplepeerConnection.latestRecivedDataMessage, (msg) => {
+        changesSubscribe(this.simplePeerConnection.latestRecivedDataMessage, (msg) => {
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
-        changesSubscribe(this.simplepeerConnection.outgoingSignalingMessages, (msg) => {
-            this.sendMessageToRov({ SimplepeerSignal: { Message: msg } }, true)
+        changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (msg) => {
+            this.sendMessageToRov({ SimplePeerSignal: { Message: msg } }, true)
         })
     }
 
@@ -75,9 +75,9 @@ export class FrontendConnectionManager {
     }
 
     async onConnectedActions() {
-        // await this.startSimplepeerConnection();
+        // await this.startSimplePeerConnection();
         showToastMessage(`Connected to ROV ${this.livekitConnection._roomConn.name}!`, 2000, false, ToastSeverity.success)
-        this.startSimplepeerConnection();
+        this.startSimplePeerConnection();
     }
 
 
@@ -87,13 +87,13 @@ export class FrontendConnectionManager {
     }
 
     /**
-     * Keeps track of the connection state of both the livekit and simplepeer connections and aggriagates them into a single nStore called
+     * Keeps track of the connection state of both the livekit and simplePeer connections and aggriagates them into a single nStore called
      * this.connectionState. This is useful for the frontend to know if the connection is connected, connecting, disconnected, etc.
      */
     async _keepTrackOfConnectionState() {
         if (this._cleanupFuncs['livekitConnState']) this._cleanupFuncs['livekitConnState']()
         const unsubA = changesSubscribe(this.livekitConnection.connectionState, (livekitState) => {
-            if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {
+            if (this.simplePeerConnection && this.simplePeerConnection.connectionState.get() === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
             } else if (livekitState === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
@@ -101,11 +101,11 @@ export class FrontendConnectionManager {
                 this.connectionState.set(livekitState)
             }
         })
-        const unsubB = changesSubscribe(this.simplepeerConnection.connectionState, (simplepeerState) => {
+        const unsubB = changesSubscribe(this.simplePeerConnection.connectionState, (simplePeerState) => {
             if (this.livekitConnection && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
             } else {
-                this.connectionState.set(simplepeerState)
+                this.connectionState.set(simplePeerState)
             }
         })
         this._cleanupFuncs['livekitConnState'] = () => { unsubA(); unsubB() }
@@ -159,45 +159,45 @@ export class FrontendConnectionManager {
     }
 
     /**
-     * Initilizes a direct simplepeer connection with the rov and starts it with the appropriate callbacks.
-     * If a simplepeer connection already exists, it is stopped and a new one is created.
+     * Initilizes a direct simplePeer connection with the rov and starts it with the appropriate callbacks.
+     * If a simplePeer connection already exists, it is stopped and a new one is created.
      * requires that the livekit connection is already initilized.
      */
-    public async startSimplepeerConnection() {
-        if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplepeerConnection() called when livekitConnection was not fully connected!")
-        if (!this.simplepeerConnection) throw new Error("startSimplepeerConnection() called without initilized simplepeerConnection!")
-        this.simplepeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true } }), true)
+    public async startSimplePeerConnection() {
+        if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplePeerConnection() called when livekitConnection was not fully connected!")
+        if (!this.simplePeerConnection) throw new Error("startSimplePeerConnection() called without initilized simplePeerConnection!")
+        this.simplePeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true } }), true)
     }
 
     /**
-     * Triggers the onSignal callback of the simplepeer connection.
-     * Should be called in response to a message from the rov containing simplepeer signalling data.
+     * Triggers the onSignal callback of the simplePeer connection.
+     * Should be called in response to a message from the rov containing simplePeer signalling data.
      */
-    public async ingestSimplepeerSignallingMsg(signallingMsg: string) {
-        const spConn = this.simplepeerConnection;
+    public async ingestSimplePeerSignallingMsg(signallingMsg: string) {
+        const spConn = this.simplePeerConnection;
         if (spConn) spConn.ingestSignalingMsg(signallingMsg);
-        else throw new Error("ingestSimplepeerSignallingMsg() called when simplepeerConnection was not initilized!")
+        else throw new Error("ingestSimplePeerSignallingMsg() called when simplePeerConnection was not initilized!")
     }
 
-    // public async toggleSimplepeerConnection() {
-    //     if (!this.simplepeerConnection) throw new Error("toggleSimplepeerConnection() called without simplepeerConnection in class!")
-    //     const state = this.simplepeerConnection.connectionState.get();
-    //     log("toggleSimplepeerConnection(): state", state)
+    // public async toggleSimplePeerConnection() {
+    //     if (!this.simplePeerConnection) throw new Error("toggleSimplePeerConnection() called without simplePeerConnection in class!")
+    //     const state = this.simplePeerConnection.connectionState.get();
+    //     log("toggleSimplePeerConnection(): state", state)
     //     if ([ConnectionStates.disconnectedOk, ConnectionStates.failed, ConnectionStates.init].includes(state)) {
-    //         this.startSimplepeerConnection();
+    //         this.startSimplePeerConnection();
     //     } else {
-    //         this.simplepeerConnection.stop();
+    //         this.simplePeerConnection.stop();
     //     }
     // }
 
-    public async setSimplepeerCodec(mimeType: string) {
-        if (!this.simplepeerConnection) throw new Error("setSimplepeerCodec() called without simplepeerConnection in class!")
-        this.simplepeerConnection.setCodecPreferences([mimeType])
+    public async setSimplePeerCodec(mimeType: string) {
+        if (!this.simplePeerConnection) throw new Error("setSimplePeerCodec() called without simplePeerConnection in class!")
+        this.simplePeerConnection.setCodecPreferences([mimeType])
     }
 
     /**
      * Sends a message to the rov. If reliable is true, it will use the livekit connection.
-     * If reliable is false, it will use the simplepeer connection if it is connected, otherwise it will use the livekit connection.
+     * If reliable is false, it will use the simplePeer connection if it is connected, otherwise it will use the livekit connection.
      * @param msg - the message to send to the rov
      * @param reliable - whether or not to use tcp and force the livekit connection.
      */
@@ -208,15 +208,15 @@ export class FrontendConnectionManager {
         if (URL_PARAMS.DEBUG_MODE) logDebug("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg);
         if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
             await this.livekitConnection.sendMessage(msgBytes, reliable, [rovUserId]);
-        } else if (this.simplepeerConnection && this.simplepeerConnection.connectionState.get() === ConnectionStates.connected) {
-            await this.simplepeerConnection.sendMessage(msgBytes);
+        } else if (this.simplePeerConnection && this.simplePeerConnection.connectionState.get() === ConnectionStates.connected) {
+            await this.simplePeerConnection.sendMessage(msgBytes);
         } else {
             await this.livekitConnection.sendMessage(msgBytes, false, [rovUserId]);
         }
     }
 
     public async disconnect() {
-        if (this.simplepeerConnection) await this.simplepeerConnection.stop();
+        if (this.simplePeerConnection) await this.simplePeerConnection.stop();
         if (this.livekitConnection) await this.livekitConnection.close();
         for (const key in this._cleanupFuncs) this._cleanupFuncs[key]();
     }
