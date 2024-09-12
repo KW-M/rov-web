@@ -1,22 +1,14 @@
 <script lang="ts">
-  import { ConnectionState, LOADING_MESSAGE } from "../js/frontendConsts";
-  import videoPlaceholderUrl from "../assets/ui-elements/video-placeholder.jpg";
   import { currentVideoSource, fullscreenOpen, VideoSource } from "../js/globalContext";
   import { onDestroy, onMount } from "svelte";
-  import { changesSubscribe } from "../js/shared/util";
   import { frontendConnMngr } from "../js/frontendConnManager";
   import { showToastMessage, ToastSeverity } from "../js/toastMessageManager";
   import { Track, type RemoteTrack } from "livekit-client";
-  import { resizeToFit } from "./Actions/resizeToFit.action";
-
-  import HdIcon from "svelte-google-materialdesign-icons/Hd.svelte";
-  import PlayArrowIcon from "svelte-google-materialdesign-icons/Play_arrow.svelte";
-  import HdrOffIcon from "svelte-google-materialdesign-icons/Hdr_off.svelte";
   import { blurOnClick } from "./Actions/blurOnClick.action";
   import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
   import CompassDial from "./CompassDial.svelte";
   import RovViz from "./3dScene/rovViz.svelte";
-  import { Add_circle_outline, Circle, Compare, Directions, Hide_source, Navigation, Remove_circle_outline, Source, Video_settings } from "svelte-google-materialdesign-icons";
+  import { Hide_source, Navigation, Video_settings } from "svelte-google-materialdesign-icons";
   import { getDrawerStore } from "@skeletonlabs/skeleton";
 
   interface VideoStreamData {
@@ -30,8 +22,8 @@
   let livekitVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let simplepeerVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let videoContainerElem: HTMLDivElement | null = null;
-  let videoHovered = false;
-  let videoSwitchInProgress = false;
+  // let videoHovered = false;
+  // let videoSwitchInProgress = false;
   let videoAspectRatio = 4 / 3;
   let rovVizVisible = false;
 

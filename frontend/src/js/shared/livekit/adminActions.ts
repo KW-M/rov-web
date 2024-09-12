@@ -1,7 +1,7 @@
 
 import { encryptAccessToken, getFrontendAccessToken, silenceFalseSecurityNotice } from './livekitTokens';
 import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
-import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
+import { RoomServiceClient, type Room, EgressClient } from 'livekit-server-sdk';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 
 export interface AuthTokenInfo {

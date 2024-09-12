@@ -1,5 +1,5 @@
 
-import { AccessToken, type AccessTokenOptions, TokenVerifier } from "livekit-server-sdk";
+import { AccessToken, type AccessTokenOptions } from "livekit-server-sdk";
 import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
 import { encrypt } from "../encryption";
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"

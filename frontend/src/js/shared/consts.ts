@@ -1,5 +1,5 @@
-import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions, VideoPresets } from "livekit-client"
-import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum.ts";
+import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } from "livekit-client"
+import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
 import type SimplepeerT from "simple-peer";
 
 declare global {
@@ -104,11 +104,6 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
         //         priority: "low",
         //     }
         // },
-
-        simulcast: true,
-        videoSimulcastLayers: [
-            VideoPresets.h540,
-        ]
 
     },
 }

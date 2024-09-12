@@ -8,28 +8,13 @@ import {
     MediaDeviceFailure,
     ConnectionQuality,
     ParticipantEvent,
-    TrackPublication,
     DisconnectReason,
-    DataPacket_Kind,
     type RoomOptions,
     type RoomConnectOptions,
-    RemoteTrack,
-    Track,
-    ConnectionState,
-    type VideoSenderStats,
-    type VideoReceiverStats,
-    RemoteTrackPublication,
-    RemoteVideoTrack,
-    LocalVideoTrack,
-    VideoQuality,
-    type VideoCaptureOptions,
-    type TrackPublishOptions,
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { getWebsocketURL, waitfor } from '../util';
-import { ConnectionStates, DECODE_TXT, LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG } from '../consts';
-import { getPublisherAccessToken } from './livekitTokens';
-import type { RoomServiceClient } from 'livekit-server-sdk';
+import { ConnectionStates } from '../consts';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 
 const appendLog = log;
