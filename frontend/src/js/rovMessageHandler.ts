@@ -8,7 +8,8 @@ import { modalPasswordPrompt } from "./uiDialogs";
 import { handleMavlinkMessage } from "./mavlinkMessageHandler";
 import { updateSystemMonitorDisplay } from "./vehicleStats";
 import { URL_PARAMS } from "./frontendConsts";
-import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
+import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
+import { onLivekitVideoOptionsChange, onSimplepeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
 
 let lastTimeRecvdPong = NaN;
 
@@ -37,26 +38,30 @@ export class FrontendRovMsgHandlerClass {
             return this.handleContinuedOutputMsgRecived(msgData.ContinuedOutput, ExchangeId);
         } else if (msgData.SensorUpdates) {
             return this.handleSensorUpdatesMsgRecived(msgData.SensorUpdates, ExchangeId);
-        } else if (msgData.PasswordRequired) {
-            return this.handlePasswordRequiredMsgRecived(msgData.PasswordRequired, ExchangeId);
-        } else if (msgData.PasswordAccepted) {
-            return this.handlePasswordAcceptedMsgRecived(msgData.PasswordAccepted, ExchangeId);
-        } else if (msgData.PasswordInvalid) {
-            return this.handlePasswordInvalidMsgRecived(msgData.PasswordInvalid, ExchangeId);
-        } else if (msgData.DriverChanged) {
-            return this.handleDriverChangedMsgRecived(msgData.DriverChanged, ExchangeId);
+            // } else if (msgData.PasswordRequired) {
+            //     return this.handlePasswordRequiredMsgRecived(msgData.PasswordRequired, ExchangeId);
+            // } else if (msgData.PasswordAccepted) {
+            //     return this.handlePasswordAcceptedMsgRecived(msgData.PasswordAccepted, ExchangeId);
+            // } else if (msgData.PasswordInvalid) {
+            //     return this.handlePasswordInvalidMsgRecived(msgData.PasswordInvalid, ExchangeId);
+        } else if (msgData.PilotChanged) {
+            return this.handlePilotChangedMsgRecived(msgData.PilotChanged, ExchangeId);
         } else if (msgData.ClientConnected) {
             return this.handleClientConnectedMsgRecived(msgData.ClientConnected, ExchangeId);
         } else if (msgData.ClientDisconnected) {
             return this.handleClientDisconnectedMsgRecived(msgData.ClientDisconnected, ExchangeId);
         } else if (msgData.SimplepeerSignal && msgData.SimplepeerSignal.Message) {
-            frontendConnMngr.ingestSimplePeerSignallingMsg(msgData.SimplepeerSignal.Message);
+            frontendConnMngr.ingestSimplepeerSignallingMsg(msgData.SimplepeerSignal.Message);
         } else if (msgData.Mavlink) {
             return this.handleMavlinkMessageRecived(msgData.Mavlink, ExchangeId);
         } else if (msgData.SystemMonitor) {
             return this.handleSystemMonitorMsgRecived(msgData.SystemMonitor, ExchangeId);
         } else if (msgData.LogMessage) {
             return this.handleLogMsgRecived(msgData.LogMessage, ExchangeId);
+        } else if (msgData.LivekitVideoStats) {
+            return this.handleLivekitVideoStatsMsgRecived(msgData.LivekitVideoStats, ExchangeId);
+        } else if (msgData.SimplepeerVideoStats) {
+            return this.handleSimplepeerVideoStatsMsgRecived(msgData.SimplepeerVideoStats, ExchangeId);
         } else {
             logWarn("Unhandled ROV message recived: ", msgData);
         }
@@ -79,7 +84,6 @@ export class FrontendRovMsgHandlerClass {
 
     handleContinuedOutputMsgRecived(msgData: rov_actions_proto.IContinuedOutputResponse, ExchangeId: number) {
         if (URL_PARAMS.DEBUG_MODE) logDebug("ContinuedOutput: ", ExchangeId, msgData);
-        // pass
     }
 
     handleSensorUpdatesMsgRecived(msgData: rov_actions_proto.ISensorUpdatesResponse, ExchangeId: number) {
@@ -117,14 +121,13 @@ export class FrontendRovMsgHandlerClass {
         this.handlePasswordRequiredMsgRecived(msgData, ExchangeId);
     }
 
-    // TODO:
-    handleDriverChangedMsgRecived(msgData: rov_actions_proto.IDriverChangedResponse, ExchangeId: number) {
+    handlePilotChangedMsgRecived(msgData: rov_actions_proto.IPilotChangedResponse, ExchangeId: number) {
         let ourLivekitIdentity = frontendConnMngr.currentLivekitIdentity.get();
-        if (msgData.DriverPeerId == ourLivekitIdentity) {
+        if (msgData.PilotIdentity == ourLivekitIdentity) {
             showToastMessage("You are now the driver");
             isRovDriver.set(true);
         } else {
-            showToastMessage("ROV Driver is now " + msgData.DriverPeerId);
+            showToastMessage("ROV Driver is now " + msgData.PilotIdentity);
             isRovDriver.set(false);
         }
     }
@@ -150,17 +153,26 @@ export class FrontendRovMsgHandlerClass {
 
     handleLogMsgRecived(msgData: rov_actions_proto.ILogMessageResponse, ExchangeId: number) {
         if (URL_PARAMS.SHOW_REMOTE_LOGS) {
-            let logArgs = JSON.parse(msgData.Message);
-            if (!Array.isArray(logArgs)) logArgs = [logArgs];
-            if (logArgs.length === 0) return;
-            if (typeof logArgs[0] === 'string') logArgs[0] = "REMOTE LOG: " + logArgs[0];
-            else logArgs.unshift("REMOTE LOG: "); // add "REMOTE LOG: " to the start of the logArgs
-            if (msgData.Level == rov_actions_proto.LogLevel.Debug) logDebug(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Info) logInfo(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Warning) logWarn(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Error) logError(...logArgs);
-            else if (msgData.Level == rov_actions_proto.LogLevel.Critical) logError(...logArgs);
+            const {
+                level, timestamp, args, trace, kind, origin,
+            } = JSON.parse(msgData.Message);
+            mainLogr.addLog(level, args, trace, kind, origin, timestamp);
+            // if (msgData.Level == rov_actions_proto.LogLevel.Debug) logDebug(...logArgs);
+            // else if (msgData.Level == rov_actions_proto.LogLevel.Info) logInfo(...logArgs);
+            // else if (msgData.Level == rov_actions_proto.LogLevel.Warning) logWarn(...logArgs);
+            // else if (msgData.Level == rov_actions_proto.LogLevel.Error) logError(...logArgs);
+            // else if (msgData.Level == rov_actions_proto.LogLevel.Critical) logError(...logArgs);
         }
+    }
+
+    handleLivekitVideoStatsMsgRecived(msgData: rov_actions_proto.ILivekitVideoStatsResponse, ExchangeId: number) {
+        logDebug("LivekitVideoStats: ", msgData);
+        onLivekitVideoOptionsChange(msgData);
+    };
+
+    handleSimplepeerVideoStatsMsgRecived(msgData: rov_actions_proto.ISimplepeerVideoStatsResponse, ExchangeId: number) {
+        logDebug("SimplepeerVideoStats: ", msgData);
+        onSimplepeerVideoOptionsChange(msgData);
     }
 
     sendRovMessage(msg: rov_actions_proto.IRovAction, replyCallback: null | ((replyMsgData: rov_actions_proto.RovResponse) => void) = null) {

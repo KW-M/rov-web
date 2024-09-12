@@ -26,7 +26,7 @@ export enum LogOrigin {
 export type LogLevel = rov_actions_proto.LogLevel | LogLevelConsole;
 
 export interface LogEntry {
-    timestamp: number, // performance.now()
+    timestamp: number, // Date.now()
     level: LogLevelConsole, // warning, error, info, debug, console
     args: any[],
     trace: string[],
@@ -49,6 +49,7 @@ export class Logger {
     logsStore: LogEntry[] = [];
     sendLogsCallback: (logLevel: LogLevel, args: any[]) => Promise<boolean>;
     rootURL: string;
+    sendLogsAllowed: boolean = false;
     sendLogsInterval: number;
     rawConsole: partialConsole;
     defaultLogOrigin: LogOrigin;
@@ -60,6 +61,13 @@ export class Logger {
         this.rootURL = window.location.protocol + "//" + window.location.host;
         this.defaultLogOrigin = origin;
         console.log("Logger initialized", this.rootURL)
+
+        // Only Chrome & Opera have an error attribute on the event.
+        window.addEventListener("error", (e: ErrorEvent) => {
+            if (!e) return;
+            const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
+            this.addLog(LogLevelConsole.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
+        });
     }
 
     subscribe(subscriber: () => void) {
@@ -67,39 +75,34 @@ export class Logger {
         subscriber();
     }
 
-    enableSendLogs(sendLogsCallback: (logLevel: LogLevel, args: any[]) => Promise<boolean>) {
-        this.sendLogsCallback = sendLogsCallback;
-
-        // Only Chrome & Opera have an error attribute on the event.
-        window.addEventListener("error", (e) => {
-            const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
-            if (e.error) {
-                sendLogsCallback(LogLevelConsole.Error, args).then((successful) => {
-                    if (!successful) this.addLog(LogLevelConsole.Error, args);
-                });
-            }
-        });
-
-        this.sendLogsInterval = setInterval(() => {
-            this.sendQueuedLogs(sendLogsCallback);
-        }, 1000) as any as number;
+    sendLogs(sendLogsCallback: (logLevel: LogLevel, msg: string) => Promise<boolean>) {
+        // this.sendLogsInterval = setInterval(() => {
+        this.sendQueuedLogs(sendLogsCallback);
+        // }, 1000) as any as number;
     }
 
-    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevelConsole, args: any[], trace: string[]) => Promise<boolean>) {
+    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevelConsole, msg: string) => Promise<boolean>) {
+        if (!this.sendLogsAllowed) return;
         const logsToSendCopy = this.logsStore.filter((log) => !log.sentToRemote);
         logsToSendCopy.forEach((log) => { log.sentToRemote = true });
-        Promise.allSettled(logsToSendCopy.map((log) => {
-            return sendLogsCallback(log.level, log.args, log.trace)
+        // if (logsToSendCopy.length === 0) return clearInterval(this.sendLogsInterval);
+        return Promise.allSettled(logsToSendCopy.map((log) => {
+            const json = mainLogr.logToJson(log);
+            return sendLogsCallback(log.level, json);
         })).then((results) => {
+            const failedToSendLogs: { log: LogEntry, result: any }[] = []
             for (let i = 0; i < results.length; i++) {
                 const result = results[i];
                 if (result && result.status == "fulfilled" && result.value == true) {
                     this.logsStore[i].sentToRemote = true;
                 } else {
                     this.logsStore[i].sentToRemote = false;
-                    console.log("Failed to send log result", result);
+                    failedToSendLogs.push({ log: this.logsStore[i], result });
                 }
+
             }
+            if (failedToSendLogs.length > 0) console.warn("Failed to send some logs.", failedToSendLogs);
+            return failedToSendLogs.length;
         })
     }
 
@@ -109,7 +112,7 @@ export class Logger {
         trace: string[] = [],
         kind: LogKind = LogKind.CONSOLE,
         origin: LogOrigin = this.defaultLogOrigin,
-        timestamp: number = performance.now(),
+        timestamp: number = Date.now(),
         sentToRemote: boolean = false
     ) {
         if (!trace) {
@@ -172,6 +175,54 @@ export class Logger {
             div.innerHTML = `<details style="font-size: 1.1em; font-weight: bold; padding: 0.2em; ${this._getLevelColor(log.level)}"><summary><small>${log.timestamp} </small> <span>${header}</span></summary><pre>${body}</pre></details>`;
             element.appendChild(div);
         }
+    }
+
+
+    _makeJsonEncodable(thing: any, level: number = 0) {
+        if (level > 5) return "Max recursion level reached";
+        const type = typeof thing;
+        if (type === "string" || type === "number" || type === "boolean") {
+            return thing;
+        } else if (thing === undefined) {
+            return "undefined";
+        } else if (thing === null) {
+            return null;
+        } else if (thing instanceof Error) {
+            return { instanceOf: type, name: thing.name, errMessage: thing.message, stack: thing.stack, cause: thing.cause };
+        } else if (thing instanceof Date) {
+            return thing.toISOString();
+        } else if (thing instanceof Map) {
+            const obj: { [key: string]: any } = {};
+            thing.forEach((value, key) => {
+                obj[key] = this._makeJsonEncodable(value, level + 1);
+            });
+            return { instanceof: type, value: obj };
+        } else if (thing instanceof Set) {
+            let arr = Array.from(thing).map((item) => this._makeJsonEncodable(item, level + 1));
+            return { instanceof: type, value: arr };
+        } else if (thing instanceof Array || thing instanceof Uint8Array || thing instanceof Int8Array || thing instanceof Uint16Array || thing instanceof Int16Array || thing instanceof Uint32Array || thing instanceof Int32Array || thing instanceof Float32Array || thing instanceof Float64Array) {
+            return thing.map((item) => this._makeJsonEncodable(item, level + 1));
+        } else if (thing instanceof Object) {
+            const obj: { [key: string]: any } = {};
+            for (const key in thing) {
+                if (!thing.hasOwnProperty(key)) continue;
+                obj[key] = this._makeJsonEncodable(thing[key], level + 1);
+            }
+            return obj;
+        } else {
+            try {
+                return thing.toString();
+            } catch (e) {
+                return { instanceof: type, value: "Failed to stringify: " + e.message };
+            }
+        }
+    }
+
+    logToJson(log: LogEntry) {
+        const { timestamp, args, trace, origin, kind, level } = log;
+        return JSON.stringify(this._makeJsonEncodable({
+            level, timestamp, args, trace, origin, kind
+        }));
     }
 
 

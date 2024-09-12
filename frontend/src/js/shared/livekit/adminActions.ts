@@ -1,5 +1,5 @@
 
-import { getFrontendAccessToken, silenceFalseSecurityNotice } from './livekitTokens';
+import { encryptAccessToken, getFrontendAccessToken, silenceFalseSecurityNotice } from './livekitTokens';
 import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
 import { RoomServiceClient, type Room, EgressInfo, EgressClient } from 'livekit-server-sdk';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
@@ -9,7 +9,7 @@ export interface AuthTokenInfo {
     userGivenIdentity: string,
     // the actual token string
     token: string,
-    // whether or not this token is encrypted (not just JWT encoding but an additional pass of encryption w the rov password).
+    // whether or not this token is encrypted (not just JWT encoding but an additional pass of encryption with the rov password).
     encrypted: boolean,
     // if encrypted, the salt used for encryption algorithm
     salt?: string,
@@ -20,76 +20,130 @@ export interface AuthTokenInfo {
 const LIVEKIT_API_MIN_DELAY = 1000;
 let lastLivekitApiCallTime = 0;
 
-export async function waitForRateLimit() {
-    while ((Date.now() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
-        console.log("Waiting for rate limit...", Date.now() - lastLivekitApiCallTime);
-        await waitfor(LIVEKIT_API_MIN_DELAY);
+
+export class livekitRoomTokenApis {
+    client: RoomServiceClient
+
+    constructor(host: string, authToken: string) {
+        this.client = new RoomServiceClient(host)
+        Object.assign(this.client, {
+            authToken: authToken,
+            authHeader: async (_: any) => {
+                return {
+                    Authorization: `Bearer ${authToken}`,
+                };
+            }
+        })
     }
-    lastLivekitApiCallTime = Date.now();
-}
 
-
-export function newLivekitAdminSDKRoomServiceClient(host: string, apiKey: string, secretKey: string) {
-    return new RoomServiceClient(host, apiKey, secretKey)
-}
-
-export function newLivekitAdminSDKEgressClient(host: string, apiKey: string, secretKey: string) {
-    return new EgressClient(host, apiKey, secretKey)
-}
-
-export async function deleteLivekitRoom(client: RoomServiceClient, roomName: string) {
-    await waitForRateLimit();
-    try {
-        return await client.deleteRoom(roomName)
-    } catch (e) {
-        logWarn("Failed to delete room: " + roomName, e)
+    listLivekitRooms() {
+        return this.client.listRooms()
     }
 }
 
-export async function createLivekitRoom(client: RoomServiceClient, roomName: string, apiKey: string, secretKey: string, alreadyTakenNames: string[], encryptionPassword: string | null = null) {
-    const metadata = await generateLivekitRoomMetadata(roomName, apiKey, secretKey, alreadyTakenNames, encryptionPassword)
-    await waitForRateLimit();
-    const roomCreated = await silenceFalseSecurityNotice(() => client.createRoom({
-        name: roomName,
-        maxParticipants: 8,
-        metadata: metadata,
-        syncStreams: false,
-        emptyTimeout: 60, // 60 seconds
-        departureTimeout: 30, // 30 seconds
-    }))
-    logInfo("LK: Created room: " + roomName, roomCreated)
-    return roomCreated
-}
+export class LivekitRoomAdmin {
+    client: RoomServiceClient
+    egressClient: EgressClient
 
-export async function listLivekitRooms(client: RoomServiceClient): Promise<Room[]> {
-    await waitForRateLimit();
-    const rooms = await client.listRooms();
-    return rooms.filter(room => room.numParticipants > 0)
-}
+    roomName: string
+    tokenEncryptionPassword: string | null
+    apiKey: string
+    secretKey: string
 
-
-export async function updateLivekitRoomMetadata(client: RoomServiceClient, roomName: string, metadata: string) {
-    await waitForRateLimit();
-    try {
-        return await silenceFalseSecurityNotice(() => client.updateRoomMetadata(roomName, metadata))
-    } catch (e) {
-        throw new Error("LK: Failed to update metadata for room " + roomName + e.toString())
+    constructor(apiKey: string, secretKey: string, host: string, roomName: string, tokenEncryptionPassword: string | null = null) {
+        this.apiKey = apiKey
+        this.secretKey = secretKey
+        this.roomName = roomName
+        this.tokenEncryptionPassword = tokenEncryptionPassword
+        this.client = new RoomServiceClient(host, apiKey, secretKey)
+        this.egressClient = new EgressClient(host, apiKey, secretKey)
     }
-}
 
-export async function generateLivekitRoomMetadata(rovRoomName: string, APIKey: string, secretKey: string, alreadyTakenNames: string[], encryptionPassword: string | null = null): Promise<string> {
-    const NUM_TOKENS_TO_GENERATE = 3;
-    let tokens: string[] = [], userName;
-    for (let i = 0; i < NUM_TOKENS_TO_GENERATE; i++) {
-        do {
-            userName = getHumanReadableId(getUniqueNumber());
-        } while (alreadyTakenNames.includes(userName))
-        alreadyTakenNames.push(userName);
-        const frontendAccessToken = await getFrontendAccessToken(APIKey, secretKey, rovRoomName, userName, encryptionPassword);
-        tokens.push(frontendAccessToken);
+    getEgressClient() {
+        return this.egressClient
     }
-    const metadata = JSON.stringify({
-        accessTokens: tokens
-    });
-    return metadata;
+
+    async waitForRateLimit() {
+        while ((Date.now() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
+            console.log("Waiting for rate limit...", Date.now() - lastLivekitApiCallTime);
+            await waitfor(LIVEKIT_API_MIN_DELAY);
+        }
+        lastLivekitApiCallTime = Date.now();
+    }
+
+    async deleteLivekitRoom() {
+        // don't rate limit as this must run quickly when called on page unload
+        try {
+            return await this.client.deleteRoom(this.roomName)
+        } catch (e) {
+            logWarn("LK Admin: Failed to delete room: " + this.roomName, e)
+        }
+    }
+
+    async createLivekitRoom(alreadyTakenNames: string[], numParticipants: number) {
+        const metadata = await this._generateRoomMetadata(alreadyTakenNames, numParticipants);
+        await this.waitForRateLimit();
+        const roomCreated = await silenceFalseSecurityNotice(() => this.client.createRoom({
+            name: this.roomName,
+            maxParticipants: 8,
+            metadata: metadata,
+            syncStreams: false,
+            emptyTimeout: 60, // 60 seconds
+            departureTimeout: 30, // 30 seconds
+        }));
+        logInfo("LK Admin: Created room: " + this.roomName, roomCreated);
+        return roomCreated;
+    }
+
+    async listLivekitRooms(): Promise<Room[]> {
+        await this.waitForRateLimit();
+        const rooms = await silenceFalseSecurityNotice(() => this.client.listRooms());
+        return rooms.filter(room => room.numParticipants > 0);
+    }
+
+    async updateRoomMetadata(alreadyTakenNames: string[], numParticipants: number) {
+        const metadata = await this._generateRoomMetadata(alreadyTakenNames, numParticipants);
+        await this.waitForRateLimit();
+        try {
+            return await silenceFalseSecurityNotice(() => this.client.updateRoomMetadata(this.roomName, metadata))
+        } catch (e) {
+            throw new Error("LK Admin: Failed to update metadata for room " + this.roomName + e.toString())
+        }
+    }
+
+    private async _generateRoomMetadata(alreadyTakenNames: string[], numParticipants: number): Promise<string> {
+        const NUM_TOKENS_TO_GENERATE = 3;
+        let accessTokens: AuthTokenInfo[] = [], userName;
+        for (let i = 0; i < NUM_TOKENS_TO_GENERATE; i++) {
+            // do {
+            //     userName = getHumanReadableId(getUniqueNumber());
+            // } while (alreadyTakenNames.includes(userName))
+            // alreadyTakenNames.push(userName);
+            userName = getHumanReadableId(i);
+
+            // generate an auth token for this user and add it to the list
+            const token = await getFrontendAccessToken(this.apiKey, this.secretKey, this.roomName, userName);
+            if (this.tokenEncryptionPassword) {
+                const encryptedToken = await encryptAccessToken(token, this.tokenEncryptionPassword);
+                accessTokens.push({
+                    userGivenIdentity: userName,
+                    encrypted: true,
+                    ...encryptedToken,
+                });
+            } else {
+                accessTokens.push({
+                    userGivenIdentity: userName,
+                    token,
+                    encrypted: false,
+                });
+            }
+
+        }
+        const metadata = JSON.stringify({
+            numParticipants,
+            accessTokens
+        });
+        return metadata;
+    }
+
 }

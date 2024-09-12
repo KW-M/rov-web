@@ -32,12 +32,17 @@ export class mavlinkInterface {
             const msgJson = JSON.parse(msgTxt) as mavlink2RestFullMessage
             this.onMessage(msgJson)
         } catch (e) {
-            logError("Failed to parse recived mavlink2rest json: " + msgTxt, e)
+            logError("Failed to parse recived mavlink2rest json. msg='" + msgTxt + "'", e)
         }
     }
 
     sendMessage(msg: mavlink2RestFullMessage) {
+        // logDebug("Sending mav message: ", msg)
         this.mavlinkWebsocket.sendMessage(JSON.stringify(msg))
+    }
+
+    close() {
+        this.mavlinkWebsocket.close()
     }
 
 }

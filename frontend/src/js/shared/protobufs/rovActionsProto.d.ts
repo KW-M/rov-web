@@ -28,113 +28,11 @@ export namespace rov_actions_proto {
         internal_temp_celsius = 11
     }
 
-    /** Properties of a Measurement. */
-    interface IMeasurement {
-
-        /** Measurement MeasurementType */
-        MeasurementType?: (rov_actions_proto.SensorMeasurmentTypes|null);
-
-        /** Measurement Value */
-        Value?: (number|null);
-    }
-
-    /** Represents a Measurement. */
-    class Measurement implements IMeasurement {
-
-        /**
-         * Constructs a new Measurement.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_actions_proto.IMeasurement);
-
-        /** Measurement MeasurementType. */
-        public MeasurementType: rov_actions_proto.SensorMeasurmentTypes;
-
-        /** Measurement Value. */
-        public Value: number;
-
-        /**
-         * Creates a new Measurement instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Measurement instance
-         */
-        public static create(properties?: rov_actions_proto.IMeasurement): rov_actions_proto.Measurement;
-
-        /**
-         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
-         * @param message Measurement message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
-         * @param message Measurement message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.Measurement;
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.Measurement;
-
-        /**
-         * Verifies a Measurement message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Measurement
-         */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.Measurement;
-
-        /**
-         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-         * @param message Measurement
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_actions_proto.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Measurement to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for Measurement
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** DataTransportMethod enum. */
     enum DataTransportMethod {
         LivekitReliable = 0,
         LivekitUnreliable = 1,
+        DirectReliable = 2,
         DirectUnreliable = 3
     }
 
@@ -145,6 +43,365 @@ export namespace rov_actions_proto {
         RovDisconnected = 2,
         UserConnected = 3,
         UserDisconnected = 4
+    }
+
+    /** VideoCodec enum. */
+    enum VideoCodec {
+        H264 = 0,
+        VP8 = 1,
+        VP9 = 2,
+        AV1 = 3
+    }
+
+    /** Properties of a VideoStreamOptions. */
+    interface IVideoStreamOptions {
+
+        /** VideoStreamOptions Height */
+        Height?: (number|null);
+
+        /** VideoStreamOptions Width */
+        Width?: (number|null);
+
+        /** VideoStreamOptions Fps */
+        Fps?: (number|null);
+
+        /** VideoStreamOptions MaxBitrate */
+        MaxBitrate?: (number|null);
+    }
+
+    /** Represents a VideoStreamOptions. */
+    class VideoStreamOptions implements IVideoStreamOptions {
+
+        /**
+         * Constructs a new VideoStreamOptions.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IVideoStreamOptions);
+
+        /** VideoStreamOptions Height. */
+        public Height: number;
+
+        /** VideoStreamOptions Width. */
+        public Width: number;
+
+        /** VideoStreamOptions Fps. */
+        public Fps: number;
+
+        /** VideoStreamOptions MaxBitrate. */
+        public MaxBitrate: number;
+
+        /**
+         * Creates a new VideoStreamOptions instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns VideoStreamOptions instance
+         */
+        public static create(properties?: rov_actions_proto.IVideoStreamOptions): rov_actions_proto.VideoStreamOptions;
+
+        /**
+         * Encodes the specified VideoStreamOptions message. Does not implicitly {@link rov_actions_proto.VideoStreamOptions.verify|verify} messages.
+         * @param message VideoStreamOptions message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IVideoStreamOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified VideoStreamOptions message, length delimited. Does not implicitly {@link rov_actions_proto.VideoStreamOptions.verify|verify} messages.
+         * @param message VideoStreamOptions message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IVideoStreamOptions, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a VideoStreamOptions message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns VideoStreamOptions
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.VideoStreamOptions;
+
+        /**
+         * Decodes a VideoStreamOptions message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns VideoStreamOptions
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.VideoStreamOptions;
+
+        /**
+         * Verifies a VideoStreamOptions message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a VideoStreamOptions message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns VideoStreamOptions
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.VideoStreamOptions;
+
+        /**
+         * Creates a plain object from a VideoStreamOptions message. Also converts values to other types if specified.
+         * @param message VideoStreamOptions
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.VideoStreamOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this VideoStreamOptions to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for VideoStreamOptions
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SetLivekitVideoOptionsAction. */
+    interface ISetLivekitVideoOptionsAction {
+
+        /** SetLivekitVideoOptionsAction Enabled */
+        Enabled?: (boolean|null);
+
+        /** SetLivekitVideoOptionsAction Codec */
+        Codec?: (rov_actions_proto.VideoCodec|null);
+
+        /** SetLivekitVideoOptionsAction AllowBackupCodec */
+        AllowBackupCodec?: (boolean|null);
+
+        /** SetLivekitVideoOptionsAction BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** SetLivekitVideoOptionsAction SimulcastLayers */
+        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[]|null);
+    }
+
+    /** Represents a SetLivekitVideoOptionsAction. */
+    class SetLivekitVideoOptionsAction implements ISetLivekitVideoOptionsAction {
+
+        /**
+         * Constructs a new SetLivekitVideoOptionsAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ISetLivekitVideoOptionsAction);
+
+        /** SetLivekitVideoOptionsAction Enabled. */
+        public Enabled: boolean;
+
+        /** SetLivekitVideoOptionsAction Codec. */
+        public Codec: rov_actions_proto.VideoCodec;
+
+        /** SetLivekitVideoOptionsAction AllowBackupCodec. */
+        public AllowBackupCodec: boolean;
+
+        /** SetLivekitVideoOptionsAction BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** SetLivekitVideoOptionsAction SimulcastLayers. */
+        public SimulcastLayers: rov_actions_proto.IVideoStreamOptions[];
+
+        /**
+         * Creates a new SetLivekitVideoOptionsAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SetLivekitVideoOptionsAction instance
+         */
+        public static create(properties?: rov_actions_proto.ISetLivekitVideoOptionsAction): rov_actions_proto.SetLivekitVideoOptionsAction;
+
+        /**
+         * Encodes the specified SetLivekitVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetLivekitVideoOptionsAction.verify|verify} messages.
+         * @param message SetLivekitVideoOptionsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ISetLivekitVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SetLivekitVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetLivekitVideoOptionsAction.verify|verify} messages.
+         * @param message SetLivekitVideoOptionsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ISetLivekitVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SetLivekitVideoOptionsAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SetLivekitVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetLivekitVideoOptionsAction;
+
+        /**
+         * Decodes a SetLivekitVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SetLivekitVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetLivekitVideoOptionsAction;
+
+        /**
+         * Verifies a SetLivekitVideoOptionsAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SetLivekitVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SetLivekitVideoOptionsAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SetLivekitVideoOptionsAction;
+
+        /**
+         * Creates a plain object from a SetLivekitVideoOptionsAction message. Also converts values to other types if specified.
+         * @param message SetLivekitVideoOptionsAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.SetLivekitVideoOptionsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SetLivekitVideoOptionsAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SetLivekitVideoOptionsAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SetSimplepeerVideoOptionsAction. */
+    interface ISetSimplepeerVideoOptionsAction {
+
+        /** SetSimplepeerVideoOptionsAction Enabled */
+        Enabled?: (boolean|null);
+
+        /** SetSimplepeerVideoOptionsAction Bitrate */
+        Bitrate?: (number|null);
+
+        /** SetSimplepeerVideoOptionsAction Codec */
+        Codec?: (rov_actions_proto.VideoCodec|null);
+
+        /** SetSimplepeerVideoOptionsAction BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+    }
+
+    /** Represents a SetSimplepeerVideoOptionsAction. */
+    class SetSimplepeerVideoOptionsAction implements ISetSimplepeerVideoOptionsAction {
+
+        /**
+         * Constructs a new SetSimplepeerVideoOptionsAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ISetSimplepeerVideoOptionsAction);
+
+        /** SetSimplepeerVideoOptionsAction Enabled. */
+        public Enabled: boolean;
+
+        /** SetSimplepeerVideoOptionsAction Bitrate. */
+        public Bitrate: number;
+
+        /** SetSimplepeerVideoOptionsAction Codec. */
+        public Codec: rov_actions_proto.VideoCodec;
+
+        /** SetSimplepeerVideoOptionsAction BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /**
+         * Creates a new SetSimplepeerVideoOptionsAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SetSimplepeerVideoOptionsAction instance
+         */
+        public static create(properties?: rov_actions_proto.ISetSimplepeerVideoOptionsAction): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+
+        /**
+         * Encodes the specified SetSimplepeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * @param message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ISetSimplepeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SetSimplepeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * @param message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ISetSimplepeerVideoOptionsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SetSimplepeerVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+
+        /**
+         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SetSimplepeerVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+
+        /**
+         * Verifies a SetSimplepeerVideoOptionsAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SetSimplepeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SetSimplepeerVideoOptionsAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SetSimplepeerVideoOptionsAction;
+
+        /**
+         * Creates a plain object from a SetSimplepeerVideoOptionsAction message. Also converts values to other types if specified.
+         * @param message SetSimplepeerVideoOptionsAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.SetSimplepeerVideoOptionsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SetSimplepeerVideoOptionsAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SetSimplepeerVideoOptionsAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a PingAction. */
@@ -570,10 +827,7 @@ export namespace rov_actions_proto {
         public AngularVelocityYaw: number;
 
         /** MoveAction ButtonBitmask. */
-        public ButtonBitmask?: (number|null);
-
-        /** MoveAction _ButtonBitmask. */
-        public _ButtonBitmask?: "ButtonBitmask";
+        public ButtonBitmask: number;
 
         /**
          * Creates a new MoveAction instance using the specified properties.
@@ -647,97 +901,6 @@ export namespace rov_actions_proto {
 
         /**
          * Gets the default type url for MoveAction
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a BeginVideoStreamAction. */
-    interface IBeginVideoStreamAction {
-    }
-
-    /** Represents a BeginVideoStreamAction. */
-    class BeginVideoStreamAction implements IBeginVideoStreamAction {
-
-        /**
-         * Constructs a new BeginVideoStreamAction.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: rov_actions_proto.IBeginVideoStreamAction);
-
-        /**
-         * Creates a new BeginVideoStreamAction instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns BeginVideoStreamAction instance
-         */
-        public static create(properties?: rov_actions_proto.IBeginVideoStreamAction): rov_actions_proto.BeginVideoStreamAction;
-
-        /**
-         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
-         * @param message BeginVideoStreamAction message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: rov_actions_proto.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
-         * @param message BeginVideoStreamAction message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: rov_actions_proto.IBeginVideoStreamAction, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a BeginVideoStreamAction message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns BeginVideoStreamAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.BeginVideoStreamAction;
-
-        /**
-         * Decodes a BeginVideoStreamAction message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns BeginVideoStreamAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.BeginVideoStreamAction;
-
-        /**
-         * Verifies a BeginVideoStreamAction message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates a BeginVideoStreamAction message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns BeginVideoStreamAction
-         */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.BeginVideoStreamAction;
-
-        /**
-         * Creates a plain object from a BeginVideoStreamAction message. Also converts values to other types if specified.
-         * @param message BeginVideoStreamAction
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: rov_actions_proto.BeginVideoStreamAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this BeginVideoStreamAction to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for BeginVideoStreamAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1017,91 +1180,91 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a ToogleLightsAction. */
-    interface IToogleLightsAction {
+    /** Properties of a ToggleLightsAction. */
+    interface IToggleLightsAction {
     }
 
-    /** Represents a ToogleLightsAction. */
-    class ToogleLightsAction implements IToogleLightsAction {
+    /** Represents a ToggleLightsAction. */
+    class ToggleLightsAction implements IToggleLightsAction {
 
         /**
-         * Constructs a new ToogleLightsAction.
+         * Constructs a new ToggleLightsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.IToogleLightsAction);
+        constructor(properties?: rov_actions_proto.IToggleLightsAction);
 
         /**
-         * Creates a new ToogleLightsAction instance using the specified properties.
+         * Creates a new ToggleLightsAction instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns ToogleLightsAction instance
+         * @returns ToggleLightsAction instance
          */
-        public static create(properties?: rov_actions_proto.IToogleLightsAction): rov_actions_proto.ToogleLightsAction;
+        public static create(properties?: rov_actions_proto.IToggleLightsAction): rov_actions_proto.ToggleLightsAction;
 
         /**
-         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
-         * @param message ToogleLightsAction message or plain object to encode
+         * Encodes the specified ToggleLightsAction message. Does not implicitly {@link rov_actions_proto.ToggleLightsAction.verify|verify} messages.
+         * @param message ToggleLightsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IToggleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
-         * @param message ToogleLightsAction message or plain object to encode
+         * Encodes the specified ToggleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToggleLightsAction.verify|verify} messages.
+         * @param message ToggleLightsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.IToogleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IToggleLightsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a ToogleLightsAction message from the specified reader or buffer.
+         * Decodes a ToggleLightsAction message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns ToogleLightsAction
+         * @returns ToggleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ToogleLightsAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.ToggleLightsAction;
 
         /**
-         * Decodes a ToogleLightsAction message from the specified reader or buffer, length delimited.
+         * Decodes a ToggleLightsAction message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns ToogleLightsAction
+         * @returns ToggleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ToogleLightsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.ToggleLightsAction;
 
         /**
-         * Verifies a ToogleLightsAction message.
+         * Verifies a ToggleLightsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a ToogleLightsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a ToggleLightsAction message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns ToogleLightsAction
+         * @returns ToggleLightsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ToogleLightsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.ToggleLightsAction;
 
         /**
-         * Creates a plain object from a ToogleLightsAction message. Also converts values to other types if specified.
-         * @param message ToogleLightsAction
+         * Creates a plain object from a ToggleLightsAction message. Also converts values to other types if specified.
+         * @param message ToggleLightsAction
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.ToogleLightsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.ToggleLightsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this ToogleLightsAction to JSON.
+         * Converts this ToggleLightsAction to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for ToogleLightsAction
+         * Gets the default type url for ToggleLightsAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1654,91 +1817,91 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a RovLogsAction. */
-    interface IRovLogsAction {
+    /** Properties of a SendRovLogsAction. */
+    interface ISendRovLogsAction {
     }
 
-    /** Represents a RovLogsAction. */
-    class RovLogsAction implements IRovLogsAction {
+    /** Represents a SendRovLogsAction. */
+    class SendRovLogsAction implements ISendRovLogsAction {
 
         /**
-         * Constructs a new RovLogsAction.
+         * Constructs a new SendRovLogsAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.IRovLogsAction);
+        constructor(properties?: rov_actions_proto.ISendRovLogsAction);
 
         /**
-         * Creates a new RovLogsAction instance using the specified properties.
+         * Creates a new SendRovLogsAction instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns RovLogsAction instance
+         * @returns SendRovLogsAction instance
          */
-        public static create(properties?: rov_actions_proto.IRovLogsAction): rov_actions_proto.RovLogsAction;
+        public static create(properties?: rov_actions_proto.ISendRovLogsAction): rov_actions_proto.SendRovLogsAction;
 
         /**
-         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
-         * @param message RovLogsAction message or plain object to encode
+         * Encodes the specified SendRovLogsAction message. Does not implicitly {@link rov_actions_proto.SendRovLogsAction.verify|verify} messages.
+         * @param message SendRovLogsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.ISendRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
-         * @param message RovLogsAction message or plain object to encode
+         * Encodes the specified SendRovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SendRovLogsAction.verify|verify} messages.
+         * @param message SendRovLogsAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.IRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.ISendRovLogsAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a RovLogsAction message from the specified reader or buffer.
+         * Decodes a SendRovLogsAction message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns RovLogsAction
+         * @returns SendRovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.RovLogsAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SendRovLogsAction;
 
         /**
-         * Decodes a RovLogsAction message from the specified reader or buffer, length delimited.
+         * Decodes a SendRovLogsAction message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns RovLogsAction
+         * @returns SendRovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.RovLogsAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SendRovLogsAction;
 
         /**
-         * Verifies a RovLogsAction message.
+         * Verifies a SendRovLogsAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a RovLogsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SendRovLogsAction message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns RovLogsAction
+         * @returns SendRovLogsAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.RovLogsAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SendRovLogsAction;
 
         /**
-         * Creates a plain object from a RovLogsAction message. Also converts values to other types if specified.
-         * @param message RovLogsAction
+         * Creates a plain object from a SendRovLogsAction message. Also converts values to other types if specified.
+         * @param message SendRovLogsAction
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.RovLogsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.SendRovLogsAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this RovLogsAction to JSON.
+         * Converts this SendRovLogsAction to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for RovLogsAction
+         * Gets the default type url for SendRovLogsAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -1836,97 +1999,97 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a MavlinkAction. */
-    interface IMavlinkAction {
+    /** Properties of a MoveClawAction. */
+    interface IMoveClawAction {
 
-        /** MavlinkAction Message */
-        Message?: (Uint8Array|null);
+        /** MoveClawAction Value */
+        Value?: (number|null);
     }
 
-    /** Represents a MavlinkAction. */
-    class MavlinkAction implements IMavlinkAction {
+    /** Represents a MoveClawAction. */
+    class MoveClawAction implements IMoveClawAction {
 
         /**
-         * Constructs a new MavlinkAction.
+         * Constructs a new MoveClawAction.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.IMavlinkAction);
+        constructor(properties?: rov_actions_proto.IMoveClawAction);
 
-        /** MavlinkAction Message. */
-        public Message: Uint8Array;
+        /** MoveClawAction Value. */
+        public Value: number;
 
         /**
-         * Creates a new MavlinkAction instance using the specified properties.
+         * Creates a new MoveClawAction instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns MavlinkAction instance
+         * @returns MoveClawAction instance
          */
-        public static create(properties?: rov_actions_proto.IMavlinkAction): rov_actions_proto.MavlinkAction;
+        public static create(properties?: rov_actions_proto.IMoveClawAction): rov_actions_proto.MoveClawAction;
 
         /**
-         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
-         * @param message MavlinkAction message or plain object to encode
+         * Encodes the specified MoveClawAction message. Does not implicitly {@link rov_actions_proto.MoveClawAction.verify|verify} messages.
+         * @param message MoveClawAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IMoveClawAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
-         * @param message MavlinkAction message or plain object to encode
+         * Encodes the specified MoveClawAction message, length delimited. Does not implicitly {@link rov_actions_proto.MoveClawAction.verify|verify} messages.
+         * @param message MoveClawAction message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.IMavlinkAction, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IMoveClawAction, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a MavlinkAction message from the specified reader or buffer.
+         * Decodes a MoveClawAction message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns MavlinkAction
+         * @returns MoveClawAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MavlinkAction;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.MoveClawAction;
 
         /**
-         * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
+         * Decodes a MoveClawAction message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns MavlinkAction
+         * @returns MoveClawAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MavlinkAction;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.MoveClawAction;
 
         /**
-         * Verifies a MavlinkAction message.
+         * Verifies a MoveClawAction message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a MavlinkAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a MoveClawAction message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns MavlinkAction
+         * @returns MoveClawAction
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.MavlinkAction;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.MoveClawAction;
 
         /**
-         * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
-         * @param message MavlinkAction
+         * Creates a plain object from a MoveClawAction message. Also converts values to other types if specified.
+         * @param message MoveClawAction
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.MavlinkAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.MoveClawAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this MavlinkAction to JSON.
+         * Converts this MoveClawAction to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for MavlinkAction
+         * Gets the default type url for MoveClawAction
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -2218,6 +2381,103 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a SetLivestreamingEnabledAction. */
+    interface ISetLivestreamingEnabledAction {
+
+        /** SetLivestreamingEnabledAction Enabled */
+        Enabled?: (boolean|null);
+    }
+
+    /** Represents a SetLivestreamingEnabledAction. */
+    class SetLivestreamingEnabledAction implements ISetLivestreamingEnabledAction {
+
+        /**
+         * Constructs a new SetLivestreamingEnabledAction.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ISetLivestreamingEnabledAction);
+
+        /** SetLivestreamingEnabledAction Enabled. */
+        public Enabled: boolean;
+
+        /**
+         * Creates a new SetLivestreamingEnabledAction instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SetLivestreamingEnabledAction instance
+         */
+        public static create(properties?: rov_actions_proto.ISetLivestreamingEnabledAction): rov_actions_proto.SetLivestreamingEnabledAction;
+
+        /**
+         * Encodes the specified SetLivestreamingEnabledAction message. Does not implicitly {@link rov_actions_proto.SetLivestreamingEnabledAction.verify|verify} messages.
+         * @param message SetLivestreamingEnabledAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ISetLivestreamingEnabledAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SetLivestreamingEnabledAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetLivestreamingEnabledAction.verify|verify} messages.
+         * @param message SetLivestreamingEnabledAction message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ISetLivestreamingEnabledAction, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SetLivestreamingEnabledAction message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SetLivestreamingEnabledAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SetLivestreamingEnabledAction;
+
+        /**
+         * Decodes a SetLivestreamingEnabledAction message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SetLivestreamingEnabledAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SetLivestreamingEnabledAction;
+
+        /**
+         * Verifies a SetLivestreamingEnabledAction message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SetLivestreamingEnabledAction message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SetLivestreamingEnabledAction
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SetLivestreamingEnabledAction;
+
+        /**
+         * Creates a plain object from a SetLivestreamingEnabledAction message. Also converts values to other types if specified.
+         * @param message SetLivestreamingEnabledAction
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.SetLivestreamingEnabledAction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SetLivestreamingEnabledAction to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SetLivestreamingEnabledAction
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of an ActionBackendMetadata. */
     interface IActionBackendMetadata {
 
@@ -2345,9 +2605,6 @@ export namespace rov_actions_proto {
         /** RovAction Move */
         Move?: (rov_actions_proto.IMoveAction|null);
 
-        /** RovAction BeginVideoStream */
-        BeginVideoStream?: (rov_actions_proto.IBeginVideoStreamAction|null);
-
         /** RovAction TakePhoto */
         TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
 
@@ -2357,8 +2614,8 @@ export namespace rov_actions_proto {
         /** RovAction StopVideoRec */
         StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
 
-        /** RovAction ToogleLights */
-        ToogleLights?: (rov_actions_proto.IToogleLightsAction|null);
+        /** RovAction ToggleLights */
+        ToggleLights?: (rov_actions_proto.IToggleLightsAction|null);
 
         /** RovAction ShutdownRov */
         ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
@@ -2378,14 +2635,14 @@ export namespace rov_actions_proto {
         /** RovAction RestartRovServices */
         RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
 
-        /** RovAction RovLogs */
-        RovLogs?: (rov_actions_proto.IRovLogsAction|null);
+        /** RovAction SendRovLogs */
+        SendRovLogs?: (rov_actions_proto.ISendRovLogsAction|null);
 
         /** RovAction RefreshAllSensors */
         RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
 
-        /** RovAction Mavlink */
-        Mavlink?: (rov_actions_proto.IMavlinkAction|null);
+        /** RovAction MoveClaw */
+        MoveClaw?: (rov_actions_proto.IMoveClawAction|null);
 
         /** RovAction SimplepeerSignal */
         SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
@@ -2395,6 +2652,15 @@ export namespace rov_actions_proto {
 
         /** RovAction SetAutopilotMode */
         SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction|null);
+
+        /** RovAction SetLivekitVideoOptions */
+        SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction|null);
+
+        /** RovAction SetSimplepeerVideoOptions */
+        SetSimplepeerVideoOptions?: (rov_actions_proto.ISetSimplepeerVideoOptionsAction|null);
+
+        /** RovAction SetLivestreamingEnabled */
+        SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction|null);
     }
 
     /** Represents a RovAction. */
@@ -2427,9 +2693,6 @@ export namespace rov_actions_proto {
         /** RovAction Move. */
         public Move?: (rov_actions_proto.IMoveAction|null);
 
-        /** RovAction BeginVideoStream. */
-        public BeginVideoStream?: (rov_actions_proto.IBeginVideoStreamAction|null);
-
         /** RovAction TakePhoto. */
         public TakePhoto?: (rov_actions_proto.ITakePhotoAction|null);
 
@@ -2439,8 +2702,8 @@ export namespace rov_actions_proto {
         /** RovAction StopVideoRec. */
         public StopVideoRec?: (rov_actions_proto.IStopVideoRecAction|null);
 
-        /** RovAction ToogleLights. */
-        public ToogleLights?: (rov_actions_proto.IToogleLightsAction|null);
+        /** RovAction ToggleLights. */
+        public ToggleLights?: (rov_actions_proto.IToggleLightsAction|null);
 
         /** RovAction ShutdownRov. */
         public ShutdownRov?: (rov_actions_proto.IShutdownRovAction|null);
@@ -2460,14 +2723,14 @@ export namespace rov_actions_proto {
         /** RovAction RestartRovServices. */
         public RestartRovServices?: (rov_actions_proto.IRestartRovServicesAction|null);
 
-        /** RovAction RovLogs. */
-        public RovLogs?: (rov_actions_proto.IRovLogsAction|null);
+        /** RovAction SendRovLogs. */
+        public SendRovLogs?: (rov_actions_proto.ISendRovLogsAction|null);
 
         /** RovAction RefreshAllSensors. */
         public RefreshAllSensors?: (rov_actions_proto.IRefreshAllSensorsAction|null);
 
-        /** RovAction Mavlink. */
-        public Mavlink?: (rov_actions_proto.IMavlinkAction|null);
+        /** RovAction MoveClaw. */
+        public MoveClaw?: (rov_actions_proto.IMoveClawAction|null);
 
         /** RovAction SimplepeerSignal. */
         public SimplepeerSignal?: (rov_actions_proto.ISimplepeerSignalAction|null);
@@ -2478,8 +2741,17 @@ export namespace rov_actions_proto {
         /** RovAction SetAutopilotMode. */
         public SetAutopilotMode?: (rov_actions_proto.ISetAutopilotModeAction|null);
 
+        /** RovAction SetLivekitVideoOptions. */
+        public SetLivekitVideoOptions?: (rov_actions_proto.ISetLivekitVideoOptionsAction|null);
+
+        /** RovAction SetSimplepeerVideoOptions. */
+        public SetSimplepeerVideoOptions?: (rov_actions_proto.ISetSimplepeerVideoOptionsAction|null);
+
+        /** RovAction SetLivestreamingEnabled. */
+        public SetLivestreamingEnabled?: (rov_actions_proto.ISetLivestreamingEnabledAction|null);
+
         /** RovAction Body. */
-        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode");
+        public Body?: ("Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToggleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"SendRovLogs"|"RefreshAllSensors"|"MoveClaw"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode"|"SetLivekitVideoOptions"|"SetSimplepeerVideoOptions"|"SetLivestreamingEnabled");
 
         /**
          * Creates a new RovAction instance using the specified properties.
@@ -2844,6 +3116,109 @@ export namespace rov_actions_proto {
 
         /**
          * Gets the default type url for PongResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a Measurement. */
+    interface IMeasurement {
+
+        /** Measurement MeasurementType */
+        MeasurementType?: (rov_actions_proto.SensorMeasurmentTypes|null);
+
+        /** Measurement Value */
+        Value?: (number|null);
+    }
+
+    /** Represents a Measurement. */
+    class Measurement implements IMeasurement {
+
+        /**
+         * Constructs a new Measurement.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IMeasurement);
+
+        /** Measurement MeasurementType. */
+        public MeasurementType: rov_actions_proto.SensorMeasurmentTypes;
+
+        /** Measurement Value. */
+        public Value: number;
+
+        /**
+         * Creates a new Measurement instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Measurement instance
+         */
+        public static create(properties?: rov_actions_proto.IMeasurement): rov_actions_proto.Measurement;
+
+        /**
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @param message Measurement message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IMeasurement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.Measurement;
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.Measurement;
+
+        /**
+         * Verifies a Measurement message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Measurement
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.Measurement;
+
+        /**
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+         * @param message Measurement
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.Measurement, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Measurement to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Measurement
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -3232,97 +3607,97 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of a DriverChangedResponse. */
-    interface IDriverChangedResponse {
+    /** Properties of a PilotChangedResponse. */
+    interface IPilotChangedResponse {
 
-        /** DriverChangedResponse DriverPeerId */
-        DriverPeerId?: (string|null);
+        /** PilotChangedResponse PilotIdentity */
+        PilotIdentity?: (string|null);
     }
 
-    /** Represents a DriverChangedResponse. */
-    class DriverChangedResponse implements IDriverChangedResponse {
+    /** Represents a PilotChangedResponse. */
+    class PilotChangedResponse implements IPilotChangedResponse {
 
         /**
-         * Constructs a new DriverChangedResponse.
+         * Constructs a new PilotChangedResponse.
          * @param [properties] Properties to set
          */
-        constructor(properties?: rov_actions_proto.IDriverChangedResponse);
+        constructor(properties?: rov_actions_proto.IPilotChangedResponse);
 
-        /** DriverChangedResponse DriverPeerId. */
-        public DriverPeerId: string;
+        /** PilotChangedResponse PilotIdentity. */
+        public PilotIdentity: string;
 
         /**
-         * Creates a new DriverChangedResponse instance using the specified properties.
+         * Creates a new PilotChangedResponse instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns DriverChangedResponse instance
+         * @returns PilotChangedResponse instance
          */
-        public static create(properties?: rov_actions_proto.IDriverChangedResponse): rov_actions_proto.DriverChangedResponse;
+        public static create(properties?: rov_actions_proto.IPilotChangedResponse): rov_actions_proto.PilotChangedResponse;
 
         /**
-         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
-         * @param message DriverChangedResponse message or plain object to encode
+         * Encodes the specified PilotChangedResponse message. Does not implicitly {@link rov_actions_proto.PilotChangedResponse.verify|verify} messages.
+         * @param message PilotChangedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: rov_actions_proto.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: rov_actions_proto.IPilotChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
-         * @param message DriverChangedResponse message or plain object to encode
+         * Encodes the specified PilotChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PilotChangedResponse.verify|verify} messages.
+         * @param message PilotChangedResponse message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encodeDelimited(message: rov_actions_proto.IDriverChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encodeDelimited(message: rov_actions_proto.IPilotChangedResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a DriverChangedResponse message from the specified reader or buffer.
+         * Decodes a PilotChangedResponse message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns DriverChangedResponse
+         * @returns PilotChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.DriverChangedResponse;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.PilotChangedResponse;
 
         /**
-         * Decodes a DriverChangedResponse message from the specified reader or buffer, length delimited.
+         * Decodes a PilotChangedResponse message from the specified reader or buffer, length delimited.
          * @param reader Reader or buffer to decode from
-         * @returns DriverChangedResponse
+         * @returns PilotChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.DriverChangedResponse;
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.PilotChangedResponse;
 
         /**
-         * Verifies a DriverChangedResponse message.
+         * Verifies a PilotChangedResponse message.
          * @param message Plain object to verify
          * @returns `null` if valid, otherwise the reason why it is not
          */
         public static verify(message: { [k: string]: any }): (string|null);
 
         /**
-         * Creates a DriverChangedResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a PilotChangedResponse message from a plain object. Also converts values to their respective internal types.
          * @param object Plain object
-         * @returns DriverChangedResponse
+         * @returns PilotChangedResponse
          */
-        public static fromObject(object: { [k: string]: any }): rov_actions_proto.DriverChangedResponse;
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.PilotChangedResponse;
 
         /**
-         * Creates a plain object from a DriverChangedResponse message. Also converts values to other types if specified.
-         * @param message DriverChangedResponse
+         * Creates a plain object from a PilotChangedResponse message. Also converts values to other types if specified.
+         * @param message PilotChangedResponse
          * @param [options] Conversion options
          * @returns Plain object
          */
-        public static toObject(message: rov_actions_proto.DriverChangedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+        public static toObject(message: rov_actions_proto.PilotChangedResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
         /**
-         * Converts this DriverChangedResponse to JSON.
+         * Converts this PilotChangedResponse to JSON.
          * @returns JSON object
          */
         public toJSON(): { [k: string]: any };
 
         /**
-         * Gets the default type url for DriverChangedResponse
+         * Gets the default type url for PilotChangedResponse
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -4135,6 +4510,248 @@ export namespace rov_actions_proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a LivekitVideoStatsResponse. */
+    interface ILivekitVideoStatsResponse {
+
+        /** LivekitVideoStatsResponse Enabled */
+        Enabled?: (boolean|null);
+
+        /** LivekitVideoStatsResponse Codec */
+        Codec?: (rov_actions_proto.VideoCodec|null);
+
+        /** LivekitVideoStatsResponse AllowBackupCodec */
+        AllowBackupCodec?: (boolean|null);
+
+        /** LivekitVideoStatsResponse BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** LivekitVideoStatsResponse SimulcastLayers */
+        SimulcastLayers?: (rov_actions_proto.IVideoStreamOptions[]|null);
+
+        /** LivekitVideoStatsResponse RtcSenderStatsJson */
+        RtcSenderStatsJson?: (string|null);
+    }
+
+    /** Represents a LivekitVideoStatsResponse. */
+    class LivekitVideoStatsResponse implements ILivekitVideoStatsResponse {
+
+        /**
+         * Constructs a new LivekitVideoStatsResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ILivekitVideoStatsResponse);
+
+        /** LivekitVideoStatsResponse Enabled. */
+        public Enabled: boolean;
+
+        /** LivekitVideoStatsResponse Codec. */
+        public Codec: rov_actions_proto.VideoCodec;
+
+        /** LivekitVideoStatsResponse AllowBackupCodec. */
+        public AllowBackupCodec: boolean;
+
+        /** LivekitVideoStatsResponse BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** LivekitVideoStatsResponse SimulcastLayers. */
+        public SimulcastLayers: rov_actions_proto.IVideoStreamOptions[];
+
+        /** LivekitVideoStatsResponse RtcSenderStatsJson. */
+        public RtcSenderStatsJson: string;
+
+        /**
+         * Creates a new LivekitVideoStatsResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LivekitVideoStatsResponse instance
+         */
+        public static create(properties?: rov_actions_proto.ILivekitVideoStatsResponse): rov_actions_proto.LivekitVideoStatsResponse;
+
+        /**
+         * Encodes the specified LivekitVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.LivekitVideoStatsResponse.verify|verify} messages.
+         * @param message LivekitVideoStatsResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ILivekitVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified LivekitVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.LivekitVideoStatsResponse.verify|verify} messages.
+         * @param message LivekitVideoStatsResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ILivekitVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LivekitVideoStatsResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LivekitVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.LivekitVideoStatsResponse;
+
+        /**
+         * Decodes a LivekitVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns LivekitVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.LivekitVideoStatsResponse;
+
+        /**
+         * Verifies a LivekitVideoStatsResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a LivekitVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns LivekitVideoStatsResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.LivekitVideoStatsResponse;
+
+        /**
+         * Creates a plain object from a LivekitVideoStatsResponse message. Also converts values to other types if specified.
+         * @param message LivekitVideoStatsResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.LivekitVideoStatsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this LivekitVideoStatsResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for LivekitVideoStatsResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SimplepeerVideoStatsResponse. */
+    interface ISimplepeerVideoStatsResponse {
+
+        /** SimplepeerVideoStatsResponse Enabled */
+        Enabled?: (boolean|null);
+
+        /** SimplepeerVideoStatsResponse Codec */
+        Codec?: (rov_actions_proto.VideoCodec|null);
+
+        /** SimplepeerVideoStatsResponse BaseStream */
+        BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** SimplepeerVideoStatsResponse RtcSenderStatsJson */
+        RtcSenderStatsJson?: (string|null);
+    }
+
+    /** Represents a SimplepeerVideoStatsResponse. */
+    class SimplepeerVideoStatsResponse implements ISimplepeerVideoStatsResponse {
+
+        /**
+         * Constructs a new SimplepeerVideoStatsResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.ISimplepeerVideoStatsResponse);
+
+        /** SimplepeerVideoStatsResponse Enabled. */
+        public Enabled: boolean;
+
+        /** SimplepeerVideoStatsResponse Codec. */
+        public Codec: rov_actions_proto.VideoCodec;
+
+        /** SimplepeerVideoStatsResponse BaseStream. */
+        public BaseStream?: (rov_actions_proto.IVideoStreamOptions|null);
+
+        /** SimplepeerVideoStatsResponse RtcSenderStatsJson. */
+        public RtcSenderStatsJson: string;
+
+        /**
+         * Creates a new SimplepeerVideoStatsResponse instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SimplepeerVideoStatsResponse instance
+         */
+        public static create(properties?: rov_actions_proto.ISimplepeerVideoStatsResponse): rov_actions_proto.SimplepeerVideoStatsResponse;
+
+        /**
+         * Encodes the specified SimplepeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * @param message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.ISimplepeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified SimplepeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * @param message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.ISimplepeerVideoStatsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SimplepeerVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): rov_actions_proto.SimplepeerVideoStatsResponse;
+
+        /**
+         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns SimplepeerVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): rov_actions_proto.SimplepeerVideoStatsResponse;
+
+        /**
+         * Verifies a SimplepeerVideoStatsResponse message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates a SimplepeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns SimplepeerVideoStatsResponse
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.SimplepeerVideoStatsResponse;
+
+        /**
+         * Creates a plain object from a SimplepeerVideoStatsResponse message. Also converts values to other types if specified.
+         * @param message SimplepeerVideoStatsResponse
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.SimplepeerVideoStatsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this SimplepeerVideoStatsResponse to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for SimplepeerVideoStatsResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a ResponseBackendMetadata. */
     interface IResponseBackendMetadata {
 
@@ -4271,8 +4888,8 @@ export namespace rov_actions_proto {
         /** RovResponse PasswordInvalid */
         PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
 
-        /** RovResponse DriverChanged */
-        DriverChanged?: (rov_actions_proto.IDriverChangedResponse|null);
+        /** RovResponse PilotChanged */
+        PilotChanged?: (rov_actions_proto.IPilotChangedResponse|null);
 
         /** RovResponse ClientConnected */
         ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
@@ -4294,6 +4911,12 @@ export namespace rov_actions_proto {
 
         /** RovResponse LogMessage */
         LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
+
+        /** RovResponse LivekitVideoStats */
+        LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse|null);
+
+        /** RovResponse SimplepeerVideoStats */
+        SimplepeerVideoStats?: (rov_actions_proto.ISimplepeerVideoStatsResponse|null);
     }
 
     /** Represents a RovResponse. */
@@ -4335,8 +4958,8 @@ export namespace rov_actions_proto {
         /** RovResponse PasswordInvalid. */
         public PasswordInvalid?: (rov_actions_proto.IPasswordInvalidResponse|null);
 
-        /** RovResponse DriverChanged. */
-        public DriverChanged?: (rov_actions_proto.IDriverChangedResponse|null);
+        /** RovResponse PilotChanged. */
+        public PilotChanged?: (rov_actions_proto.IPilotChangedResponse|null);
 
         /** RovResponse ClientConnected. */
         public ClientConnected?: (rov_actions_proto.IClientConnectedResponse|null);
@@ -4359,8 +4982,14 @@ export namespace rov_actions_proto {
         /** RovResponse LogMessage. */
         public LogMessage?: (rov_actions_proto.ILogMessageResponse|null);
 
+        /** RovResponse LivekitVideoStats. */
+        public LivekitVideoStats?: (rov_actions_proto.ILivekitVideoStatsResponse|null);
+
+        /** RovResponse SimplepeerVideoStats. */
+        public SimplepeerVideoStats?: (rov_actions_proto.ISimplepeerVideoStatsResponse|null);
+
         /** RovResponse Body. */
-        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage");
+        public Body?: ("Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"PilotChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|"LivekitVideoStats"|"SimplepeerVideoStats");
 
         /**
          * Creates a new RovResponse instance using the specified properties.

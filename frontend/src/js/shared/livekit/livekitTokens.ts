@@ -1,15 +1,15 @@
 
-import { AccessToken, type AccessTokenOptions, } from "livekit-server-sdk";
+import { AccessToken, type AccessTokenOptions, TokenVerifier } from "livekit-server-sdk";
 import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
 import { encrypt } from "../encryption";
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
-
+import { decodeJwt } from "jose";
 
 /** A hack to silence false warnings about including the secret key in the web bundle
  * This is fine so long as the secret key is only found in the rov internal/backend chromium instance!!
  * @param toRun any function
  * @returns the result of calling toRun */
-export const silenceFalseSecurityNotice = (toRun: (...args: any) => any) => {
+export const silenceFalseSecurityNotice = <T>(toRun: (...args: any) => T) => {
     const realConsoleError = console.error;
     Object.assign(console, {
         error: (...args) => {
@@ -30,6 +30,20 @@ export const silenceFalseSecurityNotice = (toRun: (...args: any) => any) => {
  * @returns {AccessToken} livekit access token object*/
 const getAccessToken = (apiKey: string, secretKey: string, options: AccessTokenOptions) => {
     return silenceFalseSecurityNotice(() => new AccessToken(apiKey, secretKey, options));
+}
+
+
+export const isTokenValid = async (plaintextToken: string) => {
+    try {
+        const tokenInfo = await decodeJwt(plaintextToken);
+        const expired = !tokenInfo.exp || (tokenInfo.exp < Date.now() / 1000);
+        const beforeValid = !!tokenInfo.nbf && (tokenInfo.nbf > Date.now() / 1000);
+        logDebug("isTokenValid() tokenInfo: ", tokenInfo, "expired: ", expired, "beforeValid: ", beforeValid, "now: ", Date.now() / 1000, "valid: ", !expired && !beforeValid, tokenInfo);
+        if (!expired && !beforeValid) return tokenInfo.sub; // return the user id if the token is valid
+        return false;
+    } catch (e) {
+        logError("Error in decodeJwt() on auth token: ", e);
+    }
 }
 
 /**
@@ -58,9 +72,9 @@ export async function getPublisherAccessToken(apiKey: string, secretKey: string,
     return await token.toJwt();
 }
 
-export async function encryptAccessToken(accessToken: string, password: string): Promise<string> {
+export async function encryptAccessToken(accessToken: string, password: string): Promise<{ salt: string, iv: string, token: string }> {
     const { encryptedText, iv, salt } = await encrypt(accessToken, password)
-    return salt + "|" + iv + "|" + encryptedText;
+    return { salt, iv, token: encryptedText };
 }
 
 /**
@@ -70,7 +84,7 @@ export async function encryptAccessToken(accessToken: string, password: string):
  * @param {string} roomName livekit room name that this user will be allowed to join
  * @param {string} userName  user name & identity that this user will get when joining the room / using livekit.
  * @returns {string} JWT access token */
-export async function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string, encryptionPassword: string | null = null) {
+export async function getFrontendAccessToken(apiKey: string, secretKey: string, roomName: string, userName: string) {
     const token = getAccessToken(apiKey, secretKey, {
         identity: userName,
         name: userName,
@@ -85,13 +99,8 @@ export async function getFrontendAccessToken(apiKey: string, secretKey: string, 
         canPublishData: true,
         canUpdateOwnMetadata: false,
     });
-    const unencryptedToken = await token.toJwt();
-    if (encryptionPassword && encryptionPassword.length > 0) {
-        // logDebug("AuthToken before encryption for " + userName, unencryptedToken)
-        return userName + "|" + await encryptAccessToken(ENCRYPTED_AUTH_TOKEN_PREFIX + unencryptedToken, encryptionPassword);
-    } else {
-        return userName + "|" + unencryptedToken;
-    }
+    const rawToken = await token.toJwt();
+    return rawToken
 }
 
 /**

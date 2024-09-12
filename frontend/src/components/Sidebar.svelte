@@ -10,10 +10,10 @@
   import { get } from "svelte/store";
   import YawRollViz from "./YawRollViz.svelte";
   import { toastHistoryStore } from "../js/toastMessageManager";
-  import { autopilotLoad, batteryCurrent, batteryVoltage, cpuTempC, cpuUsagePercent, diskUsagePercent, memUsagePercent } from "../js/vehicleStats";
+  import { autopilotLoad, batteryPercent, batteryCurrent, batteryVoltage, cpuTempC, cpuUsagePercent, diskUsagePercent, memUsagePercent } from "../js/vehicleStats";
   import { depthM, networkLatencyMs, waterTempC } from "../js/sensors";
-    import { sidebarExpanded } from "../js/globalContext";
-    import { scale } from 'svelte/transition';
+  import { sidebarExpanded } from "../js/globalContext";
+  import { scale } from "svelte/transition";
 
   let expandedMessage = -1;
   let messageListExpanded = false;
@@ -98,6 +98,7 @@
     <div class="grid gap-2 p-2" class:grid-cols-1={!$sidebarExpanded} class:grid-cols-2={$sidebarExpanded}>
       <CircleStatIndicator value={$depthM} min={0} max={50} unit="M" name="Depth" />
       <CircleStatIndicator value={$waterTempC} min={6} max={27} unit="*C" name="Water Temp" />
+      <CircleStatIndicator value={$batteryPercent} min={0} max={100} unit="%" name="Battery" />
       <CircleStatIndicator value={$batteryVoltage} min={11.0} max={17.6} unit="Volts" name="Batt Volts" />
       <CircleStatIndicator value={$batteryCurrent} min={0} max={60} unit="Amps" name="Batt Amps" />
       <CircleStatIndicator value={$networkLatencyMs} min={20} max={600} unit="ms" name="Net Latency" />

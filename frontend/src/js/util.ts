@@ -274,3 +274,16 @@ export function generateStateChangeFunction(sendStateChange, stateTransition, da
     }
     return func;
 }
+
+/**
+ *
+ * @param value Displays a number in a human readable format, with a max of 4 characters.
+ * @returns
+ */
+export const renderNumber = (value: number) => {
+    if (Number.isNaN(value)) return "?";
+    if (value == Infinity) return "∞";
+    if (value == -Infinity) return "-∞";
+    if (value < 9999) return String(value).substring(0, 4);
+    else return value.toExponential(0);
+};

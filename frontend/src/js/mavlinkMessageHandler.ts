@@ -8,10 +8,12 @@ import { URL_PARAMS } from "./frontendConsts";
 import type { Package } from "./shared/mavlink2rest-ts/messages/mavlink2rest";
 import type { Message } from "./shared/mavlink2rest-ts/messages/mavlink2rest-message";
 import { MavModeFlag, MavSeverity, MavState } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
+import { log, logDebug } from "./shared/logging";
 
 // import {  MavState, MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED, MavModeFlag.MAV_MODE_FLAG_MANUAL_INPUT_ENABLED, MavModeFlag.MAV_MODE_FLAG_HIL_ENABLED, MavModeFlag.MAV_MODE_FLAG_STABILIZE_ENABLED, MavModeFlag.MAV_MODE_FLAG_GUIDED_ENABLED, MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED, MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED, STATUSTEXT } from "./shared/mavlink2RestMessages"
 
 export const handleMavlinkMessage = (msg: Package) => {
+    logDebug("@ handleMavlinkMessage", msg)
     if (!msg.message) return;
     if (!msg.message.type) return logDebug("@ invalid mavlink message rcvd: ", msg);
     const mavMsg = msg.message;
@@ -40,6 +42,7 @@ export const handleMavlinkMessage = (msg: Package) => {
 }
 
 export const handleHearbeatRecived = (msg: Message.Heartbeat) => {
+    log("heartbeat", msg)
     if (msg.autopilot.type == "MAV_AUTOPILOT_INVALID") return;
     const currentFlightMode = msg.custom_mode;
     updateAutopilotFlightModeDisplay(currentFlightMode)
@@ -94,7 +97,7 @@ export const handleSystemStatusRecived = (msg: Message.SysStatus) => {
     // show toast warnings for any errors:
     if (msg.errors_comm > 0) showToastMessage(`${all_error_count} autopilot errors detected!`, 5000, true, ToastSeverity.warning)
     if (voltage < 14 || (msg.battery_remaining > 0 && msg.battery_remaining < 10)) showToastMessage(`Low Battery: ${voltage.toFixed(2)}volts`, 8000, true, ToastSeverity.warning)
-    if (current > 20) showToastMessage(`High Current Draw: ${current.toFixed(1)} amps`, 5000, true, ToastSeverity.error)
+    if (current > 30) showToastMessage(`High Current Draw: ${current.toFixed(1)} amps`, 5000, true, ToastSeverity.warning)
 }
 
 export const handleStatusTextRecived = (msg: Message.Statustext) => {

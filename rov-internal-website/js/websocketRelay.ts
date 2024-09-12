@@ -116,6 +116,10 @@ export class WebSocketRelay {
         this.socket.send(message)
     }
 
+    close() {
+        if (this.socket) this.socket.close()
+    }
+
 
 }
 

@@ -75,9 +75,21 @@ class TwitchStream {
     }
 
     async stopStream() {
-        if (!this.streamEgressID || !this._egressClient) return logWarn("stopStream() err: Twitch Stream not started!");
-        const info = await this._egressClient.stopEgress(this.streamEgressID);
-        logInfo("Twitch stream stopped: ", info);
+        if (!this._egressClient) return logWarn("stopStream() err: Twitch Stream not started!");
+        const egressId = this.streamEgressID;
+        this.streamEgressID = undefined;
+        if (egressId) {
+            const info = await silenceFalseSecurityNotice(() => this?._egressClient?.stopEgress(egressId));
+            logInfo("Twitch stream stopped: ", info);
+        }
+        const egressList = await silenceFalseSecurityNotice(() => this.listRunningEgress());
+        const egress = this.getCurrentEgress(egressList);
+        if (egress) {
+            logInfo("Egress still running: ", egress);
+            const info = await silenceFalseSecurityNotice(() => this?._egressClient?.stopEgress(egress.egressId));
+            logInfo("Twitch stream stopped: ", info);
+        }
+        this.streamEgressID = undefined;
     }
 
 }

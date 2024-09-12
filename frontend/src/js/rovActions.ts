@@ -12,6 +12,7 @@ import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
 import { openControlTutModal } from "../components/Modals/modals";
+import { autopilotMode } from "./vehicleStats";
 
 class RovActionsClass {
 
@@ -26,7 +27,10 @@ class RovActionsClass {
     lastMovementTime = 0;
     lastPingTime = 0;
 
-    /** triggerNextFlightModeUi is function that is assigned in the pilot page flight mode dropdown selector ui to trigger a change to the next flight mode */
+    lastGpadLTriggerValue = 0;
+    lastGpadRTriggerValue = 0;
+
+    /** triggerNextFlightModeUi is function that is assigned BY the pilot page flight mode dropdown selector ui component to trigger a change to the next flight mode */
     triggerNextFlightModeUi: (delta: number) => void = null;
 
     gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
@@ -43,8 +47,6 @@ class RovActionsClass {
         const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
         const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
 
-
-
         if (buttonsChangedMask[BTN_LB] && buttonsChangedMask[BTN_LB].released) {
             throttleGain.update((val) => Math.min(Math.max(10, val - 10), 100))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
@@ -57,6 +59,10 @@ class RovActionsClass {
             this.triggerNextFlightModeUi(1)
         }
 
+        if (buttonsChangedMask[BTN_X] && buttonsChangedMask[BTN_X].released) {
+            this.moveClawToPosition(0)
+        }
+
         if (buttonsChangedMask[BTN_HELP] && buttonsChangedMask[BTN_HELP].released) {
             openControlTutModal()
         }
@@ -66,7 +72,15 @@ class RovActionsClass {
         if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
             const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
             const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
+
+            const deltaL = LT - this.lastGpadLTriggerValue;
+            const deltaR = RT - this.lastGpadRTriggerValue;
+
             // do something with the claw
+
+            this.lastGpadLTriggerValue = LT;
+            this.lastGpadRTriggerValue = RT;
+
         }
 
         if (buttonsChangedMask[BTN_A] && buttonsChangedMask[BTN_A].released) {
@@ -150,6 +164,7 @@ class RovActionsClass {
     }
 
     setFlightMode(mode: FlightMode) {
+        autopilotMode.set(mode);
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         frontendRovMsgHandler.sendRovMessage({ SetAutopilotMode: { mode: mode } }, null);
     }
@@ -178,9 +193,11 @@ class RovActionsClass {
             }
             return acc;
         }, 0)
+
         const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
         if (this.lastMove.ButtonBitmask === ButtonBitmask && timeSinceLastMoveCmd < 700) return;
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+        if (ButtonBitmask) logInfo("btnBitmask" + ButtonBitmask)
         frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
         this.lastMove.ButtonBitmask = ButtonBitmask;
         this.lastMovementTime = Date.now();
@@ -190,9 +207,14 @@ class RovActionsClass {
         frontendRovMsgHandler.sendRovMessage({ RefreshAllSensors: {} }, null);
     }
 
+    moveClawToPosition(position: number) {
+        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+        frontendRovMsgHandler.sendRovMessage({ MoveClaw: { Value: position } })
+    }
+
     toggleLights() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ ToogleLights: {} }, null);
+        frontendRovMsgHandler.sendRovMessage({ ToggleLights: {} }, null);
     }
 
     takePhoto() {
@@ -249,11 +271,6 @@ class RovActionsClass {
     getRovStatusReport = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
         frontendRovMsgHandler.sendRovMessage({ RovStatusReport: {} }, responseHandler)
-    }
-
-    getRovLogs = () => {
-        let responseHandler = this.showCommandOutputPopup("ROV Logs", "Sending Request (Please Wait)...\n", "\n\nDone.");
-        frontendRovMsgHandler.sendRovMessage({ RovLogs: {} }, responseHandler)
     }
 
     enableRovWifi = () => {

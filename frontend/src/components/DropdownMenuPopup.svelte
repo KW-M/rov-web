@@ -13,7 +13,7 @@
   export let autoReset = false;
   export let defaultIcon = Flight_class;
   export let defaultLabel = "";
-  export let value: string = "";
+  export let value: any = "";
   export let variant = "";
   export let btnClass = "btn variant-filled rounded-3xl lg:w-48 ";
   let openButton: HTMLButtonElement;
@@ -23,13 +23,12 @@
   let changeSelectTimeout: NodeJS.Timeout;
   export let onChange = (value: string) => {};
   export const changeSelected = (delta: number) => {
-    console.log("changeSelected", delta, open);
     if (!open) {
       popupCombobox.forceOpen = true;
       console.log("changeSelectedOpening", delta, open);
       openButton.click();
     }
-    document.activeElement.blur();
+    (document.activeElement as HTMLElement).blur ? document.activeElement.blur() : null;
     let index = options.findIndex((option) => option.value === value);
     index = (index + delta + options.length) % options.length;
     value = options[index].value;
@@ -80,6 +79,9 @@
 </button>
 
 <div class={"card shadow-xl z-50 variant-glass" + variant} data-popup={"popup_" + defaultLabel} use:focusTrap={open} bind:this={popupElement}>
+  {#if !optionsMap.get(value)}
+    {value}
+  {/if}
   <RadioSelectGrid bind:value {options} onChange={onChangeInternal} {disabled} {autoReset} {variant} class={"variant-glass" + variant} />
 </div>
 

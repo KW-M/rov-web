@@ -16,7 +16,6 @@
 
   export let visible: boolean = false;
 
-  // TODO? switch to onMount()?
   onMount(() => {
     gpadCtrl.setupOnscreenGamepad(GPAD_DISPLAY_CONTAINER);
   });

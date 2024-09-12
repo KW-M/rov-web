@@ -1,5 +1,6 @@
 import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions, VideoPresets } from "livekit-client"
 import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum.ts";
+import type SimplepeerT from "simple-peer";
 
 declare global {
     interface Window {
@@ -72,6 +73,9 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
     // adaptive stream only applies to client side receiving video.
     adaptiveStream: false,
 
+    // IMPORTANT: stops tracks when unpublishing - this is important for changing the camera resolution settings.
+    stopLocalTrackOnUnpublish: true,
+
     // default capture settings
     videoCaptureDefaults: {
         resolution: {
@@ -85,12 +89,13 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
     publishDefaults: {
         videoCodec: "vp9",
         videoEncoding: {
-            maxBitrate: 700_000,
+            maxBitrate: 7_000_000,
             maxFramerate: 60,
             priority: "high",
         },
-        backupCodec: false,
+        backupCodec: true,
         simulcast: false,
+        degradationPreference: "maintain-resolution",
         // backupCodec: {
         //     codec: "h264",
         //     encoding: {
@@ -100,11 +105,10 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
         //     }
         // },
 
-        // simulcast: true,
-        // videoSimulcastLayers: [
-        //     VideoPresets.h720,
-        //     VideoPresets.h360,
-        // ]
+        simulcast: true,
+        videoSimulcastLayers: [
+            VideoPresets.h540,
+        ]
 
     },
 }
@@ -121,12 +125,24 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 
 }
 
-export const SIMPLEPEER_BASE_CONFIG = {
+export const SIMPLEPEER_BASE_CONFIG: SimplepeerT.Options & { iceRestartEnabled: string | boolean } = {
     initiator: true,
     trickle: true,
-    // @ts-ignore
+    iceRestartEnabled: 'onDisconnect',
     config: {
         bundlePolicy: "balanced",
         iceTransportPolicy: "all",
     } as RTCConfiguration,
+    iceCompleteTimeout: 1000,
+
+}
+
+export const SIMPLEPEER_CAPTURE_CONFIG: MediaStreamConstraints = {
+    video: {
+        width: 1920,
+        height: 1080,
+        frameRate: 60,
+        facingMode: 'environment',
+    },
+    audio: false,
 }

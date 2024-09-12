@@ -55,14 +55,14 @@ export enum FlightMode {
     // circle (unsupported) =  param1:1, param2:7
 }
 
-export const FlightmodeNameMap = {
-    [FlightMode.manual]: "Manual",
-    [FlightMode.stabilize]: "Stabilize",
-    [FlightMode.acrobatic]: "Acrobatic",
-    [FlightMode.depth_hold]: "Depth Hold",
-    [FlightMode.surface]: "Surface",
-    [FlightMode.unknown]: "Unknown",
-}
+// export const FlightmodeNameMap = {
+//     [FlightMode.manual]: "Manual",
+//     [FlightMode.stabilize]: "Stabilize",
+//     [FlightMode.acrobatic]: "Acrobatic",
+//     [FlightMode.depth_hold]: "Depth Hold",
+//     [FlightMode.surface]: "Surface",
+//     [FlightMode.unknown]: "Unknown",
+// }
 
 export const MavStateNameMap = {
     [MavState.MAV_STATE_UNINIT]: "Uninitialized",
@@ -190,7 +190,7 @@ export const MavStateNameMap = {
 export const addMessageHeader = (msg: Message, sequence: number = 0): Package => {
     return {
         header: {
-            system_id: 255,
+            system_id: 254,
             component_id: 240,
             sequence: sequence,
         },
@@ -316,6 +316,18 @@ export const manualControl = (x: number, y: number, z: number, r: number, button
     } as MavMessages.ManualControl)
 }
 
+export const servoPositionControl = (servo: number, position: number, group: number) => {
+    const controls: number[] = Array(8).fill(0);
+    controls[servo] = position;
+    return addMessageHeader({
+        type: "SET_ACTUATOR_CONTROL_TARGET",
+        group_mlx: group,
+        controls,
+        time_usec: Date.now() * 1000,
+        target_component: 1,
+        target_system: 1,
+    } as MavMessages.SetActuatorControlTarget)
+}
 
 export const STATUSTEXT = {
     "message": {

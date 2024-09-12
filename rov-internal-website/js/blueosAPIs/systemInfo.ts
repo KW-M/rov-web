@@ -1,6 +1,7 @@
 // Refactor out methods as separate exports using axios
 import axios from "axios"
 import { URL_PARAMS } from "../constsInternal"
+import { logWarn } from "../shared/logging"
 const API_PATH = '/system-information'
 
 /** Base structure that provides CPU specific information */

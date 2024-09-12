@@ -10,8 +10,9 @@ import { setMessageInterval } from "./shared/mavlink2RestMessages";
 import { getWebsocketURL } from "./shared/util";
 import { MAVLinkType } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
 import { URL_PARAMS } from "./constsInternal";
-import { mainLogr } from "./shared/logging";
+import { LogOrigin, mainLogr } from "./shared/logging";
 import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
+import { backendArdupilotMavlinkMsgRcvd } from "./msgHandler";
 
 /// ------- DEBUGGING STUFF: -----------
 // DISABLE VITE HOT MOUDLE RELOADING:
@@ -19,27 +20,8 @@ import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 if (import.meta.hot) import.meta.hot.accept(() => import.meta.hot.invalidate())
 Object.assign(window, { "getLongTermStarterAccessToken": getLongTermStarterAccessToken })
 
-const sendLogToFronend = (logLevel, args) => {
-    return new Promise<boolean>(async (resolve) => {
-        try {
-            const msgProto = rov_actions_proto.RovResponse.create({
-                LogMessage: {
-                    Level: logLevel,
-                    Message: JSON.stringify(args),
-                }
-            })
-            const successful = await internalConnManager.sendMessage(msgProto, true, [])
-            resolve(successful);
-        } catch (e) {
-            console.count("Failed to send log message" + JSON.stringify(e))
-            resolve(false)
-        }
-    })
-}
-
-if (URL_PARAMS.SEND_LOGS) {
-    mainLogr.enableSendLogs(sendLogToFronend)
-}
+mainLogr.defaultLogOrigin = LogOrigin.ROV;
+if (URL_PARAMS.SEND_LOGS) mainLogr.sendLogsAllowed = true;
 const showLogsBtn = document.getElementById("show_recent_logs_btn")
 const logsDiv = document.getElementById("recent_logs")
 if (showLogsBtn && logsDiv) showLogsBtn.addEventListener("click", () => mainLogr.printRecentLogs(logsDiv))
@@ -55,10 +37,6 @@ internalConnManager.start({
     LivekitCloudURL: URL_PARAMS.LIVEKIT_CLOUD_ENDPOINT,
     LivekitLocalURL: URL_PARAMS.LIVEKIT_LOCAL_ENDPOINT,
 }).then(() => {
-    // Replay logs from the backend:
-    if (URL_PARAMS.SEND_LOGS) {
-        mainLogr.sendQueuedLogs(sendLogToFronend);
-    }
     const statsDiv = document.getElementById("video_stats")
     internalConnManager.subscribeToVideoStats((stats) => {
         if (statsDiv) statsDiv.innerText = JSON.stringify(stats, null, 2)
@@ -66,10 +44,8 @@ internalConnManager.start({
 })
 
 // Initialize Twitch Stream
-log("URL_PARAMS", URL_PARAMS.TWITCH_STREAM_KEY)
 if (URL_PARAMS.TWITCH_STREAM_KEY !== "None") {
     twitchStream.init(URL_PARAMS.TWITCH_STREAM_KEY, URL_PARAMS.ROV_NAME, URL_PARAMS.LIVEKIT_API_KEY, URL_PARAMS.LIVEKIT_SECRET_KEY)
-    window.addEventListener("beforeunload", () => twitchStream.stopStream()) // Stop Twitch Stream when page is closed
 }
 
 // // Start Backend/Python Websocket Communication
@@ -98,15 +74,17 @@ if (URL_PARAMS.PYTHON_WEBSOCKET_PORT != 0) {
 
 // Start Mavlink2Rest Websocket Communication with the blue os apis
 if (URL_PARAMS.BLUEOS_APIS_ENDPOINT) {
-    irovMavlinkInterface.start(getWebsocketURL(URL_PARAMS.BLUEOS_APIS_ENDPOINT) + ":6040/ws/mavlink", (msg) => {
+    const filter = "(" + FRONTEND_HANDLED_MAVLINK_MESSAGE_TYPES.join(")|(") + ")" // regex filter for mavlink message types
+    irovMavlinkInterface.start(getWebsocketURL(URL_PARAMS.BLUEOS_APIS_ENDPOINT) + ":6040/ws/mavlink?filter=" + filter, (msg) => {
         /*Callback to handle messages being received from the arduPilot via */
 
         if (!msg.header || !msg.message) return logError("Mavlink message missing header or message body", msg);
+        backendArdupilotMavlinkMsgRcvd(msg)
+
+        // Encode message to bytes and create protobuf object
         const msgBytes = ENCODE_TXT(JSON.stringify(msg))
         const msgProto = rov_actions_proto.RovResponse.create({
-            Mavlink: {
-                Message: msgBytes,
-            }
+            Mavlink: { Message: msgBytes }
         })
 
         // Send message on using livekit:
@@ -141,3 +119,11 @@ if (URL_PARAMS.BLUEOS_APIS_ENDPOINT) {
 } else {
     logInfo("No BLUEOS_APIS_ENDPOINT url parameter set, skipping mavlink & system info monitoring!")
 }
+
+
+window.addEventListener("beforeunload", () => {
+    twitchStream.stopStream()
+    internalConnManager.stop()
+    iRovWebSocketRelay.close()
+    irovMavlinkInterface.close()
+})

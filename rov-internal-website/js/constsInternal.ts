@@ -15,3 +15,5 @@ export const URL_PARAMS = {
     LIVEKIT_CLOUD_ENDPOINT: getStringQueryParam("LIVEKIT_CLOUD_URL", 'https://rov-web.livekit.cloud'),
     LIVEKIT_LOCAL_ENDPOINT: getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880'),
 }
+
+export const CLAW_SERVO_PIN = 18;

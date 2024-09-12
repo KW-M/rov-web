@@ -1,11 +1,12 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-import SimplePeer from '@thaunknown/simple-peer';
-import type SimplePeerT from 'simple-peer';
+import Simplepeer from '@thaunknown/simple-peer/full.js';
+import type SimplepeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
+import { waitfor } from './util';
 
-enum SimplePeerErrorCodes {
+enum SimplepeerErrorCodes {
     ERR_WEBRTC_SUPPORT = 'ERR_WEBRTC_SUPPORT',
     ERR_CREATE_OFFER = 'ERR_CREATE_OFFER',
     ERR_CREATE_ANSWER = 'ERR_CREATE_ANSWER',
@@ -18,13 +19,26 @@ enum SimplePeerErrorCodes {
     ERR_CONNECTION_FAILURE = 'ERR_CONNECTION_FAILURE'
 }
 
-interface SimplePeerError {
-    code: SimplePeerErrorCodes
+interface SimplepeerError {
+    code: SimplepeerErrorCodes
+}
+
+type VideoStatsPrevState = {
+    bytesSent: number,
+    framesSent: number,
+    packetsSent: number,
+    timestamp: number,
+}
+
+
+type SignalData = SimplepeerT.SignalData & {
+    connId: number,
+    msgNum: number,
 }
 
 let globalConnId = 0;
 
-export class SimplePeerConnection {
+export class SimplepeerConnection {
 
     // timestamp in ms which is updated whenever a message is recived from another participant.
     lastMsgRecivedTimestamp: number;
@@ -39,9 +53,14 @@ export class SimplePeerConnection {
     remoteVideoStreams = nStore<Map<string, MediaStream | null>>(new Map());
 
     // the simplepeer instance used for this connection.
-    _p: SimplePeerT.Instance;
+    _p: Simplepeer | null = null;
     // the configuration used for the simplepeer instance.
     _spConfig: any = null;
+    // a queue of signal messages recived to be processed by simplepeer.
+    _incomingSignalQueue: SignalData[] = [];
+    // keeps track of how many signaling messages have been processed.
+    _consecutiveSignalMsgsProcessed: number = 0;
+
     // a queue of messages to be sent out over the data channel.
     _msgSendQueue: ArrayBufferLike[] = [];
     // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
@@ -71,14 +90,17 @@ export class SimplePeerConnection {
         })
     }
 
-    start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+    start(simplepeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+        if (this._p) this.stop();
         this._shouldReconnect = autoReconnect;
-        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
-        logDebug("SP starting with opts: ", this._spConfig)
-        if (this._spConfig.initiator) this._connectionId = globalConnId++;
+        this._spConfig = Object.assign({}, simplepeerOpts, Simplepeer.config);
+        logWarn("SP starting with opts: ", this._spConfig)
+        if (this._spConfig.initiator) this._connectionId = globalConnId++ + Math.random();
         this._signalMsgRecivedCounter = 0;
         this._signalMsgSendCounter = 0;
-        this._p = new SimplePeer(this._spConfig);
+        this._p = new Simplepeer(this._spConfig) as any as SimplepeerT.Instance;
+        if (!this._p) return logError("Failed to create Simplepeer instance!");
+
         this._p._debug = (...args: any[]) => logDebug("SIMPLEPEER DEBUG: " + args[0], ...args.slice(1));
         this._reconnectAttemptCount = reconnectAttemptCount;
         this._initiator = this._spConfig.initiator || false;
@@ -95,18 +117,20 @@ export class SimplePeerConnection {
         this._p.on('signal', (signalData: Object) => {
             if (this._connectionId === -1) {
                 logError("SP sending signal message when connectionId is -1, this should not happen!")
-                return alert("SP sending signal message when connectionId is -1, this should not happen!")
+                return;
             }
-            this._signalMsgSendCounter++;
+
             signalData = Object.assign({}, signalData, { connId: this._connectionId, msgNum: this._signalMsgSendCounter });
+            this._signalMsgSendCounter++;
             logDebug("SP: signal out", signalData)
             this.outgoingSignalingMessages.set(JSON.stringify(signalData));
+
         })
 
         this._p.on('connect', () => {
             // wait for 'connect' event before using the data channel
             logInfo("SP: Connected!")
-            this._emptyMsgQueue();
+            // this._emptySendMsgQueue();
             this._reconnectAttemptCount = 0;
             this.connectionState.set(ConnectionStates.connected);
         })
@@ -121,6 +145,7 @@ export class SimplePeerConnection {
             // got remote video stream, now let's show it in a video tag
             logInfo('SP got video stream: ', stream)
             this.remoteVideoStreams.update((streams) => {
+                streams = new Map();
                 streams.set(stream.id, stream);
                 return streams;
             })
@@ -135,7 +160,7 @@ export class SimplePeerConnection {
         })
         // Called when the peer connection has closed.
         this._p.on('close', () => {
-            // this.resetConnectionStats(); // TODO: check if this is the right place to reset the connection stats.
+            if (!this._initiator) this.resetConnectionStats(); // TODO: check if this is the right place to reset the connection stats.
             logWarn('SP connection closed')
             // this.remoteVideoStreams.set(new Map());
             // if (!this._shouldReconnect) {
@@ -150,7 +175,7 @@ export class SimplePeerConnection {
 
 
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
-        this._p.on('error', (err: SimplePeerError) => {
+        this._p.on('error', (err: SimplepeerError) => {
             // this.resetConnectionStats();
             logError('SP error ', err)
             this.remoteVideoStreams.set(new Map());
@@ -168,7 +193,7 @@ export class SimplePeerConnection {
             //                 this._p.reconnect();
             //             } else {
             //                 if (this._p) this._p.destroy();
-            //                 this.start(simplePeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
+            //                 this.start(simplepeerOpts, this._shouldReconnect, this._reconnectAttemptCount);
             //             }
             //         }, 2000);
             //         return
@@ -179,61 +204,188 @@ export class SimplePeerConnection {
             // this._p.destroy();
             this.connectionState.set(ConnectionStates.failed);
         })
+
+        this._processSignalMsgQueue();
     }
 
-    // resetConnectionStats() {
-    //     this._connectionId = -1//Math.round(3600 * Math.random()).toString(36);
-    //     this._signalMsgRecivedCounter = 0;
-    //     this._signalMsgSendCounter = 0;
-    // }
-
     stop() {
-        logDebug("SP Stop", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
-        // this.resetConnectionStats();
+        this.resetConnectionStats();
         this.connectionState.set(ConnectionStates.disconnectedOk);
         this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
         clearInterval(this._StatsGatherInterval);
+        logDebug("SP Stop", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
         if (this._p) this._p.destroy();
+        this._p = null;
     }
 
-    restart(connectionId?: number, signalingMsg?: string) {
-        logDebug("SP Restart", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
+    async restart(connectionId?: number, signalingMsg?: string) {
+        // TODO implement exponential backoff
+        logDebug("SP Restart", this._reconnectAttemptCount, connectionId, this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
+        this._reconnectAttemptCount++;
         this.stop();
         this._connectionId = connectionId || -1;
+        // await waitfor(500 * this._reconnectAttemptCount)
+        console.log("SP Restart2", this._spConfig)
         this.start(this._spConfig, this._shouldReconnect, this._reconnectAttemptCount);
         if (signalingMsg) this.ingestSignalingMsg(signalingMsg);
     }
 
-    ingestSignalingMsg(signalingMsg: string) {
-        try {
-            const signal = JSON.parse(signalingMsg);
-            logInfo("SP signal in", signal, signal.connId, this._connectionId)
-            if (this._p.destroyed) return this.restart(signal.connId, signalingMsg);
-            if (this._connectionId === -1) this._connectionId = signal.connId;
-            else if (signal.connId < this._connectionId) {
-                log("SP Err Older Remote ConnId!", signal.connId, "<", this._connectionId);
-                return
-            } else if (signal.connId > this._connectionId) {
-                if (this._initiator) {
-                    log("SP Err Newer Remote ConnId!", signal.connId, ">", this._connectionId);
-                } else this.restart(signal.connId, signalingMsg);
 
-                return;
-            }
-            if (signal.msgNum <= this._signalMsgRecivedCounter) {
-                log("SP Invalid MsgNum Order!", signal.msgNum, "<=", this._signalMsgRecivedCounter); return;
-            }
-            this._signalMsgRecivedCounter = signal.msgNum;
-            this._p.signal(signal)
+    resetConnectionStats() {
+        // this._connectionId = -1//Math.round(3600 * Math.random()).toString(36);
+        this._signalMsgRecivedCounter = 0;
+        this._signalMsgSendCounter = 0;
+        this._consecutiveSignalMsgsProcessed = 0;
+    }
+
+    changeMediaStream(stream: MediaStream) {
+        if (!this._p) return;
+        try {
+            console.log("SP: changeMediaStream replacing track", stream.getVideoTracks()[0].getSettings())
+            const existingStream = this._p.streams[0];
+            const existingTrack = existingStream.getVideoTracks()[0];
+            this._p.replaceTrack(existingTrack, stream.getVideoTracks()[0], existingStream);
+            // existingTrack.stop();
         } catch (err) {
-            logWarn("failed to parse & ingest simplepeer signalling message: ", signalingMsg, err.message)
+            logError("SP: changeMediaStream failed to replace track trying stream remove+add", err.message)
+            for (const existingStreams of this._p.streams) {
+                this._p.removeStream(existingStreams);
+            }
+            this._p.addStream(stream);
+        }
+    }
+
+    setCodecPreferences(codecs: string[]) {
+        // this should be called on the RECEIVING side of the media connection.
+        const availReceiveCodecs = RTCRtpReceiver.getCapabilities("video")?.codecs || [];
+        const sortedCodecs = this.sortCodecsByMimeTypes(availReceiveCodecs, codecs);
+        logInfo("SP: availReceiveCodecs", availReceiveCodecs, "sortedCodecs", sortedCodecs)
+        if (!this._p) return;
+
+        const transceivers = this._p?._pc?.getTransceivers() as RTCRtpTransceiver[] || [];
+        for (const transceiver of transceivers) {
+            transceiver.setCodecPreferences(sortedCodecs);
+        }
+        this._p.negotiate();
+
+        // setTimeout(() => {
+        //             const transceivers = this._p?._pc?.getTransceivers() as RTCRtpTransceiver[] || [];
+        //     for (const transceiver of transceivers) {
+        //         const recvrParams = transceiver.receiver.getParameters();
+        //         const sendrParams = transceiver.sender.getParameters();
+        //         this._p.getStats((err, stats) => { console.log("SP: stats", stats) });
+        //         logInfo("SP: rcvrParams", recvrParams, "sendrParams", sendrParams)
+        //     }
+        // }, 2000)
+
+    }
+
+    getCodecPreferences() {
+        // this should be called on the RECEIVING side of the media connection.
+        if (!this._p) return;
+        const transceivers = this._p?._pc?.getTransceivers() as RTCRtpTransceiver[] || [];
+        for (const transceiver of transceivers) {
+            const recvrParams = transceiver.receiver.getParameters();
+            if (recvrParams.codecs) return recvrParams.codecs.map((codec) => codec.mimeType);
+        }
+    }
+
+    async getStats() {
+        if (!this._p) return;
+        return await new Promise((resolve, reject) => {
+            if (!this._p || !this._p._pc) reject("No active simplepeer instance found!")
+            this._p.getStats((err, stats) => {
+                if (err) reject(err);
+                resolve(stats);
+            })
+        })
+    }
+
+    getPlayoutDelay() {
+        // this should be called on the RECEIVING side of the media connection.
+        if (!this._p) return;
+        const transceivers = this._p?._pc?.getTransceivers() as RTCRtpTransceiver[] || [];
+        for (const transceiver of transceivers) {
+            if (!transceiver.receiver) continue;
+            const receiver = transceiver.receiver as RTCRtpReceiver & { playoutDelayHint?: number, jitterBufferTarget?: number };
+            if (receiver.playoutDelayHint) return receiver.playoutDelayHint;
+            else if (receiver.jitterBufferTarget) return receiver.jitterBufferTarget / 1000;
+        }
+        return 0;
+    }
+
+    setPlayoutDelay(delay: number) {
+        // this should be called on the RECEIVING side of the media connection.
+        if (!this._p) return;
+        const transceivers = this._p?._pc?.getTransceivers() as RTCRtpTransceiver[] || [];
+        for (const transceiver of transceivers) {
+            if (!transceiver.receiver) continue;
+            const receiver = transceiver.receiver as RTCRtpReceiver & { playoutDelayHint?: number, jitterBufferTarget?: number };
+            console.log(receiver)
+            if (receiver.playoutDelayHint !== undefined && receiver.playoutDelayHint !== delay) receiver.playoutDelayHint = delay;
+            if (receiver.jitterBufferTarget !== undefined && receiver.jitterBufferTarget !== delay) receiver.jitterBufferTarget = delay * 1000;
+        }
+
+    }
+
+    sortCodecsByMimeTypes(codecs: RTCRtpCodecCapability[], preferredOrder: string[]) {
+        // function taken from https://blog.mozilla.org/webrtc/cross-browser-support-for-choosing-webrtc-codecs/
+        return codecs.sort((a, b) => {
+            const indexA = preferredOrder.indexOf(a.mimeType.toLowerCase());
+            const indexB = preferredOrder.indexOf(b.mimeType.toLowerCase());
+            const orderA = indexA >= 0 ? indexA : Number.MAX_VALUE;
+            const orderB = indexB >= 0 ? indexB : Number.MAX_VALUE;
+            return orderA - orderB;
+        });
+    }
+
+    ingestSignalingMsg(signalMsg: string) {
+        try {
+            const signal = JSON.parse(signalMsg) as SignalData;
+            if (signal.msgNum === undefined || signal.connId === undefined) {
+                return logWarn("SP: Ignoring Invalid Signal Message (no connId or msgNum)!", signal);
+            } else if (signal.connId != this._connectionId) {
+                logWarn("SP: Found Different connid, fastforwarding!", signal.connId, this._connectionId);
+                this._consecutiveSignalMsgsProcessed = 0;
+                this._connectionId = signal.connId;
+                this._incomingSignalQueue = [];
+                if (this._spConfig && !this._initiator) return this.restart(signal.connId, signalMsg);
+            }
+            // else if (signal.connId < this._connectionId) {
+            //     logWarn("SP: Ignoring Signal Message For Old connid (connId mismatch)!", signal.connId, this._connectionId);
+            //     return;
+            // }
+            logInfo("SP: signal queued", signal, signal.msgNum, this._consecutiveSignalMsgsProcessed, signal.connId, this._connectionId)
+            this._incomingSignalQueue.push(signal);
+        } catch (err) {
+            logWarn("SP: Failed to parse json signal message: ", signalMsg, err.message)
         };
+        this._processSignalMsgQueue();
     }
 
     sendMessage(data: ArrayBufferLike) {
         this._msgSendQueue.push(data)
         this._emptyMsgQueue();
+    }
+
+    _processSignalMsgQueue() {
+        if (!this._p) return;
+        console.log("SP: processing signal queue", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
+        for (let i = 0; i < this._incomingSignalQueue.length; i++) {
+            console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
+            if (this._incomingSignalQueue.length === 0) return;
+            const signalIndex = this._incomingSignalQueue.findIndex((signal) => signal?.msgNum === this._consecutiveSignalMsgsProcessed);
+            if (signalIndex === -1) return;
+            const signal = this._incomingSignalQueue[signalIndex];
+
+            // here we know the signal is for the current connection and is the next consecutive message.
+            logInfo("SP: signal in", signal, signal.msgNum, this._consecutiveSignalMsgsProcessed, signal.connId, this._connectionId)
+            this._incomingSignalQueue.splice(signalIndex, 1);
+            i--;
+            this._p.signal(signal)
+            this._consecutiveSignalMsgsProcessed++;
+        }
     }
 
     _emptyMsgQueue() {

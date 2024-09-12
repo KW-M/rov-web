@@ -70,314 +70,20 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return values;
     })();
 
-    rov_actions_proto.Measurement = (function() {
-
-        /**
-         * Properties of a Measurement.
-         * @memberof rov_actions_proto
-         * @interface IMeasurement
-         * @property {rov_actions_proto.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
-         * @property {number|null} [Value] Measurement Value
-         */
-
-        /**
-         * Constructs a new Measurement.
-         * @memberof rov_actions_proto
-         * @classdesc Represents a Measurement.
-         * @implements IMeasurement
-         * @constructor
-         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
-         */
-        function Measurement(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Measurement MeasurementType.
-         * @member {rov_actions_proto.SensorMeasurmentTypes} MeasurementType
-         * @memberof rov_actions_proto.Measurement
-         * @instance
-         */
-        Measurement.prototype.MeasurementType = 0;
-
-        /**
-         * Measurement Value.
-         * @member {number} Value
-         * @memberof rov_actions_proto.Measurement
-         * @instance
-         */
-        Measurement.prototype.Value = 0;
-
-        /**
-         * Creates a new Measurement instance using the specified properties.
-         * @function create
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
-         * @returns {rov_actions_proto.Measurement} Measurement instance
-         */
-        Measurement.create = function create(properties) {
-            return new Measurement(properties);
-        };
-
-        /**
-         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
-         * @function encode
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Measurement.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
-            if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
-                writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Measurement.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.Measurement} Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Measurement.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.Measurement();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1: {
-                        message.MeasurementType = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.Value = reader.float();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a Measurement message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.Measurement} Measurement
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Measurement.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a Measurement message.
-         * @function verify
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        Measurement.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                switch (message.MeasurementType) {
-                default:
-                    return "MeasurementType: enum value expected";
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                case 11:
-                    break;
-                }
-            if (message.Value != null && message.hasOwnProperty("Value"))
-                if (typeof message.Value !== "number")
-                    return "Value: number expected";
-            return null;
-        };
-
-        /**
-         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.Measurement} Measurement
-         */
-        Measurement.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.Measurement)
-                return object;
-            let message = new $root.rov_actions_proto.Measurement();
-            switch (object.MeasurementType) {
-            default:
-                if (typeof object.MeasurementType === "number") {
-                    message.MeasurementType = object.MeasurementType;
-                    break;
-                }
-                break;
-            case "depth_meters":
-            case 0:
-                message.MeasurementType = 0;
-                break;
-            case "water_temp_celsius":
-            case 1:
-                message.MeasurementType = 1;
-                break;
-            case "pressure_mbar":
-            case 2:
-                message.MeasurementType = 2;
-                break;
-            case "yaw_degrees":
-            case 3:
-                message.MeasurementType = 3;
-                break;
-            case "pitch_degrees":
-            case 4:
-                message.MeasurementType = 4;
-                break;
-            case "roll_degrees":
-            case 5:
-                message.MeasurementType = 5;
-                break;
-            case "x_acceleration_m_s2":
-            case 6:
-                message.MeasurementType = 6;
-                break;
-            case "y_acceleration_m_s2":
-            case 7:
-                message.MeasurementType = 7;
-                break;
-            case "z_acceleration_m_s2":
-            case 8:
-                message.MeasurementType = 8;
-                break;
-            case "battery_voltage":
-            case 9:
-                message.MeasurementType = 9;
-                break;
-            case "battery_current_amps":
-            case 10:
-                message.MeasurementType = 10;
-                break;
-            case "internal_temp_celsius":
-            case 11:
-                message.MeasurementType = 11;
-                break;
-            }
-            if (object.Value != null)
-                message.Value = Number(object.Value);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {rov_actions_proto.Measurement} message Measurement
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        Measurement.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.MeasurementType = options.enums === String ? "depth_meters" : 0;
-                object.Value = 0;
-            }
-            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
-                object.MeasurementType = options.enums === String ? $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
-            if (message.Value != null && message.hasOwnProperty("Value"))
-                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
-            return object;
-        };
-
-        /**
-         * Converts this Measurement to JSON.
-         * @function toJSON
-         * @memberof rov_actions_proto.Measurement
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        Measurement.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for Measurement
-         * @function getTypeUrl
-         * @memberof rov_actions_proto.Measurement
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_actions_proto.Measurement";
-        };
-
-        return Measurement;
-    })();
-
     /**
      * DataTransportMethod enum.
      * @name rov_actions_proto.DataTransportMethod
      * @enum {number}
      * @property {number} LivekitReliable=0 LivekitReliable value
      * @property {number} LivekitUnreliable=1 LivekitUnreliable value
+     * @property {number} DirectReliable=2 DirectReliable value
      * @property {number} DirectUnreliable=3 DirectUnreliable value
      */
     rov_actions_proto.DataTransportMethod = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "LivekitReliable"] = 0;
         values[valuesById[1] = "LivekitUnreliable"] = 1;
+        values[valuesById[2] = "DirectReliable"] = 2;
         values[valuesById[3] = "DirectUnreliable"] = 3;
         return values;
     })();
@@ -400,6 +106,956 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         values[valuesById[3] = "UserConnected"] = 3;
         values[valuesById[4] = "UserDisconnected"] = 4;
         return values;
+    })();
+
+    /**
+     * VideoCodec enum.
+     * @name rov_actions_proto.VideoCodec
+     * @enum {number}
+     * @property {number} H264=0 H264 value
+     * @property {number} VP8=1 VP8 value
+     * @property {number} VP9=2 VP9 value
+     * @property {number} AV1=3 AV1 value
+     */
+    rov_actions_proto.VideoCodec = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "H264"] = 0;
+        values[valuesById[1] = "VP8"] = 1;
+        values[valuesById[2] = "VP9"] = 2;
+        values[valuesById[3] = "AV1"] = 3;
+        return values;
+    })();
+
+    rov_actions_proto.VideoStreamOptions = (function() {
+
+        /**
+         * Properties of a VideoStreamOptions.
+         * @memberof rov_actions_proto
+         * @interface IVideoStreamOptions
+         * @property {number|null} [Height] VideoStreamOptions Height
+         * @property {number|null} [Width] VideoStreamOptions Width
+         * @property {number|null} [Fps] VideoStreamOptions Fps
+         * @property {number|null} [MaxBitrate] VideoStreamOptions MaxBitrate
+         */
+
+        /**
+         * Constructs a new VideoStreamOptions.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a VideoStreamOptions.
+         * @implements IVideoStreamOptions
+         * @constructor
+         * @param {rov_actions_proto.IVideoStreamOptions=} [properties] Properties to set
+         */
+        function VideoStreamOptions(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * VideoStreamOptions Height.
+         * @member {number} Height
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @instance
+         */
+        VideoStreamOptions.prototype.Height = 0;
+
+        /**
+         * VideoStreamOptions Width.
+         * @member {number} Width
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @instance
+         */
+        VideoStreamOptions.prototype.Width = 0;
+
+        /**
+         * VideoStreamOptions Fps.
+         * @member {number} Fps
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @instance
+         */
+        VideoStreamOptions.prototype.Fps = 0;
+
+        /**
+         * VideoStreamOptions MaxBitrate.
+         * @member {number} MaxBitrate
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @instance
+         */
+        VideoStreamOptions.prototype.MaxBitrate = 0;
+
+        /**
+         * Creates a new VideoStreamOptions instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {rov_actions_proto.IVideoStreamOptions=} [properties] Properties to set
+         * @returns {rov_actions_proto.VideoStreamOptions} VideoStreamOptions instance
+         */
+        VideoStreamOptions.create = function create(properties) {
+            return new VideoStreamOptions(properties);
+        };
+
+        /**
+         * Encodes the specified VideoStreamOptions message. Does not implicitly {@link rov_actions_proto.VideoStreamOptions.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {rov_actions_proto.IVideoStreamOptions} message VideoStreamOptions message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        VideoStreamOptions.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Height != null && Object.hasOwnProperty.call(message, "Height"))
+                writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.Height);
+            if (message.Width != null && Object.hasOwnProperty.call(message, "Width"))
+                writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.Width);
+            if (message.Fps != null && Object.hasOwnProperty.call(message, "Fps"))
+                writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.Fps);
+            if (message.MaxBitrate != null && Object.hasOwnProperty.call(message, "MaxBitrate"))
+                writer.uint32(/* id 4, wireType 0 =*/32).uint32(message.MaxBitrate);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified VideoStreamOptions message, length delimited. Does not implicitly {@link rov_actions_proto.VideoStreamOptions.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {rov_actions_proto.IVideoStreamOptions} message VideoStreamOptions message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        VideoStreamOptions.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a VideoStreamOptions message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.VideoStreamOptions} VideoStreamOptions
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        VideoStreamOptions.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.VideoStreamOptions();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Height = reader.uint32();
+                        break;
+                    }
+                case 2: {
+                        message.Width = reader.uint32();
+                        break;
+                    }
+                case 3: {
+                        message.Fps = reader.uint32();
+                        break;
+                    }
+                case 4: {
+                        message.MaxBitrate = reader.uint32();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a VideoStreamOptions message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.VideoStreamOptions} VideoStreamOptions
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        VideoStreamOptions.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a VideoStreamOptions message.
+         * @function verify
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        VideoStreamOptions.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Height != null && message.hasOwnProperty("Height"))
+                if (!$util.isInteger(message.Height))
+                    return "Height: integer expected";
+            if (message.Width != null && message.hasOwnProperty("Width"))
+                if (!$util.isInteger(message.Width))
+                    return "Width: integer expected";
+            if (message.Fps != null && message.hasOwnProperty("Fps"))
+                if (!$util.isInteger(message.Fps))
+                    return "Fps: integer expected";
+            if (message.MaxBitrate != null && message.hasOwnProperty("MaxBitrate"))
+                if (!$util.isInteger(message.MaxBitrate))
+                    return "MaxBitrate: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a VideoStreamOptions message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.VideoStreamOptions} VideoStreamOptions
+         */
+        VideoStreamOptions.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.VideoStreamOptions)
+                return object;
+            let message = new $root.rov_actions_proto.VideoStreamOptions();
+            if (object.Height != null)
+                message.Height = object.Height >>> 0;
+            if (object.Width != null)
+                message.Width = object.Width >>> 0;
+            if (object.Fps != null)
+                message.Fps = object.Fps >>> 0;
+            if (object.MaxBitrate != null)
+                message.MaxBitrate = object.MaxBitrate >>> 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a VideoStreamOptions message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {rov_actions_proto.VideoStreamOptions} message VideoStreamOptions
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        VideoStreamOptions.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.Height = 0;
+                object.Width = 0;
+                object.Fps = 0;
+                object.MaxBitrate = 0;
+            }
+            if (message.Height != null && message.hasOwnProperty("Height"))
+                object.Height = message.Height;
+            if (message.Width != null && message.hasOwnProperty("Width"))
+                object.Width = message.Width;
+            if (message.Fps != null && message.hasOwnProperty("Fps"))
+                object.Fps = message.Fps;
+            if (message.MaxBitrate != null && message.hasOwnProperty("MaxBitrate"))
+                object.MaxBitrate = message.MaxBitrate;
+            return object;
+        };
+
+        /**
+         * Converts this VideoStreamOptions to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        VideoStreamOptions.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for VideoStreamOptions
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.VideoStreamOptions
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        VideoStreamOptions.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.VideoStreamOptions";
+        };
+
+        return VideoStreamOptions;
+    })();
+
+    rov_actions_proto.SetLivekitVideoOptionsAction = (function() {
+
+        /**
+         * Properties of a SetLivekitVideoOptionsAction.
+         * @memberof rov_actions_proto
+         * @interface ISetLivekitVideoOptionsAction
+         * @property {boolean|null} [Enabled] SetLivekitVideoOptionsAction Enabled
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] SetLivekitVideoOptionsAction Codec
+         * @property {boolean|null} [AllowBackupCodec] SetLivekitVideoOptionsAction AllowBackupCodec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SetLivekitVideoOptionsAction BaseStream
+         * @property {Array.<rov_actions_proto.IVideoStreamOptions>|null} [SimulcastLayers] SetLivekitVideoOptionsAction SimulcastLayers
+         */
+
+        /**
+         * Constructs a new SetLivekitVideoOptionsAction.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a SetLivekitVideoOptionsAction.
+         * @implements ISetLivekitVideoOptionsAction
+         * @constructor
+         * @param {rov_actions_proto.ISetLivekitVideoOptionsAction=} [properties] Properties to set
+         */
+        function SetLivekitVideoOptionsAction(properties) {
+            this.SimulcastLayers = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SetLivekitVideoOptionsAction Enabled.
+         * @member {boolean} Enabled
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         */
+        SetLivekitVideoOptionsAction.prototype.Enabled = false;
+
+        /**
+         * SetLivekitVideoOptionsAction Codec.
+         * @member {rov_actions_proto.VideoCodec} Codec
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         */
+        SetLivekitVideoOptionsAction.prototype.Codec = 0;
+
+        /**
+         * SetLivekitVideoOptionsAction AllowBackupCodec.
+         * @member {boolean} AllowBackupCodec
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         */
+        SetLivekitVideoOptionsAction.prototype.AllowBackupCodec = false;
+
+        /**
+         * SetLivekitVideoOptionsAction BaseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         */
+        SetLivekitVideoOptionsAction.prototype.BaseStream = null;
+
+        /**
+         * SetLivekitVideoOptionsAction SimulcastLayers.
+         * @member {Array.<rov_actions_proto.IVideoStreamOptions>} SimulcastLayers
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         */
+        SetLivekitVideoOptionsAction.prototype.SimulcastLayers = $util.emptyArray;
+
+        /**
+         * Creates a new SetLivekitVideoOptionsAction instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetLivekitVideoOptionsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SetLivekitVideoOptionsAction} SetLivekitVideoOptionsAction instance
+         */
+        SetLivekitVideoOptionsAction.create = function create(properties) {
+            return new SetLivekitVideoOptionsAction(properties);
+        };
+
+        /**
+         * Encodes the specified SetLivekitVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetLivekitVideoOptionsAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetLivekitVideoOptionsAction} message SetLivekitVideoOptionsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetLivekitVideoOptionsAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
+            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Codec);
+            if (message.AllowBackupCodec != null && Object.hasOwnProperty.call(message, "AllowBackupCodec"))
+                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.AllowBackupCodec);
+            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.SimulcastLayers != null && message.SimulcastLayers.length)
+                for (let i = 0; i < message.SimulcastLayers.length; ++i)
+                    $root.rov_actions_proto.VideoStreamOptions.encode(message.SimulcastLayers[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SetLivekitVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetLivekitVideoOptionsAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetLivekitVideoOptionsAction} message SetLivekitVideoOptionsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetLivekitVideoOptionsAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SetLivekitVideoOptionsAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.SetLivekitVideoOptionsAction} SetLivekitVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetLivekitVideoOptionsAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SetLivekitVideoOptionsAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Enabled = reader.bool();
+                        break;
+                    }
+                case 2: {
+                        message.Codec = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.AllowBackupCodec = reader.bool();
+                        break;
+                    }
+                case 4: {
+                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 5: {
+                        if (!(message.SimulcastLayers && message.SimulcastLayers.length))
+                            message.SimulcastLayers = [];
+                        message.SimulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SetLivekitVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.SetLivekitVideoOptionsAction} SetLivekitVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetLivekitVideoOptionsAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SetLivekitVideoOptionsAction message.
+         * @function verify
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SetLivekitVideoOptionsAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                if (typeof message.Enabled !== "boolean")
+                    return "Enabled: boolean expected";
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                switch (message.Codec) {
+                default:
+                    return "Codec: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
+                if (typeof message.AllowBackupCodec !== "boolean")
+                    return "AllowBackupCodec: boolean expected";
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+                if (error)
+                    return "BaseStream." + error;
+            }
+            if (message.SimulcastLayers != null && message.hasOwnProperty("SimulcastLayers")) {
+                if (!Array.isArray(message.SimulcastLayers))
+                    return "SimulcastLayers: array expected";
+                for (let i = 0; i < message.SimulcastLayers.length; ++i) {
+                    let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.SimulcastLayers[i]);
+                    if (error)
+                        return "SimulcastLayers." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a SetLivekitVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.SetLivekitVideoOptionsAction} SetLivekitVideoOptionsAction
+         */
+        SetLivekitVideoOptionsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SetLivekitVideoOptionsAction)
+                return object;
+            let message = new $root.rov_actions_proto.SetLivekitVideoOptionsAction();
+            if (object.Enabled != null)
+                message.Enabled = Boolean(object.Enabled);
+            switch (object.Codec) {
+            default:
+                if (typeof object.Codec === "number") {
+                    message.Codec = object.Codec;
+                    break;
+                }
+                break;
+            case "H264":
+            case 0:
+                message.Codec = 0;
+                break;
+            case "VP8":
+            case 1:
+                message.Codec = 1;
+                break;
+            case "VP9":
+            case 2:
+                message.Codec = 2;
+                break;
+            case "AV1":
+            case 3:
+                message.Codec = 3;
+                break;
+            }
+            if (object.AllowBackupCodec != null)
+                message.AllowBackupCodec = Boolean(object.AllowBackupCodec);
+            if (object.BaseStream != null) {
+                if (typeof object.BaseStream !== "object")
+                    throw TypeError(".rov_actions_proto.SetLivekitVideoOptionsAction.BaseStream: object expected");
+                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            }
+            if (object.SimulcastLayers) {
+                if (!Array.isArray(object.SimulcastLayers))
+                    throw TypeError(".rov_actions_proto.SetLivekitVideoOptionsAction.SimulcastLayers: array expected");
+                message.SimulcastLayers = [];
+                for (let i = 0; i < object.SimulcastLayers.length; ++i) {
+                    if (typeof object.SimulcastLayers[i] !== "object")
+                        throw TypeError(".rov_actions_proto.SetLivekitVideoOptionsAction.SimulcastLayers: object expected");
+                    message.SimulcastLayers[i] = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.SimulcastLayers[i]);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SetLivekitVideoOptionsAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.SetLivekitVideoOptionsAction} message SetLivekitVideoOptionsAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SetLivekitVideoOptionsAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.SimulcastLayers = [];
+            if (options.defaults) {
+                object.Enabled = false;
+                object.Codec = options.enums === String ? "H264" : 0;
+                object.AllowBackupCodec = false;
+                object.BaseStream = null;
+            }
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                object.Enabled = message.Enabled;
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                object.Codec = options.enums === String ? $root.rov_actions_proto.VideoCodec[message.Codec] === undefined ? message.Codec : $root.rov_actions_proto.VideoCodec[message.Codec] : message.Codec;
+            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
+                object.AllowBackupCodec = message.AllowBackupCodec;
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
+                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
+            if (message.SimulcastLayers && message.SimulcastLayers.length) {
+                object.SimulcastLayers = [];
+                for (let j = 0; j < message.SimulcastLayers.length; ++j)
+                    object.SimulcastLayers[j] = $root.rov_actions_proto.VideoStreamOptions.toObject(message.SimulcastLayers[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Converts this SetLivekitVideoOptionsAction to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SetLivekitVideoOptionsAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SetLivekitVideoOptionsAction
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.SetLivekitVideoOptionsAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SetLivekitVideoOptionsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.SetLivekitVideoOptionsAction";
+        };
+
+        return SetLivekitVideoOptionsAction;
+    })();
+
+    rov_actions_proto.SetSimplepeerVideoOptionsAction = (function() {
+
+        /**
+         * Properties of a SetSimplepeerVideoOptionsAction.
+         * @memberof rov_actions_proto
+         * @interface ISetSimplepeerVideoOptionsAction
+         * @property {boolean|null} [Enabled] SetSimplepeerVideoOptionsAction Enabled
+         * @property {number|null} [Bitrate] SetSimplepeerVideoOptionsAction Bitrate
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] SetSimplepeerVideoOptionsAction Codec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SetSimplepeerVideoOptionsAction BaseStream
+         */
+
+        /**
+         * Constructs a new SetSimplepeerVideoOptionsAction.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a SetSimplepeerVideoOptionsAction.
+         * @implements ISetSimplepeerVideoOptionsAction
+         * @constructor
+         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction=} [properties] Properties to set
+         */
+        function SetSimplepeerVideoOptionsAction(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SetSimplepeerVideoOptionsAction Enabled.
+         * @member {boolean} Enabled
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @instance
+         */
+        SetSimplepeerVideoOptionsAction.prototype.Enabled = false;
+
+        /**
+         * SetSimplepeerVideoOptionsAction Bitrate.
+         * @member {number} Bitrate
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @instance
+         */
+        SetSimplepeerVideoOptionsAction.prototype.Bitrate = 0;
+
+        /**
+         * SetSimplepeerVideoOptionsAction Codec.
+         * @member {rov_actions_proto.VideoCodec} Codec
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @instance
+         */
+        SetSimplepeerVideoOptionsAction.prototype.Codec = 0;
+
+        /**
+         * SetSimplepeerVideoOptionsAction BaseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @instance
+         */
+        SetSimplepeerVideoOptionsAction.prototype.BaseStream = null;
+
+        /**
+         * Creates a new SetSimplepeerVideoOptionsAction instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction instance
+         */
+        SetSimplepeerVideoOptionsAction.create = function create(properties) {
+            return new SetSimplepeerVideoOptionsAction(properties);
+        };
+
+        /**
+         * Encodes the specified SetSimplepeerVideoOptionsAction message. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetSimplepeerVideoOptionsAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
+            if (message.Bitrate != null && Object.hasOwnProperty.call(message, "Bitrate"))
+                writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.Bitrate);
+            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.Codec);
+            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SetSimplepeerVideoOptionsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetSimplepeerVideoOptionsAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.ISetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetSimplepeerVideoOptionsAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetSimplepeerVideoOptionsAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SetSimplepeerVideoOptionsAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Enabled = reader.bool();
+                        break;
+                    }
+                case 2: {
+                        message.Bitrate = reader.uint32();
+                        break;
+                    }
+                case 3: {
+                        message.Codec = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SetSimplepeerVideoOptionsAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetSimplepeerVideoOptionsAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SetSimplepeerVideoOptionsAction message.
+         * @function verify
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SetSimplepeerVideoOptionsAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                if (typeof message.Enabled !== "boolean")
+                    return "Enabled: boolean expected";
+            if (message.Bitrate != null && message.hasOwnProperty("Bitrate"))
+                if (!$util.isInteger(message.Bitrate))
+                    return "Bitrate: integer expected";
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                switch (message.Codec) {
+                default:
+                    return "Codec: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+                if (error)
+                    return "BaseStream." + error;
+            }
+            return null;
+        };
+
+        /**
+         * Creates a SetSimplepeerVideoOptionsAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.SetSimplepeerVideoOptionsAction} SetSimplepeerVideoOptionsAction
+         */
+        SetSimplepeerVideoOptionsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SetSimplepeerVideoOptionsAction)
+                return object;
+            let message = new $root.rov_actions_proto.SetSimplepeerVideoOptionsAction();
+            if (object.Enabled != null)
+                message.Enabled = Boolean(object.Enabled);
+            if (object.Bitrate != null)
+                message.Bitrate = object.Bitrate >>> 0;
+            switch (object.Codec) {
+            default:
+                if (typeof object.Codec === "number") {
+                    message.Codec = object.Codec;
+                    break;
+                }
+                break;
+            case "H264":
+            case 0:
+                message.Codec = 0;
+                break;
+            case "VP8":
+            case 1:
+                message.Codec = 1;
+                break;
+            case "VP9":
+            case 2:
+                message.Codec = 2;
+                break;
+            case "AV1":
+            case 3:
+                message.Codec = 3;
+                break;
+            }
+            if (object.BaseStream != null) {
+                if (typeof object.BaseStream !== "object")
+                    throw TypeError(".rov_actions_proto.SetSimplepeerVideoOptionsAction.BaseStream: object expected");
+                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            }
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SetSimplepeerVideoOptionsAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {rov_actions_proto.SetSimplepeerVideoOptionsAction} message SetSimplepeerVideoOptionsAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SetSimplepeerVideoOptionsAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.Enabled = false;
+                object.Bitrate = 0;
+                object.Codec = options.enums === String ? "H264" : 0;
+                object.BaseStream = null;
+            }
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                object.Enabled = message.Enabled;
+            if (message.Bitrate != null && message.hasOwnProperty("Bitrate"))
+                object.Bitrate = message.Bitrate;
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                object.Codec = options.enums === String ? $root.rov_actions_proto.VideoCodec[message.Codec] === undefined ? message.Codec : $root.rov_actions_proto.VideoCodec[message.Codec] : message.Codec;
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
+                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
+            return object;
+        };
+
+        /**
+         * Converts this SetSimplepeerVideoOptionsAction to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SetSimplepeerVideoOptionsAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SetSimplepeerVideoOptionsAction
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.SetSimplepeerVideoOptionsAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SetSimplepeerVideoOptionsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.SetSimplepeerVideoOptionsAction";
+        };
+
+        return SetSimplepeerVideoOptionsAction;
     })();
 
     rov_actions_proto.PingAction = (function() {
@@ -1262,25 +1918,11 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
 
         /**
          * MoveAction ButtonBitmask.
-         * @member {number|null|undefined} ButtonBitmask
+         * @member {number} ButtonBitmask
          * @memberof rov_actions_proto.MoveAction
          * @instance
          */
-        MoveAction.prototype.ButtonBitmask = null;
-
-        // OneOf field names bound to virtual getters and setters
-        let $oneOfFields;
-
-        /**
-         * MoveAction _ButtonBitmask.
-         * @member {"ButtonBitmask"|undefined} _ButtonBitmask
-         * @memberof rov_actions_proto.MoveAction
-         * @instance
-         */
-        Object.defineProperty(MoveAction.prototype, "_ButtonBitmask", {
-            get: $util.oneOfGetter($oneOfFields = ["ButtonBitmask"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
+        MoveAction.prototype.ButtonBitmask = 0;
 
         /**
          * Creates a new MoveAction instance using the specified properties.
@@ -1405,7 +2047,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         MoveAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            let properties = {};
             if (message.VelocityX != null && message.hasOwnProperty("VelocityX"))
                 if (typeof message.VelocityX !== "number")
                     return "VelocityX: number expected";
@@ -1418,11 +2059,9 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (message.AngularVelocityYaw != null && message.hasOwnProperty("AngularVelocityYaw"))
                 if (typeof message.AngularVelocityYaw !== "number")
                     return "AngularVelocityYaw: number expected";
-            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask")) {
-                properties._ButtonBitmask = 1;
+            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask"))
                 if (!$util.isInteger(message.ButtonBitmask))
                     return "ButtonBitmask: integer expected";
-            }
             return null;
         };
 
@@ -1469,6 +2108,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.VelocityY = 0;
                 object.VelocityZ = 0;
                 object.AngularVelocityYaw = 0;
+                object.ButtonBitmask = 0;
             }
             if (message.VelocityX != null && message.hasOwnProperty("VelocityX"))
                 object.VelocityX = options.json && !isFinite(message.VelocityX) ? String(message.VelocityX) : message.VelocityX;
@@ -1478,11 +2118,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.VelocityZ = options.json && !isFinite(message.VelocityZ) ? String(message.VelocityZ) : message.VelocityZ;
             if (message.AngularVelocityYaw != null && message.hasOwnProperty("AngularVelocityYaw"))
                 object.AngularVelocityYaw = options.json && !isFinite(message.AngularVelocityYaw) ? String(message.AngularVelocityYaw) : message.AngularVelocityYaw;
-            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask")) {
+            if (message.ButtonBitmask != null && message.hasOwnProperty("ButtonBitmask"))
                 object.ButtonBitmask = message.ButtonBitmask;
-                if (options.oneofs)
-                    object._ButtonBitmask = "ButtonBitmask";
-            }
             return object;
         };
 
@@ -1513,181 +2150,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         return MoveAction;
-    })();
-
-    rov_actions_proto.BeginVideoStreamAction = (function() {
-
-        /**
-         * Properties of a BeginVideoStreamAction.
-         * @memberof rov_actions_proto
-         * @interface IBeginVideoStreamAction
-         */
-
-        /**
-         * Constructs a new BeginVideoStreamAction.
-         * @memberof rov_actions_proto
-         * @classdesc Represents a BeginVideoStreamAction.
-         * @implements IBeginVideoStreamAction
-         * @constructor
-         * @param {rov_actions_proto.IBeginVideoStreamAction=} [properties] Properties to set
-         */
-        function BeginVideoStreamAction(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Creates a new BeginVideoStreamAction instance using the specified properties.
-         * @function create
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {rov_actions_proto.IBeginVideoStreamAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction instance
-         */
-        BeginVideoStreamAction.create = function create(properties) {
-            return new BeginVideoStreamAction(properties);
-        };
-
-        /**
-         * Encodes the specified BeginVideoStreamAction message. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
-         * @function encode
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {rov_actions_proto.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        BeginVideoStreamAction.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            return writer;
-        };
-
-        /**
-         * Encodes the specified BeginVideoStreamAction message, length delimited. Does not implicitly {@link rov_actions_proto.BeginVideoStreamAction.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {rov_actions_proto.IBeginVideoStreamAction} message BeginVideoStreamAction message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        BeginVideoStreamAction.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a BeginVideoStreamAction message from the specified reader or buffer.
-         * @function decode
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        BeginVideoStreamAction.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.BeginVideoStreamAction();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a BeginVideoStreamAction message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        BeginVideoStreamAction.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a BeginVideoStreamAction message.
-         * @function verify
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        BeginVideoStreamAction.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            return null;
-        };
-
-        /**
-         * Creates a BeginVideoStreamAction message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.BeginVideoStreamAction} BeginVideoStreamAction
-         */
-        BeginVideoStreamAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.BeginVideoStreamAction)
-                return object;
-            return new $root.rov_actions_proto.BeginVideoStreamAction();
-        };
-
-        /**
-         * Creates a plain object from a BeginVideoStreamAction message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {rov_actions_proto.BeginVideoStreamAction} message BeginVideoStreamAction
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        BeginVideoStreamAction.toObject = function toObject() {
-            return {};
-        };
-
-        /**
-         * Converts this BeginVideoStreamAction to JSON.
-         * @function toJSON
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        BeginVideoStreamAction.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for BeginVideoStreamAction
-         * @function getTypeUrl
-         * @memberof rov_actions_proto.BeginVideoStreamAction
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        BeginVideoStreamAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/rov_actions_proto.BeginVideoStreamAction";
-        };
-
-        return BeginVideoStreamAction;
     })();
 
     rov_actions_proto.TakePhotoAction = (function() {
@@ -2215,23 +2677,23 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return StopVideoRecAction;
     })();
 
-    rov_actions_proto.ToogleLightsAction = (function() {
+    rov_actions_proto.ToggleLightsAction = (function() {
 
         /**
-         * Properties of a ToogleLightsAction.
+         * Properties of a ToggleLightsAction.
          * @memberof rov_actions_proto
-         * @interface IToogleLightsAction
+         * @interface IToggleLightsAction
          */
 
         /**
-         * Constructs a new ToogleLightsAction.
+         * Constructs a new ToggleLightsAction.
          * @memberof rov_actions_proto
-         * @classdesc Represents a ToogleLightsAction.
-         * @implements IToogleLightsAction
+         * @classdesc Represents a ToggleLightsAction.
+         * @implements IToggleLightsAction
          * @constructor
-         * @param {rov_actions_proto.IToogleLightsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IToggleLightsAction=} [properties] Properties to set
          */
-        function ToogleLightsAction(properties) {
+        function ToggleLightsAction(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -2239,60 +2701,60 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * Creates a new ToogleLightsAction instance using the specified properties.
+         * Creates a new ToggleLightsAction instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
-         * @param {rov_actions_proto.IToogleLightsAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction instance
+         * @param {rov_actions_proto.IToggleLightsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.ToggleLightsAction} ToggleLightsAction instance
          */
-        ToogleLightsAction.create = function create(properties) {
-            return new ToogleLightsAction(properties);
+        ToggleLightsAction.create = function create(properties) {
+            return new ToggleLightsAction(properties);
         };
 
         /**
-         * Encodes the specified ToogleLightsAction message. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToggleLightsAction message. Does not implicitly {@link rov_actions_proto.ToggleLightsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
-         * @param {rov_actions_proto.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
+         * @param {rov_actions_proto.IToggleLightsAction} message ToggleLightsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        ToogleLightsAction.encode = function encode(message, writer) {
+        ToggleLightsAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             return writer;
         };
 
         /**
-         * Encodes the specified ToogleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToogleLightsAction.verify|verify} messages.
+         * Encodes the specified ToggleLightsAction message, length delimited. Does not implicitly {@link rov_actions_proto.ToggleLightsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
-         * @param {rov_actions_proto.IToogleLightsAction} message ToogleLightsAction message or plain object to encode
+         * @param {rov_actions_proto.IToggleLightsAction} message ToggleLightsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        ToogleLightsAction.encodeDelimited = function encodeDelimited(message, writer) {
+        ToggleLightsAction.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a ToogleLightsAction message from the specified reader or buffer.
+         * Decodes a ToggleLightsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToggleLightsAction} ToggleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        ToogleLightsAction.decode = function decode(reader, length) {
+        ToggleLightsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ToogleLightsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.ToggleLightsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -2305,89 +2767,89 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Decodes a ToogleLightsAction message from the specified reader or buffer, length delimited.
+         * Decodes a ToggleLightsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToggleLightsAction} ToggleLightsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        ToogleLightsAction.decodeDelimited = function decodeDelimited(reader) {
+        ToggleLightsAction.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a ToogleLightsAction message.
+         * Verifies a ToggleLightsAction message.
          * @function verify
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        ToogleLightsAction.verify = function verify(message) {
+        ToggleLightsAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             return null;
         };
 
         /**
-         * Creates a ToogleLightsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a ToggleLightsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.ToogleLightsAction} ToogleLightsAction
+         * @returns {rov_actions_proto.ToggleLightsAction} ToggleLightsAction
          */
-        ToogleLightsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.ToogleLightsAction)
+        ToggleLightsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.ToggleLightsAction)
                 return object;
-            return new $root.rov_actions_proto.ToogleLightsAction();
+            return new $root.rov_actions_proto.ToggleLightsAction();
         };
 
         /**
-         * Creates a plain object from a ToogleLightsAction message. Also converts values to other types if specified.
+         * Creates a plain object from a ToggleLightsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
-         * @param {rov_actions_proto.ToogleLightsAction} message ToogleLightsAction
+         * @param {rov_actions_proto.ToggleLightsAction} message ToggleLightsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        ToogleLightsAction.toObject = function toObject() {
+        ToggleLightsAction.toObject = function toObject() {
             return {};
         };
 
         /**
-         * Converts this ToogleLightsAction to JSON.
+         * Converts this ToggleLightsAction to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        ToogleLightsAction.prototype.toJSON = function toJSON() {
+        ToggleLightsAction.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for ToogleLightsAction
+         * Gets the default type url for ToggleLightsAction
          * @function getTypeUrl
-         * @memberof rov_actions_proto.ToogleLightsAction
+         * @memberof rov_actions_proto.ToggleLightsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        ToogleLightsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        ToggleLightsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.ToogleLightsAction";
+            return typeUrlPrefix + "/rov_actions_proto.ToggleLightsAction";
         };
 
-        return ToogleLightsAction;
+        return ToggleLightsAction;
     })();
 
     rov_actions_proto.ShutdownRovAction = (function() {
@@ -3440,23 +3902,23 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RestartRovServicesAction;
     })();
 
-    rov_actions_proto.RovLogsAction = (function() {
+    rov_actions_proto.SendRovLogsAction = (function() {
 
         /**
-         * Properties of a RovLogsAction.
+         * Properties of a SendRovLogsAction.
          * @memberof rov_actions_proto
-         * @interface IRovLogsAction
+         * @interface ISendRovLogsAction
          */
 
         /**
-         * Constructs a new RovLogsAction.
+         * Constructs a new SendRovLogsAction.
          * @memberof rov_actions_proto
-         * @classdesc Represents a RovLogsAction.
-         * @implements IRovLogsAction
+         * @classdesc Represents a SendRovLogsAction.
+         * @implements ISendRovLogsAction
          * @constructor
-         * @param {rov_actions_proto.IRovLogsAction=} [properties] Properties to set
+         * @param {rov_actions_proto.ISendRovLogsAction=} [properties] Properties to set
          */
-        function RovLogsAction(properties) {
+        function SendRovLogsAction(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -3464,60 +3926,60 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * Creates a new RovLogsAction instance using the specified properties.
+         * Creates a new SendRovLogsAction instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
-         * @param {rov_actions_proto.IRovLogsAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction instance
+         * @param {rov_actions_proto.ISendRovLogsAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SendRovLogsAction} SendRovLogsAction instance
          */
-        RovLogsAction.create = function create(properties) {
-            return new RovLogsAction(properties);
+        SendRovLogsAction.create = function create(properties) {
+            return new SendRovLogsAction(properties);
         };
 
         /**
-         * Encodes the specified RovLogsAction message. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
+         * Encodes the specified SendRovLogsAction message. Does not implicitly {@link rov_actions_proto.SendRovLogsAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
-         * @param {rov_actions_proto.IRovLogsAction} message RovLogsAction message or plain object to encode
+         * @param {rov_actions_proto.ISendRovLogsAction} message SendRovLogsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        RovLogsAction.encode = function encode(message, writer) {
+        SendRovLogsAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
             return writer;
         };
 
         /**
-         * Encodes the specified RovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.RovLogsAction.verify|verify} messages.
+         * Encodes the specified SendRovLogsAction message, length delimited. Does not implicitly {@link rov_actions_proto.SendRovLogsAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
-         * @param {rov_actions_proto.IRovLogsAction} message RovLogsAction message or plain object to encode
+         * @param {rov_actions_proto.ISendRovLogsAction} message SendRovLogsAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        RovLogsAction.encodeDelimited = function encodeDelimited(message, writer) {
+        SendRovLogsAction.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a RovLogsAction message from the specified reader or buffer.
+         * Decodes a SendRovLogsAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.SendRovLogsAction} SendRovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        RovLogsAction.decode = function decode(reader, length) {
+        SendRovLogsAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.RovLogsAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SendRovLogsAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
@@ -3530,89 +3992,89 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Decodes a RovLogsAction message from the specified reader or buffer, length delimited.
+         * Decodes a SendRovLogsAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.SendRovLogsAction} SendRovLogsAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        RovLogsAction.decodeDelimited = function decodeDelimited(reader) {
+        SendRovLogsAction.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a RovLogsAction message.
+         * Verifies a SendRovLogsAction message.
          * @function verify
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        RovLogsAction.verify = function verify(message) {
+        SendRovLogsAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
             return null;
         };
 
         /**
-         * Creates a RovLogsAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a SendRovLogsAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.RovLogsAction} RovLogsAction
+         * @returns {rov_actions_proto.SendRovLogsAction} SendRovLogsAction
          */
-        RovLogsAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.RovLogsAction)
+        SendRovLogsAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SendRovLogsAction)
                 return object;
-            return new $root.rov_actions_proto.RovLogsAction();
+            return new $root.rov_actions_proto.SendRovLogsAction();
         };
 
         /**
-         * Creates a plain object from a RovLogsAction message. Also converts values to other types if specified.
+         * Creates a plain object from a SendRovLogsAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
-         * @param {rov_actions_proto.RovLogsAction} message RovLogsAction
+         * @param {rov_actions_proto.SendRovLogsAction} message SendRovLogsAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        RovLogsAction.toObject = function toObject() {
+        SendRovLogsAction.toObject = function toObject() {
             return {};
         };
 
         /**
-         * Converts this RovLogsAction to JSON.
+         * Converts this SendRovLogsAction to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        RovLogsAction.prototype.toJSON = function toJSON() {
+        SendRovLogsAction.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for RovLogsAction
+         * Gets the default type url for SendRovLogsAction
          * @function getTypeUrl
-         * @memberof rov_actions_proto.RovLogsAction
+         * @memberof rov_actions_proto.SendRovLogsAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        RovLogsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        SendRovLogsAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.RovLogsAction";
+            return typeUrlPrefix + "/rov_actions_proto.SendRovLogsAction";
         };
 
-        return RovLogsAction;
+        return SendRovLogsAction;
     })();
 
     rov_actions_proto.RefreshAllSensorsAction = (function() {
@@ -3790,24 +4252,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return RefreshAllSensorsAction;
     })();
 
-    rov_actions_proto.MavlinkAction = (function() {
+    rov_actions_proto.MoveClawAction = (function() {
 
         /**
-         * Properties of a MavlinkAction.
+         * Properties of a MoveClawAction.
          * @memberof rov_actions_proto
-         * @interface IMavlinkAction
-         * @property {Uint8Array|null} [Message] MavlinkAction Message
+         * @interface IMoveClawAction
+         * @property {number|null} [Value] MoveClawAction Value
          */
 
         /**
-         * Constructs a new MavlinkAction.
+         * Constructs a new MoveClawAction.
          * @memberof rov_actions_proto
-         * @classdesc Represents a MavlinkAction.
-         * @implements IMavlinkAction
+         * @classdesc Represents a MoveClawAction.
+         * @implements IMoveClawAction
          * @constructor
-         * @param {rov_actions_proto.IMavlinkAction=} [properties] Properties to set
+         * @param {rov_actions_proto.IMoveClawAction=} [properties] Properties to set
          */
-        function MavlinkAction(properties) {
+        function MoveClawAction(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -3815,75 +4277,75 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * MavlinkAction Message.
-         * @member {Uint8Array} Message
-         * @memberof rov_actions_proto.MavlinkAction
+         * MoveClawAction Value.
+         * @member {number} Value
+         * @memberof rov_actions_proto.MoveClawAction
          * @instance
          */
-        MavlinkAction.prototype.Message = $util.newBuffer([]);
+        MoveClawAction.prototype.Value = 0;
 
         /**
-         * Creates a new MavlinkAction instance using the specified properties.
+         * Creates a new MoveClawAction instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
-         * @param {rov_actions_proto.IMavlinkAction=} [properties] Properties to set
-         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction instance
+         * @param {rov_actions_proto.IMoveClawAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.MoveClawAction} MoveClawAction instance
          */
-        MavlinkAction.create = function create(properties) {
-            return new MavlinkAction(properties);
+        MoveClawAction.create = function create(properties) {
+            return new MoveClawAction(properties);
         };
 
         /**
-         * Encodes the specified MavlinkAction message. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MoveClawAction message. Does not implicitly {@link rov_actions_proto.MoveClawAction.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
-         * @param {rov_actions_proto.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {rov_actions_proto.IMoveClawAction} message MoveClawAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        MavlinkAction.encode = function encode(message, writer) {
+        MoveClawAction.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.Message != null && Object.hasOwnProperty.call(message, "Message"))
-                writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Message);
+            if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
+                writer.uint32(/* id 1, wireType 5 =*/13).float(message.Value);
             return writer;
         };
 
         /**
-         * Encodes the specified MavlinkAction message, length delimited. Does not implicitly {@link rov_actions_proto.MavlinkAction.verify|verify} messages.
+         * Encodes the specified MoveClawAction message, length delimited. Does not implicitly {@link rov_actions_proto.MoveClawAction.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
-         * @param {rov_actions_proto.IMavlinkAction} message MavlinkAction message or plain object to encode
+         * @param {rov_actions_proto.IMoveClawAction} message MoveClawAction message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        MavlinkAction.encodeDelimited = function encodeDelimited(message, writer) {
+        MoveClawAction.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a MavlinkAction message from the specified reader or buffer.
+         * Decodes a MoveClawAction message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MoveClawAction} MoveClawAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        MavlinkAction.decode = function decode(reader, length) {
+        MoveClawAction.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.MavlinkAction();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.MoveClawAction();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.Message = reader.bytes();
+                        message.Value = reader.float();
                         break;
                     }
                 default:
@@ -3895,111 +4357,102 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Decodes a MavlinkAction message from the specified reader or buffer, length delimited.
+         * Decodes a MoveClawAction message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MoveClawAction} MoveClawAction
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        MavlinkAction.decodeDelimited = function decodeDelimited(reader) {
+        MoveClawAction.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a MavlinkAction message.
+         * Verifies a MoveClawAction message.
          * @function verify
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        MavlinkAction.verify = function verify(message) {
+        MoveClawAction.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.Message != null && message.hasOwnProperty("Message"))
-                if (!(message.Message && typeof message.Message.length === "number" || $util.isString(message.Message)))
-                    return "Message: buffer expected";
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                if (typeof message.Value !== "number")
+                    return "Value: number expected";
             return null;
         };
 
         /**
-         * Creates a MavlinkAction message from a plain object. Also converts values to their respective internal types.
+         * Creates a MoveClawAction message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.MavlinkAction} MavlinkAction
+         * @returns {rov_actions_proto.MoveClawAction} MoveClawAction
          */
-        MavlinkAction.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.MavlinkAction)
+        MoveClawAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.MoveClawAction)
                 return object;
-            let message = new $root.rov_actions_proto.MavlinkAction();
-            if (object.Message != null)
-                if (typeof object.Message === "string")
-                    $util.base64.decode(object.Message, message.Message = $util.newBuffer($util.base64.length(object.Message)), 0);
-                else if (object.Message.length >= 0)
-                    message.Message = object.Message;
+            let message = new $root.rov_actions_proto.MoveClawAction();
+            if (object.Value != null)
+                message.Value = Number(object.Value);
             return message;
         };
 
         /**
-         * Creates a plain object from a MavlinkAction message. Also converts values to other types if specified.
+         * Creates a plain object from a MoveClawAction message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
-         * @param {rov_actions_proto.MavlinkAction} message MavlinkAction
+         * @param {rov_actions_proto.MoveClawAction} message MoveClawAction
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        MavlinkAction.toObject = function toObject(message, options) {
+        MoveClawAction.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults)
-                if (options.bytes === String)
-                    object.Message = "";
-                else {
-                    object.Message = [];
-                    if (options.bytes !== Array)
-                        object.Message = $util.newBuffer(object.Message);
-                }
-            if (message.Message != null && message.hasOwnProperty("Message"))
-                object.Message = options.bytes === String ? $util.base64.encode(message.Message, 0, message.Message.length) : options.bytes === Array ? Array.prototype.slice.call(message.Message) : message.Message;
+                object.Value = 0;
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
             return object;
         };
 
         /**
-         * Converts this MavlinkAction to JSON.
+         * Converts this MoveClawAction to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        MavlinkAction.prototype.toJSON = function toJSON() {
+        MoveClawAction.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for MavlinkAction
+         * Gets the default type url for MoveClawAction
          * @function getTypeUrl
-         * @memberof rov_actions_proto.MavlinkAction
+         * @memberof rov_actions_proto.MoveClawAction
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        MavlinkAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        MoveClawAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.MavlinkAction";
+            return typeUrlPrefix + "/rov_actions_proto.MoveClawAction";
         };
 
-        return MavlinkAction;
+        return MoveClawAction;
     })();
 
     rov_actions_proto.SimplepeerSignalAction = (function() {
@@ -4583,6 +5036,209 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return SetAutopilotModeAction;
     })();
 
+    rov_actions_proto.SetLivestreamingEnabledAction = (function() {
+
+        /**
+         * Properties of a SetLivestreamingEnabledAction.
+         * @memberof rov_actions_proto
+         * @interface ISetLivestreamingEnabledAction
+         * @property {boolean|null} [Enabled] SetLivestreamingEnabledAction Enabled
+         */
+
+        /**
+         * Constructs a new SetLivestreamingEnabledAction.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a SetLivestreamingEnabledAction.
+         * @implements ISetLivestreamingEnabledAction
+         * @constructor
+         * @param {rov_actions_proto.ISetLivestreamingEnabledAction=} [properties] Properties to set
+         */
+        function SetLivestreamingEnabledAction(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SetLivestreamingEnabledAction Enabled.
+         * @member {boolean} Enabled
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @instance
+         */
+        SetLivestreamingEnabledAction.prototype.Enabled = false;
+
+        /**
+         * Creates a new SetLivestreamingEnabledAction instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {rov_actions_proto.ISetLivestreamingEnabledAction=} [properties] Properties to set
+         * @returns {rov_actions_proto.SetLivestreamingEnabledAction} SetLivestreamingEnabledAction instance
+         */
+        SetLivestreamingEnabledAction.create = function create(properties) {
+            return new SetLivestreamingEnabledAction(properties);
+        };
+
+        /**
+         * Encodes the specified SetLivestreamingEnabledAction message. Does not implicitly {@link rov_actions_proto.SetLivestreamingEnabledAction.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {rov_actions_proto.ISetLivestreamingEnabledAction} message SetLivestreamingEnabledAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetLivestreamingEnabledAction.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SetLivestreamingEnabledAction message, length delimited. Does not implicitly {@link rov_actions_proto.SetLivestreamingEnabledAction.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {rov_actions_proto.ISetLivestreamingEnabledAction} message SetLivestreamingEnabledAction message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SetLivestreamingEnabledAction.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SetLivestreamingEnabledAction message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.SetLivestreamingEnabledAction} SetLivestreamingEnabledAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetLivestreamingEnabledAction.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SetLivestreamingEnabledAction();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Enabled = reader.bool();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SetLivestreamingEnabledAction message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.SetLivestreamingEnabledAction} SetLivestreamingEnabledAction
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SetLivestreamingEnabledAction.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SetLivestreamingEnabledAction message.
+         * @function verify
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SetLivestreamingEnabledAction.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                if (typeof message.Enabled !== "boolean")
+                    return "Enabled: boolean expected";
+            return null;
+        };
+
+        /**
+         * Creates a SetLivestreamingEnabledAction message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.SetLivestreamingEnabledAction} SetLivestreamingEnabledAction
+         */
+        SetLivestreamingEnabledAction.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SetLivestreamingEnabledAction)
+                return object;
+            let message = new $root.rov_actions_proto.SetLivestreamingEnabledAction();
+            if (object.Enabled != null)
+                message.Enabled = Boolean(object.Enabled);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SetLivestreamingEnabledAction message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {rov_actions_proto.SetLivestreamingEnabledAction} message SetLivestreamingEnabledAction
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SetLivestreamingEnabledAction.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.Enabled = false;
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                object.Enabled = message.Enabled;
+            return object;
+        };
+
+        /**
+         * Converts this SetLivestreamingEnabledAction to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SetLivestreamingEnabledAction.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SetLivestreamingEnabledAction
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.SetLivestreamingEnabledAction
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SetLivestreamingEnabledAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.SetLivestreamingEnabledAction";
+        };
+
+        return SetLivestreamingEnabledAction;
+    })();
+
     rov_actions_proto.ActionBackendMetadata = (function() {
 
         /**
@@ -4857,23 +5513,25 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.IAuthTokenAttemptAction|null} [AuthTokenAttempt] RovAction AuthTokenAttempt
          * @property {rov_actions_proto.ITakeControlAction|null} [TakeControl] RovAction TakeControl
          * @property {rov_actions_proto.IMoveAction|null} [Move] RovAction Move
-         * @property {rov_actions_proto.IBeginVideoStreamAction|null} [BeginVideoStream] RovAction BeginVideoStream
          * @property {rov_actions_proto.ITakePhotoAction|null} [TakePhoto] RovAction TakePhoto
          * @property {rov_actions_proto.IStartVideoRecAction|null} [StartVideoRec] RovAction StartVideoRec
          * @property {rov_actions_proto.IStopVideoRecAction|null} [StopVideoRec] RovAction StopVideoRec
-         * @property {rov_actions_proto.IToogleLightsAction|null} [ToogleLights] RovAction ToogleLights
+         * @property {rov_actions_proto.IToggleLightsAction|null} [ToggleLights] RovAction ToggleLights
          * @property {rov_actions_proto.IShutdownRovAction|null} [ShutdownRov] RovAction ShutdownRov
          * @property {rov_actions_proto.IRebootRovAction|null} [RebootRov] RovAction RebootRov
          * @property {rov_actions_proto.IEnableWifiAction|null} [EnableWifi] RovAction EnableWifi
          * @property {rov_actions_proto.IDisableWifiAction|null} [DisableWifi] RovAction DisableWifi
          * @property {rov_actions_proto.IRovStatusReportAction|null} [RovStatusReport] RovAction RovStatusReport
          * @property {rov_actions_proto.IRestartRovServicesAction|null} [RestartRovServices] RovAction RestartRovServices
-         * @property {rov_actions_proto.IRovLogsAction|null} [RovLogs] RovAction RovLogs
+         * @property {rov_actions_proto.ISendRovLogsAction|null} [SendRovLogs] RovAction SendRovLogs
          * @property {rov_actions_proto.IRefreshAllSensorsAction|null} [RefreshAllSensors] RovAction RefreshAllSensors
-         * @property {rov_actions_proto.IMavlinkAction|null} [Mavlink] RovAction Mavlink
+         * @property {rov_actions_proto.IMoveClawAction|null} [MoveClaw] RovAction MoveClaw
          * @property {rov_actions_proto.ISimplepeerSignalAction|null} [SimplepeerSignal] RovAction SimplepeerSignal
          * @property {rov_actions_proto.IDisarmAction|null} [Disarm] RovAction Disarm
          * @property {rov_actions_proto.ISetAutopilotModeAction|null} [SetAutopilotMode] RovAction SetAutopilotMode
+         * @property {rov_actions_proto.ISetLivekitVideoOptionsAction|null} [SetLivekitVideoOptions] RovAction SetLivekitVideoOptions
+         * @property {rov_actions_proto.ISetSimplepeerVideoOptionsAction|null} [SetSimplepeerVideoOptions] RovAction SetSimplepeerVideoOptions
+         * @property {rov_actions_proto.ISetLivestreamingEnabledAction|null} [SetLivestreamingEnabled] RovAction SetLivestreamingEnabled
          */
 
         /**
@@ -4948,14 +5606,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.Move = null;
 
         /**
-         * RovAction BeginVideoStream.
-         * @member {rov_actions_proto.IBeginVideoStreamAction|null|undefined} BeginVideoStream
-         * @memberof rov_actions_proto.RovAction
-         * @instance
-         */
-        RovAction.prototype.BeginVideoStream = null;
-
-        /**
          * RovAction TakePhoto.
          * @member {rov_actions_proto.ITakePhotoAction|null|undefined} TakePhoto
          * @memberof rov_actions_proto.RovAction
@@ -4980,12 +5630,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.StopVideoRec = null;
 
         /**
-         * RovAction ToogleLights.
-         * @member {rov_actions_proto.IToogleLightsAction|null|undefined} ToogleLights
+         * RovAction ToggleLights.
+         * @member {rov_actions_proto.IToggleLightsAction|null|undefined} ToggleLights
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.ToogleLights = null;
+        RovAction.prototype.ToggleLights = null;
 
         /**
          * RovAction ShutdownRov.
@@ -5036,12 +5686,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.RestartRovServices = null;
 
         /**
-         * RovAction RovLogs.
-         * @member {rov_actions_proto.IRovLogsAction|null|undefined} RovLogs
+         * RovAction SendRovLogs.
+         * @member {rov_actions_proto.ISendRovLogsAction|null|undefined} SendRovLogs
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.RovLogs = null;
+        RovAction.prototype.SendRovLogs = null;
 
         /**
          * RovAction RefreshAllSensors.
@@ -5052,12 +5702,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovAction.prototype.RefreshAllSensors = null;
 
         /**
-         * RovAction Mavlink.
-         * @member {rov_actions_proto.IMavlinkAction|null|undefined} Mavlink
+         * RovAction MoveClaw.
+         * @member {rov_actions_proto.IMoveClawAction|null|undefined} MoveClaw
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
-        RovAction.prototype.Mavlink = null;
+        RovAction.prototype.MoveClaw = null;
 
         /**
          * RovAction SimplepeerSignal.
@@ -5083,17 +5733,41 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          */
         RovAction.prototype.SetAutopilotMode = null;
 
+        /**
+         * RovAction SetLivekitVideoOptions.
+         * @member {rov_actions_proto.ISetLivekitVideoOptionsAction|null|undefined} SetLivekitVideoOptions
+         * @memberof rov_actions_proto.RovAction
+         * @instance
+         */
+        RovAction.prototype.SetLivekitVideoOptions = null;
+
+        /**
+         * RovAction SetSimplepeerVideoOptions.
+         * @member {rov_actions_proto.ISetSimplepeerVideoOptionsAction|null|undefined} SetSimplepeerVideoOptions
+         * @memberof rov_actions_proto.RovAction
+         * @instance
+         */
+        RovAction.prototype.SetSimplepeerVideoOptions = null;
+
+        /**
+         * RovAction SetLivestreamingEnabled.
+         * @member {rov_actions_proto.ISetLivestreamingEnabledAction|null|undefined} SetLivestreamingEnabled
+         * @memberof rov_actions_proto.RovAction
+         * @instance
+         */
+        RovAction.prototype.SetLivestreamingEnabled = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovAction Body.
-         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"BeginVideoStream"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToogleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"RovLogs"|"RefreshAllSensors"|"Mavlink"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode"|undefined} Body
+         * @member {"Ping"|"PasswordAttempt"|"AuthTokenAttempt"|"TakeControl"|"Move"|"TakePhoto"|"StartVideoRec"|"StopVideoRec"|"ToggleLights"|"ShutdownRov"|"RebootRov"|"EnableWifi"|"DisableWifi"|"RovStatusReport"|"RestartRovServices"|"SendRovLogs"|"RefreshAllSensors"|"MoveClaw"|"SimplepeerSignal"|"Disarm"|"SetAutopilotMode"|"SetLivekitVideoOptions"|"SetSimplepeerVideoOptions"|"SetLivestreamingEnabled"|undefined} Body
          * @memberof rov_actions_proto.RovAction
          * @instance
          */
         Object.defineProperty(RovAction.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "BeginVideoStream", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToogleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "RovLogs", "RefreshAllSensors", "Mavlink", "SimplepeerSignal", "Disarm", "SetAutopilotMode"]),
+            get: $util.oneOfGetter($oneOfFields = ["Ping", "PasswordAttempt", "AuthTokenAttempt", "TakeControl", "Move", "TakePhoto", "StartVideoRec", "StopVideoRec", "ToggleLights", "ShutdownRov", "RebootRov", "EnableWifi", "DisableWifi", "RovStatusReport", "RestartRovServices", "SendRovLogs", "RefreshAllSensors", "MoveClaw", "SimplepeerSignal", "Disarm", "SetAutopilotMode", "SetLivekitVideoOptions", "SetSimplepeerVideoOptions", "SetLivestreamingEnabled"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -5135,16 +5809,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.TakeControlAction.encode(message.TakeControl, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             if (message.Move != null && Object.hasOwnProperty.call(message, "Move"))
                 $root.rov_actions_proto.MoveAction.encode(message.Move, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-            if (message.BeginVideoStream != null && Object.hasOwnProperty.call(message, "BeginVideoStream"))
-                $root.rov_actions_proto.BeginVideoStreamAction.encode(message.BeginVideoStream, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             if (message.TakePhoto != null && Object.hasOwnProperty.call(message, "TakePhoto"))
                 $root.rov_actions_proto.TakePhotoAction.encode(message.TakePhoto, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
             if (message.StartVideoRec != null && Object.hasOwnProperty.call(message, "StartVideoRec"))
                 $root.rov_actions_proto.StartVideoRecAction.encode(message.StartVideoRec, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
             if (message.StopVideoRec != null && Object.hasOwnProperty.call(message, "StopVideoRec"))
                 $root.rov_actions_proto.StopVideoRecAction.encode(message.StopVideoRec, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
-            if (message.ToogleLights != null && Object.hasOwnProperty.call(message, "ToogleLights"))
-                $root.rov_actions_proto.ToogleLightsAction.encode(message.ToogleLights, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+            if (message.ToggleLights != null && Object.hasOwnProperty.call(message, "ToggleLights"))
+                $root.rov_actions_proto.ToggleLightsAction.encode(message.ToggleLights, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
             if (message.ShutdownRov != null && Object.hasOwnProperty.call(message, "ShutdownRov"))
                 $root.rov_actions_proto.ShutdownRovAction.encode(message.ShutdownRov, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.RebootRov != null && Object.hasOwnProperty.call(message, "RebootRov"))
@@ -5157,18 +5829,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.RovStatusReportAction.encode(message.RovStatusReport, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
             if (message.RestartRovServices != null && Object.hasOwnProperty.call(message, "RestartRovServices"))
                 $root.rov_actions_proto.RestartRovServicesAction.encode(message.RestartRovServices, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
-            if (message.RovLogs != null && Object.hasOwnProperty.call(message, "RovLogs"))
-                $root.rov_actions_proto.RovLogsAction.encode(message.RovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+            if (message.SendRovLogs != null && Object.hasOwnProperty.call(message, "SendRovLogs"))
+                $root.rov_actions_proto.SendRovLogsAction.encode(message.SendRovLogs, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.RefreshAllSensors != null && Object.hasOwnProperty.call(message, "RefreshAllSensors"))
                 $root.rov_actions_proto.RefreshAllSensorsAction.encode(message.RefreshAllSensors, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
-            if (message.Mavlink != null && Object.hasOwnProperty.call(message, "Mavlink"))
-                $root.rov_actions_proto.MavlinkAction.encode(message.Mavlink, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+            if (message.MoveClaw != null && Object.hasOwnProperty.call(message, "MoveClaw"))
+                $root.rov_actions_proto.MoveClawAction.encode(message.MoveClaw, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
             if (message.SimplepeerSignal != null && Object.hasOwnProperty.call(message, "SimplepeerSignal"))
                 $root.rov_actions_proto.SimplepeerSignalAction.encode(message.SimplepeerSignal, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             if (message.Disarm != null && Object.hasOwnProperty.call(message, "Disarm"))
                 $root.rov_actions_proto.DisarmAction.encode(message.Disarm, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
             if (message.SetAutopilotMode != null && Object.hasOwnProperty.call(message, "SetAutopilotMode"))
                 $root.rov_actions_proto.SetAutopilotModeAction.encode(message.SetAutopilotMode, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
+            if (message.SetLivekitVideoOptions != null && Object.hasOwnProperty.call(message, "SetLivekitVideoOptions"))
+                $root.rov_actions_proto.SetLivekitVideoOptionsAction.encode(message.SetLivekitVideoOptions, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+            if (message.SetSimplepeerVideoOptions != null && Object.hasOwnProperty.call(message, "SetSimplepeerVideoOptions"))
+                $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.encode(message.SetSimplepeerVideoOptions, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+            if (message.SetLivestreamingEnabled != null && Object.hasOwnProperty.call(message, "SetLivestreamingEnabled"))
+                $root.rov_actions_proto.SetLivestreamingEnabledAction.encode(message.SetLivestreamingEnabled, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
             return writer;
         };
 
@@ -5231,10 +5909,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         message.Move = $root.rov_actions_proto.MoveAction.decode(reader, reader.uint32());
                         break;
                     }
-                case 8: {
-                        message.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.decode(reader, reader.uint32());
-                        break;
-                    }
                 case 9: {
                         message.TakePhoto = $root.rov_actions_proto.TakePhotoAction.decode(reader, reader.uint32());
                         break;
@@ -5248,7 +5922,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 12: {
-                        message.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.decode(reader, reader.uint32());
+                        message.ToggleLights = $root.rov_actions_proto.ToggleLightsAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 13: {
@@ -5276,7 +5950,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 19: {
-                        message.RovLogs = $root.rov_actions_proto.RovLogsAction.decode(reader, reader.uint32());
+                        message.SendRovLogs = $root.rov_actions_proto.SendRovLogsAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 20: {
@@ -5284,7 +5958,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 21: {
-                        message.Mavlink = $root.rov_actions_proto.MavlinkAction.decode(reader, reader.uint32());
+                        message.MoveClaw = $root.rov_actions_proto.MoveClawAction.decode(reader, reader.uint32());
                         break;
                     }
                 case 22: {
@@ -5297,6 +5971,18 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     }
                 case 24: {
                         message.SetAutopilotMode = $root.rov_actions_proto.SetAutopilotModeAction.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 25: {
+                        message.SetLivekitVideoOptions = $root.rov_actions_proto.SetLivekitVideoOptionsAction.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 26: {
+                        message.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 27: {
+                        message.SetLivestreamingEnabled = $root.rov_actions_proto.SetLivestreamingEnabledAction.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -5391,16 +6077,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "Move." + error;
                 }
             }
-            if (message.BeginVideoStream != null && message.hasOwnProperty("BeginVideoStream")) {
-                if (properties.Body === 1)
-                    return "Body: multiple values";
-                properties.Body = 1;
-                {
-                    let error = $root.rov_actions_proto.BeginVideoStreamAction.verify(message.BeginVideoStream);
-                    if (error)
-                        return "BeginVideoStream." + error;
-                }
-            }
             if (message.TakePhoto != null && message.hasOwnProperty("TakePhoto")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
@@ -5431,14 +6107,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "StopVideoRec." + error;
                 }
             }
-            if (message.ToogleLights != null && message.hasOwnProperty("ToogleLights")) {
+            if (message.ToggleLights != null && message.hasOwnProperty("ToggleLights")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.ToogleLightsAction.verify(message.ToogleLights);
+                    let error = $root.rov_actions_proto.ToggleLightsAction.verify(message.ToggleLights);
                     if (error)
-                        return "ToogleLights." + error;
+                        return "ToggleLights." + error;
                 }
             }
             if (message.ShutdownRov != null && message.hasOwnProperty("ShutdownRov")) {
@@ -5501,14 +6177,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "RestartRovServices." + error;
                 }
             }
-            if (message.RovLogs != null && message.hasOwnProperty("RovLogs")) {
+            if (message.SendRovLogs != null && message.hasOwnProperty("SendRovLogs")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.RovLogsAction.verify(message.RovLogs);
+                    let error = $root.rov_actions_proto.SendRovLogsAction.verify(message.SendRovLogs);
                     if (error)
-                        return "RovLogs." + error;
+                        return "SendRovLogs." + error;
                 }
             }
             if (message.RefreshAllSensors != null && message.hasOwnProperty("RefreshAllSensors")) {
@@ -5521,14 +6197,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "RefreshAllSensors." + error;
                 }
             }
-            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
+            if (message.MoveClaw != null && message.hasOwnProperty("MoveClaw")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.MavlinkAction.verify(message.Mavlink);
+                    let error = $root.rov_actions_proto.MoveClawAction.verify(message.MoveClaw);
                     if (error)
-                        return "Mavlink." + error;
+                        return "MoveClaw." + error;
                 }
             }
             if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
@@ -5559,6 +6235,36 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     let error = $root.rov_actions_proto.SetAutopilotModeAction.verify(message.SetAutopilotMode);
                     if (error)
                         return "SetAutopilotMode." + error;
+                }
+            }
+            if (message.SetLivekitVideoOptions != null && message.hasOwnProperty("SetLivekitVideoOptions")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.SetLivekitVideoOptionsAction.verify(message.SetLivekitVideoOptions);
+                    if (error)
+                        return "SetLivekitVideoOptions." + error;
+                }
+            }
+            if (message.SetSimplepeerVideoOptions != null && message.hasOwnProperty("SetSimplepeerVideoOptions")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.verify(message.SetSimplepeerVideoOptions);
+                    if (error)
+                        return "SetSimplepeerVideoOptions." + error;
+                }
+            }
+            if (message.SetLivestreamingEnabled != null && message.hasOwnProperty("SetLivestreamingEnabled")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.SetLivestreamingEnabledAction.verify(message.SetLivestreamingEnabled);
+                    if (error)
+                        return "SetLivestreamingEnabled." + error;
                 }
             }
             return null;
@@ -5608,11 +6314,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.Move: object expected");
                 message.Move = $root.rov_actions_proto.MoveAction.fromObject(object.Move);
             }
-            if (object.BeginVideoStream != null) {
-                if (typeof object.BeginVideoStream !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.BeginVideoStream: object expected");
-                message.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.fromObject(object.BeginVideoStream);
-            }
             if (object.TakePhoto != null) {
                 if (typeof object.TakePhoto !== "object")
                     throw TypeError(".rov_actions_proto.RovAction.TakePhoto: object expected");
@@ -5628,10 +6329,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.StopVideoRec: object expected");
                 message.StopVideoRec = $root.rov_actions_proto.StopVideoRecAction.fromObject(object.StopVideoRec);
             }
-            if (object.ToogleLights != null) {
-                if (typeof object.ToogleLights !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.ToogleLights: object expected");
-                message.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.fromObject(object.ToogleLights);
+            if (object.ToggleLights != null) {
+                if (typeof object.ToggleLights !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.ToggleLights: object expected");
+                message.ToggleLights = $root.rov_actions_proto.ToggleLightsAction.fromObject(object.ToggleLights);
             }
             if (object.ShutdownRov != null) {
                 if (typeof object.ShutdownRov !== "object")
@@ -5663,20 +6364,20 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovAction.RestartRovServices: object expected");
                 message.RestartRovServices = $root.rov_actions_proto.RestartRovServicesAction.fromObject(object.RestartRovServices);
             }
-            if (object.RovLogs != null) {
-                if (typeof object.RovLogs !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.RovLogs: object expected");
-                message.RovLogs = $root.rov_actions_proto.RovLogsAction.fromObject(object.RovLogs);
+            if (object.SendRovLogs != null) {
+                if (typeof object.SendRovLogs !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SendRovLogs: object expected");
+                message.SendRovLogs = $root.rov_actions_proto.SendRovLogsAction.fromObject(object.SendRovLogs);
             }
             if (object.RefreshAllSensors != null) {
                 if (typeof object.RefreshAllSensors !== "object")
                     throw TypeError(".rov_actions_proto.RovAction.RefreshAllSensors: object expected");
                 message.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.fromObject(object.RefreshAllSensors);
             }
-            if (object.Mavlink != null) {
-                if (typeof object.Mavlink !== "object")
-                    throw TypeError(".rov_actions_proto.RovAction.Mavlink: object expected");
-                message.Mavlink = $root.rov_actions_proto.MavlinkAction.fromObject(object.Mavlink);
+            if (object.MoveClaw != null) {
+                if (typeof object.MoveClaw !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.MoveClaw: object expected");
+                message.MoveClaw = $root.rov_actions_proto.MoveClawAction.fromObject(object.MoveClaw);
             }
             if (object.SimplepeerSignal != null) {
                 if (typeof object.SimplepeerSignal !== "object")
@@ -5692,6 +6393,21 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (typeof object.SetAutopilotMode !== "object")
                     throw TypeError(".rov_actions_proto.RovAction.SetAutopilotMode: object expected");
                 message.SetAutopilotMode = $root.rov_actions_proto.SetAutopilotModeAction.fromObject(object.SetAutopilotMode);
+            }
+            if (object.SetLivekitVideoOptions != null) {
+                if (typeof object.SetLivekitVideoOptions !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SetLivekitVideoOptions: object expected");
+                message.SetLivekitVideoOptions = $root.rov_actions_proto.SetLivekitVideoOptionsAction.fromObject(object.SetLivekitVideoOptions);
+            }
+            if (object.SetSimplepeerVideoOptions != null) {
+                if (typeof object.SetSimplepeerVideoOptions !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SetSimplepeerVideoOptions: object expected");
+                message.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.fromObject(object.SetSimplepeerVideoOptions);
+            }
+            if (object.SetLivestreamingEnabled != null) {
+                if (typeof object.SetLivestreamingEnabled !== "object")
+                    throw TypeError(".rov_actions_proto.RovAction.SetLivestreamingEnabled: object expected");
+                message.SetLivestreamingEnabled = $root.rov_actions_proto.SetLivestreamingEnabledAction.fromObject(object.SetLivestreamingEnabled);
             }
             return message;
         };
@@ -5742,11 +6458,6 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "Move";
             }
-            if (message.BeginVideoStream != null && message.hasOwnProperty("BeginVideoStream")) {
-                object.BeginVideoStream = $root.rov_actions_proto.BeginVideoStreamAction.toObject(message.BeginVideoStream, options);
-                if (options.oneofs)
-                    object.Body = "BeginVideoStream";
-            }
             if (message.TakePhoto != null && message.hasOwnProperty("TakePhoto")) {
                 object.TakePhoto = $root.rov_actions_proto.TakePhotoAction.toObject(message.TakePhoto, options);
                 if (options.oneofs)
@@ -5762,10 +6473,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "StopVideoRec";
             }
-            if (message.ToogleLights != null && message.hasOwnProperty("ToogleLights")) {
-                object.ToogleLights = $root.rov_actions_proto.ToogleLightsAction.toObject(message.ToogleLights, options);
+            if (message.ToggleLights != null && message.hasOwnProperty("ToggleLights")) {
+                object.ToggleLights = $root.rov_actions_proto.ToggleLightsAction.toObject(message.ToggleLights, options);
                 if (options.oneofs)
-                    object.Body = "ToogleLights";
+                    object.Body = "ToggleLights";
             }
             if (message.ShutdownRov != null && message.hasOwnProperty("ShutdownRov")) {
                 object.ShutdownRov = $root.rov_actions_proto.ShutdownRovAction.toObject(message.ShutdownRov, options);
@@ -5797,20 +6508,20 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "RestartRovServices";
             }
-            if (message.RovLogs != null && message.hasOwnProperty("RovLogs")) {
-                object.RovLogs = $root.rov_actions_proto.RovLogsAction.toObject(message.RovLogs, options);
+            if (message.SendRovLogs != null && message.hasOwnProperty("SendRovLogs")) {
+                object.SendRovLogs = $root.rov_actions_proto.SendRovLogsAction.toObject(message.SendRovLogs, options);
                 if (options.oneofs)
-                    object.Body = "RovLogs";
+                    object.Body = "SendRovLogs";
             }
             if (message.RefreshAllSensors != null && message.hasOwnProperty("RefreshAllSensors")) {
                 object.RefreshAllSensors = $root.rov_actions_proto.RefreshAllSensorsAction.toObject(message.RefreshAllSensors, options);
                 if (options.oneofs)
                     object.Body = "RefreshAllSensors";
             }
-            if (message.Mavlink != null && message.hasOwnProperty("Mavlink")) {
-                object.Mavlink = $root.rov_actions_proto.MavlinkAction.toObject(message.Mavlink, options);
+            if (message.MoveClaw != null && message.hasOwnProperty("MoveClaw")) {
+                object.MoveClaw = $root.rov_actions_proto.MoveClawAction.toObject(message.MoveClaw, options);
                 if (options.oneofs)
-                    object.Body = "Mavlink";
+                    object.Body = "MoveClaw";
             }
             if (message.SimplepeerSignal != null && message.hasOwnProperty("SimplepeerSignal")) {
                 object.SimplepeerSignal = $root.rov_actions_proto.SimplepeerSignalAction.toObject(message.SimplepeerSignal, options);
@@ -5826,6 +6537,21 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.SetAutopilotMode = $root.rov_actions_proto.SetAutopilotModeAction.toObject(message.SetAutopilotMode, options);
                 if (options.oneofs)
                     object.Body = "SetAutopilotMode";
+            }
+            if (message.SetLivekitVideoOptions != null && message.hasOwnProperty("SetLivekitVideoOptions")) {
+                object.SetLivekitVideoOptions = $root.rov_actions_proto.SetLivekitVideoOptionsAction.toObject(message.SetLivekitVideoOptions, options);
+                if (options.oneofs)
+                    object.Body = "SetLivekitVideoOptions";
+            }
+            if (message.SetSimplepeerVideoOptions != null && message.hasOwnProperty("SetSimplepeerVideoOptions")) {
+                object.SetSimplepeerVideoOptions = $root.rov_actions_proto.SetSimplepeerVideoOptionsAction.toObject(message.SetSimplepeerVideoOptions, options);
+                if (options.oneofs)
+                    object.Body = "SetSimplepeerVideoOptions";
+            }
+            if (message.SetLivestreamingEnabled != null && message.hasOwnProperty("SetLivestreamingEnabled")) {
+                object.SetLivestreamingEnabled = $root.rov_actions_proto.SetLivestreamingEnabledAction.toObject(message.SetLivestreamingEnabled, options);
+                if (options.oneofs)
+                    object.Body = "SetLivestreamingEnabled";
             }
             return object;
         };
@@ -6480,6 +7206,302 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         return PongResponse;
+    })();
+
+    rov_actions_proto.Measurement = (function() {
+
+        /**
+         * Properties of a Measurement.
+         * @memberof rov_actions_proto
+         * @interface IMeasurement
+         * @property {rov_actions_proto.SensorMeasurmentTypes|null} [MeasurementType] Measurement MeasurementType
+         * @property {number|null} [Value] Measurement Value
+         */
+
+        /**
+         * Constructs a new Measurement.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a Measurement.
+         * @implements IMeasurement
+         * @constructor
+         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
+         */
+        function Measurement(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Measurement MeasurementType.
+         * @member {rov_actions_proto.SensorMeasurmentTypes} MeasurementType
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         */
+        Measurement.prototype.MeasurementType = 0;
+
+        /**
+         * Measurement Value.
+         * @member {number} Value
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         */
+        Measurement.prototype.Value = 0;
+
+        /**
+         * Creates a new Measurement instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement=} [properties] Properties to set
+         * @returns {rov_actions_proto.Measurement} Measurement instance
+         */
+        Measurement.create = function create(properties) {
+            return new Measurement(properties);
+        };
+
+        /**
+         * Encodes the specified Measurement message. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Measurement.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.MeasurementType != null && Object.hasOwnProperty.call(message, "MeasurementType"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.MeasurementType);
+            if (message.Value != null && Object.hasOwnProperty.call(message, "Value"))
+                writer.uint32(/* id 2, wireType 5 =*/21).float(message.Value);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified Measurement message, length delimited. Does not implicitly {@link rov_actions_proto.Measurement.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.IMeasurement} message Measurement message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        Measurement.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.Measurement} Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Measurement.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.Measurement();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.MeasurementType = reader.int32();
+                        break;
+                    }
+                case 2: {
+                        message.Value = reader.float();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a Measurement message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.Measurement} Measurement
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        Measurement.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a Measurement message.
+         * @function verify
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        Measurement.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                switch (message.MeasurementType) {
+                default:
+                    return "MeasurementType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                    break;
+                }
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                if (typeof message.Value !== "number")
+                    return "Value: number expected";
+            return null;
+        };
+
+        /**
+         * Creates a Measurement message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.Measurement} Measurement
+         */
+        Measurement.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.Measurement)
+                return object;
+            let message = new $root.rov_actions_proto.Measurement();
+            switch (object.MeasurementType) {
+            default:
+                if (typeof object.MeasurementType === "number") {
+                    message.MeasurementType = object.MeasurementType;
+                    break;
+                }
+                break;
+            case "depth_meters":
+            case 0:
+                message.MeasurementType = 0;
+                break;
+            case "water_temp_celsius":
+            case 1:
+                message.MeasurementType = 1;
+                break;
+            case "pressure_mbar":
+            case 2:
+                message.MeasurementType = 2;
+                break;
+            case "yaw_degrees":
+            case 3:
+                message.MeasurementType = 3;
+                break;
+            case "pitch_degrees":
+            case 4:
+                message.MeasurementType = 4;
+                break;
+            case "roll_degrees":
+            case 5:
+                message.MeasurementType = 5;
+                break;
+            case "x_acceleration_m_s2":
+            case 6:
+                message.MeasurementType = 6;
+                break;
+            case "y_acceleration_m_s2":
+            case 7:
+                message.MeasurementType = 7;
+                break;
+            case "z_acceleration_m_s2":
+            case 8:
+                message.MeasurementType = 8;
+                break;
+            case "battery_voltage":
+            case 9:
+                message.MeasurementType = 9;
+                break;
+            case "battery_current_amps":
+            case 10:
+                message.MeasurementType = 10;
+                break;
+            case "internal_temp_celsius":
+            case 11:
+                message.MeasurementType = 11;
+                break;
+            }
+            if (object.Value != null)
+                message.Value = Number(object.Value);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a Measurement message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {rov_actions_proto.Measurement} message Measurement
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        Measurement.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.MeasurementType = options.enums === String ? "depth_meters" : 0;
+                object.Value = 0;
+            }
+            if (message.MeasurementType != null && message.hasOwnProperty("MeasurementType"))
+                object.MeasurementType = options.enums === String ? $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] === undefined ? message.MeasurementType : $root.rov_actions_proto.SensorMeasurmentTypes[message.MeasurementType] : message.MeasurementType;
+            if (message.Value != null && message.hasOwnProperty("Value"))
+                object.Value = options.json && !isFinite(message.Value) ? String(message.Value) : message.Value;
+            return object;
+        };
+
+        /**
+         * Converts this Measurement to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.Measurement
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        Measurement.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for Measurement
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.Measurement
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        Measurement.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.Measurement";
+        };
+
+        return Measurement;
     })();
 
     rov_actions_proto.SensorUpdatesResponse = (function() {
@@ -7287,24 +8309,24 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return PasswordInvalidResponse;
     })();
 
-    rov_actions_proto.DriverChangedResponse = (function() {
+    rov_actions_proto.PilotChangedResponse = (function() {
 
         /**
-         * Properties of a DriverChangedResponse.
+         * Properties of a PilotChangedResponse.
          * @memberof rov_actions_proto
-         * @interface IDriverChangedResponse
-         * @property {string|null} [DriverPeerId] DriverChangedResponse DriverPeerId
+         * @interface IPilotChangedResponse
+         * @property {string|null} [PilotIdentity] PilotChangedResponse PilotIdentity
          */
 
         /**
-         * Constructs a new DriverChangedResponse.
+         * Constructs a new PilotChangedResponse.
          * @memberof rov_actions_proto
-         * @classdesc Represents a DriverChangedResponse.
-         * @implements IDriverChangedResponse
+         * @classdesc Represents a PilotChangedResponse.
+         * @implements IPilotChangedResponse
          * @constructor
-         * @param {rov_actions_proto.IDriverChangedResponse=} [properties] Properties to set
+         * @param {rov_actions_proto.IPilotChangedResponse=} [properties] Properties to set
          */
-        function DriverChangedResponse(properties) {
+        function PilotChangedResponse(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -7312,75 +8334,75 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * DriverChangedResponse DriverPeerId.
-         * @member {string} DriverPeerId
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * PilotChangedResponse PilotIdentity.
+         * @member {string} PilotIdentity
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @instance
          */
-        DriverChangedResponse.prototype.DriverPeerId = "";
+        PilotChangedResponse.prototype.PilotIdentity = "";
 
         /**
-         * Creates a new DriverChangedResponse instance using the specified properties.
+         * Creates a new PilotChangedResponse instance using the specified properties.
          * @function create
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
-         * @param {rov_actions_proto.IDriverChangedResponse=} [properties] Properties to set
-         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse instance
+         * @param {rov_actions_proto.IPilotChangedResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.PilotChangedResponse} PilotChangedResponse instance
          */
-        DriverChangedResponse.create = function create(properties) {
-            return new DriverChangedResponse(properties);
+        PilotChangedResponse.create = function create(properties) {
+            return new PilotChangedResponse(properties);
         };
 
         /**
-         * Encodes the specified DriverChangedResponse message. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified PilotChangedResponse message. Does not implicitly {@link rov_actions_proto.PilotChangedResponse.verify|verify} messages.
          * @function encode
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
-         * @param {rov_actions_proto.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
+         * @param {rov_actions_proto.IPilotChangedResponse} message PilotChangedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        DriverChangedResponse.encode = function encode(message, writer) {
+        PilotChangedResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.DriverPeerId != null && Object.hasOwnProperty.call(message, "DriverPeerId"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.DriverPeerId);
+            if (message.PilotIdentity != null && Object.hasOwnProperty.call(message, "PilotIdentity"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.PilotIdentity);
             return writer;
         };
 
         /**
-         * Encodes the specified DriverChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.DriverChangedResponse.verify|verify} messages.
+         * Encodes the specified PilotChangedResponse message, length delimited. Does not implicitly {@link rov_actions_proto.PilotChangedResponse.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
-         * @param {rov_actions_proto.IDriverChangedResponse} message DriverChangedResponse message or plain object to encode
+         * @param {rov_actions_proto.IPilotChangedResponse} message PilotChangedResponse message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        DriverChangedResponse.encodeDelimited = function encodeDelimited(message, writer) {
+        PilotChangedResponse.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a DriverChangedResponse message from the specified reader or buffer.
+         * Decodes a PilotChangedResponse message from the specified reader or buffer.
          * @function decode
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.PilotChangedResponse} PilotChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DriverChangedResponse.decode = function decode(reader, length) {
+        PilotChangedResponse.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.DriverChangedResponse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.PilotChangedResponse();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.DriverPeerId = reader.string();
+                        message.PilotIdentity = reader.string();
                         break;
                     }
                 default:
@@ -7392,102 +8414,102 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         };
 
         /**
-         * Decodes a DriverChangedResponse message from the specified reader or buffer, length delimited.
+         * Decodes a PilotChangedResponse message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.PilotChangedResponse} PilotChangedResponse
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DriverChangedResponse.decodeDelimited = function decodeDelimited(reader) {
+        PilotChangedResponse.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a DriverChangedResponse message.
+         * Verifies a PilotChangedResponse message.
          * @function verify
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        DriverChangedResponse.verify = function verify(message) {
+        PilotChangedResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.DriverPeerId != null && message.hasOwnProperty("DriverPeerId"))
-                if (!$util.isString(message.DriverPeerId))
-                    return "DriverPeerId: string expected";
+            if (message.PilotIdentity != null && message.hasOwnProperty("PilotIdentity"))
+                if (!$util.isString(message.PilotIdentity))
+                    return "PilotIdentity: string expected";
             return null;
         };
 
         /**
-         * Creates a DriverChangedResponse message from a plain object. Also converts values to their respective internal types.
+         * Creates a PilotChangedResponse message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {rov_actions_proto.DriverChangedResponse} DriverChangedResponse
+         * @returns {rov_actions_proto.PilotChangedResponse} PilotChangedResponse
          */
-        DriverChangedResponse.fromObject = function fromObject(object) {
-            if (object instanceof $root.rov_actions_proto.DriverChangedResponse)
+        PilotChangedResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.PilotChangedResponse)
                 return object;
-            let message = new $root.rov_actions_proto.DriverChangedResponse();
-            if (object.DriverPeerId != null)
-                message.DriverPeerId = String(object.DriverPeerId);
+            let message = new $root.rov_actions_proto.PilotChangedResponse();
+            if (object.PilotIdentity != null)
+                message.PilotIdentity = String(object.PilotIdentity);
             return message;
         };
 
         /**
-         * Creates a plain object from a DriverChangedResponse message. Also converts values to other types if specified.
+         * Creates a plain object from a PilotChangedResponse message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
-         * @param {rov_actions_proto.DriverChangedResponse} message DriverChangedResponse
+         * @param {rov_actions_proto.PilotChangedResponse} message PilotChangedResponse
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        DriverChangedResponse.toObject = function toObject(message, options) {
+        PilotChangedResponse.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults)
-                object.DriverPeerId = "";
-            if (message.DriverPeerId != null && message.hasOwnProperty("DriverPeerId"))
-                object.DriverPeerId = message.DriverPeerId;
+                object.PilotIdentity = "";
+            if (message.PilotIdentity != null && message.hasOwnProperty("PilotIdentity"))
+                object.PilotIdentity = message.PilotIdentity;
             return object;
         };
 
         /**
-         * Converts this DriverChangedResponse to JSON.
+         * Converts this PilotChangedResponse to JSON.
          * @function toJSON
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        DriverChangedResponse.prototype.toJSON = function toJSON() {
+        PilotChangedResponse.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for DriverChangedResponse
+         * Gets the default type url for PilotChangedResponse
          * @function getTypeUrl
-         * @memberof rov_actions_proto.DriverChangedResponse
+         * @memberof rov_actions_proto.PilotChangedResponse
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        DriverChangedResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        PilotChangedResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/rov_actions_proto.DriverChangedResponse";
+            return typeUrlPrefix + "/rov_actions_proto.PilotChangedResponse";
         };
 
-        return DriverChangedResponse;
+        return PilotChangedResponse;
     })();
 
     rov_actions_proto.ClientConnectedResponse = (function() {
@@ -9305,6 +10327,688 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         return LogMessageResponse;
     })();
 
+    rov_actions_proto.LivekitVideoStatsResponse = (function() {
+
+        /**
+         * Properties of a LivekitVideoStatsResponse.
+         * @memberof rov_actions_proto
+         * @interface ILivekitVideoStatsResponse
+         * @property {boolean|null} [Enabled] LivekitVideoStatsResponse Enabled
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] LivekitVideoStatsResponse Codec
+         * @property {boolean|null} [AllowBackupCodec] LivekitVideoStatsResponse AllowBackupCodec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] LivekitVideoStatsResponse BaseStream
+         * @property {Array.<rov_actions_proto.IVideoStreamOptions>|null} [SimulcastLayers] LivekitVideoStatsResponse SimulcastLayers
+         * @property {string|null} [RtcSenderStatsJson] LivekitVideoStatsResponse RtcSenderStatsJson
+         */
+
+        /**
+         * Constructs a new LivekitVideoStatsResponse.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a LivekitVideoStatsResponse.
+         * @implements ILivekitVideoStatsResponse
+         * @constructor
+         * @param {rov_actions_proto.ILivekitVideoStatsResponse=} [properties] Properties to set
+         */
+        function LivekitVideoStatsResponse(properties) {
+            this.SimulcastLayers = [];
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LivekitVideoStatsResponse Enabled.
+         * @member {boolean} Enabled
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.Enabled = false;
+
+        /**
+         * LivekitVideoStatsResponse Codec.
+         * @member {rov_actions_proto.VideoCodec} Codec
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.Codec = 0;
+
+        /**
+         * LivekitVideoStatsResponse AllowBackupCodec.
+         * @member {boolean} AllowBackupCodec
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.AllowBackupCodec = false;
+
+        /**
+         * LivekitVideoStatsResponse BaseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.BaseStream = null;
+
+        /**
+         * LivekitVideoStatsResponse SimulcastLayers.
+         * @member {Array.<rov_actions_proto.IVideoStreamOptions>} SimulcastLayers
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.SimulcastLayers = $util.emptyArray;
+
+        /**
+         * LivekitVideoStatsResponse RtcSenderStatsJson.
+         * @member {string} RtcSenderStatsJson
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         */
+        LivekitVideoStatsResponse.prototype.RtcSenderStatsJson = "";
+
+        /**
+         * Creates a new LivekitVideoStatsResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ILivekitVideoStatsResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.LivekitVideoStatsResponse} LivekitVideoStatsResponse instance
+         */
+        LivekitVideoStatsResponse.create = function create(properties) {
+            return new LivekitVideoStatsResponse(properties);
+        };
+
+        /**
+         * Encodes the specified LivekitVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.LivekitVideoStatsResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ILivekitVideoStatsResponse} message LivekitVideoStatsResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LivekitVideoStatsResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
+            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Codec);
+            if (message.AllowBackupCodec != null && Object.hasOwnProperty.call(message, "AllowBackupCodec"))
+                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.AllowBackupCodec);
+            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.SimulcastLayers != null && message.SimulcastLayers.length)
+                for (let i = 0; i < message.SimulcastLayers.length; ++i)
+                    $root.rov_actions_proto.VideoStreamOptions.encode(message.SimulcastLayers[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.RtcSenderStatsJson != null && Object.hasOwnProperty.call(message, "RtcSenderStatsJson"))
+                writer.uint32(/* id 6, wireType 2 =*/50).string(message.RtcSenderStatsJson);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified LivekitVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.LivekitVideoStatsResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ILivekitVideoStatsResponse} message LivekitVideoStatsResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LivekitVideoStatsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a LivekitVideoStatsResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.LivekitVideoStatsResponse} LivekitVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LivekitVideoStatsResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.LivekitVideoStatsResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Enabled = reader.bool();
+                        break;
+                    }
+                case 2: {
+                        message.Codec = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.AllowBackupCodec = reader.bool();
+                        break;
+                    }
+                case 4: {
+                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 5: {
+                        if (!(message.SimulcastLayers && message.SimulcastLayers.length))
+                            message.SimulcastLayers = [];
+                        message.SimulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
+                        break;
+                    }
+                case 6: {
+                        message.RtcSenderStatsJson = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a LivekitVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.LivekitVideoStatsResponse} LivekitVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LivekitVideoStatsResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a LivekitVideoStatsResponse message.
+         * @function verify
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        LivekitVideoStatsResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                if (typeof message.Enabled !== "boolean")
+                    return "Enabled: boolean expected";
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                switch (message.Codec) {
+                default:
+                    return "Codec: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
+                if (typeof message.AllowBackupCodec !== "boolean")
+                    return "AllowBackupCodec: boolean expected";
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+                if (error)
+                    return "BaseStream." + error;
+            }
+            if (message.SimulcastLayers != null && message.hasOwnProperty("SimulcastLayers")) {
+                if (!Array.isArray(message.SimulcastLayers))
+                    return "SimulcastLayers: array expected";
+                for (let i = 0; i < message.SimulcastLayers.length; ++i) {
+                    let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.SimulcastLayers[i]);
+                    if (error)
+                        return "SimulcastLayers." + error;
+                }
+            }
+            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
+                if (!$util.isString(message.RtcSenderStatsJson))
+                    return "RtcSenderStatsJson: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a LivekitVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.LivekitVideoStatsResponse} LivekitVideoStatsResponse
+         */
+        LivekitVideoStatsResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.LivekitVideoStatsResponse)
+                return object;
+            let message = new $root.rov_actions_proto.LivekitVideoStatsResponse();
+            if (object.Enabled != null)
+                message.Enabled = Boolean(object.Enabled);
+            switch (object.Codec) {
+            default:
+                if (typeof object.Codec === "number") {
+                    message.Codec = object.Codec;
+                    break;
+                }
+                break;
+            case "H264":
+            case 0:
+                message.Codec = 0;
+                break;
+            case "VP8":
+            case 1:
+                message.Codec = 1;
+                break;
+            case "VP9":
+            case 2:
+                message.Codec = 2;
+                break;
+            case "AV1":
+            case 3:
+                message.Codec = 3;
+                break;
+            }
+            if (object.AllowBackupCodec != null)
+                message.AllowBackupCodec = Boolean(object.AllowBackupCodec);
+            if (object.BaseStream != null) {
+                if (typeof object.BaseStream !== "object")
+                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.BaseStream: object expected");
+                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            }
+            if (object.SimulcastLayers) {
+                if (!Array.isArray(object.SimulcastLayers))
+                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.SimulcastLayers: array expected");
+                message.SimulcastLayers = [];
+                for (let i = 0; i < object.SimulcastLayers.length; ++i) {
+                    if (typeof object.SimulcastLayers[i] !== "object")
+                        throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.SimulcastLayers: object expected");
+                    message.SimulcastLayers[i] = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.SimulcastLayers[i]);
+                }
+            }
+            if (object.RtcSenderStatsJson != null)
+                message.RtcSenderStatsJson = String(object.RtcSenderStatsJson);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a LivekitVideoStatsResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.LivekitVideoStatsResponse} message LivekitVideoStatsResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        LivekitVideoStatsResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.arrays || options.defaults)
+                object.SimulcastLayers = [];
+            if (options.defaults) {
+                object.Enabled = false;
+                object.Codec = options.enums === String ? "H264" : 0;
+                object.AllowBackupCodec = false;
+                object.BaseStream = null;
+                object.RtcSenderStatsJson = "";
+            }
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                object.Enabled = message.Enabled;
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                object.Codec = options.enums === String ? $root.rov_actions_proto.VideoCodec[message.Codec] === undefined ? message.Codec : $root.rov_actions_proto.VideoCodec[message.Codec] : message.Codec;
+            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
+                object.AllowBackupCodec = message.AllowBackupCodec;
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
+                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
+            if (message.SimulcastLayers && message.SimulcastLayers.length) {
+                object.SimulcastLayers = [];
+                for (let j = 0; j < message.SimulcastLayers.length; ++j)
+                    object.SimulcastLayers[j] = $root.rov_actions_proto.VideoStreamOptions.toObject(message.SimulcastLayers[j], options);
+            }
+            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
+                object.RtcSenderStatsJson = message.RtcSenderStatsJson;
+            return object;
+        };
+
+        /**
+         * Converts this LivekitVideoStatsResponse to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        LivekitVideoStatsResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for LivekitVideoStatsResponse
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.LivekitVideoStatsResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        LivekitVideoStatsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.LivekitVideoStatsResponse";
+        };
+
+        return LivekitVideoStatsResponse;
+    })();
+
+    rov_actions_proto.SimplepeerVideoStatsResponse = (function() {
+
+        /**
+         * Properties of a SimplepeerVideoStatsResponse.
+         * @memberof rov_actions_proto
+         * @interface ISimplepeerVideoStatsResponse
+         * @property {boolean|null} [Enabled] SimplepeerVideoStatsResponse Enabled
+         * @property {rov_actions_proto.VideoCodec|null} [Codec] SimplepeerVideoStatsResponse Codec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SimplepeerVideoStatsResponse BaseStream
+         * @property {string|null} [RtcSenderStatsJson] SimplepeerVideoStatsResponse RtcSenderStatsJson
+         */
+
+        /**
+         * Constructs a new SimplepeerVideoStatsResponse.
+         * @memberof rov_actions_proto
+         * @classdesc Represents a SimplepeerVideoStatsResponse.
+         * @implements ISimplepeerVideoStatsResponse
+         * @constructor
+         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse=} [properties] Properties to set
+         */
+        function SimplepeerVideoStatsResponse(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SimplepeerVideoStatsResponse Enabled.
+         * @member {boolean} Enabled
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @instance
+         */
+        SimplepeerVideoStatsResponse.prototype.Enabled = false;
+
+        /**
+         * SimplepeerVideoStatsResponse Codec.
+         * @member {rov_actions_proto.VideoCodec} Codec
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @instance
+         */
+        SimplepeerVideoStatsResponse.prototype.Codec = 0;
+
+        /**
+         * SimplepeerVideoStatsResponse BaseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @instance
+         */
+        SimplepeerVideoStatsResponse.prototype.BaseStream = null;
+
+        /**
+         * SimplepeerVideoStatsResponse RtcSenderStatsJson.
+         * @member {string} RtcSenderStatsJson
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @instance
+         */
+        SimplepeerVideoStatsResponse.prototype.RtcSenderStatsJson = "";
+
+        /**
+         * Creates a new SimplepeerVideoStatsResponse instance using the specified properties.
+         * @function create
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse=} [properties] Properties to set
+         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse instance
+         */
+        SimplepeerVideoStatsResponse.create = function create(properties) {
+            return new SimplepeerVideoStatsResponse(properties);
+        };
+
+        /**
+         * Encodes the specified SimplepeerVideoStatsResponse message. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * @function encode
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerVideoStatsResponse.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
+            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.Codec);
+            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.RtcSenderStatsJson != null && Object.hasOwnProperty.call(message, "RtcSenderStatsJson"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.RtcSenderStatsJson);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified SimplepeerVideoStatsResponse message, length delimited. Does not implicitly {@link rov_actions_proto.SimplepeerVideoStatsResponse.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.ISimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimplepeerVideoStatsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer.
+         * @function decode
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerVideoStatsResponse.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rov_actions_proto.SimplepeerVideoStatsResponse();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.Enabled = reader.bool();
+                        break;
+                    }
+                case 2: {
+                        message.Codec = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 4: {
+                        message.RtcSenderStatsJson = reader.string();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a SimplepeerVideoStatsResponse message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimplepeerVideoStatsResponse.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a SimplepeerVideoStatsResponse message.
+         * @function verify
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        SimplepeerVideoStatsResponse.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                if (typeof message.Enabled !== "boolean")
+                    return "Enabled: boolean expected";
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                switch (message.Codec) {
+                default:
+                    return "Codec: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    break;
+                }
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+                if (error)
+                    return "BaseStream." + error;
+            }
+            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
+                if (!$util.isString(message.RtcSenderStatsJson))
+                    return "RtcSenderStatsJson: string expected";
+            return null;
+        };
+
+        /**
+         * Creates a SimplepeerVideoStatsResponse message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {rov_actions_proto.SimplepeerVideoStatsResponse} SimplepeerVideoStatsResponse
+         */
+        SimplepeerVideoStatsResponse.fromObject = function fromObject(object) {
+            if (object instanceof $root.rov_actions_proto.SimplepeerVideoStatsResponse)
+                return object;
+            let message = new $root.rov_actions_proto.SimplepeerVideoStatsResponse();
+            if (object.Enabled != null)
+                message.Enabled = Boolean(object.Enabled);
+            switch (object.Codec) {
+            default:
+                if (typeof object.Codec === "number") {
+                    message.Codec = object.Codec;
+                    break;
+                }
+                break;
+            case "H264":
+            case 0:
+                message.Codec = 0;
+                break;
+            case "VP8":
+            case 1:
+                message.Codec = 1;
+                break;
+            case "VP9":
+            case 2:
+                message.Codec = 2;
+                break;
+            case "AV1":
+            case 3:
+                message.Codec = 3;
+                break;
+            }
+            if (object.BaseStream != null) {
+                if (typeof object.BaseStream !== "object")
+                    throw TypeError(".rov_actions_proto.SimplepeerVideoStatsResponse.BaseStream: object expected");
+                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            }
+            if (object.RtcSenderStatsJson != null)
+                message.RtcSenderStatsJson = String(object.RtcSenderStatsJson);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a SimplepeerVideoStatsResponse message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {rov_actions_proto.SimplepeerVideoStatsResponse} message SimplepeerVideoStatsResponse
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        SimplepeerVideoStatsResponse.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.Enabled = false;
+                object.Codec = options.enums === String ? "H264" : 0;
+                object.BaseStream = null;
+                object.RtcSenderStatsJson = "";
+            }
+            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
+                object.Enabled = message.Enabled;
+            if (message.Codec != null && message.hasOwnProperty("Codec"))
+                object.Codec = options.enums === String ? $root.rov_actions_proto.VideoCodec[message.Codec] === undefined ? message.Codec : $root.rov_actions_proto.VideoCodec[message.Codec] : message.Codec;
+            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
+                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
+            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
+                object.RtcSenderStatsJson = message.RtcSenderStatsJson;
+            return object;
+        };
+
+        /**
+         * Converts this SimplepeerVideoStatsResponse to JSON.
+         * @function toJSON
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        SimplepeerVideoStatsResponse.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for SimplepeerVideoStatsResponse
+         * @function getTypeUrl
+         * @memberof rov_actions_proto.SimplepeerVideoStatsResponse
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        SimplepeerVideoStatsResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/rov_actions_proto.SimplepeerVideoStatsResponse";
+        };
+
+        return SimplepeerVideoStatsResponse;
+    })();
+
     rov_actions_proto.ResponseBackendMetadata = (function() {
 
         /**
@@ -9468,6 +11172,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     return "TransportMethod: enum value expected";
                 case 0:
                 case 1:
+                case 2:
                 case 3:
                     break;
                 }
@@ -9507,6 +11212,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             case "LivekitUnreliable":
             case 1:
                 message.TransportMethod = 1;
+                break;
+            case "DirectReliable":
+            case 2:
+                message.TransportMethod = 2;
                 break;
             case "DirectUnreliable":
             case 3:
@@ -9588,7 +11297,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.IPasswordRequiredResponse|null} [PasswordRequired] RovResponse PasswordRequired
          * @property {rov_actions_proto.IPasswordAcceptedResponse|null} [PasswordAccepted] RovResponse PasswordAccepted
          * @property {rov_actions_proto.IPasswordInvalidResponse|null} [PasswordInvalid] RovResponse PasswordInvalid
-         * @property {rov_actions_proto.IDriverChangedResponse|null} [DriverChanged] RovResponse DriverChanged
+         * @property {rov_actions_proto.IPilotChangedResponse|null} [PilotChanged] RovResponse PilotChanged
          * @property {rov_actions_proto.IClientConnectedResponse|null} [ClientConnected] RovResponse ClientConnected
          * @property {rov_actions_proto.IClientDisconnectedResponse|null} [ClientDisconnected] RovResponse ClientDisconnected
          * @property {rov_actions_proto.IHeartbeatResponse|null} [Heartbeat] RovResponse Heartbeat
@@ -9596,6 +11305,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @property {rov_actions_proto.ISimplepeerSignalResponse|null} [SimplepeerSignal] RovResponse SimplepeerSignal
          * @property {rov_actions_proto.ISystemMonitorResponse|null} [SystemMonitor] RovResponse SystemMonitor
          * @property {rov_actions_proto.ILogMessageResponse|null} [LogMessage] RovResponse LogMessage
+         * @property {rov_actions_proto.ILivekitVideoStatsResponse|null} [LivekitVideoStats] RovResponse LivekitVideoStats
+         * @property {rov_actions_proto.ISimplepeerVideoStatsResponse|null} [SimplepeerVideoStats] RovResponse SimplepeerVideoStats
          */
 
         /**
@@ -9694,12 +11405,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         RovResponse.prototype.PasswordInvalid = null;
 
         /**
-         * RovResponse DriverChanged.
-         * @member {rov_actions_proto.IDriverChangedResponse|null|undefined} DriverChanged
+         * RovResponse PilotChanged.
+         * @member {rov_actions_proto.IPilotChangedResponse|null|undefined} PilotChanged
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
-        RovResponse.prototype.DriverChanged = null;
+        RovResponse.prototype.PilotChanged = null;
 
         /**
          * RovResponse ClientConnected.
@@ -9757,17 +11468,33 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          */
         RovResponse.prototype.LogMessage = null;
 
+        /**
+         * RovResponse LivekitVideoStats.
+         * @member {rov_actions_proto.ILivekitVideoStatsResponse|null|undefined} LivekitVideoStats
+         * @memberof rov_actions_proto.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.LivekitVideoStats = null;
+
+        /**
+         * RovResponse SimplepeerVideoStats.
+         * @member {rov_actions_proto.ISimplepeerVideoStatsResponse|null|undefined} SimplepeerVideoStats
+         * @memberof rov_actions_proto.RovResponse
+         * @instance
+         */
+        RovResponse.prototype.SimplepeerVideoStats = null;
+
         // OneOf field names bound to virtual getters and setters
         let $oneOfFields;
 
         /**
          * RovResponse Body.
-         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"DriverChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|undefined} Body
+         * @member {"Done"|"Error"|"Pong"|"ContinuedOutput"|"SensorUpdates"|"PasswordRequired"|"PasswordAccepted"|"PasswordInvalid"|"PilotChanged"|"ClientConnected"|"ClientDisconnected"|"Heartbeat"|"Mavlink"|"SimplepeerSignal"|"SystemMonitor"|"LogMessage"|"LivekitVideoStats"|"SimplepeerVideoStats"|undefined} Body
          * @memberof rov_actions_proto.RovResponse
          * @instance
          */
         Object.defineProperty(RovResponse.prototype, "Body", {
-            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "DriverChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal", "SystemMonitor", "LogMessage"]),
+            get: $util.oneOfGetter($oneOfFields = ["Done", "Error", "Pong", "ContinuedOutput", "SensorUpdates", "PasswordRequired", "PasswordAccepted", "PasswordInvalid", "PilotChanged", "ClientConnected", "ClientDisconnected", "Heartbeat", "Mavlink", "SimplepeerSignal", "SystemMonitor", "LogMessage", "LivekitVideoStats", "SimplepeerVideoStats"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -9815,8 +11542,8 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.PasswordAcceptedResponse.encode(message.PasswordAccepted, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
             if (message.PasswordInvalid != null && Object.hasOwnProperty.call(message, "PasswordInvalid"))
                 $root.rov_actions_proto.PasswordInvalidResponse.encode(message.PasswordInvalid, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
-            if (message.DriverChanged != null && Object.hasOwnProperty.call(message, "DriverChanged"))
-                $root.rov_actions_proto.DriverChangedResponse.encode(message.DriverChanged, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+            if (message.PilotChanged != null && Object.hasOwnProperty.call(message, "PilotChanged"))
+                $root.rov_actions_proto.PilotChangedResponse.encode(message.PilotChanged, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.ClientConnected != null && Object.hasOwnProperty.call(message, "ClientConnected"))
                 $root.rov_actions_proto.ClientConnectedResponse.encode(message.ClientConnected, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
             if (message.ClientDisconnected != null && Object.hasOwnProperty.call(message, "ClientDisconnected"))
@@ -9831,6 +11558,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 $root.rov_actions_proto.SystemMonitorResponse.encode(message.SystemMonitor, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.LogMessage != null && Object.hasOwnProperty.call(message, "LogMessage"))
                 $root.rov_actions_proto.LogMessageResponse.encode(message.LogMessage, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+            if (message.LivekitVideoStats != null && Object.hasOwnProperty.call(message, "LivekitVideoStats"))
+                $root.rov_actions_proto.LivekitVideoStatsResponse.encode(message.LivekitVideoStats, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+            if (message.SimplepeerVideoStats != null && Object.hasOwnProperty.call(message, "SimplepeerVideoStats"))
+                $root.rov_actions_proto.SimplepeerVideoStatsResponse.encode(message.SimplepeerVideoStats, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
             return writer;
         };
 
@@ -9906,7 +11637,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         break;
                     }
                 case 13: {
-                        message.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.decode(reader, reader.uint32());
+                        message.PilotChanged = $root.rov_actions_proto.PilotChangedResponse.decode(reader, reader.uint32());
                         break;
                     }
                 case 14: {
@@ -9935,6 +11666,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     }
                 case 20: {
                         message.LogMessage = $root.rov_actions_proto.LogMessageResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 21: {
+                        message.LivekitVideoStats = $root.rov_actions_proto.LivekitVideoStatsResponse.decode(reader, reader.uint32());
+                        break;
+                    }
+                case 22: {
+                        message.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -10059,14 +11798,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "PasswordInvalid." + error;
                 }
             }
-            if (message.DriverChanged != null && message.hasOwnProperty("DriverChanged")) {
+            if (message.PilotChanged != null && message.hasOwnProperty("PilotChanged")) {
                 if (properties.Body === 1)
                     return "Body: multiple values";
                 properties.Body = 1;
                 {
-                    let error = $root.rov_actions_proto.DriverChangedResponse.verify(message.DriverChanged);
+                    let error = $root.rov_actions_proto.PilotChangedResponse.verify(message.PilotChanged);
                     if (error)
-                        return "DriverChanged." + error;
+                        return "PilotChanged." + error;
                 }
             }
             if (message.ClientConnected != null && message.hasOwnProperty("ClientConnected")) {
@@ -10139,6 +11878,26 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                         return "LogMessage." + error;
                 }
             }
+            if (message.LivekitVideoStats != null && message.hasOwnProperty("LivekitVideoStats")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.LivekitVideoStatsResponse.verify(message.LivekitVideoStats);
+                    if (error)
+                        return "LivekitVideoStats." + error;
+                }
+            }
+            if (message.SimplepeerVideoStats != null && message.hasOwnProperty("SimplepeerVideoStats")) {
+                if (properties.Body === 1)
+                    return "Body: multiple values";
+                properties.Body = 1;
+                {
+                    let error = $root.rov_actions_proto.SimplepeerVideoStatsResponse.verify(message.SimplepeerVideoStats);
+                    if (error)
+                        return "SimplepeerVideoStats." + error;
+                }
+            }
             return null;
         };
 
@@ -10201,10 +11960,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                     throw TypeError(".rov_actions_proto.RovResponse.PasswordInvalid: object expected");
                 message.PasswordInvalid = $root.rov_actions_proto.PasswordInvalidResponse.fromObject(object.PasswordInvalid);
             }
-            if (object.DriverChanged != null) {
-                if (typeof object.DriverChanged !== "object")
-                    throw TypeError(".rov_actions_proto.RovResponse.DriverChanged: object expected");
-                message.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.fromObject(object.DriverChanged);
+            if (object.PilotChanged != null) {
+                if (typeof object.PilotChanged !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.PilotChanged: object expected");
+                message.PilotChanged = $root.rov_actions_proto.PilotChangedResponse.fromObject(object.PilotChanged);
             }
             if (object.ClientConnected != null) {
                 if (typeof object.ClientConnected !== "object")
@@ -10240,6 +11999,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (typeof object.LogMessage !== "object")
                     throw TypeError(".rov_actions_proto.RovResponse.LogMessage: object expected");
                 message.LogMessage = $root.rov_actions_proto.LogMessageResponse.fromObject(object.LogMessage);
+            }
+            if (object.LivekitVideoStats != null) {
+                if (typeof object.LivekitVideoStats !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.LivekitVideoStats: object expected");
+                message.LivekitVideoStats = $root.rov_actions_proto.LivekitVideoStatsResponse.fromObject(object.LivekitVideoStats);
+            }
+            if (object.SimplepeerVideoStats != null) {
+                if (typeof object.SimplepeerVideoStats !== "object")
+                    throw TypeError(".rov_actions_proto.RovResponse.SimplepeerVideoStats: object expected");
+                message.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.fromObject(object.SimplepeerVideoStats);
             }
             return message;
         };
@@ -10305,10 +12074,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 if (options.oneofs)
                     object.Body = "PasswordInvalid";
             }
-            if (message.DriverChanged != null && message.hasOwnProperty("DriverChanged")) {
-                object.DriverChanged = $root.rov_actions_proto.DriverChangedResponse.toObject(message.DriverChanged, options);
+            if (message.PilotChanged != null && message.hasOwnProperty("PilotChanged")) {
+                object.PilotChanged = $root.rov_actions_proto.PilotChangedResponse.toObject(message.PilotChanged, options);
                 if (options.oneofs)
-                    object.Body = "DriverChanged";
+                    object.Body = "PilotChanged";
             }
             if (message.ClientConnected != null && message.hasOwnProperty("ClientConnected")) {
                 object.ClientConnected = $root.rov_actions_proto.ClientConnectedResponse.toObject(message.ClientConnected, options);
@@ -10344,6 +12113,16 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 object.LogMessage = $root.rov_actions_proto.LogMessageResponse.toObject(message.LogMessage, options);
                 if (options.oneofs)
                     object.Body = "LogMessage";
+            }
+            if (message.LivekitVideoStats != null && message.hasOwnProperty("LivekitVideoStats")) {
+                object.LivekitVideoStats = $root.rov_actions_proto.LivekitVideoStatsResponse.toObject(message.LivekitVideoStats, options);
+                if (options.oneofs)
+                    object.Body = "LivekitVideoStats";
+            }
+            if (message.SimplepeerVideoStats != null && message.hasOwnProperty("SimplepeerVideoStats")) {
+                object.SimplepeerVideoStats = $root.rov_actions_proto.SimplepeerVideoStatsResponse.toObject(message.SimplepeerVideoStats, options);
+                if (options.oneofs)
+                    object.Body = "SimplepeerVideoStats";
             }
             return object;
         };

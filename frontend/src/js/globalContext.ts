@@ -59,6 +59,7 @@ export const attemptingNewRovPeerId: nStoreT<boolean> = nStore(false);
 export const isRovDriver: nStoreT<boolean> = nStore(false);
 export const ourPeerId: nStoreT<string> = nStore("No Peer Id");
 export const currentVideoSource: nStoreT<VideoSource> = nStore(VideoSource.None);
+export const takenLivekitUsernameIds: nStoreT<Set<string>> = nStore(new Set());
 
 export const rovDrivingVector: nStoreT<RovMovementVector> = nStore({
     VelocityX: 0,

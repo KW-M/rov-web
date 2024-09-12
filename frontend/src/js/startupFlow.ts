@@ -12,7 +12,7 @@ export class FrontendStartupFlowClass {
     }
 
     async onConnectedActions() {
-        await frontendConnMngr.startSimplePeerConnection()
+        await frontendConnMngr.startSimplepeerConnection()
     }
 
     async checkIfInIframe() {

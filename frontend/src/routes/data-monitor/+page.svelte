@@ -3,7 +3,7 @@
   import CircleStatIndicator from "../../components/CircleStatIndicator.svelte";
   import CompassDial from "../../components/CompassDial.svelte";
   import YawRollViz from "../../components/YawRollViz.svelte";
-  import { autopilotLoad, batteryCurrent, batteryVoltage, cpuTempC, cpuUsagePercent, diskUsagePercent, memUsagePercent } from "../../js/vehicleStats";
+  import { autopilotLoad, batteryPercent, batteryCurrent, batteryVoltage, cpuTempC, cpuUsagePercent, diskUsagePercent, memUsagePercent } from "../../js/vehicleStats";
   import { depthM, networkLatencyMs, waterTempC } from "../../js/sensors";
   import Topbar from "../../components/Topbar.svelte";
   import { AppShell } from "@skeletonlabs/skeleton";
@@ -23,6 +23,7 @@
 
   <h3 class="h3 mt-8 mb-2">Rov</h3>
   <div class="flex flex-row lex-wrap gap-2 w-full">
+    <CircleStatIndicator value={$batteryPercent} min={0} max={100} unit="%" name="Battery" />
     <CircleStatIndicator value={$batteryVoltage} min={11.0} max={17.6} unit="Volts" name="Batt Volts" />
     <CircleStatIndicator value={$batteryCurrent} min={0} max={60} unit="Amps" name="Batt Amps" />
     <CircleStatIndicator value={$networkLatencyMs} min={20} max={600} unit="ms" name="Net Latency" />

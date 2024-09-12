@@ -24,21 +24,13 @@ enum SensorMeasurmentTypes {
     internal_temp_celsius = 11; // from the compass/imu
 }
 
-// Storez a single sensor measurement/value
-message Measurement {
-    // The sensor type (see RovSensorTypes)
-    SensorMeasurmentTypes MeasurementType = 1;
-    // The sensor value
-    float Value = 2;
-}
-
 enum DataTransportMethod {
     // Livekit reliable messages are sent / received through the livekit server via TCP.
     LivekitReliable = 0;
     // Livekit unreliable messages are sent / received through the livekit server via UDP (messages may get lost in transit).
     LivekitUnreliable = 1;
-    // // [[[ Unlikely to get used ]]] Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
-    // DirectReliable = 2;
+    // !!DO NOT USE - NOT IMPLEMENTED!! Direct reliable messages are sent/recived over the simplepeer webrtc connection via TCP
+    DirectReliable = 2;
     // Direct unreliable messages are sent/recived over the simplepeer webrtc connection via UDP (messages may get lost in transit)
     DirectUnreliable = 3;
 }
@@ -53,6 +45,52 @@ enum InternalWebpageEvent {
     UserConnected = 3;
     // A livekit user has disconnected from the rov
     UserDisconnected = 4;
+}
+
+enum VideoCodec {
+    // H264 is a widely supported codec that is hardware accelerated on most devices. Has the lowest quality per bitrate
+    H264 = 0;
+    // VP8 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Has better quality per bitrate than H264
+    VP8 = 1;
+    // VP9 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Uses scalable encoding and very high quality per bitrate
+    VP9 = 2;
+    // AV1 is a codec that is supported by FEW browsers and is not hardware accelerated on most devices. Uses scalable encoding and highest quality per bitrate
+    AV1 = 3;
+}
+
+message VideoStreamOptions {
+    // Desired height of the base video stream in pixels
+    uint32 Height = 1;
+    // not used yet as the video stream width is always set by it's intrinsic aspect ratio
+    uint32 Width = 2;
+    // Desired frames per second of the video stream
+    uint32 Fps = 3;
+    // Desired max average bitrate of the video stream in bits per second
+    uint32 MaxBitrate = 4;
+}
+
+message SetLivekitVideoOptionsAction {
+    // Enable / disable publishing of the livekit video stream(s)
+    bool Enabled = 1;
+    // The codec to use for the video stream
+    VideoCodec Codec = 2;
+    // allow livekit to publish a second video stream if needed with a more widely supported codec like H264 or VP8
+    bool AllowBackupCodec = 3;
+    // The base options for the livekit video stream
+    VideoStreamOptions BaseStream = 4;
+    // additonal layers to add to the livekit video stream for simulcast (leave empty for no simulcast)
+    repeated VideoStreamOptions SimulcastLayers = 5;
+}
+
+message SetSimplepeerVideoOptionsAction {
+    // Enable / disable publishing of the simplepeer video stream(s)
+    bool Enabled = 1;
+    // Desired bitrate of the video stream in bits per second
+    uint32 Bitrate = 2;
+    // The codec to use for the video stream
+    VideoCodec Codec = 3;
+    // The base options for the livekit video stream
+    VideoStreamOptions BaseStream = 4;
 }
 
 message PingAction {
@@ -83,10 +121,6 @@ message MoveAction {
     int32 ButtonBitmask = 5; // optional
 }
 
-message BeginVideoStreamAction {
-    // No data needed
-}
-
 message TakePhotoAction {
     // No data needed
 }
@@ -99,7 +133,7 @@ message StopVideoRecAction {
     // No data needed
 }
 
-message ToogleLightsAction {
+message ToggleLightsAction {
     // No data needed
 }
 
@@ -127,7 +161,7 @@ message RestartRovServicesAction {
     // No data needed
 }
 
-message RovLogsAction {
+message SendRovLogsAction {
     // No data needed
 }
 
@@ -135,8 +169,9 @@ message RefreshAllSensorsAction {
     // No data needed
 }
 
-message MavlinkAction {
-    bytes Message = 1;
+message MoveClawAction {
+    // The amount to move the claw by (-1 to +1)
+    float Value = 1;
 }
 
 message SimplepeerSignalAction {
@@ -149,6 +184,10 @@ message DisarmAction {
 
 message SetAutopilotModeAction {
     int32 mode = 1;
+}
+
+message SetLivestreamingEnabledAction {
+    bool Enabled = 1;
 }
 
 message ActionBackendMetadata {
@@ -178,8 +217,6 @@ message RovAction {
         TakeControlAction TakeControl = 6;
         // move
         MoveAction Move = 7;
-        // begin_video_stream
-        BeginVideoStreamAction BeginVideoStream = 8;
         // take_photo
         TakePhotoAction TakePhoto = 9;
         // start_video_rec
@@ -187,7 +224,7 @@ message RovAction {
         // stop_video_rec
         StopVideoRecAction StopVideoRec = 11;
         // toogle_lights
-        ToogleLightsAction ToogleLights = 12;
+        ToggleLightsAction ToggleLights = 12;
         // shutdown_rov
         ShutdownRovAction ShutdownRov = 13;
         // reboot_rov
@@ -200,22 +237,28 @@ message RovAction {
         RovStatusReportAction RovStatusReport = 17;
         // restart_rov_services
         RestartRovServicesAction RestartRovServices = 18;
-        // rov_logs
-        RovLogsAction RovLogs = 19;
+        // send_rov_logs
+        SendRovLogsAction SendRovLogs = 19;
         // refresh_all_sensors
         RefreshAllSensorsAction RefreshAllSensors = 20;
-        // mavlink
-        MavlinkAction Mavlink = 21;
+        // claw_move
+        MoveClawAction MoveClaw = 21;
         // simplepeer_signal
         SimplepeerSignalAction SimplepeerSignal = 22;
         // disarm
         DisarmAction Disarm = 23;
         // set_autopilot_mode
         SetAutopilotModeAction SetAutopilotMode = 24;
+        // set_livekit_video_options
+        SetLivekitVideoOptionsAction SetLivekitVideoOptions = 25;
+        // set_simplepeer_video_options
+        SetSimplepeerVideoOptionsAction SetSimplepeerVideoOptions = 26;
+        // set_livestreaming_enabled
+        SetLivestreamingEnabledAction SetLivestreamingEnabled = 27;
     }
 }
 
-// sent to a specific client when an action is received by the rov and completes successfully.
+// sent to a specific client when an action is received by the rov and COMPLETES successfully.
 message DoneResponse {
     // An optional informational status message to send back
     string Message = 1; // optional
@@ -231,6 +274,14 @@ message ErrorResponse {
 message PongResponse {
     // The time the ping was sent
     int64 Time = 1;
+}
+
+// Stores a single sensor measurement/value
+message Measurement {
+    // The sensor type (see RovSensorTypes)
+    SensorMeasurmentTypes MeasurementType = 1;
+    // The sensor value
+    float Value = 2;
 }
 
 // sent to all clients whenever a sensor measurement changes or after a refresh_all_sensors action is sent.
@@ -258,9 +309,9 @@ message PasswordInvalidResponse {
 }
 
 // sent to all clients (including the new driver) whenever the designated driver client changes.
-message DriverChangedResponse {
-    // The new driver's peer id
-    string DriverPeerId = 1;
+message PilotChangedResponse {
+    // The new driver's livekit user identity
+    string PilotIdentity = 1;
 }
 
 // sent to all clients (including the new client) whenever a new client connects to the rov.
@@ -316,6 +367,27 @@ message LogMessageResponse {
     LogLevel Level = 2;
 }
 
+message LivekitVideoStatsResponse {
+    bool Enabled = 1;
+    // The base codec used for the livekit video stream
+    VideoCodec Codec = 2;
+    // if livekit is allowed to publish a second video stream if needed with a more widely supported codec like H264 or VP8
+    bool AllowBackupCodec = 3;
+    // The base options used for the livekit video stream and capture device
+    VideoStreamOptions BaseStream = 4;
+    // additonal layers added to the livekit video stream for simulcast (empty = no simulcast)
+    repeated VideoStreamOptions SimulcastLayers = 5;
+    // The stats of the livekit video sender rtp stream
+    string RtcSenderStatsJson = 6;
+}
+
+message SimplepeerVideoStatsResponse {
+    bool Enabled = 1;
+    VideoCodec Codec = 2;
+    VideoStreamOptions BaseStream = 3;
+    string RtcSenderStatsJson = 4;
+}
+
 message ResponseBackendMetadata {
     // The identiies of the livekit user/clients to sent this response to.
     // !!!! If empty, the message will be sent to ALL clients.
@@ -349,8 +421,8 @@ message RovResponse {
         PasswordAcceptedResponse PasswordAccepted = 9;
         // password_invalid (sent when a password or token challenge action has an incorrect password or token)
         PasswordInvalidResponse PasswordInvalid = 10;
-        // driver_changed
-        DriverChangedResponse DriverChanged = 13;
+        // driver_changed (sent when the designated pilot
+        PilotChangedResponse PilotChanged = 13;
         // client_connected
         ClientConnectedResponse ClientConnected = 14;
         // client_disconnected
@@ -365,5 +437,7 @@ message RovResponse {
         SystemMonitorResponse SystemMonitor = 19;
         // log_message
         LogMessageResponse LogMessage = 20;
+        LivekitVideoStatsResponse LivekitVideoStats = 21;
+        SimplepeerVideoStatsResponse SimplepeerVideoStats = 22;
     }
 }

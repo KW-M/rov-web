@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getColors } from "../js/colorsVariety";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
+  import { renderNumber } from "../js/util";
 
   export let value = 2.02302;
   export let min = 0;
@@ -12,14 +13,6 @@
   $: nameParts = name.split(" ");
   $: safeValue = (!value && value !== 0) || Number.isNaN(value) ? 0 : value;
   $: percent = Math.max(Math.round(((safeValue - min) / (max - min)) * 100), 0);
-
-  const renderNumber = (value: number) => {
-    if (Number.isNaN(value)) return "∞";
-    if (value == Infinity) return "∞";
-    if (value == -Infinity) return "-∞";
-    if (value < 9999) return String(value).substring(0, 4);
-    else return value.toExponential(0);
-  };
 </script>
 
 <div class={"border-2 shadow-md rounded-md p-4 w-36 flex-none " + varietyColor.bg + " " + varietyColor.border}>

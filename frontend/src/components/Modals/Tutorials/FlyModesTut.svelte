@@ -9,7 +9,7 @@
   import { closeModal, openControlTutModal } from "../modals";
   import { FlightMode } from "../../../js/shared/mavlink2RestMessages";
 
-  export let parent: HTMLElement;
+  // export let parent: HTMLElement;
   let flyMode = FlightMode.manual;
   let closeBtn;
   onMount(() => {

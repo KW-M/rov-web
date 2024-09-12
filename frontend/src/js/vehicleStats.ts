@@ -1,5 +1,5 @@
 import nStore from "./shared/libraries/nStore";
-import { FlightMode, FlightmodeNameMap } from "./shared/mavlink2RestMessages";
+import { FlightMode } from "./shared/mavlink2RestMessages";
 import { MavState } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 
@@ -41,12 +41,13 @@ export function updateLatencyDisplay(latencyMs: number) {
 }
 
 export function updateAutopilotFlightModeDisplay(mode: FlightMode) {
-    if (mode in FlightmodeNameMap) {
-        autopilotMode.set(mode);
-    } else {
-        showToastMessage("ROV is in unknown flight mode: " + String(mode), 4000, true, ToastSeverity.warning);
-        autopilotMode.set(FlightMode.unknown)
-    }
+
+    autopilotMode.set(mode);
+    // if (mode in FlightmodeNameMap) {
+    // } else {
+    //     showToastMessage("ROV is in unknown flight mode: " + String(mode), 4000, true, ToastSeverity.warning);
+    //     autopilotMode.set(FlightMode.unknown)
+    // }
 }
 
 export function updateAutopilotStatusDisplay(status: MavState) {

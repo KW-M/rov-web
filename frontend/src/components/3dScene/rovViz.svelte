@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import environmentTexture from "./af888358-6071-48e8-95d0-2337b456cd68.jpg";
+  import environmentTexture from "./environment.jpg";
   import tinyRovModel from "./Tiny_ROV_Color.glb?url";
 
   // Import Three.js dependencies
@@ -8,7 +8,7 @@
   import { PerspectiveCamera } from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
   import { rovDrivingVector } from "../../js/globalContext";
-  import { Vector3 } from "../../js/shared/libraries/ThreeJS/Vector3";
+  import { Vector3 } from "three";
   import { showToastMessage, ToastSeverity } from "../../js/toastMessageManager";
   const modelLoader = new GLTFLoader();
 
@@ -112,7 +112,7 @@
 
   onMount(() => {
     // Create a renderer
-    renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true });
+    renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: true });
     renderer.setSize(canvasSize, canvasSize);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -127,7 +127,7 @@
       75,
       1 / 1, // window.innerWidth / window.innerHeight,
       0.1,
-      1000,
+      1000
     );
     camera.position.z = 5;
 
@@ -222,7 +222,7 @@
       (error) => {
         showToastMessage("Error loading ROV model", 1000, false, ToastSeverity.error);
         console.error("Error loading ROV model", error);
-      },
+      }
     );
 
     // Cleanup event listeners on component unmount
