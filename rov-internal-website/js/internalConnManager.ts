@@ -178,12 +178,19 @@ class InternalConnectionManager {
         return spConn;
     }
 
+    public setPreviewVideoElement(stream: MediaStream) {
+        const videoElement = document.getElementById("preview_video") as HTMLVideoElement;
+        if (videoElement) videoElement.srcObject = stream;
+    }
+
     public async startSimplePeerConnection(userId: string) {
         // Get a separate video stream for simplePeer
         if (!this._simplePeerCameraStream) {
             this._simplePeerCameraStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)(this.simplePeerCameraOptions.get())
+
         }
 
+        this.setPreviewVideoElement(this._simplePeerCameraStream);
         const spConn = this._simplePeerConnections.get(userId);
         if (!spConn) throw new Error("SimplePeer Connection not created for user: " + userId);
 
@@ -211,6 +218,7 @@ class InternalConnectionManager {
             const newCameraStream = await navigator.mediaDevices.getUserMedia(this.simplePeerCameraOptions.get());
             const oldStream = this._simplePeerCameraStream;
             this._simplePeerCameraStream = newCameraStream;
+            this.setPreviewVideoElement(this._simplePeerCameraStream);
             let spConn = this._simplePeerConnections.get(userId)
             if (!spConn) {
                 spConn = this.createSimplePeer(userId);

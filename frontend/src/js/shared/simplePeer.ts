@@ -36,8 +36,7 @@ type SignalData = SimplePeerT.SignalData & {
     msgNum: number,
 }
 
-let globalConnId = 0;
-
+let startCount = 0;
 export class SimplePeerConnection {
 
     // timestamp in ms which is updated whenever a message is recived from another participant.
@@ -94,8 +93,8 @@ export class SimplePeerConnection {
         if (this._p) this.stop();
         this._shouldReconnect = autoReconnect;
         this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
-        logWarn("SP starting with opts: ", this._spConfig)
-        if (this._spConfig.initiator) this._connectionId = globalConnId++ + Math.random();
+        logWarn("SP starting with opts: ", this._spConfig, startCount++)
+        if (this._spConfig.initiator) this._connectionId = Date.now();
         this._signalMsgRecivedCounter = 0;
         this._signalMsgSendCounter = 0;
         this._p = new SimplePeer(this._spConfig) as any as SimplePeerT.Instance;
@@ -116,7 +115,7 @@ export class SimplePeerConnection {
 
         this._p.on('signal', (signalData: Object) => {
             if (this._connectionId === -1) {
-                logError("SP sending signal message when connectionId is -1, this should not happen!")
+                alert("SP sending signal message when connectionId is -1, this should not happen!")
                 return;
             }
 
@@ -214,14 +213,14 @@ export class SimplePeerConnection {
         this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
         clearInterval(this._StatsGatherInterval);
-        logDebug("SP Stop", this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
+        logDebug("SP Stop", this._connectionId, this._p?.destroyed, this._p?.destroying)
         if (this._p) this._p.destroy();
         this._p = null;
     }
 
     async restart(connectionId?: number, signalingMsg?: string) {
         // TODO implement exponential backoff
-        logDebug("SP Restart", this._reconnectAttemptCount, connectionId, this._connectionId, globalConnId, this._p?.destroyed, this._p?.destroying)
+        logDebug("SP Restart", this._reconnectAttemptCount, connectionId, this._connectionId, this._p?.destroyed, this._p?.destroying)
         this._reconnectAttemptCount++;
         this.stop();
         this._connectionId = connectionId || -1;
@@ -322,9 +321,15 @@ export class SimplePeerConnection {
         for (const transceiver of transceivers) {
             if (!transceiver.receiver) continue;
             const receiver = transceiver.receiver as RTCRtpReceiver & { playoutDelayHint?: number, jitterBufferTarget?: number };
-            console.log(receiver)
-            if (receiver.playoutDelayHint !== undefined && receiver.playoutDelayHint !== delay) receiver.playoutDelayHint = delay;
-            if (receiver.jitterBufferTarget !== undefined && receiver.jitterBufferTarget !== delay) receiver.jitterBufferTarget = delay * 1000;
+            if (receiver.playoutDelayHint !== undefined) {
+                if (receiver.playoutDelayHint !== delay) {
+                    logDebug("SP: Setting playoutDelayHint to " + delay); receiver.playoutDelayHint = delay;
+                }
+            } else if (receiver.jitterBufferTarget !== undefined) {
+                if (receiver.jitterBufferTarget !== delay) {
+                    logDebug("SP: Setting jitterBufferTarget to " + delay); receiver.jitterBufferTarget = delay * 1000;
+                }
+            }
         }
 
     }
@@ -345,17 +350,16 @@ export class SimplePeerConnection {
             const signal = JSON.parse(signalMsg) as SignalData;
             if (signal.msgNum === undefined || signal.connId === undefined) {
                 return logWarn("SP: Ignoring Invalid Signal Message (no connId or msgNum)!", signal);
-            } else if (signal.connId != this._connectionId) {
-                logWarn("SP: Found Different connid, fastforwarding!", signal.connId, this._connectionId);
+            } else if (signal.connId > this._connectionId) {
+                logWarn("SP: Found Newer connid, fastforwarding!", signal.connId, this._connectionId);
                 this._consecutiveSignalMsgsProcessed = 0;
                 this._connectionId = signal.connId;
                 this._incomingSignalQueue = [];
                 if (this._spConfig && !this._initiator) return this.restart(signal.connId, signalMsg);
+            } else if (signal.connId < this._connectionId) {
+                logWarn("SP: Ignoring Signal Message For Old connid (connId mismatch)!", signal.connId, this._connectionId);
+                return;
             }
-            // else if (signal.connId < this._connectionId) {
-            //     logWarn("SP: Ignoring Signal Message For Old connid (connId mismatch)!", signal.connId, this._connectionId);
-            //     return;
-            // }
             logInfo("SP: signal queued", signal, signal.msgNum, this._consecutiveSignalMsgsProcessed, signal.connId, this._connectionId)
             this._incomingSignalQueue.push(signal);
         } catch (err) {

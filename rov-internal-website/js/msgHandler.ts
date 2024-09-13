@@ -188,7 +188,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
             } as VideoPreset
         }) : pubDefaults?.videoSimulcastLayers;
 
-        const codec = opts.Codec ? rov_actions_proto.VideoCodec[opts.Codec].toLowerCase() : pubDefaults?.videoCodec;
+        const codec = (opts.Codec !== null && opts.Codec !== undefined) ? rov_actions_proto.VideoCodec[opts.Codec].toLowerCase() : pubDefaults?.videoCodec;
         const pubOpts: TrackPublishOptions = {
             ...pubDefaults,
             videoCodec: codec as TrackPublishOptions['videoCodec'],

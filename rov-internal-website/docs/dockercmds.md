@@ -3,16 +3,19 @@
 cd ~/rov-web; rm dockerfile || true; nano dockerfile
 
 # Build the docker image:
-cd ~/rov-web; docker build . -t kywm/rov-web:latest --cache-from kywm/rov-web:latest
+cd ~/rov-web; docker build . -t kywm/rov-web:main --cache-from kywm/rov-web:latest
 
 # Run the docker image to test:
-docker run -it --rm --name kywm/rov-web:latest --cgroup-parent=docker.slice --cgroupns host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup --privileged --network host rov-web-container
+docker run -it --rm --name kywm/rov-web:main --cgroup-parent=docker.slice --cgroupns host --tmpfs /tmp --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup --privileged --network host rov-web-container
 
 # Open a bash shell in the running container to use command prompt:
-docker exec -it kywm/rov-web:latest bash # type exit to exit the shell
+docker exec -it kywm/rov-web:main bash # type exit to exit the shell
+# or via the extension name:
+docker exec -it extension-kywmrovwebmain bash # type exit to exit the shell
+
 
 # Push the image to docker hub:
-docker push kywm/rov-web:latest
+docker push kywm/rov-web:main
 
 # Cleanup leftovers:
 # !!! make sure the BlueOS core & Bootstrap (especially) & any extension containers ARE RUNNING before doing this command (otherwise you will need to install them again) !!!:

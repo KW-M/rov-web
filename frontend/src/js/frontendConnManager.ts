@@ -77,7 +77,7 @@ export class FrontendConnectionManager {
     async onConnectedActions() {
         // await this.startSimplePeerConnection();
         showToastMessage(`Connected to ROV ${this.livekitConnection._roomConn.name}!`, 2000, false, ToastSeverity.success)
-        this.startSimplePeerConnection();
+        // this.startSimplePeerConnection();
     }
 
 

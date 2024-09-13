@@ -166,12 +166,12 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handleLivekitVideoStatsMsgRecived(msgData: rov_actions_proto.ILivekitVideoStatsResponse, ExchangeId: number) {
-        logDebug("LivekitVideoStats: ", msgData);
+        // logDebug("LivekitVideoStats: ", msgData);
         onLivekitVideoOptionsChange(msgData);
     };
 
     handleSimplePeerVideoStatsMsgRecived(msgData: rov_actions_proto.ISimplePeerVideoStatsResponse, ExchangeId: number) {
-        logDebug("SimplePeerVideoStats: ", msgData);
+        // logDebug("SimplePeerVideoStats: ", msgData);
         onSimplePeerVideoOptionsChange(msgData);
     }
 

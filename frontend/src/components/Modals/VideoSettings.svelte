@@ -2,32 +2,32 @@
   import nStore from "../../js/shared/libraries/nStore";
 
   export const onLivekitVideoOptionsChange = (options: rov_actions_proto.ILivekitVideoStatsResponse) => {
-    if (lastChangeTimestamp + 1000 > Date.now()) return;
-    useLivekit.set(options.Enabled);
-    if (options.Enabled) {
-      allowBkupCodec.set(options.AllowBackupCodec);
-      maxBitrate.set(options.BaseStream.MaxBitrate);
-      keepFullResLayer.set(options.SimulcastLayers?.length > 0);
-      if (!useSimplePeer.get()) {
-        size.set(options.BaseStream.Height);
-        codec.set(rov_actions_proto.VideoCodec[options.Codec].toLowerCase());
-      }
-    }
+    // if (lastChangeTimestamp + 1000 > Date.now()) return;
+    // useLivekit.set(options.Enabled);
+    // if (options.Enabled) {
+    //   allowBkupCodec.set(options.AllowBackupCodec);
+    //   maxBitrate.set(options.BaseStream.MaxBitrate);
+    //   keepFullResLayer.set(options.SimulcastLayers?.length > 0);
+    //   if (!useSimplePeer.get()) {
+    //     size.set(options.BaseStream.Height);
+    //     codec.set(rov_actions_proto.VideoCodec[options.Codec].toLowerCase());
+    //   }
+    // }
     lkSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
   };
 
   export const onSimplePeerVideoOptionsChange = (options: rov_actions_proto.ISimplePeerVideoStatsResponse) => {
-    if (lastChangeTimestamp + 1000 > Date.now()) return;
-    const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
-    const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled && frontendConnMngr.simplePeerConnection.connectionState.get() === ConnectionStates.connected;
-    const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
-    const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toUpperCase()) : [];
-    console.log(rov_actions_proto.VideoCodec[preferedCodecs[0]]);
-    useSimplePeer.set(enabled);
-    if (enabled) {
-      size.set(options.BaseStream.Height);
-      codec.set(preferedCodecs && preferedCodecs.length > 0 ? rov_actions_proto.VideoCodec[preferedCodecs[0]] : "unknown");
-    }
+    // if (lastChangeTimestamp + 1000 > Date.now()) return;
+    // const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
+    // const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled;
+    // const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
+    // const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toUpperCase()) : [];
+    // console.log(rov_actions_proto.VideoCodec[preferedCodecs[0]]);
+    // useSimplePeer.set(enabled);
+    // if (enabled) {
+    //   size.set(options.BaseStream.Height);
+    //   codec.set(preferedCodecs && preferedCodecs.length > 0 ? rov_actions_proto.VideoCodec[preferedCodecs[0]] : "unknown");
+    // }
     spSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
   };
 
@@ -170,14 +170,14 @@
 
   const onUseSimplePeerChange = (value?: boolean) => {
     if (value !== undefined) useSimplePeer.set(value);
-    if (useSimplePeer.get()) {
-      onUseLivekitChange(false);
-      onUseTwitchChange(false);
-      onPlayoutDelayChange();
-    } else {
-      onUseLivekitChange(true);
-    }
-    sendSimplePeerChange(true);
+    // if (useSimplePeer.get()) {
+    //   onUseLivekitChange(false);
+    //   onUseTwitchChange(false);
+    //   onPlayoutDelayChange();
+    // } else {
+    //   onUseLivekitChange(true);
+    // }
+    // sendSimplePeerChange(true);
     if (useSimplePeer.get()) frontendConnMngr.startSimplePeerConnection();
     else if (frontendConnMngr.simplePeerConnection) frontendConnMngr.simplePeerConnection.stop();
   };
