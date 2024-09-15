@@ -7,6 +7,7 @@ import { waitfor } from "./shared/util";
 import { getPublisherAccessToken } from "./shared/livekit/livekitTokens";
 import { LivekitRoomAdmin } from "./shared/livekit/adminActions";
 import { URL_PARAMS } from "./constsInternal";
+import { RtpSenderStatsParser } from "./shared/videoStatsParser";
 
 export class LivekitPublisherConnection extends LivekitBaseConnection {
     _livekitApiKey: string;
@@ -15,8 +16,8 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
 
     // the current camera video track being published
     camTrack: LocalTrackPublication | undefined;
-    // subscribe to get updates on the state of the video channel webrtc connection.
-    videoStats = nStore<(VideoSenderStats | any)[]>([]);
+    // video stats
+    videoStatsParser = new RtpSenderStatsParser()
     // interval id for checking video stats loop
     _videoStatsIntervalId: NodeJS.Timeout | null;
 
@@ -140,23 +141,30 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
     }
 
     async getVideoStats() {
-        if (!this.camTrack || !this.camTrack.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
-        const videoTrack = (this.camTrack.videoTrack as LocalVideoTrack);
-        let statsArray = [{
-            bitrate: videoTrack.currentBitrate,
-            streamState: videoTrack.streamState,
-            simulcasted: this.camTrack.simulcasted,
-            codec: videoTrack.codec,
-            dimensions: this.camTrack.dimensions,
-        }, this.camTrack?.trackInfo?.toJson()] as any[];
-        const senderStats = await this.camTrack.videoTrack.getSenderStats();
-        if (senderStats) statsArray = statsArray.concat(senderStats);
-        const RTCStats = await this.camTrack.videoTrack.getRTCStatsReport();
-        if (RTCStats) for (const stat of RTCStats.values()) {
-            statsArray.push(stat);
+        // if (!this.camTrack || !this.camTrack.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
+        // const videoTrack = (this.camTrack.videoTrack as LocalVideoTrack);
+        // let statsArray = [{
+        //     bitrate: videoTrack.currentBitrate,
+        //     streamState: videoTrack.streamState,
+        //     simulcasted: this.camTrack.simulcasted,
+        //     codec: videoTrack.codec,
+        //     dimensions: this.camTrack.dimensions,
+        // }, this.camTrack?.trackInfo?.toJson()] as any[];
+        // const senderStats = await this.camTrack.videoTrack.getSenderStats();
+        // if (senderStats) statsArray = statsArray.concat(senderStats);
+        // const RTCStats = await this.camTrack.videoTrack.getRTCStatsReport();
+        // if (RTCStats) for (const stat of RTCStats.values()) {
+        //     statsArray.push(stat);
+        // }
+        // this.videoStats.set(statsArray);
+        // return statsArray;
+        for (const stream of this._roomConn.localParticipant.videoTrackPublications.values()) {
+            if (!stream || !stream.videoTrack) continue;
+            const report = await stream.videoTrack.getRTCStatsReport()
+            if (!report) continue;
+            const stats = this.videoStatsParser.parse(report);
+            if (stats) return stats;
         }
-        this.videoStats.set(statsArray);
-        return statsArray;
     }
 
     getParticipantIds() {

@@ -17,7 +17,7 @@ export const initPage = () => {
     });
 
     window.onbeforeunload = () => {
-        frontendConnMngr.disconnect();
+        frontendConnMngr.close();
     }
 
     // start app:

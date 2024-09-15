@@ -3,7 +3,7 @@
   import { popup } from "./Popup/popup";
   import { fullscreenOpen } from "../js/globalContext";
   import { Person, Flight_takeoff, Navigation, Video_camera_front, Data_exploration, Logo_dev, Help, Info, Fullscreen, Fullscreen_exit, Network_check, Network_ping, Network_cell, Wifi_channel, Wifi_find, Battery_1_bar, Battery_unknown, Battery_2_bar, Battery_3_bar, Battery_4_bar, Battery_5_bar, Battery_6_bar, Battery_full, Battery_0_bar, Currency_bitcoin, Electric_bolt, Electric_meter } from "svelte-google-materialdesign-icons";
-  import { renderNumber, toggleFullscreen } from "../js/util";
+  import { displayNum, toggleFullscreen } from "../js/util";
   import LogTimeline from "./Modals/LogTimeline.svelte";
   import DropdownMenuPopup from "./DropdownMenuPopup.svelte";
   import { goto, onNavigate } from "$app/navigation";
@@ -74,7 +74,7 @@
         <Battery_full class="-rotate-90" tabindex="-1" variation="round" />
       {/if}
       <span class="hidden lg:inline font-bold">
-        {renderNumber($batteryPercent)}%
+        {displayNum($batteryPercent)}%
       </span>
     </div>
 
@@ -84,19 +84,19 @@
         <div>
           <Battery_full class="text-2xl inline-block" tabindex="-1" variation="round" />
           <span>
-            {renderNumber($batteryPercent)}% full
+            {displayNum($batteryPercent)}% full
           </span>
         </div>
         <div>
           <Electric_bolt class="text-2xl inline-block" tabindex="-1" variation="round" />
           <span>
-            {renderNumber($batteryVoltage)} volts
+            {displayNum($batteryVoltage)} volts
           </span>
         </div>
         <div>
           <Electric_meter class="text-2xl inline-block" tabindex="-1" variation="round" />
           <span>
-            {renderNumber($batteryCurrent)} amps
+            {displayNum($batteryCurrent)} amps
           </span>
         </div>
 

@@ -38,9 +38,9 @@ internalConnManager.start({
     LivekitLocalURL: URL_PARAMS.LIVEKIT_LOCAL_ENDPOINT,
 }).then(() => {
     const statsDiv = document.getElementById("video_stats")
-    internalConnManager.subscribeToVideoStats((stats) => {
-        if (statsDiv) statsDiv.innerText = JSON.stringify(stats, null, 2)
-    })
+    // internalConnManager.subscribeToVideoStats((stats) => {
+    //     if (statsDiv) statsDiv.innerText = JSON.stringify(stats, null, 2)
+    // })
 })
 
 // Initialize Twitch Stream

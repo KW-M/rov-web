@@ -89,10 +89,10 @@ export class SimplePeerConnection {
         })
     }
 
-    start(simplePeerOpts: any, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+    start(simplePeerOpts: SimplePeerT.Options, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
         if (this._p) this.stop();
         this._shouldReconnect = autoReconnect;
-        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config);
+        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config) as SimplePeerT.Options;
         logWarn("SP starting with opts: ", this._spConfig, startCount++)
         if (this._spConfig.initiator) this._connectionId = Date.now();
         this._signalMsgRecivedCounter = 0;
@@ -292,13 +292,14 @@ export class SimplePeerConnection {
 
     async getStats() {
         if (!this._p) return;
-        return await new Promise((resolve, reject) => {
+        const stats = await new Promise((resolve, reject) => {
             if (!this._p || !this._p._pc) reject("No active simplePeer instance found!")
             this._p.getStats((err, stats) => {
                 if (err) reject(err);
                 resolve(stats);
             })
         })
+        return stats;
     }
 
     getPlayoutDelay() {

@@ -10,7 +10,7 @@
     //   keepFullResLayer.set(options.SimulcastLayers?.length > 0);
     //   if (!useSimplePeer.get()) {
     //     size.set(options.BaseStream.Height);
-    //     codec.set(rov_actions_proto.VideoCodec[options.Codec].toLowerCase());
+    //     codec.set(options.Codec);
     //   }
     // }
     lkSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
@@ -22,11 +22,10 @@
     // const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled;
     // const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
     // const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toUpperCase()) : [];
-    // console.log(rov_actions_proto.VideoCodec[preferedCodecs[0]]);
     // useSimplePeer.set(enabled);
     // if (enabled) {
     //   size.set(options.BaseStream.Height);
-    //   codec.set(preferedCodecs && preferedCodecs.length > 0 ? rov_actions_proto.VideoCodec[preferedCodecs[0]] : "unknown");
+    //   codec.set(preferedCodecs && preferedCodecs.length > 0 ? preferedCodecs[0] : "unknown");
     // }
     spSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
   };
@@ -47,18 +46,21 @@
 </script>
 
 <script lang="ts">
-  import { getDrawerStore, RadioGroup, RadioItem, RangeSlider, SlideToggle } from "@skeletonlabs/skeleton";
+  import { getDrawerStore, RadioGroup, RadioItem, RangeSlider, SlideToggle, TabGroup, Tab, Accordion, AccordionItem } from "@skeletonlabs/skeleton";
   import { onDestroy, onMount } from "svelte";
   import { Close } from "svelte-google-materialdesign-icons";
   import { frontendConnMngr } from "../../js/frontendConnManager";
   import { rov_actions_proto } from "../../js/shared/protobufs/rovActionsProto";
   import { waitfor } from "../../js/shared/util";
   import { ConnectionStates } from "../../js/shared/consts";
+  import { displayHumanBits, displayNum } from "../../js/util";
+  import VideoStatsCard from "../VideoStatsCard.svelte";
 
+  let statsTab = 0;
   const drawerStore = getDrawerStore();
   const codecs = ["h264", "vp8", "vp9", "av1"];
   const sizes = {
-    120: {
+    180: {
       bitrate: {
         h264: 950_000,
         vp8: 750_000,
@@ -127,7 +129,7 @@
         SetLivekitVideoOptions: {
           Enabled: useLivekit.get(),
           AllowBackupCodec: allowBkupCodec.get(),
-          Codec: rov_actions_proto.VideoCodec[codec.get().toUpperCase()],
+          Codec: codec.get(),
           BaseStream: keepFullResLayer.get() ? undefined : baseStream,
           SimulcastLayers: keepFullResLayer.get() ? [baseStream] : undefined,
         },
@@ -146,7 +148,7 @@
       rov_actions_proto.RovAction.create({
         SetSimplePeerVideoOptions: {
           Enabled: useSimplePeer.get(),
-          Codec: rov_actions_proto.VideoCodec[codec.get().toUpperCase()],
+          Codec: codec.get().toUpperCase(),
           BaseStream: {
             Height: size.get(),
             Width: size.get() * (16 / 9),
@@ -224,12 +226,8 @@
     }
   };
 
-  let reciverVideoStats = [];
+  const lkRecieverVideoStats = frontendConnMngr.livekitVideoStats;
   onMount(() => {
-    const statsUnsub = frontendConnMngr.subscribeToVideoStats((stats) => {
-      if (!stats) return;
-      reciverVideoStats = Array.from(stats.values()); //.filter((stat) => stat.type == "inbound-rtp");
-    });
     useTwitch.set(frontendConnMngr.livekitConnection.checkIfLivestreamRecording());
     const livestreamRecordingUnsub = frontendConnMngr.livekitConnection.isLivestreamRecording.subscribe((isLivestreamRecording) => {
       useTwitch.set(isLivestreamRecording);
@@ -254,8 +252,9 @@
       // }
     });
     return () => {
-      statsUnsub();
       livestreamRecordingUnsub();
+      spStreamsUnsub();
+      lkStreamUnsub();
     };
   });
 </script>
@@ -264,7 +263,7 @@
   <button on:click={() => drawerStore.close()} class="btn btn-icon-lg btn-icon absolute top-2.5 right-3">
     <Close class="text-3xl pointer-events-none" tabindex="-1" variation="round" />
   </button>
-  <h3 class="h3 mt-1 mb-6 text-left">Video Settings</h3>
+  <h3 class="h3 my-0.5 mb-6 text-left">Video Settings</h3>
 
   <SlideToggle bind:checked={$useSimplePeer} name="Enable Direct Connection" active="bg-success-700" class="mb-6 mx-auto" on:change={() => onUseSimplePeerChange()}>Enable Direct Connection</SlideToggle>
   <SlideToggle bind:checked={$useLivekit} name="Enable Direct Connection" active="bg-orange-600" class="mb-6 mx-auto" on:change={() => onUseLivekitChange()}>Enable Livekit Connection</SlideToggle>
@@ -279,7 +278,9 @@
       <RadioItem bind:group={$size} name="video size" value={parseInt(s)} label={s + "p"} on:change={onSizeChange} regionLabel="flex-grow-0">{s + "p"}</RadioItem>
     {/each}
   </RadioGroup>
-  <SlideToggle bind:checked={$keepFullResLayer} disabled={!$useLivekit} name="Keep Full Resolution Layer" active="bg-primary-700" class="my-2" on:change={() => sendLivekitChange()}>Keep A Full Resolution Layer</SlideToggle>
+  {#if $useLivekit}
+    <SlideToggle bind:checked={$keepFullResLayer} disabled={!$useLivekit} name="Keep Full Resolution Layer" active="bg-primary-700" class="my-2" on:change={() => sendLivekitChange()}>Keep A Full Resolution Layer</SlideToggle>
+  {/if}
 
   <label class="h4 font-bold mt-8 mb-2" for="codec_radio_group">Codec</label>
   <RadioGroup id="codec_radio_group" display="flex flex-wrap max-w-full items-center  justify-center" rounded="rounded-3xl">
@@ -287,7 +288,9 @@
       <RadioItem bind:group={$codec} name="video codec" value={c} label={c} on:change={onSizeChange} regionLabel="flex-grow-0">{c}</RadioItem>
     {/each}
   </RadioGroup>
-  <SlideToggle bind:checked={$allowBkupCodec} disabled={!$useLivekit} name="Allow Backup Codec" active="bg-primary-700" class="my-2" on:change={() => sendLivekitChange()}>Allow Fallback Codec</SlideToggle>
+  {#if $useLivekit}
+    <SlideToggle bind:checked={$allowBkupCodec} disabled={!$useLivekit} name="Allow Backup Codec" active="bg-primary-700" class="my-2" on:change={() => sendLivekitChange()}>Allow Fallback Codec</SlideToggle>
+  {/if}
 
   {#if $useLivekit}
     <RangeSlider id="bitrate_slider" class="mt-8" name="Max Bitrate slider" min={100_000} max={9_000_000} step={100_000} bind:value={$maxBitrate} on:change={() => sendVideoUpdate()}>
@@ -305,39 +308,43 @@
     </div>
   </RangeSlider>
 
-  <hr class="my-8" />
-  {#if reciverVideoStats}
-    <h4 class="h5 mt-8 mb-2 font-bold flex justify-between"><span>Video Stats</span><span class="chip variant-filled">Recieve</span></h4>
-    <details>
-      <summary>Livekit Stats</summary>
-      <pre class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
-        {#each reciverVideoStats as stat}
-          <pre class="block p-2 text-white">{JSON.stringify(stat, null, 2)}</pre>
-        {/each}
-    </pre>
-    </details>
-  {/if}
-  <h4 class="h5 mt-8 mb-2 font-bold flex justify-between"><span>Video Stats</span><span class="chip variant-filled">ROV Send</span></h4>
-  {#if $spSenderVideoStats && $spSenderVideoStats.length}
-    <h4 class="h5 mt-8 mb-2 font-bold flex justify-between"><span>Video Stats</span><span class="chip variant-filled">Recieve</span></h4>
-    <details>
-      <summary>Direct Stats</summary>
-      <pre class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
-        {#each $spSenderVideoStats as stat}
-          <pre class="block p-2 text-white">{JSON.stringify(stat, null, 2)}</pre>
-        {/each}
-    </pre>
-    </details>
-  {/if}
-  {#if $lkSenderVideoStats && $lkSenderVideoStats.length}
-    <h4 class="h5 mt-8 mb-2 font-bold flex justify-between"><span>Video Stats</span><span class="chip variant-filled">Recieve</span></h4>
-    <details>
-      <summary>Livekit Stats</summary>
-      <pre class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
-        {#each $lkSenderVideoStats as stat}
-          <pre class="block p-2 text-white">{JSON.stringify(stat, null, 2)}</pre>
-        {/each}
-    </pre>
-    </details>
-  {/if}
+  <TabGroup justify="justify-center" class="mt-8 mb-2">
+    <h4 class="h4 self-center flex-1 font-bold">Video Stats</h4>
+    <Tab bind:group={statsTab} name="tab1" value={0}>RECIVED</Tab>
+    <Tab bind:group={statsTab} name="tab2" value={1}>ROV SENT</Tab>
+    <!-- Tab Panels --->
+    <svelte:fragment slot="panel">
+      {#if statsTab == 0}
+        <Accordion>
+          {#if $lkRecieverVideoStats}
+            {@const stats = $lkRecieverVideoStats}
+            <VideoStatsCard {stats} direction="reciever" name="Livekit" />
+          {/if}
+        </Accordion>
+      {:else}
+        {#if $spSenderVideoStats}
+          <details class="card variant-filled mt-4 px-3 py-2">
+            <summary class="h5">Direct Video</summary>
+            <div class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
+              <!-- {#each $spSenderVideoStats as stat} -->
+              <pre class="block">{JSON.stringify($spSenderVideoStats, null, 2)}</pre>
+              <!-- {/each} -->
+            </div>
+          </details>
+        {/if}
+        {#if $lkSenderVideoStats}
+          <details class="card variant-filled mt-4 px-3 py-2">
+            <summary class="h5">Livekit Video</summary>
+            <div class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
+              <!-- {#each $lkSenderVideoStats as stat} -->
+              <pre class="block">{JSON.stringify($lkSenderVideoStats, null, 2)}</pre>
+              <!-- {/each} -->
+            </div>
+          </details>
+        {/if}
+      {/if}
+    </svelte:fragment>
+  </TabGroup>
+
+  <!-- <h4 class="h5 mt-8 mb-2 font-bold flex justify-between"><span>Video Stats</span><span class="chip variant-filled">ROV Send</span></h4> -->
 </div>

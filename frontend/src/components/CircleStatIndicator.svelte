@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getColors } from "../js/colorsVariety";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
-  import { renderNumber } from "../js/util";
+  import { displayNum } from "../js/util";
 
   export let value = 2.02302;
   export let min = 0;
@@ -17,7 +17,7 @@
 
 <div class={"border-2 shadow-md rounded-md p-4 w-36 flex-none " + varietyColor.bg + " " + varietyColor.border}>
   <ProgressRadial value={percent} strokeLinecap="round" font={126} width="w-full" class="mb-4">
-    <tspan x="50%" dy="-0.5em">{renderNumber(value)}</tspan>
+    <tspan x="50%" dy="-0.5em">{displayNum(value)}</tspan>
     <tspan x="50%" dy="1em" font-weight="normal">{unit}</tspan>
   </ProgressRadial>
   {#each nameParts as namePart}

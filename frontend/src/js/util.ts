@@ -276,14 +276,30 @@ export function generateStateChangeFunction(sendStateChange, stateTransition, da
 }
 
 /**
- *
- * @param value Displays a number in a human readable format, with a max of 4 characters.
+ * Displays a number in a human readable format, with a max of 4 characters using scientific notation as neccesary.
+ * @param value
  * @returns
  */
-export const renderNumber = (value: number) => {
-    if (Number.isNaN(value)) return "?";
+export const displayNum = (value?: number) => {
+    if (value == undefined || Number.isNaN(value)) return "?";
     if (value == Infinity) return "∞";
     if (value == -Infinity) return "-∞";
     if (value < 9999) return String(value).substring(0, 4);
     else return value.toExponential(0);
+};
+
+
+/**
+ * Displays a number of bytes in a human readable format eg 5GB 1KB 20.5MB
+ * @param value
+ * @returns
+ */
+export const displayHumanBits = (value?: number) => {
+    if (value == undefined || Number.isNaN(value)) return "?b";
+    else if (value == Infinity) return "∞b";
+    else if (value == -Infinity) return "-∞b";
+    else if (value > 1_000_000_000) return Number(value / 1_000_000_000).toFixed(2) + "Gb";
+    else if (value > 1_000_000) return Number(value / 1_000_000).toFixed(2) + "Mb";
+    else if (value > 1_000) return Number(value / 1_000).toFixed(2) + "Kb";
+    else return value.toFixed(0) + "b";
 };

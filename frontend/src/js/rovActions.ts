@@ -240,7 +240,7 @@ class RovActionsClass {
                     showToastMessage("ROV Shutdown Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
                 } else if (msgData.Done) {
                     showToastMessage("Please wait 20 seconds before unplugging. ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
-                    frontendConnMngr.disconnect();
+                    frontendConnMngr.close();
                 }
             })
         })
@@ -255,7 +255,7 @@ class RovActionsClass {
                 } else if (msgData.Done) {
                     showToastMessage("Press Connect again in about 30 seconds ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
                     showToastMessage("ROV: " + msgData.Done.Message)
-                    frontendConnMngr.disconnect();
+                    frontendConnMngr.close();
                 }
             })
         })

@@ -168,7 +168,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
         const videoCaptureOpts: VideoCaptureOptions = {
             ...vcDefaults,
             resolution: {
-                width: baseStream?.Width || Math.floor((baseStream?.Height || 0) * aspectRatio) || vcDefaults?.resolution?.height || 1920,
+                width: baseStream?.Width || Math.floor((baseStream?.Height || 0) * aspectRatio) || vcDefaults?.resolution?.width || 1920,
                 height: baseStream?.Height || Math.floor((baseStream?.Width || 0) / aspectRatio) || vcDefaults?.resolution?.height || 1080,
                 frameRate: baseStream?.Fps || vcDefaults?.resolution?.frameRate,
             },
@@ -179,21 +179,21 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
             const def = pubDefaults?.videoSimulcastLayers ? pubDefaults?.videoSimulcastLayers[i] : undefined;
             return {
                 encoding: {
-                    maxBitrate: baseStream?.MaxBitrate ?? def?.encoding?.maxBitrate,
+                    maxBitrate: l.MaxBitrate ?? baseStream?.MaxBitrate ?? def?.encoding?.maxBitrate ?? 99_000_000_000,
                     maxFramerate: l.Fps || def?.encoding?.maxFramerate,
                     priority: "high",
                 },
-                width: l.Width || (l.Height ? l.Height * aspectRatio : null) || def?.width || vcDefaults?.resolution?.width,
-                height: l.Height || (l.Width ? l.Width / aspectRatio : null) || def?.height || vcDefaults?.resolution?.height,
+                width: l.Width || (l.Height ? Math.floor(l.Height * aspectRatio) : null) || def?.width || vcDefaults?.resolution?.width,
+                height: l.Height || (l.Width ? Math.floor(l.Width / aspectRatio) : null) || def?.height || vcDefaults?.resolution?.height,
             } as VideoPreset
         }) : pubDefaults?.videoSimulcastLayers;
 
-        const codec = (opts.Codec !== null && opts.Codec !== undefined) ? rov_actions_proto.VideoCodec[opts.Codec].toLowerCase() : pubDefaults?.videoCodec;
+        const codec = (opts.Codec !== null && opts.Codec !== undefined) ? opts.Codec : pubDefaults?.videoCodec;
         const pubOpts: TrackPublishOptions = {
             ...pubDefaults,
             videoCodec: codec as TrackPublishOptions['videoCodec'],
             videoEncoding: {
-                maxBitrate: baseStream?.MaxBitrate ?? pubDefaults?.videoEncoding?.maxBitrate ?? 0,
+                maxBitrate: baseStream?.MaxBitrate ?? pubDefaults?.videoEncoding?.maxBitrate ?? 99_000_000_000,
                 maxFramerate: baseStream?.Fps || pubDefaults?.videoEncoding?.maxFramerate,
                 priority: pubDefaults?.videoEncoding?.priority,
             },
@@ -230,7 +230,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
             facingMode: vcDefaults?.facingMode,
         }
 
-        const codec = opts.Codec ? rov_actions_proto.VideoCodec[opts.Codec].toLowerCase() : pubDefaults?.videoCodec;
+        const codec = opts.Codec ? opts.Codec : pubDefaults?.videoCodec;
         const videoPubOpts: TrackPublishOptions = {
             videoCodec: (codec as TrackPublishOptions['videoCodec']),
             videoEncoding: {

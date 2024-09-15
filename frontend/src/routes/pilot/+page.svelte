@@ -32,7 +32,7 @@
 
 <!-- App Shell -->
 <HelpTooltips />
-<Drawer width="w-72">
+<Drawer width="w-72" bgBackdrop={$drawerStore.id === "video-settings" ? "bg-surface-backdrop-token" : "bg-surface-backdrop-token"}>
   {#if $drawerStore.id === "video-settings"}
     <VideoSettings />
   {:else}

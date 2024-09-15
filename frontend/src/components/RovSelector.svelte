@@ -84,7 +84,7 @@
   const tokenAvailable = (tokenInfo: AuthTokenInfo) => tokenInfo && !takenLivekitUsernameIds.get().has(tokenInfo.userGivenIdentity);
 
   const disconnect = () => {
-    frontendConnMngr.disconnect();
+    frontendConnMngr.close();
     selectedRov = "";
   };
 </script>

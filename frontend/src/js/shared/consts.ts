@@ -124,6 +124,10 @@ export const SIMPLEPEER_BASE_CONFIG: SimplePeerT.Options & { iceRestartEnabled: 
     initiator: true,
     trickle: true,
     iceRestartEnabled: 'onDisconnect',
+    offerOptions: {
+        offerToReceiveAudio: false,
+        offerToReceiveVideo: false,
+    },
     config: {
         bundlePolicy: "balanced",
         iceTransportPolicy: "all",

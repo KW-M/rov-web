@@ -45,12 +45,499 @@ export namespace rov_actions_proto {
         UserDisconnected = 4
     }
 
-    /** VideoCodec enum. */
-    enum VideoCodec {
-        H264 = 0,
-        VP8 = 1,
-        VP9 = 2,
-        AV1 = 3
+    /** Properties of a VideoSenderStats. */
+    interface IVideoSenderStats {
+
+        /** VideoSenderStats encoderImplementation */
+        encoderImplementation?: (string | null);
+
+        /** VideoSenderStats powerEfficientEncoder */
+        powerEfficientEncoder?: (boolean | null);
+
+        /** VideoSenderStats qualityLimitationReason */
+        qualityLimitationReason?: (string | null);
+
+        /** VideoSenderStats cpuLimitedQualityDurration */
+        cpuLimitedQualityDurration?: (number | null);
+
+        /** VideoSenderStats bandwidthLimitedQualityDurration */
+        bandwidthLimitedQualityDurration?: (number | null);
+
+        /** VideoSenderStats otherLimitedQualityDurration */
+        otherLimitedQualityDurration?: (number | null);
+
+        /** VideoSenderStats noLimitedQualityDurration */
+        noLimitedQualityDurration?: (number | null);
+
+        /** VideoSenderStats totalPacketSendDelay */
+        totalPacketSendDelay?: (number | null);
+
+        /** VideoSenderStats retransmittedBytesSent */
+        retransmittedBytesSent?: (number | null);
+
+        /** VideoSenderStats scalabilityMode */
+        scalabilityMode?: (string | null);
+
+        /** VideoSenderStats qualityLimitationResolutionChanges */
+        qualityLimitationResolutionChanges?: (number | null);
+
+        /** VideoSenderStats frameWidth */
+        frameWidth?: (number | null);
+
+        /** VideoSenderStats frameHeight */
+        frameHeight?: (number | null);
+
+        /** VideoSenderStats framesPerSecond */
+        framesPerSecond?: (number | null);
+
+        /** VideoSenderStats videoCodec */
+        videoCodec?: (string | null);
+
+        /** VideoSenderStats videoSdpFmtpLine */
+        videoSdpFmtpLine?: (string | null);
+    }
+
+    /** Represents a VideoSenderStats. */
+    class VideoSenderStats implements IVideoSenderStats {
+
+        /**
+         * Constructs a new VideoSenderStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IVideoSenderStats);
+
+        /** VideoSenderStats encoderImplementation. */
+        public encoderImplementation: string;
+
+        /** VideoSenderStats powerEfficientEncoder. */
+        public powerEfficientEncoder: boolean;
+
+        /** VideoSenderStats qualityLimitationReason. */
+        public qualityLimitationReason: string;
+
+        /** VideoSenderStats cpuLimitedQualityDurration. */
+        public cpuLimitedQualityDurration: number;
+
+        /** VideoSenderStats bandwidthLimitedQualityDurration. */
+        public bandwidthLimitedQualityDurration: number;
+
+        /** VideoSenderStats otherLimitedQualityDurration. */
+        public otherLimitedQualityDurration: number;
+
+        /** VideoSenderStats noLimitedQualityDurration. */
+        public noLimitedQualityDurration: number;
+
+        /** VideoSenderStats totalPacketSendDelay. */
+        public totalPacketSendDelay: number;
+
+        /** VideoSenderStats retransmittedBytesSent. */
+        public retransmittedBytesSent: number;
+
+        /** VideoSenderStats scalabilityMode. */
+        public scalabilityMode: string;
+
+        /** VideoSenderStats qualityLimitationResolutionChanges. */
+        public qualityLimitationResolutionChanges: number;
+
+        /** VideoSenderStats frameWidth. */
+        public frameWidth: number;
+
+        /** VideoSenderStats frameHeight. */
+        public frameHeight: number;
+
+        /** VideoSenderStats framesPerSecond. */
+        public framesPerSecond: number;
+
+        /** VideoSenderStats videoCodec. */
+        public videoCodec: string;
+
+        /** VideoSenderStats videoSdpFmtpLine. */
+        public videoSdpFmtpLine: string;
+
+        /**
+         * Creates a new VideoSenderStats instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns VideoSenderStats instance
+         */
+        public static create(properties?: rov_actions_proto.IVideoSenderStats): rov_actions_proto.VideoSenderStats;
+
+        /**
+         * Encodes the specified VideoSenderStats message. Does not implicitly {@link rov_actions_proto.VideoSenderStats.verify|verify} messages.
+         * @param message VideoSenderStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IVideoSenderStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified VideoSenderStats message, length delimited. Does not implicitly {@link rov_actions_proto.VideoSenderStats.verify|verify} messages.
+         * @param message VideoSenderStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IVideoSenderStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a VideoSenderStats message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns VideoSenderStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.VideoSenderStats;
+
+        /**
+         * Decodes a VideoSenderStats message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns VideoSenderStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.VideoSenderStats;
+
+        /**
+         * Verifies a VideoSenderStats message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string | null);
+
+        /**
+         * Creates a VideoSenderStats message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns VideoSenderStats
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.VideoSenderStats;
+
+        /**
+         * Creates a plain object from a VideoSenderStats message. Also converts values to other types if specified.
+         * @param message VideoSenderStats
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.VideoSenderStats, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this VideoSenderStats to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for VideoSenderStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a VideoRecieverStats. */
+    interface IVideoRecieverStats {
+
+        /** VideoRecieverStats hung */
+        hung?: (boolean | null);
+
+        /** VideoRecieverStats frameWidth */
+        frameWidth?: (number | null);
+
+        /** VideoRecieverStats frameHeight */
+        frameHeight?: (number | null);
+
+        /** VideoRecieverStats framesPerSecond */
+        framesPerSecond?: (number | null);
+
+        /** VideoRecieverStats currentRoundTripTime */
+        currentRoundTripTime?: (number | null);
+
+        /** VideoRecieverStats jitterBufferDelay */
+        jitterBufferDelay?: (number | null);
+
+        /** VideoRecieverStats jitter */
+        jitter?: (number | null);
+
+        /** VideoRecieverStats nackCount */
+        nackCount?: (number | null);
+
+        /** VideoRecieverStats pliCount */
+        pliCount?: (number | null);
+
+        /** VideoRecieverStats freezeCount */
+        freezeCount?: (number | null);
+
+        /** VideoRecieverStats totalFreezeTime */
+        totalFreezeTime?: (number | null);
+
+        /** VideoRecieverStats estimatedPlayoutDelay */
+        estimatedPlayoutDelay?: (number | null);
+
+        /** VideoRecieverStats videoCodec */
+        videoCodec?: (string | null);
+
+        /** VideoRecieverStats videoSdpFmtpLine */
+        videoSdpFmtpLine?: (string | null);
+    }
+
+    /** Represents a VideoRecieverStats. */
+    class VideoRecieverStats implements IVideoRecieverStats {
+
+        /**
+         * Constructs a new VideoRecieverStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IVideoRecieverStats);
+
+        /** VideoRecieverStats hung. */
+        public hung: boolean;
+
+        /** VideoRecieverStats frameWidth. */
+        public frameWidth: number;
+
+        /** VideoRecieverStats frameHeight. */
+        public frameHeight: number;
+
+        /** VideoRecieverStats framesPerSecond. */
+        public framesPerSecond: number;
+
+        /** VideoRecieverStats currentRoundTripTime. */
+        public currentRoundTripTime: number;
+
+        /** VideoRecieverStats jitterBufferDelay. */
+        public jitterBufferDelay: number;
+
+        /** VideoRecieverStats jitter. */
+        public jitter: number;
+
+        /** VideoRecieverStats nackCount. */
+        public nackCount: number;
+
+        /** VideoRecieverStats pliCount. */
+        public pliCount: number;
+
+        /** VideoRecieverStats freezeCount. */
+        public freezeCount: number;
+
+        /** VideoRecieverStats totalFreezeTime. */
+        public totalFreezeTime: number;
+
+        /** VideoRecieverStats estimatedPlayoutDelay. */
+        public estimatedPlayoutDelay: number;
+
+        /** VideoRecieverStats videoCodec. */
+        public videoCodec: string;
+
+        /** VideoRecieverStats videoSdpFmtpLine. */
+        public videoSdpFmtpLine: string;
+
+        /**
+         * Creates a new VideoRecieverStats instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns VideoRecieverStats instance
+         */
+        public static create(properties?: rov_actions_proto.IVideoRecieverStats): rov_actions_proto.VideoRecieverStats;
+
+        /**
+         * Encodes the specified VideoRecieverStats message. Does not implicitly {@link rov_actions_proto.VideoRecieverStats.verify|verify} messages.
+         * @param message VideoRecieverStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IVideoRecieverStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified VideoRecieverStats message, length delimited. Does not implicitly {@link rov_actions_proto.VideoRecieverStats.verify|verify} messages.
+         * @param message VideoRecieverStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IVideoRecieverStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a VideoRecieverStats message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns VideoRecieverStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.VideoRecieverStats;
+
+        /**
+         * Decodes a VideoRecieverStats message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns VideoRecieverStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.VideoRecieverStats;
+
+        /**
+         * Verifies a VideoRecieverStats message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string | null);
+
+        /**
+         * Creates a VideoRecieverStats message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns VideoRecieverStats
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.VideoRecieverStats;
+
+        /**
+         * Creates a plain object from a VideoRecieverStats message. Also converts values to other types if specified.
+         * @param message VideoRecieverStats
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.VideoRecieverStats, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this VideoRecieverStats to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for VideoRecieverStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a VideoBaseStats. */
+    interface IVideoBaseStats {
+
+        /** VideoBaseStats bitrateReceive */
+        bitrateReceive?: (number | null);
+
+        /** VideoBaseStats bitrateSend */
+        bitrateSend?: (number | null);
+
+        /** VideoBaseStats availableIncomingBitrate */
+        availableIncomingBitrate?: (number | null);
+
+        /** VideoBaseStats availableOutgoingBitrate */
+        availableOutgoingBitrate?: (number | null);
+
+        /** VideoBaseStats senderLayerStats */
+        senderLayerStats?: (rov_actions_proto.IVideoSenderStats[] | null);
+
+        /** VideoBaseStats recieverStats */
+        recieverStats?: (rov_actions_proto.IVideoRecieverStats | null);
+
+        /** VideoBaseStats rtcStatsJson */
+        rtcStatsJson?: (string | null);
+    }
+
+    /** Represents a VideoBaseStats. */
+    class VideoBaseStats implements IVideoBaseStats {
+
+        /**
+         * Constructs a new VideoBaseStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: rov_actions_proto.IVideoBaseStats);
+
+        /** VideoBaseStats bitrateReceive. */
+        public bitrateReceive: number;
+
+        /** VideoBaseStats bitrateSend. */
+        public bitrateSend: number;
+
+        /** VideoBaseStats availableIncomingBitrate. */
+        public availableIncomingBitrate: number;
+
+        /** VideoBaseStats availableOutgoingBitrate. */
+        public availableOutgoingBitrate: number;
+
+        /** VideoBaseStats senderLayerStats. */
+        public senderLayerStats: rov_actions_proto.IVideoSenderStats[];
+
+        /** VideoBaseStats recieverStats. */
+        public recieverStats?: (rov_actions_proto.IVideoRecieverStats | null);
+
+        /** VideoBaseStats rtcStatsJson. */
+        public rtcStatsJson: string;
+
+        /**
+         * Creates a new VideoBaseStats instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns VideoBaseStats instance
+         */
+        public static create(properties?: rov_actions_proto.IVideoBaseStats): rov_actions_proto.VideoBaseStats;
+
+        /**
+         * Encodes the specified VideoBaseStats message. Does not implicitly {@link rov_actions_proto.VideoBaseStats.verify|verify} messages.
+         * @param message VideoBaseStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: rov_actions_proto.IVideoBaseStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified VideoBaseStats message, length delimited. Does not implicitly {@link rov_actions_proto.VideoBaseStats.verify|verify} messages.
+         * @param message VideoBaseStats message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: rov_actions_proto.IVideoBaseStats, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a VideoBaseStats message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns VideoBaseStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader | Uint8Array), length?: number): rov_actions_proto.VideoBaseStats;
+
+        /**
+         * Decodes a VideoBaseStats message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns VideoBaseStats
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader | Uint8Array)): rov_actions_proto.VideoBaseStats;
+
+        /**
+         * Verifies a VideoBaseStats message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string | null);
+
+        /**
+         * Creates a VideoBaseStats message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns VideoBaseStats
+         */
+        public static fromObject(object: { [k: string]: any }): rov_actions_proto.VideoBaseStats;
+
+        /**
+         * Creates a plain object from a VideoBaseStats message. Also converts values to other types if specified.
+         * @param message VideoBaseStats
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: rov_actions_proto.VideoBaseStats, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this VideoBaseStats to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for VideoBaseStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     /** Properties of a VideoStreamOptions. */
@@ -175,7 +662,7 @@ export namespace rov_actions_proto {
         Enabled?: (boolean | null);
 
         /** SetLivekitVideoOptionsAction Codec */
-        Codec?: (rov_actions_proto.VideoCodec | null);
+        Codec?: (string | null);
 
         /** SetLivekitVideoOptionsAction AllowBackupCodec */
         AllowBackupCodec?: (boolean | null);
@@ -200,7 +687,7 @@ export namespace rov_actions_proto {
         public Enabled: boolean;
 
         /** SetLivekitVideoOptionsAction Codec. */
-        public Codec: rov_actions_proto.VideoCodec;
+        public Codec: string;
 
         /** SetLivekitVideoOptionsAction AllowBackupCodec. */
         public AllowBackupCodec: boolean;
@@ -299,7 +786,7 @@ export namespace rov_actions_proto {
         Bitrate?: (number | null);
 
         /** SetSimplePeerVideoOptionsAction Codec */
-        Codec?: (rov_actions_proto.VideoCodec | null);
+        Codec?: (string | null);
 
         /** SetSimplePeerVideoOptionsAction BaseStream */
         BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
@@ -321,7 +808,7 @@ export namespace rov_actions_proto {
         public Bitrate: number;
 
         /** SetSimplePeerVideoOptionsAction Codec. */
-        public Codec: rov_actions_proto.VideoCodec;
+        public Codec: string;
 
         /** SetSimplePeerVideoOptionsAction BaseStream. */
         public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
@@ -4517,7 +5004,7 @@ export namespace rov_actions_proto {
         Enabled?: (boolean | null);
 
         /** LivekitVideoStatsResponse Codec */
-        Codec?: (rov_actions_proto.VideoCodec | null);
+        Codec?: (string | null);
 
         /** LivekitVideoStatsResponse AllowBackupCodec */
         AllowBackupCodec?: (boolean | null);
@@ -4545,7 +5032,7 @@ export namespace rov_actions_proto {
         public Enabled: boolean;
 
         /** LivekitVideoStatsResponse Codec. */
-        public Codec: rov_actions_proto.VideoCodec;
+        public Codec: string;
 
         /** LivekitVideoStatsResponse AllowBackupCodec. */
         public AllowBackupCodec: boolean;
@@ -4644,7 +5131,7 @@ export namespace rov_actions_proto {
         Enabled?: (boolean | null);
 
         /** SimplePeerVideoStatsResponse Codec */
-        Codec?: (rov_actions_proto.VideoCodec | null);
+        Codec?: (string | null);
 
         /** SimplePeerVideoStatsResponse BaseStream */
         BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);
@@ -4666,7 +5153,7 @@ export namespace rov_actions_proto {
         public Enabled: boolean;
 
         /** SimplePeerVideoStatsResponse Codec. */
-        public Codec: rov_actions_proto.VideoCodec;
+        public Codec: string;
 
         /** SimplePeerVideoStatsResponse BaseStream. */
         public BaseStream?: (rov_actions_proto.IVideoStreamOptions | null);

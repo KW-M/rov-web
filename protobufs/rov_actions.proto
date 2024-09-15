@@ -47,15 +47,61 @@ enum InternalWebpageEvent {
     UserDisconnected = 4;
 }
 
-enum VideoCodec {
-    // H264 is a widely supported codec that is hardware accelerated on most devices. Has the lowest quality per bitrate
-    H264 = 0;
-    // VP8 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Has better quality per bitrate than H264
-    VP8 = 1;
-    // VP9 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Uses scalable encoding and very high quality per bitrate
-    VP9 = 2;
-    // AV1 is a codec that is supported by FEW browsers and is not hardware accelerated on most devices. Uses scalable encoding and highest quality per bitrate
-    AV1 = 3;
+// enum string {
+//     // H264 is a widely supported codec that is hardware accelerated on most devices. Has the lowest quality per bitrate
+//     H264 = 0;
+//     // VP8 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Has better quality per bitrate than H264
+//     VP8 = 1;
+//     // VP9 is a codec that is supported by most browsers but is not hardware accelerated on most devices. Uses scalable encoding and very high quality per bitrate
+//     VP9 = 2;
+//     // AV1 is a codec that is supported by FEW browsers and is not hardware accelerated on most devices. Uses scalable encoding and highest quality per bitrate
+//     AV1 = 3;
+// }
+
+message VideoSenderStats {
+    string encoderImplementation = 1;
+    bool powerEfficientEncoder = 2;
+    string qualityLimitationReason = 3;
+    float cpuLimitedQualityDurration = 4;
+    float bandwidthLimitedQualityDurration = 5;
+    float otherLimitedQualityDurration = 6;
+    float noLimitedQualityDurration = 7;
+    float totalPacketSendDelay = 8;
+    float retransmittedBytesSent = 9;
+    string scalabilityMode = 10;
+    uint32 qualityLimitationResolutionChanges = 11;
+    int32 frameWidth = 12;
+    int32 frameHeight = 13;
+    int32 framesPerSecond = 14;
+    string videoCodec = 16;
+    string videoSdpFmtpLine = 15;
+}
+
+message VideoRecieverStats {
+    bool hung = 1;
+    int32 frameWidth = 2;
+    int32 frameHeight = 3;
+    int32 framesPerSecond = 4;
+    float currentRoundTripTime = 5;
+    float jitterBufferDelay = 6;
+    float jitter = 7;
+    uint32 nackCount = 8;
+    uint32 pliCount = 9;
+    uint32 freezeCount = 10;
+    uint32 totalFreezeTime = 11;
+    float estimatedPlayoutDelay = 12;
+    string videoCodec = 13;
+    string videoSdpFmtpLine = 14;
+}
+
+message VideoBaseStats {
+    uint32 bitrateReceive = 7;
+    uint32 bitrateSend = 8;
+    uint32 availableIncomingBitrate = 9;
+    uint32 availableOutgoingBitrate = 10;
+    repeated VideoSenderStats senderLayerStats = 11; // optional
+    VideoRecieverStats recieverStats = 12; // optional
+    string rtcStatsJson = 13; // optional json string of the full webrtc stats object
 }
 
 message VideoStreamOptions {
@@ -73,7 +119,7 @@ message SetLivekitVideoOptionsAction {
     // Enable / disable publishing of the livekit video stream(s)
     bool Enabled = 1;
     // The codec to use for the video stream
-    VideoCodec Codec = 2;
+    string Codec = 2;
     // allow livekit to publish a second video stream if needed with a more widely supported codec like H264 or VP8
     bool AllowBackupCodec = 3;
     // The base options for the livekit video stream
@@ -88,7 +134,7 @@ message SetSimplePeerVideoOptionsAction {
     // Desired bitrate of the video stream in bits per second
     uint32 Bitrate = 2;
     // The codec to use for the video stream
-    VideoCodec Codec = 3;
+    string Codec = 3;
     // The base options for the livekit video stream
     VideoStreamOptions BaseStream = 4;
 }
@@ -370,7 +416,7 @@ message LogMessageResponse {
 message LivekitVideoStatsResponse {
     bool Enabled = 1;
     // The base codec used for the livekit video stream
-    VideoCodec Codec = 2;
+    string Codec = 2;
     // if livekit is allowed to publish a second video stream if needed with a more widely supported codec like H264 or VP8
     bool AllowBackupCodec = 3;
     // The base options used for the livekit video stream and capture device
@@ -383,7 +429,7 @@ message LivekitVideoStatsResponse {
 
 message SimplePeerVideoStatsResponse {
     bool Enabled = 1;
-    VideoCodec Codec = 2;
+    string Codec = 2;
     VideoStreamOptions BaseStream = 3;
     string RtcSenderStatsJson = 4;
 }

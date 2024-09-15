@@ -10,6 +10,7 @@ import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 import type { TrackPublishOptions, VideoCaptureOptions, VideoSenderStats } from "livekit-client";
 import { LivekitPublisherConnection } from './livekitPubConn';
 import nStore from './shared/libraries/nStore';
+import { type ComputedSenderStats } from './shared/videoStatsParser';
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -28,10 +29,16 @@ class InternalConnectionManager {
     private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
     private _simplePeerConnections: Map<string, SimplePeerConnection> = new Map();
     private _simplePeerCameraStream: MediaStream | null = null;
-    private _videoStatsCheckTimer: NodeJS.Timeout | null = null;
 
     // keeps track of the current parameters of the video stream being sent to all simplePeer clients/users.
     simplePeerCameraOptions = nStore<MediaStreamConstraints>(SIMPLEPEER_CAPTURE_CONFIG);
+
+    // video stats for the cloud livekit connection & simplePeer connections
+    livekitVideoStats = nStore<ComputedSenderStats | null>(null);
+    simplePeerVideoStats = nStore<Map<string, ComputedSenderStats>>(new Map());
+
+    // interval id for checking video stats loop
+    _videoStatsIntervalId: NodeJS.Timeout | null;
 
     constructor() {
 
@@ -100,13 +107,9 @@ class InternalConnectionManager {
 
     onConnectedActions() {
         this.sendVideoStatsUpdate();
-        this._videoStatsCheckTimer = setInterval(() => {
+        this._videoStatsIntervalId = setInterval(() => {
             this.sendVideoStatsUpdate();
         }, 1000)
-    }
-
-    public subscribeToVideoStats(callback: (stats: VideoSenderStats[]) => void) {
-        this._cloudLivekitConnection.videoStats.subscribe(callback);
     }
 
     public async sendVideoStatsUpdate() {
@@ -122,7 +125,7 @@ class InternalConnectionManager {
                     Fps: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.frameRate,
                     MaxBitrate: this._cloudLivekitConnection._videoPublishOptions?.videoEncoding?.maxBitrate,
                 },
-                Codec: rov_actions_proto.VideoCodec[this._cloudLivekitConnection._videoPublishOptions?.videoCodec?.toUpperCase() || "unknown"],
+                Codec: this._cloudLivekitConnection._videoPublishOptions?.videoCodec || "unknown",
                 SimulcastLayers: this._cloudLivekitConnection._videoPublishOptions?.videoSimulcastLayers?.map((preset) => {
                     return {
                         Width: preset.width,
@@ -135,6 +138,7 @@ class InternalConnectionManager {
         }, false, [])
         const spCameraOpts = this.simplePeerCameraOptions.get();
         for (const [userId, spConn] of this._simplePeerConnections) {
+            if (!spConn || spConn.connectionState.get() !== ConnectionStates.connected) continue;
             const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return [e] });
             this.sendMessage({
                 SimplePeerVideoStats: {

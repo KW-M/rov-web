@@ -5,25 +5,15 @@ import { log, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";
 import { takenLivekitUsernameIds } from "./globalContext";
-
-interface VideoStatIndicators {
-    bytesSent: number,
-    bytesReceived: number,
-    timestamp: number
-}
+import { RtpReciverStatsParser } from "./shared/videoStatsParser";
 
 export class LivekitViewerConnection extends LivekitBaseConnection {
     // remote video tracks maps from the track source name to the livekit track object
     remoteVideoTracks: nStoreT<Map<String, RemoteTrack | null>>;
-    // subscribe to get updates on the state of the video channel webrtc connection.
-    videoStats = nStore<any[] | undefined>(undefined);
+    // video stats
+    videoStatsParser = new RtpReciverStatsParser()
     // flag to indicate if the rov is currently broadcasting a livestream publicly (TWITCH)
     isLivestreamRecording = nStore<boolean>(false);
-    // interval id for checking video stats loop
-    _videoStatsIntervalId: NodeJS.Timeout | null;
-    //
-    _lastVideoStatIndicators: VideoStatIndicators;
-
 
     constructor() {
         super();
@@ -34,85 +24,67 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
         if (this._rovRoomName === participant.identity) {
             participant.videoTrackPublications.forEach((pub: RemoteTrackPublication) => {
                 pub.setSubscribed(true);
-                this.checkVideoStats(pub);
             })
-            participant.audioTrackPublications.forEach((pub: RemoteTrackPublication) => pub.setSubscribed(true))
 
+            // Audio in case we want to listen to the ROV underwater audio
+            participant.audioTrackPublications.forEach((pub: RemoteTrackPublication) => pub.setSubscribed(true))
             logInfo("canPlayback audio = ", this._roomConn.canPlaybackAudio, " video = ", this._roomConn.canPlaybackVideo);
         }
     }
 
-    checkVideoStats(pub: RemoteTrackPublication) {
-        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
-        this._videoStatsIntervalId = setInterval(async () => {
-            if (!pub || !pub.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
-            const videoTrack = (pub.videoTrack as RemoteVideoTrack);
-
-            const computedStats = {
-            }
-
-            // videoTrack.setPlayoutDelay(0.01)
-            const myStats = {
-                bitrate: videoTrack.currentBitrate,
-                streamState: videoTrack.streamState,
-                simulcasted: pub.simulcasted,
-                videoQuality: pub.videoQuality,
-                dimensions: pub.dimensions,
-                playoutDelay: videoTrack.getPlayoutDelay(),
-                numAttachedElements: pub.videoTrack.attachedElements.length,
-            }
-
-            let statsArray = [];
-
-            const RTCStats = await pub.videoTrack.getRTCStatsReport();
-            if (RTCStats) {
-                for (const stat of RTCStats.values()) {
-                    statsArray.push(stat);
-
-                    if (stat.type === "codec") {
-                        const { mimeType, clockRate, payloadType } = stat;
-                        computedStats["codec"] = { mimeType, clockRate, payloadType };
-                    } else if (stat.type === "inbound-rtp" && stat.kind === "video") {
-                        const { frameWidth, frameHeight, framesPerSecond, framesSent, framesDecoded, framesDropped, frezeCount, nacCount, pliCount, jitterBufferDelay, jitterBufferMiniumDelay, jitterBufferTargetDelay } = stat;
-                        computedStats["incoming-video"] = { frameWidth, frameHeight, framesPerSecond, framesSent, framesDecoded, framesDropped, frezeCount, nacCount, pliCount, jitterBufferDelay, jitterBufferMiniumDelay, jitterBufferTargetDelay };
-                    } else if (stat.type === "candidate-pair") {
-                        const { currentRoundTripTime, state, nominated, availableOutgoingBitrate, availableIncomingBitrate } = stat;
-                        computedStats["candidatePair"] = { currentRoundTripTime, state, nominated, availableOutgoingBitrate, availableIncomingBitrate };
-                    } else if (stat.type === "transport") {
-                        const { timestamp, bytesSent, bytesReceived, selectedCandidatePairChanges, iceState, iceRole, dltsState, dltsRole } = stat;
-                        computedStats["timestamp"] = timestamp;
-                        computedStats["transport"] = { bytesSent, bytesReceived, selectedCandidatePairChanges, iceState, iceRole, dltsState, dltsRole };
-                        if (this._lastVideoStatIndicators) {
-                            const { bytesSent: lastBytesSent, bytesReceived: lastBytesReceived } = this._lastVideoStatIndicators;
-                            const bytesSentDelta = bytesSent - lastBytesSent;
-                            const bytesReceivedDelta = bytesReceived - lastBytesReceived;
-                            const timeDelta = timestamp - this._lastVideoStatIndicators.timestamp;
-                            const bitrateSend = bytesSentDelta / timeDelta * 1000 * 8;
-                            const bitrateReceive = bytesReceivedDelta / timeDelta * 1000 * 8;
-                            computedStats["transport"]["bitrateSend"] = bitrateSend;
-                            computedStats["transport"]["bitrateReceive"] = bitrateReceive;
-                            computedStats["hung"] = bytesReceivedDelta === 0
-                        }
-                        this._lastVideoStatIndicators = { bytesSent, bytesReceived, timestamp };
-                    }
-                }
-
-            }
-            // let statsArray = [computedStats, myStats, pub.trackInfo.toJson()];
-            statsArray.splice(0, 0, computedStats);
-            statsArray.splice(1, 0, myStats);
-            statsArray.push(pub.trackInfo.toJson());
-            this.videoStats.set(statsArray);
-        }, 600)
+    async getVideoStats() {
+        for (const [_, track] of this.remoteVideoTracks.get()) {
+            if (!track) continue;
+            const report = await track.getRTCStatsReport()
+            if (!report) continue;
+            const stats = this.videoStatsParser.parse(report);
+            if (stats) return stats;
+        }
     }
 
+    // checkVideoStats(pub: RemoteTrackPublication) {
+
+    //     if (!pub || !pub.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
+    //     const videoTrack = (pub.videoTrack as RemoteVideoTrack);
+
+    //     const computedStats = {
+    //     }
+
+    //     // videoTrack.setPlayoutDelay(0.01)
+    //     const myStats = {
+    //         bitrate: videoTrack.currentBitrate,
+    //         streamState: videoTrack.streamState,
+    //         simulcasted: pub.simulcasted,
+    //         videoQuality: pub.videoQuality,
+    //         dimensions: pub.dimensions,
+    //         playoutDelay: videoTrack.getPlayoutDelay(),
+    //         numAttachedElements: pub.videoTrack.attachedElements.length,
+    //     }
+
+    //     let statsArray = [];
+
+    //     const RTCStats = await pub.videoTrack.getRTCStatsReport();
+    //     if (RTCStats) {
+    //         for (const stat of RTCStats.values()) {
+    //             statsArray.push(stat);
+
+
+    //         }
+
+    //     }
+    //     // let statsArray = [computedStats, myStats, pub.trackInfo.toJson()];
+    //     statsArray.splice(0, 0, computedStats);
+    //     statsArray.splice(1, 0, myStats);
+    //     statsArray.push(pub.trackInfo.toJson());
+    //     this.videoStats.set(statsArray);
+    // }, 600)
+    // }
+
     async close() {
-        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
         await super.close();
     }
 
-    async fail() {
-        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+    async _fail() {
         await super._fail();
     }
 

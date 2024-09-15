@@ -29,7 +29,7 @@
 
   onDestroy(() => {
     RovActions.stopRequiredMsgLoop();
-    frontendConnMngr.disconnect();
+    frontendConnMngr.close();
   });
 
   onMount(() => {

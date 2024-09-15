@@ -86,12 +86,8 @@
     };
   };
 
-  let lkUnsub, spUnsub, statsUnsub, videoStats;
+  let lkUnsub, spUnsub;
   onMount(() => {
-    statsUnsub = frontendConnMngr.subscribeToVideoStats((stats) => {
-      if (!stats) return;
-      videoStats = Array.from(stats.values()); //.filter((stat) => stat.type == "inbound-rtp");
-    });
     lkUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((streams) => {
       const stream = streams.values().next().value as RemoteTrack;
       if (livekitVideoStream.stream && (livekitVideoStream.stream as RemoteTrack).detach != undefined) {

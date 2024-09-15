@@ -1,5 +1,5 @@
 import { ConnectionStates, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_CONNECTION_CONFIG, SIMPLEPEER_BASE_CONFIG } from "./shared/consts";
-import { default as nStore } from "./shared/libraries/nStore";
+import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
 import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata, type AuthTokenInfo } from "./shared/livekit/adminlessActions";
 import { LivekitViewerConnection } from "./livekitViewerConn";
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
@@ -10,6 +10,7 @@ import { LIVEKIT_LIST_ONLY_TOKEN, URL_PARAMS } from "./frontendConsts";
 import { frontendRovMsgHandler } from "./rovMessageHandler";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { type Room } from "livekit-server-sdk";
+import { type ComputedRecieverStats } from "./shared/videoStatsParser";
 
 export interface LivekitRoomInfo {
     name: string;
@@ -30,22 +31,30 @@ export class FrontendConnectionManager {
     simplePeerConnection: SimplePeerConnection;
     livekitRoomPollingInterval: number = -1;
     openLivekitRoomInfo = nStore<LivekitRoomInfo[]>([]);
-    _cleanupFuncs: { [key: string]: () => void } = {};
     currentVideoStreamMethod = nStore<VideoStreamMethod>(VideoStreamMethod.none);
+
+    livekitVideoStats: nStoreT<ComputedRecieverStats | null> = nStore<ComputedRecieverStats | null>(null);
+    simplePeerVideoStats: nStoreT<ComputedRecieverStats | null> = nStore<ComputedRecieverStats | null>(null);
+
+    // interval id for checking video stats loop
+    _videoStatsIntervalId: NodeJS.Timeout | null;
+    // cleanup functions for all the subscriptions we use - all get called on cleanup()
+    _cleanupFuncs: { [key: string]: () => void } = {};
 
     constructor() {
         this.simplePeerConnection = new SimplePeerConnection();
-        changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
+        this._cleanupFuncs['lkOnData'] = changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
             const { senderId, msg } = msgInfo;
             if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not rov)
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
-        changesSubscribe(this.simplePeerConnection.latestRecivedDataMessage, (msg) => {
+        this._cleanupFuncs['spOnData'] = changesSubscribe(this.simplePeerConnection.latestRecivedDataMessage, (msg) => {
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
-        changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (msg) => {
+        this._cleanupFuncs['outSignal'] = changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (msg) => {
             this.sendMessageToRov({ SimplePeerSignal: { Message: msg } }, true)
         })
+        this.startVideoStatsCollection();
     }
 
     /**
@@ -80,10 +89,14 @@ export class FrontendConnectionManager {
         // this.startSimplePeerConnection();
     }
 
-
-
-    public subscribeToVideoStats(callback: (stats: any[] | null) => void) {
-        return this.livekitConnection.videoStats.subscribe(callback);
+    startVideoStatsCollection() {
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
+        this._videoStatsIntervalId = setInterval(async () => {
+            const lkStats = await this.livekitConnection.getVideoStats();
+            if (lkStats) this.livekitVideoStats.set(lkStats);
+            // const spStats = await this.simplePeerConnection.getVideoStats();
+            // if (spStats) this.simplePeerVideoStats.set(spStats);
+        }, 600)
     }
 
     /**
@@ -166,7 +179,7 @@ export class FrontendConnectionManager {
     public async startSimplePeerConnection() {
         if (!this.livekitConnection || this.livekitConnection.connectionState.get() != ConnectionStates.connected) throw new Error("startSimplePeerConnection() called when livekitConnection was not fully connected!")
         if (!this.simplePeerConnection) throw new Error("startSimplePeerConnection() called without initilized simplePeerConnection!")
-        this.simplePeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true } }), true)
+        this.simplePeerConnection.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, { initiator: true, offerOptions: { offerToReceiveVideo: true, offerToReciveAudio: false } }), true)
     }
 
     /**
@@ -215,9 +228,10 @@ export class FrontendConnectionManager {
         }
     }
 
-    public async disconnect() {
-        if (this.simplePeerConnection) await this.simplePeerConnection.stop();
-        if (this.livekitConnection) await this.livekitConnection.close();
+    public async close() {
+        if (this.livekitConnection) this.livekitConnection.close();
+        if (this.simplePeerConnection) this.simplePeerConnection.stop();
+        if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
         for (const key in this._cleanupFuncs) this._cleanupFuncs[key]();
     }
 }
