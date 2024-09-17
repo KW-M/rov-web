@@ -22,6 +22,7 @@
   let livekitVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let simplePeerVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let videoContainerElem: HTMLDivElement | null = null;
+  let pulseVizMode = false;
   let videoHovered = false;
   let videoSwitchInProgress = false;
   let videoAspectRatio = 4 / 3;
@@ -29,6 +30,11 @@
 
   const drawerStore = getDrawerStore();
   const videoIsReady = (videoData: VideoStreamData) => !!(videoData.playable && videoData.stream != null);
+  $: if (pulseVizMode && livekitVideoStream.stream) {
+    (livekitVideoStream.stream as RemoteTrack).start();
+  } else if (!pulseVizMode && videoIsReady(simplePeerVideoStream)) {
+    (livekitVideoStream.stream as RemoteTrack).stop();
+  }
 
   const updateVideoVisibility = () => {
     log("updateVideoVisibility", videoIsReady(livekitVideoStream), videoIsReady(simplePeerVideoStream));
@@ -188,6 +194,8 @@
           width: "w-96",
         });
       }}
+      on:mouseenter={() => (pulseVizMode = true)}
+      on:mouseleave={() => (pulseVizMode = false)}
     >
       <Video_settings class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
     </button>
@@ -222,7 +230,7 @@
 
     <video
       class="video-livestream lk-video w-full h-full rounded-2xl"
-      class:!visible={videoIsReady(livekitVideoStream) && !videoIsReady(simplePeerVideoStream)}
+      class:!visible={videoIsReady(livekitVideoStream) && (!videoIsReady(simplePeerVideoStream) || pulseVizMode)}
       muted
       playsinline
       autoplay
@@ -248,6 +256,7 @@
     <video
       class="video-livestream sp-video w-full h-full rounded-2xl"
       class:!visible={videoIsReady(simplePeerVideoStream)}
+      class:animate-pulse={pulseVizMode}
       muted
       playsinline
       autoplay

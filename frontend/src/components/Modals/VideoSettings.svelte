@@ -34,7 +34,8 @@
   const size = nStore(1080);
   const maxBitrate = nStore(700_000);
   const updateBitrateWithResolution = nStore(true);
-  const playoutDelay = nStore(0);
+  const spPlayoutDelay = nStore(0);
+  const lkPlayoutDelay = nStore(0);
   const codec = nStore("vp9");
   const keepFullResLayer = nStore(false);
   const useSimplePeer = nStore(false);
@@ -196,7 +197,7 @@
   const onUseLivekitChange = (value?: boolean) => {
     if (value !== undefined) useLivekit.set(value);
     if (!useLivekit.get()) onUseTwitchChange(false);
-    else onPlayoutDelayChange();
+    else onLkPlayoutDelayChange();
     sendLivekitChange();
   };
 
@@ -205,17 +206,19 @@
     sendTwitchLivestreamChange();
   };
 
-  const onPlayoutDelayChange = async () => {
+  const onLkPlayoutDelayChange = async () => {
     if (useLivekit.get()) {
       frontendConnMngr.livekitConnection.remoteVideoTracks.get().forEach(async (track) => {
         const lkDelay = track.getPlayoutDelay() || 0;
         track.setMuted(true);
-        track.setPlayoutDelay(playoutDelay.get());
-        await waitfor(Math.max(playoutDelay.get() * 1000 - lkDelay * 1000, 0));
+        track.setPlayoutDelay(lkPlayoutDelay.get());
+        await waitfor(Math.max(lkPlayoutDelay.get() * 1000 - lkDelay * 1000, 0));
         track.setMuted(false);
       });
     }
+  };
 
+  const onSpPlayoutDelayChange = async () => {
     if (useSimplePeer.get()) {
       const spDelay = frontendConnMngr.simplePeerConnection.getPlayoutDelay();
       const streams = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get();
@@ -223,15 +226,14 @@
         for (const track of stream.getTracks()) track.enabled = false;
       }
 
-      frontendConnMngr.simplePeerConnection.setPlayoutDelay(playoutDelay.get());
-      await waitfor(Math.max(playoutDelay.get() * 1000 - spDelay * 1000, 0));
+      frontendConnMngr.simplePeerConnection.setPlayoutDelay(spPlayoutDelay.get());
+      await waitfor(Math.max(spPlayoutDelay.get() * 1000 - spDelay * 1000, 0));
       for (const [_, stream] of streams) {
         for (const track of stream.getTracks()) {
           track.enabled = true;
           console.log(track);
         }
       }
-      console.log("Playout Delay Set", playoutDelay.get(), spDelay, streams, Math.max(playoutDelay.get() * 1000 - spDelay * 1000, 0));
     }
   };
 
@@ -241,7 +243,7 @@
       useTwitch.set(isLivestreamRecording);
     });
     const spStreamsUnsub = frontendConnMngr.simplePeerConnection.remoteVideoStreams.subscribe((streams) => {
-      if (streams.size > 0) onPlayoutDelayChange();
+      if (streams.size > 0) onSpPlayoutDelayChange();
       // const stream = streams.values().next().value;
       // if (stream.getTracks().length > 0) {
       //   const track = stream.getTracks()[0];
@@ -252,7 +254,7 @@
       // }
     });
     const lkStreamUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((tracks) => {
-      if (tracks.size > 0) onPlayoutDelayChange();
+      if (tracks.size > 0) onLkPlayoutDelayChange();
       // const track = tracks.values().next().value;
       // if (track) {
       //   size.set(track.getSettings().height);
@@ -309,12 +311,21 @@
     </RangeSlider>
     <SlideToggle bind:checked={$updateBitrateWithResolution} name="Update" size="sm" active="bg-primary-700" class="mt-2 mx-auto">Update With Resolution + Codec</SlideToggle>
   {/if}
-  <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$playoutDelay} on:change={() => onPlayoutDelayChange()}>
-    <div class="flex justify-between items-center">
-      <h4 class="h4">Playout Delay</h4>
-      <div class="text-sm">{$playoutDelay} seconds</div>
-    </div>
-  </RangeSlider>
+  {#if $useLivekit}
+    <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$lkPlayoutDelay} on:change={() => onLkPlayoutDelayChange()}>
+      <div class="flex justify-between items-center">
+        <h4 class="h4">Livekit Playout Delay</h4>
+        <div class="text-sm">{$lkPlayoutDelay} seconds</div>
+      </div>
+    </RangeSlider>
+  {:else if $useSimplePeer}
+    <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$spPlayoutDelay} on:change={() => onSpPlayoutDelayChange()}>
+      <div class="flex justify-between items-center">
+        <h4 class="h4">Direct Playout Delay</h4>
+        <div class="text-sm">{$spPlayoutDelay} seconds</div>
+      </div>
+    </RangeSlider>
+  {/if}
 
   <TabGroup justify="justify-center" class="mt-8 mb-2" active="border-token !border-t-0 !border-r-0 !border-l-0 border-surface-900-50-token">
     <h4 class="h4 self-center flex-1 font-bold">Video Stats</h4>

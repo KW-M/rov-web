@@ -4,11 +4,11 @@ export type VideoCodec = "h264" | "vp8" | "vp9" | "av1" | "h265" | "unknown";
 export type ComputedRtpStats = rov_actions_proto.IVideoBaseStats & {
 
     // ice
-    selectedCandidatePairChanges: number;
-    canidatePairState: RTCStatsIceCandidatePairState;
-    canidatePairNominated: boolean;
-    iceState: RTCIceTransportState;
-    dtlsState: RTCDtlsTransportState;
+    selectedCandidatePairChanges?: number;
+    canidatePairState?: RTCStatsIceCandidatePairState;
+    canidatePairNominated?: boolean;
+    iceState?: RTCIceTransportState;
+    dtlsState?: RTCDtlsTransportState;
 
     // put all base rtc stats here
     allStats?: any[];
