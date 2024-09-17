@@ -51,8 +51,13 @@ if __name__ == "__main__":
         from pyvirtualdisplay.display import Display
 
         # running a virtual display (xvfb) is necessary to run graphical applications (chromium) in headless mode for some reason
-        vdisplay = Display(visible=True, size=(800, 600))
+        vdisplay = Display(
+            visible=False, backend="xvfb", size=(800, 600), color_depth=8
+        )
         vdisplay.start()
+        if vdisplay.is_alive() is False:
+            print("Failed to start virtual display", vdisplay)
+            exit(1)
 
     query_params = {
         "ROV_NAME": os.environ.get("ROV_NAME", "Default-ROV"),
