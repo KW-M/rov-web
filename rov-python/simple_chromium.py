@@ -50,6 +50,13 @@ if __name__ == "__main__":
     if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
         from pyvirtualdisplay.display import Display
 
+        size = tuple(
+            int(x) for x in os.environ.get("VIRTUAL_DISPLAY_SIZE", "800x600").split("x")
+        )
+        if len(size) != 2:
+            print("Invalid VIRTUAL_DISPLAY_SIZE use format WIDTHxHEIGHT")
+            size = (800, 600)
+
         # running a virtual display (xvfb) is necessary to run graphical applications (chromium) in headless mode for some reason
         vdisplay = Display(
             visible=False, backend="xvfb", size=(800, 600), color_depth=8
@@ -96,9 +103,9 @@ if __name__ == "__main__":
         "--password-store=basic",
         "--use-mock-keychain",
         "--no-service-autorun",
-        "--export-tagged-pdf",
         "--hide-scrollbars",
         "--mute-audio",
+        "--as-browser",  # run tests in main browser process
         "--safebrowsing-disable-auto-update",
         "--noerrdialogs",
         "--metrics-recording-only",
@@ -117,8 +124,6 @@ if __name__ == "__main__":
         "--disable-background-timer-throttling",
         "--disable-backgrounding-occluded-windows",
         "--disable-back-forward-cache",
-        "--disable-breakpad",  # Disables the crash reporting.
-        "--disable-crash-reporter",  # Disables the crash reporting.
         "--disable-chrome-browser-cloud-management"
         "--disable-client-side-phishing-detection",
         "--disable-component-extensions-with-background-pages",
@@ -136,6 +141,9 @@ if __name__ == "__main__":
         "--disable-notifications",
         "--dns-prefetch-disable",
     ]
+
+    # if vdisplay is not None and vdisplay.is_alive():
+    #     chromium_args.append("--display=" + str(vdisplay.new_display_var))
 
     if CHROMIUM_DEBUGING_PORT is not None:
         chromium_args.append("--remote-debugging-port=" + str(CHROMIUM_DEBUGING_PORT))
@@ -162,6 +170,18 @@ if __name__ == "__main__":
         # may be necessary to disable the sandbox for root docker containers
         chromium_args.append("--no-sandbox")
 
+    if os.environ.get("DISABLE_CHROMIUM_CRASHPAD", "true").upper() == "TRUE":
+        chromium_args.append("--disable-breakpad")
+        chromium_args.append("--disable-crash-reporter")
+        chromium_args.append("--disable-crashpad-for-testing")
+
+    if os.environ.get("DISABLE_GPU", "false").upper() == "TRUE":
+        chromium_args.append("--disable-gpu")
+
+    if os.environ.get("DISABLE_WEBRTC_HW_ENCODING", "false").upper() == "TRUE":
+        chromium_args.append("--disable-accelerated-video-encode")
+        chromium_args.append("--disable-accelerated-video-decode")
+
     # kill existing chromium processes just to make sure we are starting fresh:
     print("Killing all existing chromium processes:")
     subprocess.run(["killall", "Chromium"], check=False)
@@ -170,10 +190,12 @@ if __name__ == "__main__":
     # add the URL to the end of the args list to open the webpage
     chromium_args.append(URL)
     ARGS_STRING = '"' + '" "'.join(chromium_args) + '"'
+    if vdisplay is not None and vdisplay.is_alive():
+        ARGS_STRING = "DISPLAY=" + vdisplay.new_display_var + " " + ARGS_STRING
     print("Running chromium:")
     print(ARGS_STRING)
     browser_process = subprocess.Popen(
-        args=["DISPLAY=:0 " + ARGS_STRING],
+        args=[ARGS_STRING],
         shell=True,
         env=os.environ,
         cwd=os.getcwd(),
