@@ -5,6 +5,7 @@ import SimplePeer from '@thaunknown/simple-peer/full.js';
 import type SimplePeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { waitfor } from './util';
+import { RtpStatsParser } from './videoStatsParser';
 
 enum SimplePeerErrorCodes {
     ERR_WEBRTC_SUPPORT = 'ERR_WEBRTC_SUPPORT',
@@ -74,8 +75,8 @@ export class SimplePeerConnection {
     _signalMsgSendCounter: number = 0;
     // keeps track of how many signaling messages have been recived.
     _signalMsgRecivedCounter: number = 0;
-    // keeps track of the js interval id used for the WebRTC GetStats call.
-    _StatsGatherInterval: number;
+    // keeps track of the stats
+    _videoStatsParser: RtpStatsParser = new RtpStatsParser();
 
 
     constructor() { }
@@ -104,14 +105,6 @@ export class SimplePeerConnection {
         this._reconnectAttemptCount = reconnectAttemptCount;
         this._initiator = this._spConfig.initiator || false;
         this.connectionState.set(ConnectionStates.connecting);
-
-        // this._StatsGatherInterval = setInterval(async () => {
-        //     if (this._p) {
-        //         const peerConnection = (this._p as any)._pc as RTCPeerConnection;
-        //         const stats = await peerConnection.getStats(null)
-        //         logDebug("SP stats: ", stats)
-        //     }
-        // }, 4000) as any as number;
 
         this._p.on('signal', (signalData: Object) => {
             if (this._connectionId === -1) {
@@ -179,7 +172,6 @@ export class SimplePeerConnection {
             logError('SP error ', err)
             this.remoteVideoStreams.set(new Map());
             this._shouldReconnect = false;
-            clearInterval(this._StatsGatherInterval);
 
             // this.currentVideoStream.set(null);
             // if (this._shouldReconnect) {
@@ -212,7 +204,6 @@ export class SimplePeerConnection {
         this.connectionState.set(ConnectionStates.disconnectedOk);
         this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
-        clearInterval(this._StatsGatherInterval);
         logDebug("SP Stop", this._connectionId, this._p?.destroyed, this._p?.destroying)
         if (this._p) this._p.destroy();
         this._p = null;
@@ -298,8 +289,8 @@ export class SimplePeerConnection {
                 if (err) reject(err);
                 resolve(stats);
             })
-        })
-        return stats;
+        }) as any[];
+        return this._videoStatsParser.parse(stats);;
     }
 
     getPlayoutDelay() {

@@ -3,67 +3,106 @@
   import type { PopupSettings } from "./Popup/types";
   import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
   import { fade } from "svelte/transition";
-  import { waitfor } from "../js/shared/util";
+  import { onDestroy } from "svelte";
 
-  type savedTooltipData = {
+  interface TooltipData {
     id: string;
     label: string;
     config: PopupSettings;
-    actions?: {
-      update: (config: PopupSettings) => void;
-      open: () => void;
-      close: () => void;
-      toggle: () => void;
-      destroy: () => void;
-    };
-  };
-  let savedTooltips: nStoreT<savedTooltipData[]> = nStore([]);
+    update: (newArgs: PopupSettings) => void;
+    toggle: () => void;
+    open: () => void;
+    close: (callback?: () => void) => void;
+    destroy: () => void;
+  }
+  let tooltips: nStoreT<Map<string, TooltipData>> = nStore(new Map());
+  let tooltipIndex = 0;
 
   /** create a new tooltip with */
-  export const addTooltip = async (node: HTMLElement | SVGElement, message: string, config: PopupSettings | null) => {
-    let actions, tooltipId, savedInfo, tooltipIndex;
-    savedTooltips.update((tooltips) => {
-      tooltipId = "TT-" + String(tooltips.length);
+  export const addTooltip = (node: HTMLElement | SVGElement, opts: { label: string; config?: PopupSettings }) => {
+    let { label, config } = opts;
+    let tooltipId;
+    tooltips.update((allTooltips) => {
+      tooltipId = "TT-" + String(tooltipIndex++);
       config = Object.assign(
         {
           event: "hover",
           target: tooltipId,
-          delay: 1500,
-          placement: "left",
+          delay: 800,
+          placement: "top",
           middleware: {
-            autoPlacement: {
-              autoAlignment: false,
-              crossAxis: true,
-              allowedPlacements: ["left", "right"],
-            },
+            offset: -5,
+            arrowOffset: -8,
           },
         } as PopupSettings,
-        config,
+        config || {}
       );
-      tooltipIndex = tooltips.length;
-      tooltips.push({
+      const tooltipData = {
         id: tooltipId,
-        label: message,
-        config: config,
-      });
-      return tooltips;
+        label,
+        config,
+        update: () => {},
+        toggle: () => {},
+        open: () => {},
+        close: () => {},
+        destroy: () => {},
+      };
+      allTooltips.set(tooltipId, tooltipData);
+      return allTooltips;
     });
-    await waitfor(1);
-    actions = popup(node, config);
-    savedTooltips.get()[tooltipIndex].actions = actions;
-    return actions;
+    setTimeout(() => {
+      const actions = popup(node, config);
+      tooltips.update((allTooltips) => {
+        allTooltips.set(tooltipId, { ...allTooltips.get(tooltipId), ...actions });
+        return allTooltips;
+      });
+    }, 0);
+    return {
+      update: (newArgs) => tooltips.get().get(tooltipId)?.update(newArgs),
+      toggle: () => tooltips.get().get(tooltipId)?.toggle(),
+      open: () => tooltips.get().get(tooltipId)?.open(),
+      close: () => tooltips.get().get(tooltipId)?.close(),
+      destroy: () => {
+        tooltips.update((allTooltips) => {
+          allTooltips.get(tooltipId)?.destroy();
+          allTooltips.delete(tooltipId);
+          return allTooltips;
+        });
+      },
+    };
   };
 </script>
 
-{#each $savedTooltips as tooltip}
-  <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-filled z-40 pointer-events-none select-none" data-popup={tooltip.id} transition:fade={{ duration: 1000 }}>
+<script lang="ts">
+  onDestroy(() => {
+    tooltips.get().forEach((tooltip) => {
+      tooltip.destroy();
+    });
+  });
+</script>
+
+{#each $tooltips.values() as tooltip (tooltip.id)}
+  <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-glass-secondary border-token border-secondary-500 box-border z-50 pointer-events-none select-none" data-popup={tooltip.id}>
     {tooltip.label}
-    <div class="arrow variant-filled popper-tooltip-arrow" />
+    <div class="arrow triangle bg-transparent border-secondary-500 pointer-events-none" />
   </div>
 {/each}
 
 <style>
   /* ***** Popper Tooltip Customizations ***** */
+
+  .arrow.triangle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+    width: 0;
+    height: 0;
+    box-sizing: content-box;
+  }
 
   /*
   .popper-tooltip {

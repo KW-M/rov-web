@@ -3,7 +3,7 @@ import { gpadCtrl } from './js/gamepad';
 import { debugPageModeActive, fullscreenOpen } from './js/globalContext';
 import { RovActions } from './js/rovActions';
 import { frontendStartupFlow } from './js/startupFlow';
-import { bindNumberSvelteStoreToLocalStorage, bindStringSvelteStoreToLocalStorage, getURLQueryStringVariable } from './js/util';
+import { getURLQueryStringVariable } from './js/util';
 
 // DISABLE VITE HOT MOUDLE RELOADING:
 if (import.meta.hot)

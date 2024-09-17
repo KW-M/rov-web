@@ -94,8 +94,8 @@ export class FrontendConnectionManager {
         this._videoStatsIntervalId = setInterval(async () => {
             const lkStats = await this.livekitConnection.getVideoStats();
             if (lkStats) this.livekitVideoStats.set(lkStats);
-            // const spStats = await this.simplePeerConnection.getVideoStats();
-            // if (spStats) this.simplePeerVideoStats.set(spStats);
+            const spStats = await this.simplePeerConnection.getStats();
+            if (spStats) this.simplePeerVideoStats.set(spStats);
         }, 600)
     }
 

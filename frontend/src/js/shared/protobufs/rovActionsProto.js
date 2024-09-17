@@ -11678,12 +11678,12 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * Properties of a LivekitVideoStatsResponse.
          * @memberof rov_actions_proto
          * @interface ILivekitVideoStatsResponse
-         * @property {boolean|null} [Enabled] LivekitVideoStatsResponse Enabled
-         * @property {string|null} [Codec] LivekitVideoStatsResponse Codec
-         * @property {boolean|null} [AllowBackupCodec] LivekitVideoStatsResponse AllowBackupCodec
-         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] LivekitVideoStatsResponse BaseStream
-         * @property {Array.<rov_actions_proto.IVideoStreamOptions>|null} [SimulcastLayers] LivekitVideoStatsResponse SimulcastLayers
-         * @property {string|null} [RtcSenderStatsJson] LivekitVideoStatsResponse RtcSenderStatsJson
+         * @property {boolean|null} [enabled] LivekitVideoStatsResponse enabled
+         * @property {string|null} [codec] LivekitVideoStatsResponse codec
+         * @property {boolean|null} [allowBackupCodec] LivekitVideoStatsResponse allowBackupCodec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [baseStream] LivekitVideoStatsResponse baseStream
+         * @property {Array.<rov_actions_proto.IVideoStreamOptions>|null} [simulcastLayers] LivekitVideoStatsResponse simulcastLayers
+         * @property {rov_actions_proto.IVideoBaseStats|null} [stats] LivekitVideoStatsResponse stats
          */
 
         /**
@@ -11695,7 +11695,7 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * @param {rov_actions_proto.ILivekitVideoStatsResponse=} [properties] Properties to set
          */
         function LivekitVideoStatsResponse(properties) {
-            this.SimulcastLayers = [];
+            this.simulcastLayers = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -11703,52 +11703,52 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * LivekitVideoStatsResponse Enabled.
-         * @member {boolean} Enabled
+         * LivekitVideoStatsResponse enabled.
+         * @member {boolean} enabled
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.Enabled = false;
+        LivekitVideoStatsResponse.prototype.enabled = false;
 
         /**
-         * LivekitVideoStatsResponse Codec.
-         * @member {string} Codec
+         * LivekitVideoStatsResponse codec.
+         * @member {string} codec
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.Codec = "";
+        LivekitVideoStatsResponse.prototype.codec = "";
 
         /**
-         * LivekitVideoStatsResponse AllowBackupCodec.
-         * @member {boolean} AllowBackupCodec
+         * LivekitVideoStatsResponse allowBackupCodec.
+         * @member {boolean} allowBackupCodec
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.AllowBackupCodec = false;
+        LivekitVideoStatsResponse.prototype.allowBackupCodec = false;
 
         /**
-         * LivekitVideoStatsResponse BaseStream.
-         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * LivekitVideoStatsResponse baseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} baseStream
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.BaseStream = null;
+        LivekitVideoStatsResponse.prototype.baseStream = null;
 
         /**
-         * LivekitVideoStatsResponse SimulcastLayers.
-         * @member {Array.<rov_actions_proto.IVideoStreamOptions>} SimulcastLayers
+         * LivekitVideoStatsResponse simulcastLayers.
+         * @member {Array.<rov_actions_proto.IVideoStreamOptions>} simulcastLayers
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.SimulcastLayers = $util.emptyArray;
+        LivekitVideoStatsResponse.prototype.simulcastLayers = $util.emptyArray;
 
         /**
-         * LivekitVideoStatsResponse RtcSenderStatsJson.
-         * @member {string} RtcSenderStatsJson
+         * LivekitVideoStatsResponse stats.
+         * @member {rov_actions_proto.IVideoBaseStats|null|undefined} stats
          * @memberof rov_actions_proto.LivekitVideoStatsResponse
          * @instance
          */
-        LivekitVideoStatsResponse.prototype.RtcSenderStatsJson = "";
+        LivekitVideoStatsResponse.prototype.stats = null;
 
         /**
          * Creates a new LivekitVideoStatsResponse instance using the specified properties.
@@ -11774,19 +11774,19 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         LivekitVideoStatsResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
-                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
-            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.Codec);
-            if (message.AllowBackupCodec != null && Object.hasOwnProperty.call(message, "AllowBackupCodec"))
-                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.AllowBackupCodec);
-            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
-                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-            if (message.SimulcastLayers != null && message.SimulcastLayers.length)
-                for (let i = 0; i < message.SimulcastLayers.length; ++i)
-                    $root.rov_actions_proto.VideoStreamOptions.encode(message.SimulcastLayers[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-            if (message.RtcSenderStatsJson != null && Object.hasOwnProperty.call(message, "RtcSenderStatsJson"))
-                writer.uint32(/* id 6, wireType 2 =*/50).string(message.RtcSenderStatsJson);
+            if (message.enabled != null && Object.hasOwnProperty.call(message, "enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.enabled);
+            if (message.codec != null && Object.hasOwnProperty.call(message, "codec"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.codec);
+            if (message.allowBackupCodec != null && Object.hasOwnProperty.call(message, "allowBackupCodec"))
+                writer.uint32(/* id 3, wireType 0 =*/24).bool(message.allowBackupCodec);
+            if (message.baseStream != null && Object.hasOwnProperty.call(message, "baseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.baseStream, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.simulcastLayers != null && message.simulcastLayers.length)
+                for (let i = 0; i < message.simulcastLayers.length; ++i)
+                    $root.rov_actions_proto.VideoStreamOptions.encode(message.simulcastLayers[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
+                $root.rov_actions_proto.VideoBaseStats.encode(message.stats, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             return writer;
         };
 
@@ -11822,29 +11822,29 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.Enabled = reader.bool();
+                        message.enabled = reader.bool();
                         break;
                     }
                 case 2: {
-                        message.Codec = reader.string();
+                        message.codec = reader.string();
                         break;
                     }
                 case 3: {
-                        message.AllowBackupCodec = reader.bool();
+                        message.allowBackupCodec = reader.bool();
                         break;
                     }
                 case 4: {
-                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        message.baseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
                 case 5: {
-                        if (!(message.SimulcastLayers && message.SimulcastLayers.length))
-                            message.SimulcastLayers = [];
-                        message.SimulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
+                        if (!(message.simulcastLayers && message.simulcastLayers.length))
+                            message.simulcastLayers = [];
+                        message.simulcastLayers.push($root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32()));
                         break;
                     }
                 case 6: {
-                        message.RtcSenderStatsJson = reader.string();
+                        message.stats = $root.rov_actions_proto.VideoBaseStats.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -11882,32 +11882,34 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         LivekitVideoStatsResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
-                if (typeof message.Enabled !== "boolean")
-                    return "Enabled: boolean expected";
-            if (message.Codec != null && message.hasOwnProperty("Codec"))
-                if (!$util.isString(message.Codec))
-                    return "Codec: string expected";
-            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
-                if (typeof message.AllowBackupCodec !== "boolean")
-                    return "AllowBackupCodec: boolean expected";
-            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
-                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+            if (message.enabled != null && message.hasOwnProperty("enabled"))
+                if (typeof message.enabled !== "boolean")
+                    return "enabled: boolean expected";
+            if (message.codec != null && message.hasOwnProperty("codec"))
+                if (!$util.isString(message.codec))
+                    return "codec: string expected";
+            if (message.allowBackupCodec != null && message.hasOwnProperty("allowBackupCodec"))
+                if (typeof message.allowBackupCodec !== "boolean")
+                    return "allowBackupCodec: boolean expected";
+            if (message.baseStream != null && message.hasOwnProperty("baseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.baseStream);
                 if (error)
-                    return "BaseStream." + error;
+                    return "baseStream." + error;
             }
-            if (message.SimulcastLayers != null && message.hasOwnProperty("SimulcastLayers")) {
-                if (!Array.isArray(message.SimulcastLayers))
-                    return "SimulcastLayers: array expected";
-                for (let i = 0; i < message.SimulcastLayers.length; ++i) {
-                    let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.SimulcastLayers[i]);
+            if (message.simulcastLayers != null && message.hasOwnProperty("simulcastLayers")) {
+                if (!Array.isArray(message.simulcastLayers))
+                    return "simulcastLayers: array expected";
+                for (let i = 0; i < message.simulcastLayers.length; ++i) {
+                    let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.simulcastLayers[i]);
                     if (error)
-                        return "SimulcastLayers." + error;
+                        return "simulcastLayers." + error;
                 }
             }
-            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
-                if (!$util.isString(message.RtcSenderStatsJson))
-                    return "RtcSenderStatsJson: string expected";
+            if (message.stats != null && message.hasOwnProperty("stats")) {
+                let error = $root.rov_actions_proto.VideoBaseStats.verify(message.stats);
+                if (error)
+                    return "stats." + error;
+            }
             return null;
         };
 
@@ -11923,29 +11925,32 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object instanceof $root.rov_actions_proto.LivekitVideoStatsResponse)
                 return object;
             let message = new $root.rov_actions_proto.LivekitVideoStatsResponse();
-            if (object.Enabled != null)
-                message.Enabled = Boolean(object.Enabled);
-            if (object.Codec != null)
-                message.Codec = String(object.Codec);
-            if (object.AllowBackupCodec != null)
-                message.AllowBackupCodec = Boolean(object.AllowBackupCodec);
-            if (object.BaseStream != null) {
-                if (typeof object.BaseStream !== "object")
-                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.BaseStream: object expected");
-                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            if (object.enabled != null)
+                message.enabled = Boolean(object.enabled);
+            if (object.codec != null)
+                message.codec = String(object.codec);
+            if (object.allowBackupCodec != null)
+                message.allowBackupCodec = Boolean(object.allowBackupCodec);
+            if (object.baseStream != null) {
+                if (typeof object.baseStream !== "object")
+                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.baseStream: object expected");
+                message.baseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.baseStream);
             }
-            if (object.SimulcastLayers) {
-                if (!Array.isArray(object.SimulcastLayers))
-                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.SimulcastLayers: array expected");
-                message.SimulcastLayers = [];
-                for (let i = 0; i < object.SimulcastLayers.length; ++i) {
-                    if (typeof object.SimulcastLayers[i] !== "object")
-                        throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.SimulcastLayers: object expected");
-                    message.SimulcastLayers[i] = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.SimulcastLayers[i]);
+            if (object.simulcastLayers) {
+                if (!Array.isArray(object.simulcastLayers))
+                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.simulcastLayers: array expected");
+                message.simulcastLayers = [];
+                for (let i = 0; i < object.simulcastLayers.length; ++i) {
+                    if (typeof object.simulcastLayers[i] !== "object")
+                        throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.simulcastLayers: object expected");
+                    message.simulcastLayers[i] = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.simulcastLayers[i]);
                 }
             }
-            if (object.RtcSenderStatsJson != null)
-                message.RtcSenderStatsJson = String(object.RtcSenderStatsJson);
+            if (object.stats != null) {
+                if (typeof object.stats !== "object")
+                    throw TypeError(".rov_actions_proto.LivekitVideoStatsResponse.stats: object expected");
+                message.stats = $root.rov_actions_proto.VideoBaseStats.fromObject(object.stats);
+            }
             return message;
         };
 
@@ -11963,29 +11968,29 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults)
-                object.SimulcastLayers = [];
+                object.simulcastLayers = [];
             if (options.defaults) {
-                object.Enabled = false;
-                object.Codec = "";
-                object.AllowBackupCodec = false;
-                object.BaseStream = null;
-                object.RtcSenderStatsJson = "";
+                object.enabled = false;
+                object.codec = "";
+                object.allowBackupCodec = false;
+                object.baseStream = null;
+                object.stats = null;
             }
-            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
-                object.Enabled = message.Enabled;
-            if (message.Codec != null && message.hasOwnProperty("Codec"))
-                object.Codec = message.Codec;
-            if (message.AllowBackupCodec != null && message.hasOwnProperty("AllowBackupCodec"))
-                object.AllowBackupCodec = message.AllowBackupCodec;
-            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
-                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
-            if (message.SimulcastLayers && message.SimulcastLayers.length) {
-                object.SimulcastLayers = [];
-                for (let j = 0; j < message.SimulcastLayers.length; ++j)
-                    object.SimulcastLayers[j] = $root.rov_actions_proto.VideoStreamOptions.toObject(message.SimulcastLayers[j], options);
+            if (message.enabled != null && message.hasOwnProperty("enabled"))
+                object.enabled = message.enabled;
+            if (message.codec != null && message.hasOwnProperty("codec"))
+                object.codec = message.codec;
+            if (message.allowBackupCodec != null && message.hasOwnProperty("allowBackupCodec"))
+                object.allowBackupCodec = message.allowBackupCodec;
+            if (message.baseStream != null && message.hasOwnProperty("baseStream"))
+                object.baseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.baseStream, options);
+            if (message.simulcastLayers && message.simulcastLayers.length) {
+                object.simulcastLayers = [];
+                for (let j = 0; j < message.simulcastLayers.length; ++j)
+                    object.simulcastLayers[j] = $root.rov_actions_proto.VideoStreamOptions.toObject(message.simulcastLayers[j], options);
             }
-            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
-                object.RtcSenderStatsJson = message.RtcSenderStatsJson;
+            if (message.stats != null && message.hasOwnProperty("stats"))
+                object.stats = $root.rov_actions_proto.VideoBaseStats.toObject(message.stats, options);
             return object;
         };
 
@@ -12024,10 +12029,10 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
          * Properties of a SimplePeerVideoStatsResponse.
          * @memberof rov_actions_proto
          * @interface ISimplePeerVideoStatsResponse
-         * @property {boolean|null} [Enabled] SimplePeerVideoStatsResponse Enabled
-         * @property {string|null} [Codec] SimplePeerVideoStatsResponse Codec
-         * @property {rov_actions_proto.IVideoStreamOptions|null} [BaseStream] SimplePeerVideoStatsResponse BaseStream
-         * @property {string|null} [RtcSenderStatsJson] SimplePeerVideoStatsResponse RtcSenderStatsJson
+         * @property {boolean|null} [enabled] SimplePeerVideoStatsResponse enabled
+         * @property {string|null} [codec] SimplePeerVideoStatsResponse codec
+         * @property {rov_actions_proto.IVideoStreamOptions|null} [baseStream] SimplePeerVideoStatsResponse baseStream
+         * @property {rov_actions_proto.IVideoBaseStats|null} [stats] SimplePeerVideoStatsResponse stats
          */
 
         /**
@@ -12046,36 +12051,36 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         }
 
         /**
-         * SimplePeerVideoStatsResponse Enabled.
-         * @member {boolean} Enabled
+         * SimplePeerVideoStatsResponse enabled.
+         * @member {boolean} enabled
          * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplePeerVideoStatsResponse.prototype.Enabled = false;
+        SimplePeerVideoStatsResponse.prototype.enabled = false;
 
         /**
-         * SimplePeerVideoStatsResponse Codec.
-         * @member {string} Codec
+         * SimplePeerVideoStatsResponse codec.
+         * @member {string} codec
          * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplePeerVideoStatsResponse.prototype.Codec = "";
+        SimplePeerVideoStatsResponse.prototype.codec = "";
 
         /**
-         * SimplePeerVideoStatsResponse BaseStream.
-         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} BaseStream
+         * SimplePeerVideoStatsResponse baseStream.
+         * @member {rov_actions_proto.IVideoStreamOptions|null|undefined} baseStream
          * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplePeerVideoStatsResponse.prototype.BaseStream = null;
+        SimplePeerVideoStatsResponse.prototype.baseStream = null;
 
         /**
-         * SimplePeerVideoStatsResponse RtcSenderStatsJson.
-         * @member {string} RtcSenderStatsJson
+         * SimplePeerVideoStatsResponse stats.
+         * @member {rov_actions_proto.IVideoBaseStats|null|undefined} stats
          * @memberof rov_actions_proto.SimplePeerVideoStatsResponse
          * @instance
          */
-        SimplePeerVideoStatsResponse.prototype.RtcSenderStatsJson = "";
+        SimplePeerVideoStatsResponse.prototype.stats = null;
 
         /**
          * Creates a new SimplePeerVideoStatsResponse instance using the specified properties.
@@ -12101,14 +12106,14 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         SimplePeerVideoStatsResponse.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.Enabled != null && Object.hasOwnProperty.call(message, "Enabled"))
-                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.Enabled);
-            if (message.Codec != null && Object.hasOwnProperty.call(message, "Codec"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.Codec);
-            if (message.BaseStream != null && Object.hasOwnProperty.call(message, "BaseStream"))
-                $root.rov_actions_proto.VideoStreamOptions.encode(message.BaseStream, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-            if (message.RtcSenderStatsJson != null && Object.hasOwnProperty.call(message, "RtcSenderStatsJson"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.RtcSenderStatsJson);
+            if (message.enabled != null && Object.hasOwnProperty.call(message, "enabled"))
+                writer.uint32(/* id 1, wireType 0 =*/8).bool(message.enabled);
+            if (message.codec != null && Object.hasOwnProperty.call(message, "codec"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.codec);
+            if (message.baseStream != null && Object.hasOwnProperty.call(message, "baseStream"))
+                $root.rov_actions_proto.VideoStreamOptions.encode(message.baseStream, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
+                $root.rov_actions_proto.VideoBaseStats.encode(message.stats, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             return writer;
         };
 
@@ -12144,19 +12149,19 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.Enabled = reader.bool();
+                        message.enabled = reader.bool();
                         break;
                     }
                 case 2: {
-                        message.Codec = reader.string();
+                        message.codec = reader.string();
                         break;
                     }
                 case 3: {
-                        message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
+                        message.baseStream = $root.rov_actions_proto.VideoStreamOptions.decode(reader, reader.uint32());
                         break;
                     }
                 case 4: {
-                        message.RtcSenderStatsJson = reader.string();
+                        message.stats = $root.rov_actions_proto.VideoBaseStats.decode(reader, reader.uint32());
                         break;
                     }
                 default:
@@ -12194,20 +12199,22 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
         SimplePeerVideoStatsResponse.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
-                if (typeof message.Enabled !== "boolean")
-                    return "Enabled: boolean expected";
-            if (message.Codec != null && message.hasOwnProperty("Codec"))
-                if (!$util.isString(message.Codec))
-                    return "Codec: string expected";
-            if (message.BaseStream != null && message.hasOwnProperty("BaseStream")) {
-                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.BaseStream);
+            if (message.enabled != null && message.hasOwnProperty("enabled"))
+                if (typeof message.enabled !== "boolean")
+                    return "enabled: boolean expected";
+            if (message.codec != null && message.hasOwnProperty("codec"))
+                if (!$util.isString(message.codec))
+                    return "codec: string expected";
+            if (message.baseStream != null && message.hasOwnProperty("baseStream")) {
+                let error = $root.rov_actions_proto.VideoStreamOptions.verify(message.baseStream);
                 if (error)
-                    return "BaseStream." + error;
+                    return "baseStream." + error;
             }
-            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
-                if (!$util.isString(message.RtcSenderStatsJson))
-                    return "RtcSenderStatsJson: string expected";
+            if (message.stats != null && message.hasOwnProperty("stats")) {
+                let error = $root.rov_actions_proto.VideoBaseStats.verify(message.stats);
+                if (error)
+                    return "stats." + error;
+            }
             return null;
         };
 
@@ -12223,17 +12230,20 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
             if (object instanceof $root.rov_actions_proto.SimplePeerVideoStatsResponse)
                 return object;
             let message = new $root.rov_actions_proto.SimplePeerVideoStatsResponse();
-            if (object.Enabled != null)
-                message.Enabled = Boolean(object.Enabled);
-            if (object.Codec != null)
-                message.Codec = String(object.Codec);
-            if (object.BaseStream != null) {
-                if (typeof object.BaseStream !== "object")
-                    throw TypeError(".rov_actions_proto.SimplePeerVideoStatsResponse.BaseStream: object expected");
-                message.BaseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.BaseStream);
+            if (object.enabled != null)
+                message.enabled = Boolean(object.enabled);
+            if (object.codec != null)
+                message.codec = String(object.codec);
+            if (object.baseStream != null) {
+                if (typeof object.baseStream !== "object")
+                    throw TypeError(".rov_actions_proto.SimplePeerVideoStatsResponse.baseStream: object expected");
+                message.baseStream = $root.rov_actions_proto.VideoStreamOptions.fromObject(object.baseStream);
             }
-            if (object.RtcSenderStatsJson != null)
-                message.RtcSenderStatsJson = String(object.RtcSenderStatsJson);
+            if (object.stats != null) {
+                if (typeof object.stats !== "object")
+                    throw TypeError(".rov_actions_proto.SimplePeerVideoStatsResponse.stats: object expected");
+                message.stats = $root.rov_actions_proto.VideoBaseStats.fromObject(object.stats);
+            }
             return message;
         };
 
@@ -12251,19 +12261,19 @@ export const rov_actions_proto = $root.rov_actions_proto = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.Enabled = false;
-                object.Codec = "";
-                object.BaseStream = null;
-                object.RtcSenderStatsJson = "";
+                object.enabled = false;
+                object.codec = "";
+                object.baseStream = null;
+                object.stats = null;
             }
-            if (message.Enabled != null && message.hasOwnProperty("Enabled"))
-                object.Enabled = message.Enabled;
-            if (message.Codec != null && message.hasOwnProperty("Codec"))
-                object.Codec = message.Codec;
-            if (message.BaseStream != null && message.hasOwnProperty("BaseStream"))
-                object.BaseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.BaseStream, options);
-            if (message.RtcSenderStatsJson != null && message.hasOwnProperty("RtcSenderStatsJson"))
-                object.RtcSenderStatsJson = message.RtcSenderStatsJson;
+            if (message.enabled != null && message.hasOwnProperty("enabled"))
+                object.enabled = message.enabled;
+            if (message.codec != null && message.hasOwnProperty("codec"))
+                object.codec = message.codec;
+            if (message.baseStream != null && message.hasOwnProperty("baseStream"))
+                object.baseStream = $root.rov_actions_proto.VideoStreamOptions.toObject(message.baseStream, options);
+            if (message.stats != null && message.hasOwnProperty("stats"))
+                object.stats = $root.rov_actions_proto.VideoBaseStats.toObject(message.stats, options);
             return object;
         };
 

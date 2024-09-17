@@ -17,6 +17,7 @@
   });
   onDestroy(() => {
     tutorialModeActive.set(false);
+    localStorage.setItem("tutorialComplete", "true");
   });
 </script>
 

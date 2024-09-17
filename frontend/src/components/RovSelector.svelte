@@ -1,8 +1,7 @@
 <script lang="ts">
-  import ChevronRight from "svelte-google-materialdesign-icons/Chevron_right.svelte";
   import { fade } from "svelte/transition";
   import { frontendConnMngr, type LivekitRoomInfo } from "../js/frontendConnManager";
-  import { ConnectionStates, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../js/shared/consts";
+  import { ConnectionStates } from "../js/shared/consts";
   import { showToastMessage, ToastSeverity } from "../js/toastMessageManager";
   import { modalPasswordPrompt } from "../js/uiDialogs";
   import { decrypt } from "../js/shared/encryption";
@@ -11,6 +10,8 @@
   import { fullscreenOpen, takenLivekitUsernameIds } from "../js/globalContext";
   import { isTokenValid } from "../js/shared/livekit/livekitTokens";
   import { type AuthTokenInfo } from "../js/shared/livekit/adminlessActions";
+  import { Chevron_right } from "svelte-google-materialdesign-icons";
+  import { localStore } from "../js/localStorage";
 
   export let selectedRov = "";
 
@@ -25,8 +26,9 @@
 
     selectedRov = rovRoomInfo.name;
 
-    // check if there is a saved token
-    let authToken = localStorage.getItem("authToken-" + rovRoomInfo.name);
+    // check if there is a saved token for this ROV in local storage
+    const authTokens = localStore.getItem("authTokens") || {};
+    let authToken = authTokens[rovRoomInfo.name] || null;
     if (authToken) {
       const validUserId = await isTokenValid(authToken);
       if (validUserId && rovRoomInfo.token.encrypted && !takenLivekitUsernameIds.get().has(validUserId)) {
@@ -34,7 +36,8 @@
         return frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
       } else {
         logInfo("Cached token is invalid. Removing it.", rovRoomInfo.name, rovRoomInfo.token);
-        // localStorage.removeItem("authToken-" + rovRoomInfo.name);
+        // remove the invalid token from local storage
+        localStore.updateItem("authTokens", { [rovRoomInfo.name]: undefined });
         authToken = null;
       }
     }
@@ -73,7 +76,8 @@
 
     // if we finally have a valid authToken, connect
     if (authToken && (await isTokenValid(authToken))) {
-      localStorage.setItem("authToken-" + rovRoomInfo.name, authToken);
+      // save the token to local storage
+      localStore.updateItem("authToken", { [rovRoomInfo.name]: authToken });
       frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
     } else {
       showToastMessage("ROV is not ready yet <br/>(Token expired or invalid)", 6000, false, ToastSeverity.warning);
@@ -93,7 +97,7 @@
   <!-- {#if collapsedMode}
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourIdentity}</span></p>
   {/if} -->
-  <div class:p-1={collapsedMode} class={` bg-surface-700 border-2 border-surface-500 m-0 items-center flex whitespace-nowrap text-center rounded-xl max-h-full  ${!collapsedMode ? "flex-col shadow-2xl" : "rounded-b-none border-b-0"} ${collapsedMode && $fullscreenOpen ? "hidden" : ""}`}>
+  <div class:p-1={collapsedMode} class={`variant-glass-surface border-2 border-surface-500 m-0 items-center flex whitespace-nowrap text-center rounded-xl max-h-full  ${!collapsedMode ? "flex-col shadow-2xl" : "rounded-b-none border-b-0"} ${collapsedMode && $fullscreenOpen ? "hidden" : ""}`}>
     {#if $availableRovRooms.length == 0}
       <h2 class="text-center py-4 px-6 font-bold">Searching for online ROVs...</h2>
     {:else if !collapsedMode}
@@ -102,7 +106,7 @@
         {#each $availableRovRooms as rovRoom}
           <button in:fade disabled={!tokenAvailable(rovRoom.token)} on:click={() => connectToRov(rovRoom)} class="btn ring-white variant-filled-primary align-top block m-1 pointer-events-auto"
             >{rovRoom.name}
-            <ChevronRight variant="round" class="text-2xl inline-block pointer-events-none" tabindex="-1" />
+            <Chevron_right variant="round" class="text-2xl inline-block pointer-events-none" tabindex="-1" />
           </button>
         {/each}
       </div>

@@ -1,16 +1,14 @@
-import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, DECODE_TXT, ENCODE_TXT, PROXY_PREFIX, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates, SIMPLEPEER_BASE_CONFIG, SIMPLEPEER_CAPTURE_CONFIG } from './shared/consts';
-import { asyncExpBackoff, changesSubscribe, getWebsocketURL, waitfor, waitforCondition } from './shared/util';
-import { getPublisherAccessToken } from './shared/livekit/livekitTokens';
+import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates, SIMPLEPEER_BASE_CONFIG, SIMPLEPEER_CAPTURE_CONFIG } from './shared/consts';
+import { asyncExpBackoff, changesSubscribe, waitforCondition } from './shared/util';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
 import { SimplePeerConnection } from "./shared/simplePeer"
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
-import { twitchStream } from "./twitchStream";
 import { URL_PARAMS } from "./constsInternal";
 import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 import type { TrackPublishOptions, VideoCaptureOptions, VideoSenderStats } from "livekit-client";
 import { LivekitPublisherConnection } from './livekitPubConn';
 import nStore from './shared/libraries/nStore';
-import { type ComputedSenderStats } from './shared/videoStatsParser';
+import { type ComputedRtpStats } from './shared/videoStatsParser';
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -33,9 +31,9 @@ class InternalConnectionManager {
     // keeps track of the current parameters of the video stream being sent to all simplePeer clients/users.
     simplePeerCameraOptions = nStore<MediaStreamConstraints>(SIMPLEPEER_CAPTURE_CONFIG);
 
-    // video stats for the cloud livekit connection & simplePeer connections
-    livekitVideoStats = nStore<ComputedSenderStats | null>(null);
-    simplePeerVideoStats = nStore<Map<string, ComputedSenderStats>>(new Map());
+    // // video stats for the cloud livekit connection & simplePeer connections
+    // livekitVideoStats = nStore<ComputedSenderStats | null>(null);
+    // simplePeerVideoStats = nStore<Map<string, ComputedSenderStats>>(new Map());
 
     // interval id for checking video stats loop
     _videoStatsIntervalId: NodeJS.Timeout | null;
@@ -113,20 +111,19 @@ class InternalConnectionManager {
     }
 
     public async sendVideoStatsUpdate() {
-        const lkStats = await this._cloudLivekitConnection.getVideoStats().catch((e) => { logWarn("LK: Error getting RTP video stats: ", e); return [e] });;
+        const lkStats = await this._cloudLivekitConnection.getVideoStats().catch((e) => { logWarn("LK: Error getting RTP video stats: ", e); return { allStats: [String(e)] } as ComputedRtpStats }) as ComputedRtpStats;
         this.sendMessage({
             LivekitVideoStats: {
-                Enabled: !!this._cloudLivekitConnection.camTrack && this._cloudLivekitConnection._roomConn?.localParticipant.videoTrackPublications.size > 0,
-                RtcSenderStatsJson: JSON.stringify(lkStats),
-                AllowBackupCodec: !!this._cloudLivekitConnection._videoPublishOptions?.backupCodec,
-                BaseStream: {
+                enabled: !!this._cloudLivekitConnection.camTrack && this._cloudLivekitConnection._roomConn?.localParticipant.videoTrackPublications.size > 0,
+                allowBackupCodec: !!this._cloudLivekitConnection._videoPublishOptions?.backupCodec,
+                baseStream: {
                     Width: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.width,
                     Height: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.height,
                     Fps: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.frameRate,
                     MaxBitrate: this._cloudLivekitConnection._videoPublishOptions?.videoEncoding?.maxBitrate,
                 },
-                Codec: this._cloudLivekitConnection._videoPublishOptions?.videoCodec || "unknown",
-                SimulcastLayers: this._cloudLivekitConnection._videoPublishOptions?.videoSimulcastLayers?.map((preset) => {
+                codec: this._cloudLivekitConnection._videoPublishOptions?.videoCodec || "unknown",
+                simulcastLayers: this._cloudLivekitConnection._videoPublishOptions?.videoSimulcastLayers?.map((preset) => {
                     return {
                         Width: preset.width,
                         Height: preset.height,
@@ -134,21 +131,22 @@ class InternalConnectionManager {
                         Fps: preset.encoding?.maxFramerate,
                     }
                 }) || [],
+                stats: { ...lkStats }
             }
         }, false, [])
         const spCameraOpts = this.simplePeerCameraOptions.get();
         for (const [userId, spConn] of this._simplePeerConnections) {
             if (!spConn || spConn.connectionState.get() !== ConnectionStates.connected) continue;
-            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return [e] });
+            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return { allStats: [String(e)] } as ComputedRtpStats }) as ComputedRtpStats;
             this.sendMessage({
                 SimplePeerVideoStats: {
-                    Enabled: !!spConn,
-                    RtcSenderStatsJson: JSON.stringify(spStats),
-                    BaseStream: {
+                    enabled: !!spConn,
+                    baseStream: {
                         Width: Number((spCameraOpts.video as MediaTrackConstraints)?.width),
                         Height: Number((spCameraOpts.video as MediaTrackConstraints)?.height),
                         Fps: Number((spCameraOpts.video as MediaTrackConstraints)?.frameRate),
-                    }
+                    },
+                    stats: { ...spStats }
                 }
             }, false, [userId])
         }
@@ -268,9 +266,9 @@ class InternalConnectionManager {
     }
 
     public async stop() {
-        clearInterval(this._videoStatsCheckTimer!);
+        clearInterval(this._videoStatsIntervalId!);
         this._cloudLivekitConnection.close();
-        for (const [userId, spConn] of this._simplePeerConnections) {
+        for (const [_, spConn] of this._simplePeerConnections) {
             spConn.stop();
         }
     }

@@ -414,24 +414,24 @@ message LogMessageResponse {
 }
 
 message LivekitVideoStatsResponse {
-    bool Enabled = 1;
+    bool enabled = 1;
     // The base codec used for the livekit video stream
-    string Codec = 2;
+    string codec = 2;
     // if livekit is allowed to publish a second video stream if needed with a more widely supported codec like H264 or VP8
-    bool AllowBackupCodec = 3;
+    bool allowBackupCodec = 3;
     // The base options used for the livekit video stream and capture device
-    VideoStreamOptions BaseStream = 4;
+    VideoStreamOptions baseStream = 4;
     // additonal layers added to the livekit video stream for simulcast (empty = no simulcast)
-    repeated VideoStreamOptions SimulcastLayers = 5;
+    repeated VideoStreamOptions simulcastLayers = 5;
     // The stats of the livekit video sender rtp stream
-    string RtcSenderStatsJson = 6;
+    VideoBaseStats stats = 6;
 }
 
 message SimplePeerVideoStatsResponse {
-    bool Enabled = 1;
-    string Codec = 2;
-    VideoStreamOptions BaseStream = 3;
-    string RtcSenderStatsJson = 4;
+    bool enabled = 1;
+    string codec = 2;
+    VideoStreamOptions baseStream = 3;
+    VideoBaseStats stats = 4;
 }
 
 message ResponseBackendMetadata {

@@ -5,13 +5,13 @@ import { log, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";
 import { takenLivekitUsernameIds } from "./globalContext";
-import { RtpReciverStatsParser } from "./shared/videoStatsParser";
+import { RtpRecieverStatsParser } from "./shared/videoStatsParser";
 
 export class LivekitViewerConnection extends LivekitBaseConnection {
     // remote video tracks maps from the track source name to the livekit track object
     remoteVideoTracks: nStoreT<Map<String, RemoteTrack | null>>;
     // video stats
-    videoStatsParser = new RtpReciverStatsParser()
+    videoStatsParser = new RtpRecieverStatsParser()
     // flag to indicate if the rov is currently broadcasting a livestream publicly (TWITCH)
     isLivestreamRecording = nStore<boolean>(false);
 

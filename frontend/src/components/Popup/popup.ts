@@ -80,12 +80,19 @@ export function popup(triggerNode: HTMLElement | SVGElement, args: PopupSettings
                     bottom: 'top',
                     left: 'right'
                 }[placement.split('-')[0]];
+                const rotation = {
+                    top: 255,
+                    right: 315,
+                    bottom: 45,
+                    left: 135
+                }[placement.split('-')[0]];
                 Object.assign(elemArrow.style, {
                     left: arrowX != null ? `${arrowX}px` : '',
                     top: arrowY != null ? `${arrowY}px` : '',
                     right: '',
                     bottom: '',
-                    [staticSide]: '-4px'
+                    [staticSide]: (args.middleware?.arrowOffset ?? -4) + 'px',
+                    transform: `rotate(${rotation}deg)`
                 });
             }
         });

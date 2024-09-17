@@ -10,6 +10,7 @@ import { calculateDesiredMotion } from "./rovUtil";
 import { showToastMessage } from "./toastMessageManager";
 import { frontendConnMngr } from './frontendConnManager';
 import { addTooltip } from '../components/HelpTooltips.svelte';
+import { tutorialModeActive } from './globalContext';
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
@@ -84,11 +85,11 @@ export class GamepadController {
 
         let noGamepadButtonTouched = true;
         for (let i = 0; i < buttonsChangedMask.length; i++) {
-            if (buttonsChangedMask[i] && buttonsChangedMask[i].touchDown) {
+            if (buttonsChangedMask[i] && buttonsChangedMask[i].touchDown && (!buttonsChangedMask[i].pressed || tutorialModeActive.get())) {
                 if (gpadHelpTooltips[i]) gpadHelpTooltips[i].open();
                 noGamepadButtonTouched = false;
             }
-            else if (buttonsChangedMask[i] && buttonsChangedMask[i].touchUp) {
+            else if (buttonsChangedMask[i] && buttonsChangedMask[i].touchUp || (buttonsChangedMask[i].pressed && !tutorialModeActive.get())) {
                 if (gpadHelpTooltips[i]) gpadHelpTooltips[i].close();
             }
         }
@@ -351,9 +352,9 @@ export class GamepadController {
     }
 
     addHelpTooltips() {
-        ONSCREEN_GPAD_BUTTON_LABELS.forEach(async (name, i) => {
+        ONSCREEN_GPAD_BUTTON_LABELS.forEach((name, i) => {
             const elem = document.getElementById(name + "_touch_target");
-            if (elem) gpadHelpTooltips[i] = await addTooltip(elem, GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, { placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement });
+            if (elem) gpadHelpTooltips[i] = addTooltip(elem, { label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel, config: { placement: GAME_CONTROLLER_BUTTON_CONFIG[i].tooltipPlacement } });
         })
     }
 

@@ -1,9 +1,6 @@
 <script lang="ts">
   import { Close, Download_done, Drag_handle, Flight_land, Gamepad, Keyboard, Rotate_left, Touch_app, Upload } from "svelte-google-materialdesign-icons";
   import RadioSelectGrid from "../../RadioSelectGrid.svelte";
-  import RovViz from "../../3dScene/rovViz.svelte";
-  import OnscreenGamepads from "../../OnscreenGamepads.svelte";
-  import HelpTooltips from "../../HelpTooltips.svelte";
   import { onDestroy, onMount } from "svelte";
   import { tutorialModeActive } from "../../../js/globalContext";
   import { closeModal, openControlTutModal } from "../modals";

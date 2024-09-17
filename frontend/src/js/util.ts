@@ -31,27 +31,6 @@ declare global {
     }
 }
 
-/** keeps a svelte store and local storage value in sync (value is a string).
- * @param label label to use as the key to store this value in local storage.
- * @param store the svelte store to keep in sync with the local storage value.
- * @param defaultValue {optional} the value to initilize the store and local storage with if neither has been set.
- */
-export function bindStringSvelteStoreToLocalStorage(label: string, store: nStoreT<string>, defaultValue?: string): void {
-    store.set(localStorage.getItem(label) || store.get() || defaultValue);
-    changesSubscribe(store, (newVal: string) => localStorage.setItem(label, String(newVal)));
-}
-
-
-/** keeps a svelte store and local storage value in sync (value is a number).
- * @param label label to use as the key to store this value in local storage.
- * @param store the svelte store to keep in sync with the local storage value.
- * @param defaultValue {optional} the value to initilize the store and local storage with if neither has been set.
- */
-export function bindNumberSvelteStoreToLocalStorage(label: string, store: nStoreT<number>, defaultValue?: number): void {
-    store.set(parseFloat(localStorage.getItem(label)) || store.get() || defaultValue);
-    changesSubscribe(store, (newVal: number) => localStorage.setItem(label, String(newVal)));
-}
-
 /** wrap the callback for a keyboard event so it only fires on Enter or Space.
  * The output of this function should be passed to a keyboard event listener.
  * eg: body.addEventListener('keydown',selectKeypressFactory(log));

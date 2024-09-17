@@ -152,17 +152,10 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handleLogMsgRecived(msgData: rov_actions_proto.ILogMessageResponse, ExchangeId: number) {
-        if (URL_PARAMS.SHOW_REMOTE_LOGS) {
-            const {
-                level, timestamp, args, trace, kind, origin,
-            } = JSON.parse(msgData.Message);
-            mainLogr.addLog(level, args, trace, kind, origin, timestamp);
-            // if (msgData.Level == rov_actions_proto.LogLevel.Debug) logDebug(...logArgs);
-            // else if (msgData.Level == rov_actions_proto.LogLevel.Info) logInfo(...logArgs);
-            // else if (msgData.Level == rov_actions_proto.LogLevel.Warning) logWarn(...logArgs);
-            // else if (msgData.Level == rov_actions_proto.LogLevel.Error) logError(...logArgs);
-            // else if (msgData.Level == rov_actions_proto.LogLevel.Critical) logError(...logArgs);
-        }
+        const {
+            level, timestamp, args, trace, kind, origin,
+        } = JSON.parse(msgData.Message);
+        mainLogr.addLog(level, args, trace, kind, origin, timestamp);
     }
 
     handleLivekitVideoStatsMsgRecived(msgData: rov_actions_proto.ILivekitVideoStatsResponse, ExchangeId: number) {

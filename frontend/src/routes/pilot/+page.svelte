@@ -13,8 +13,10 @@
   import DropdownMenuPopup from "../../components/DropdownMenuPopup.svelte";
   import { ConnectionStates } from "../../js/shared/consts";
   import { frontendConnMngr, VideoStreamMethod } from "../../js/frontendConnManager";
-  import { Car_crash, Dangerous, Download_done, Drag_handle, Flight_class, Flight_land, Menu, Play_arrow, Power_off, Power_settings_new, Restart_alt, Rotate_left, Upload } from "svelte-google-materialdesign-icons";
+  import { Dangerous, Download_done, Drag_handle, Flight_class, Flight_land, Menu, Play_arrow, Power_off, Power_settings_new, Restart_alt, Rotate_left, Upload } from "svelte-google-materialdesign-icons";
   import VideoSettings from "../../components/Modals/VideoSettings.svelte";
+  import { localStore } from "../../js/localStorage";
+  import { openControlTutModal } from "../../components/Modals/modals";
 
   const videoMethod = frontendConnMngr.currentVideoStreamMethod;
   $: usingHDVideo = $videoMethod === VideoStreamMethod.simplePeer;
@@ -24,6 +26,12 @@
 
   const drawerStore = getDrawerStore();
   const openSideDrawer = (): void => drawerStore.open();
+
+  onMount(() => {
+    if (localStore.getItem("tutorialComplete") == null) {
+      openControlTutModal();
+    }
+  });
 
   onDestroy(() => {
     RovActions.triggerNextFlightModeUi = null;

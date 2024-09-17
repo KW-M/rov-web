@@ -13,7 +13,7 @@
     //     codec.set(options.Codec);
     //   }
     // }
-    lkSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
+    lkSenderVideoStats.set(options.stats);
   };
 
   export const onSimplePeerVideoOptionsChange = (options: rov_actions_proto.ISimplePeerVideoStatsResponse) => {
@@ -27,7 +27,7 @@
     //   size.set(options.BaseStream.Height);
     //   codec.set(preferedCodecs && preferedCodecs.length > 0 ? preferedCodecs[0] : "unknown");
     // }
-    spSenderVideoStats.set(JSON.parse(options.RtcSenderStatsJson));
+    spSenderVideoStats.set(options.stats);
   };
 
   const allowBkupCodec = nStore(false);
@@ -40,8 +40,8 @@
   const useSimplePeer = nStore(false);
   const useLivekit = nStore(true);
   const useTwitch = nStore(false);
-  const spSenderVideoStats = nStore([]);
-  const lkSenderVideoStats = nStore([]);
+  const spSenderVideoStats = nStore<ComputedRtpStats | null>(null);
+  const lkSenderVideoStats = nStore<ComputedRtpStats | null>(null);
   let lastChangeTimestamp = 0;
 </script>
 
@@ -55,9 +55,18 @@
   import { ConnectionStates } from "../../js/shared/consts";
   import { displayHumanBits, displayNum } from "../../js/util";
   import VideoStatsCard from "../VideoStatsCard.svelte";
+  import { type ComputedRtpStats } from "../../js/shared/videoStatsParser";
+  import { writable } from "svelte/store";
+
+  const LK_STATS_ACCORDION_ID = "lk_stats_accordion";
+  const SP_STATS_ACCORDION_ID = "sp_stats_accordion";
 
   let statsTab = 0;
+  let statsActivePanel = writable("");
+  let lkStatsOpen = false;
   const drawerStore = getDrawerStore();
+  const lkRecieverVideoStats = frontendConnMngr.livekitVideoStats;
+  const spRecieverVideoStats = frontendConnMngr.simplePeerVideoStats;
   const codecs = ["h264", "vp8", "vp9", "av1"];
   const sizes = {
     180: {
@@ -226,7 +235,6 @@
     }
   };
 
-  const lkRecieverVideoStats = frontendConnMngr.livekitVideoStats;
   onMount(() => {
     useTwitch.set(frontendConnMngr.livekitConnection.checkIfLivestreamRecording());
     const livestreamRecordingUnsub = frontendConnMngr.livekitConnection.isLivestreamRecording.subscribe((isLivestreamRecording) => {
@@ -259,8 +267,8 @@
   });
 </script>
 
-<div class="w-full h-full px-6 py-4 relative">
-  <button on:click={() => drawerStore.close()} class="btn btn-icon-lg btn-icon absolute top-2.5 right-3">
+<div class="w-full px-6 py-4 relative">
+  <button on:click={() => drawerStore.close()} class="btn btn-icon-lg btn-icon fixed bg-surface-800 top-2.5 right-2.5">
     <Close class="text-3xl pointer-events-none" tabindex="-1" variation="round" />
   </button>
   <h3 class="h3 my-0.5 mb-6 text-left">Video Settings</h3>
@@ -308,40 +316,36 @@
     </div>
   </RangeSlider>
 
-  <TabGroup justify="justify-center" class="mt-8 mb-2">
+  <TabGroup justify="justify-center" class="mt-8 mb-2" active="border-token !border-t-0 !border-r-0 !border-l-0 border-surface-900-50-token">
     <h4 class="h4 self-center flex-1 font-bold">Video Stats</h4>
-    <Tab bind:group={statsTab} name="tab1" value={0}>RECIVED</Tab>
-    <Tab bind:group={statsTab} name="tab2" value={1}>ROV SENT</Tab>
+    <Tab bind:group={statsTab} name="your side" value={0}>YOU</Tab>
+    <Tab bind:group={statsTab} name="ROVs side" value={1}>ROV</Tab>
+    <!-- <Tab bind:group={statsTab} name="your side" value={0} active="[&>*]:bg-surface-50-900-token"><span class="radio-item text-base text-center cursor-pointer px-4 py-1 rounded-3xl bg-surface-900">YOU</span></Tab>
+    <Tab bind:group={statsTab} name="ROVs side" value={1} active="[&>*]:bg-surface-50-900-token"><span class="radio-item text-base text-center cursor-pointer px-4 py-1 rounded-3xl bg-surface-900">ROV</span></Tab> -->
     <!-- Tab Panels --->
     <svelte:fragment slot="panel">
       {#if statsTab == 0}
         <Accordion>
+          {#if $spRecieverVideoStats}
+            {@const stats = $spRecieverVideoStats}
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="reciever" name="Direct" class="border-token border-green-500 !bg-green-100" />
+          {/if}
           {#if $lkRecieverVideoStats}
             {@const stats = $lkRecieverVideoStats}
-            <VideoStatsCard {stats} direction="reciever" name="Livekit" />
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="reciever" name="Livekit" class="border-token border-orange-500 !bg-orange-100" />
           {/if}
         </Accordion>
       {:else}
-        {#if $spSenderVideoStats}
-          <details class="card variant-filled mt-4 px-3 py-2">
-            <summary class="h5">Direct Video</summary>
-            <div class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
-              <!-- {#each $spSenderVideoStats as stat} -->
-              <pre class="block">{JSON.stringify($spSenderVideoStats, null, 2)}</pre>
-              <!-- {/each} -->
-            </div>
-          </details>
-        {/if}
-        {#if $lkSenderVideoStats}
-          <details class="card variant-filled mt-4 px-3 py-2">
-            <summary class="h5">Livekit Video</summary>
-            <div class="max-h-full max-w-full overflow-x-scroll overflow-y-scroll">
-              <!-- {#each $lkSenderVideoStats as stat} -->
-              <pre class="block">{JSON.stringify($lkSenderVideoStats, null, 2)}</pre>
-              <!-- {/each} -->
-            </div>
-          </details>
-        {/if}
+        <Accordion>
+          {#if $spSenderVideoStats}
+            {@const stats = $spSenderVideoStats}
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="sender" name="Direct" class="border-token border-green-500 !bg-green-100" />
+          {/if}
+          {#if $lkSenderVideoStats}
+            {@const stats = $lkSenderVideoStats}
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="sender" name="Livekit" class="border-token border-orange-500 !bg-orange-100" />
+          {/if}
+        </Accordion>
       {/if}
     </svelte:fragment>
   </TabGroup>

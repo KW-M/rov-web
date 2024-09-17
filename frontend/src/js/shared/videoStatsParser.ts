@@ -159,8 +159,8 @@ export class RtpStatsParser {
                 nackCount = nackCount ?? 0;
                 pliCount = pliCount ?? 0;
                 const { codec: videoCodec, sdpFmtpLine: videoSdpFmtpLine } = codecMap.get(codecId || "") || { codec: "unknown", sdpFmtpLine: "" };
-                const estimatedPlayoutDelay = estimatedPlayoutTimestamp ? estimatedPlayoutTimestamp - Date.now() : 0;
-                computedStats.recieverStats = { nackCount, pliCount, freezeCount, estimatedPlayoutDelay, jitterBufferDelay, jitter, frameWidth, frameHeight, framesPerSecond, videoCodec, videoSdpFmtpLine };
+                const estimatedPlayoutDelay = Math.max(estimatedPlayoutTimestamp ? estimatedPlayoutTimestamp - this.timestamp : 0, jitterBufferDelay);
+                computedStats.recieverStats = { ...computedStats.recieverStats, nackCount, pliCount, freezeCount, estimatedPlayoutDelay, jitterBufferDelay, jitter, frameWidth, frameHeight, framesPerSecond, videoCodec, videoSdpFmtpLine };
             }
 
             else if (type === "outbound-rtp" && stat.kind === "video") {
@@ -193,9 +193,9 @@ export class RtpStatsParser {
 
             else if (type === "candidate-pair") {
                 const { availableOutgoingBitrate, availableIncomingBitrate, currentRoundTripTime, state, nominated } = stat as RTCIceCandidatePairStats;
-                if (!nominated) continue;
-                computedStats.recieverStats = { ...computedStats.recieverStats, currentRoundTripTime };
-                computedStats = { ...computedStats, availableOutgoingBitrate, availableIncomingBitrate, canidatePairState: state, canidatePairNominated: nominated };
+                if (nominated === false) continue;
+                computedStats = { ...computedStats, recieverStats: { ...computedStats.recieverStats, currentRoundTripTime }, availableOutgoingBitrate, availableIncomingBitrate, canidatePairState: state, canidatePairNominated: nominated };
+                console.log("candidate-pair", computedStats);
             }
 
             else if (type === "transport") {
@@ -217,16 +217,15 @@ export class RtpStatsParser {
                 this.bytesReceived = bytesReceived;
             }
         }
-
+        computedStats.senderLayerStats = computedStats.senderLayerStats ? computedStats.senderLayerStats.sort((a, b) => (b.frameWidth || 0) * (b.frameHeight || 0) - (a.frameWidth || 0) * (a.frameHeight || 0)) : [];
         this.lastStats = computedStats;
-
         return computedStats;
     }
 
 }
 
 export class RtpSenderStatsParser extends RtpStatsParser { }
-export class RtpReciverStatsParser extends RtpStatsParser { }
+export class RtpRecieverStatsParser extends RtpStatsParser { }
 
 
 //     constructor() {
@@ -299,7 +298,7 @@ export class RtpReciverStatsParser extends RtpStatsParser { }
 
 // }
 
-// export class RtpReciverStatsParser {
+// export class RtprecieverStatsParser {
 //     _lastStats: ComputedRecieverStats;
 
 //     constructor() {
