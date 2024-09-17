@@ -10,6 +10,7 @@
   import RovViz from "./3dScene/rovViz.svelte";
   import { Hide_source, Navigation, Video_settings } from "svelte-google-materialdesign-icons";
   import { getDrawerStore } from "@skeletonlabs/skeleton";
+  import { pulseVizMode } from "./Modals/VideoSettings.svelte";
 
   interface VideoStreamData {
     stream?: MediaStream | RemoteTrack;
@@ -22,7 +23,6 @@
   let livekitVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let simplePeerVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let videoContainerElem: HTMLDivElement | null = null;
-  let pulseVizMode = false;
   let videoHovered = false;
   let videoSwitchInProgress = false;
   let videoAspectRatio = 4 / 3;
@@ -30,10 +30,10 @@
 
   const drawerStore = getDrawerStore();
   const videoIsReady = (videoData: VideoStreamData) => !!(videoData.playable && videoData.stream != null);
-  $: if (pulseVizMode && livekitVideoStream.stream) {
-    (livekitVideoStream.stream as RemoteTrack).start();
-  } else if (!pulseVizMode && videoIsReady(simplePeerVideoStream)) {
-    (livekitVideoStream.stream as RemoteTrack).stop();
+  $: if ($pulseVizMode) {
+    if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).start();
+  } else if (videoIsReady(simplePeerVideoStream)) {
+    if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).stop();
   }
 
   const updateVideoVisibility = () => {
@@ -194,8 +194,8 @@
           width: "w-96",
         });
       }}
-      on:mouseenter={() => (pulseVizMode = true)}
-      on:mouseleave={() => (pulseVizMode = false)}
+      on:mouseenter={() => pulseVizMode.set(true)}
+      on:mouseleave={() => pulseVizMode.set(false)}
     >
       <Video_settings class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
     </button>
@@ -230,7 +230,7 @@
 
     <video
       class="video-livestream lk-video w-full h-full rounded-2xl"
-      class:!visible={videoIsReady(livekitVideoStream) && (!videoIsReady(simplePeerVideoStream) || pulseVizMode)}
+      class:!visible={videoIsReady(livekitVideoStream) && (!videoIsReady(simplePeerVideoStream) || $pulseVizMode)}
       muted
       playsinline
       autoplay
@@ -256,7 +256,7 @@
     <video
       class="video-livestream sp-video w-full h-full rounded-2xl"
       class:!visible={videoIsReady(simplePeerVideoStream)}
-      class:animate-pulse={pulseVizMode}
+      class:opacity-50={$pulseVizMode}
       muted
       playsinline
       autoplay

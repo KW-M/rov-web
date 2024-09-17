@@ -43,6 +43,7 @@
   const useTwitch = nStore(false);
   const spSenderVideoStats = nStore<ComputedRtpStats | null>(null);
   const lkSenderVideoStats = nStore<ComputedRtpStats | null>(null);
+  export const pulseVizMode = nStore(false);
   let lastChangeTimestamp = 0;
 </script>
 
@@ -311,21 +312,23 @@
     </RangeSlider>
     <SlideToggle bind:checked={$updateBitrateWithResolution} name="Update" size="sm" active="bg-primary-700" class="mt-2 mx-auto">Update With Resolution + Codec</SlideToggle>
   {/if}
-  {#if $useLivekit}
-    <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$lkPlayoutDelay} on:change={() => onLkPlayoutDelayChange()}>
-      <div class="flex justify-between items-center">
-        <h4 class="h4">Livekit Playout Delay</h4>
-        <div class="text-sm">{$lkPlayoutDelay} seconds</div>
-      </div>
-    </RangeSlider>
-  {:else if $useSimplePeer}
-    <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$spPlayoutDelay} on:change={() => onSpPlayoutDelayChange()}>
-      <div class="flex justify-between items-center">
-        <h4 class="h4">Direct Playout Delay</h4>
-        <div class="text-sm">{$spPlayoutDelay} seconds</div>
-      </div>
-    </RangeSlider>
-  {/if}
+  <div on:mouseenter={() => pulseVizMode.set(true)} on:mouseleave={() => pulseVizMode.set(false)} role="cell" tabindex="-1">
+    {#if $useSimplePeer}
+      <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$spPlayoutDelay} on:change={() => onSpPlayoutDelayChange()}>
+        <div class="flex justify-between items-center">
+          <h4 class="h4">Direct Playout Delay</h4>
+          <div class="text-sm">{$spPlayoutDelay} seconds</div>
+        </div>
+      </RangeSlider>
+    {:else if $useLivekit}
+      <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$lkPlayoutDelay} on:change={() => onLkPlayoutDelayChange()}>
+        <div class="flex justify-between items-center">
+          <h4 class="h4">Livekit Playout Delay</h4>
+          <div class="text-sm">{$lkPlayoutDelay} seconds</div>
+        </div>
+      </RangeSlider>
+    {/if}
+  </div>
 
   <TabGroup justify="justify-center" class="mt-8 mb-2" active="border-token !border-t-0 !border-r-0 !border-l-0 border-surface-900-50-token">
     <h4 class="h4 self-center flex-1 font-bold">Video Stats</h4>

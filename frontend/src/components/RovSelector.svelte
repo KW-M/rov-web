@@ -77,7 +77,7 @@
     // if we finally have a valid authToken, connect
     if (authToken && (await isTokenValid(authToken))) {
       // save the token to local storage
-      localStore.updateItem("authToken", { [rovRoomInfo.name]: authToken });
+      localStore.updateItem("authTokens", { [rovRoomInfo.name]: authToken });
       frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
     } else {
       showToastMessage("ROV is not ready yet <br/>(Token expired or invalid)", 6000, false, ToastSeverity.warning);
@@ -97,7 +97,7 @@
   <!-- {#if collapsedMode}
     <p class="text-center p-2 text-white">You Are: <span class="font-bold">{$ourIdentity}</span></p>
   {/if} -->
-  <div class:p-1={collapsedMode} class={`variant-glass-surface border-2 border-surface-500 m-0 items-center flex whitespace-nowrap text-center rounded-xl max-h-full  ${!collapsedMode ? "flex-col shadow-2xl" : "rounded-b-none border-b-0"} ${collapsedMode && $fullscreenOpen ? "hidden" : ""}`}>
+  <div class:p-1={collapsedMode} class={`border-2 border-surface-500 m-0 items-center flex whitespace-nowrap text-center rounded-xl max-h-full  ${!collapsedMode ? "flex-col shadow-2xl variant-glass-surface" : "rounded-b-none border-b-0 bg-surface-100-800-token"} ${collapsedMode && $fullscreenOpen ? "hidden" : ""}`}>
     {#if $availableRovRooms.length == 0}
       <h2 class="text-center py-4 px-6 font-bold">Searching for online ROVs...</h2>
     {:else if !collapsedMode}
