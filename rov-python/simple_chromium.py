@@ -153,6 +153,10 @@ if __name__ == "__main__":
         # WARNING: seems to break webrtc connections
         chromium_args.append("--disable-webrtc-encryption")
 
+    if os.environ.get("DISABLE_CHROMIUM_SANDBOX", "false").upper() == "TRUE":
+        # may be necessary to disable the sandbox for root docker containers
+        chromium_args.append("--no-sandbox")
+
     # kill existing chromium processes just to make sure we are starting fresh:
     print("Killing all existing chromium processes:")
     subprocess.run(["killall", "Chromium"], check=False)
@@ -188,7 +192,7 @@ if __name__ == "__main__":
 
         # Other Chromium Flags that May be Useful:
         # "--enable-automation",
-        # "--no-sandbox",
+
         # "--single-process",
         # "--in-process-gpu",
         # "--disable-web-security",
