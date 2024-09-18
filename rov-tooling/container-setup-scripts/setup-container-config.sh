@@ -5,6 +5,10 @@ cd /usr/share/nginx/html/ && ln -sbfFv /rov-web/frontend/build frontend
 cd /usr/share/nginx/html/ && ln -sbfFv /rov-web/rov-internal-website/build internal
 cd /etc/nginx/ && ln -sbfFv /rov-web/rov-tooling/config-files/nginx.conf nginx.conf
 
+# Create pi user:
+groupadd pi --gid 1000 || true
+useradd --uid 1000 --gid 1000 --groups nginx,video,audio,users --home /home/pi --create-home --shell /bin/bash --comment "pi user for running our ROV code and compatibility with raspberry pi defaults"  pi
+
 # ---- Setup ownership and permissions -----
 # chown -R pi:pi /rov-web
 setfacl -m u:pi:rx /;
@@ -19,6 +23,12 @@ setfacl -m u:nginx:rx /var;
 setfacl -R -m u:nginx:r /var/log;
 setfacl -m u:nginx:rx /var/log;
 setfacl -R -m u:nginx:rwx /rov-web;
+
+setfacl -m u:pi:rx /;
+setfacl -m u:pi:rx /var;
+setfacl -R -m u:pi:r /var/log;
+setfacl -m u:pi:rx /var/log;
+setfacl -R -m u:pi:rwx /rov-web;
 
 # ---- setup the rov-web folder to be a git repo fetching to github -----
 cd /rov-web

@@ -11,7 +11,7 @@ selenium==4.10.0
 pyvirtualdisplay>=3.0
 # sparkfun-qwiic-icm20948>=0.0.1
 # pigpio>=1.78
-aiogoogle>=5.5.0
+# aiogoogle>=5.5.0
 # pymavlink>=2.4.39
 # playwright>=1.39.0
 

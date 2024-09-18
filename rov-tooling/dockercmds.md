@@ -12,7 +12,7 @@ docker run -it --rm --name kywm/rov-web:main --cgroup-parent=docker.slice --cgro
 docker exec -it kywm/rov-web:main bash # type exit to exit the shell
 # or via the extension name:
 docker exec -it extension-kywmrovwebmain bash # type exit to exit the shell
-
+docker exec -it extension-nginxincnginxunprivilegedstablebullseyeperl bash # type exit to exit the shell
 
 # Push the image to docker hub:
 docker push kywm/rov-web:main
