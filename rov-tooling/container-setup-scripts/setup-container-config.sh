@@ -10,33 +10,37 @@ groupadd pi --gid 1000 || true
 useradd --uid 1000 --gid 1000 --groups nginx,video,audio,users --home /home/pi --create-home --shell /bin/bash --comment "pi user for running our ROV code and compatibility with raspberry pi defaults"  pi
 
 # ---- Setup ownership and permissions -----
-# chown -R pi:pi /rov-web
-setfacl -m u:pi:rx /;
-setfacl -R -m u:pi:rwx /rov-web;
-# setfacl -m u:pi:rx /root;
-# setfacl -m u:pi:rx /root/.cache;
-# setfacl -R -m u:pi:rwx /root/.cache/ms-playwright;
+chown -R pi:pi /rov-web
 
-mkdir -p /var/log/nginx /var/run/ /opt/local/;
+# make sure the nginx logs exist and are owned by the nginx user and group
+mkdir -p /var/log/nginx/ /var/run/ /opt/local/;
+rm -rf /var/log/nginx/*;
+touch /var/log/nginx/error.log;
+touch /var/log/nginx/access.log;
+chown -R nginx:nginx /var/log/nginx/;
 
 # make sure the nginx user can access the directories it needs to
 setfacl -m u:nginx:x /;
 setfacl -m u:nginx:x /var;
 setfacl -m u:nginx:rx /var/log;
-setfacl -R -m u:nginx:r /var/log;
+setfacl -m u:nginx:rwx /var/log/nginx;
+setfacl -R -m u:nginx:rx /var/log;
 setfacl -R -m u:nginx:rwx /var/log/nginx;
 setfacl -R -m u:nginx:rx /rov-web;
 
 # make sure the pi user can access the directories it needs to
 setfacl -m u:pi:x /;
-setfacl -m u:pi:rx /dev;
 setfacl -m u:pi:x /opt;
 setfacl -m u:pi:x /var;
+setfacl -m u:pi:rx /dev;
 setfacl -m u:pi:rx /var/run;
 setfacl -m u:pi:rx /var/log;
 setfacl -R -m u:pi:rwx /var/run/;
 setfacl -R -m u:pi:rwx /var/log/;
 setfacl -R -m u:pi:rwx /rov-web;
+# setfacl -m u:pi:rx /root;
+# setfacl -m u:pi:rx /root/.cache;
+# setfacl -R -m u:pi:rwx /root/.cache/ms-playwright;
 
 # ---- setup the rov-web folder to be a git repo fetching to github -----
 cd /rov-web
