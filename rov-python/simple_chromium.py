@@ -30,7 +30,7 @@ from urllib.parse import urlencode
 LOG_PATH = "/home/pi/chromedriver.log"
 WEBRTC_LOG_PATH = "/home/pi/chromium_webrtc.log"
 BROWSER_DATA_DIR = tempfile.mkdtemp()
-BROWSER_BINARY_PATH = r"/usr/bin/chromium"
+BROWSER_BINARY_PATH = r"/usr/bin/chromium-shell"
 CHROMIUM_DEBUGING_ADDRESS = os.environ.get("CHROMIUM_DEBUGING_ADDRESS", None)
 CHROMIUM_DEBUGING_PORT = os.environ.get("CHROMIUM_DEBUGING_PORT", None)
 
@@ -57,7 +57,8 @@ if __name__ == "__main__":
             print("Invalid VIRTUAL_DISPLAY_SIZE use format WIDTHxHEIGHT")
             size = (800, 600)
 
-        # running a virtual display (xvfb) is necessary to run graphical applications (chromium) in headless mode for some reason
+        # running a virtual display (xvfb) seems necessary to run
+        # graphical applications (chromium) in headless mode.
         vdisplay = Display(
             visible=False, backend="xvfb", size=(800, 600), color_depth=8
         )
@@ -189,7 +190,6 @@ if __name__ == "__main__":
     # launch chromium with the specified args:
     # add the URL to the end of the args list to open the webpage
     chromium_args.append(URL)
-    ARGS_STRING = '"' + '" "'.join(chromium_args) + '"'
     environmentVars = {
         **os.environ,
         "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
@@ -199,10 +199,10 @@ if __name__ == "__main__":
     print("Environment Variables:")
     print(environmentVars)
     print("Running chromium:")
-    print(ARGS_STRING)
+    print(" ".join(chromium_args))
     browser_process = subprocess.Popen(
-        args=[ARGS_STRING],
-        shell=True,
+        args=chromium_args,
+        shell=False,
         env=environmentVars,
         cwd=os.getcwd(),
     )

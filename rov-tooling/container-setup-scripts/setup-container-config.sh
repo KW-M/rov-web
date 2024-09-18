@@ -17,17 +17,25 @@ setfacl -R -m u:pi:rwx /rov-web;
 # setfacl -m u:pi:rx /root/.cache;
 # setfacl -R -m u:pi:rwx /root/.cache/ms-playwright;
 
+mkdir -p /var/log/nginx /var/run/ /opt/local/;
 
-setfacl -m u:nginx:rx /;
-setfacl -m u:nginx:rx /var;
-setfacl -R -m u:nginx:r /var/log;
+# make sure the nginx user can access the directories it needs to
+setfacl -m u:nginx:x /;
+setfacl -m u:nginx:x /var;
 setfacl -m u:nginx:rx /var/log;
-setfacl -R -m u:nginx:rwx /rov-web;
+setfacl -R -m u:nginx:r /var/log;
+setfacl -R -m u:nginx:rwx /var/log/nginx;
+setfacl -R -m u:nginx:rx /rov-web;
 
-setfacl -m u:pi:rx /;
-setfacl -m u:pi:rx /var;
-setfacl -R -m u:pi:r /var/log;
+# make sure the pi user can access the directories it needs to
+setfacl -m u:pi:x /;
+setfacl -m u:pi:rx /dev;
+setfacl -m u:pi:x /opt;
+setfacl -m u:pi:x /var;
+setfacl -m u:pi:rx /var/run;
 setfacl -m u:pi:rx /var/log;
+setfacl -R -m u:pi:rwx /var/run/;
+setfacl -R -m u:pi:rwx /var/log/;
 setfacl -R -m u:pi:rwx /rov-web;
 
 # ---- setup the rov-web folder to be a git repo fetching to github -----
