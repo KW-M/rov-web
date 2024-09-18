@@ -190,14 +190,20 @@ if __name__ == "__main__":
     # add the URL to the end of the args list to open the webpage
     chromium_args.append(URL)
     ARGS_STRING = '"' + '" "'.join(chromium_args) + '"'
+    environmentVars = {
+        **os.environ,
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+    }
     if vdisplay is not None and vdisplay.is_alive():
-        ARGS_STRING = "DISPLAY=" + vdisplay.new_display_var + " " + ARGS_STRING
+        environmentVars["DISPLAY"] = vdisplay.new_display_var
+    print("Environment Variables:")
+    print(environmentVars)
     print("Running chromium:")
     print(ARGS_STRING)
     browser_process = subprocess.Popen(
         args=[ARGS_STRING],
         shell=True,
-        env=os.environ,
+        env=environmentVars,
         cwd=os.getcwd(),
     )
 
