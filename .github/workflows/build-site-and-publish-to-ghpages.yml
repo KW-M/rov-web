@@ -41,22 +41,22 @@ jobs:
           submodules: recursive
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Setup Protocol Buffer Compiler
-        uses: arduino/setup-protoc@v2
+        uses: arduino/setup-protoc@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-          cache: 'pip' # caching pip dependencies
+          python-version: "3.10"
+          cache: "pip" # caching pip dependencies
 
       - name: Install Betterproto
         run: pip install "betterproto[compiler]"
@@ -86,7 +86,6 @@ jobs:
     needs: build-website
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -100,7 +99,7 @@ jobs:
         run: cp -r ./rov-internal-website/build ./frontend/build/internal
 
       - name: Deploy Site to Github Pages Website Hosting 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: frontend/build # The folder the action should deploy.
           branch: gh-pages # The branch the action should deploy to.
@@ -148,17 +147,17 @@ jobs:
             --file Dockerfile ./" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           version: latest
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
