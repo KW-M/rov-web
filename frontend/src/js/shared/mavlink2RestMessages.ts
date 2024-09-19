@@ -3,6 +3,7 @@
 import type { Package, Message } from "./mavlink2rest-ts/messages/mavlink2rest";
 import type { Message as MavMessages } from "./mavlink2rest-ts/messages/mavlink2rest-message";
 import { MavState, MavMode, MavModeFlag, MavType, MavAutopilot, MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
+import { log, logInfo } from "./logging";
 
 // export enum MAV_MODE_FLAG {
 //     MAV_MODE_FLAG_CUSTOM_MODE_ENABLED = 1,   // 0b00000001 Reserved for future use.
@@ -76,123 +77,13 @@ export const MavStateNameMap = {
     [MavState.MAV_STATE_FLIGHT_TERMINATION]: "Flight Termination",
 }
 
-// export interface mavlink2RestMessageBody {
-//     type: string
-//     target_system?: number
-//     target_component?: number
-//     [x: string]: unknown; // any other fields
-// }
-
-// export interface mavlink2RestFullMessage {
-//     header: {
-//         system_id: number,
-//         component_id: number,
-//         sequence: number,
-//     },
-//     message: mavlink2RestMessageBody
-// }
-
-// export interface mavlinkLongMessage extends mavlink2RestMessageBody {
-//     type: "COMMAND_LONG"
-//     command: {
-//         type: string
-//     },
-//     target_system: number,
-//     target_component: number,
-//     confirmation: 1 | 0,
-//     param1: number,
-//     param2: number,
-//     param3: number,
-//     param4: number,
-//     param5: number,
-//     param6: number,
-//     param7: number,
-// }
-
-
-// export interface ARDUSUB_HEARTBEAT extends mavlink2RestMessageBody {
-//     "autopilot": {
-//         "type": "MAV_AUTOPILOT_ARDUPILOTMEGA" | "MAV_AUTOPILOT_INVALID" | string
-//     },
-//     "base_mode": {
-//         "bits": 81 | number
-//     },
-//     "custom_mode": 19 | number, // This is the flight mode
-//     "mavlink_version": 3 | number,
-//     "mavtype": {
-//         "type": "MAV_TYPE_SUBMARINE"
-//     },
-//     "system_status": {
-//         "type": "MAV_STATE_STANDBY" | "MAV_STATE_CRITICAL" | "MAV_STATE_ACTIVE" | string // https://mavlink.io/en/messages/common.html#MAV_STATE
-//     },
-//     "type": "HEARTBEAT"
-// }
-
-
-// export interface SYS_STATUS extends mavlink2RestMessageBody {
-//     "battery_remaining": -1 | number, // -1 = Battery remaining unknown
-//     "current_battery": 50 | number, // 0.5 Amps
-//     "voltage_battery": 16057 | number, // 16.057 Volts
-//     "drop_rate_comm": 0 | number,
-//     "errors_comm": 0 | number,
-//     "errors_count1": 0 | number,
-//     "errors_count2": 0 | number,
-//     "errors_count3": 0 | number,
-//     "errors_count4": 0 | number,
-//     "load": 399 | number,
-//     "onboard_control_sensors_enabled": {
-//         "bits": 35691567 | number
-//     },
-//     "onboard_control_sensors_health": {
-//         "bits": 53517327 | number
-//     },
-//     "onboard_control_sensors_present": {
-//         "bits": 52493359 | number
-//     },
-//     "type": "SYS_STATUS"
-// }
-
-// export interface COMMAND_ACK extends mavlink2RestMessageBody {
-//     "command": {
-//         "type": "MAV_CMD_DO_SET_MODE" | string, // the original command
-//     },
-//     "progress": 0 | number,
-//     "result": {
-//         "type": "MAV_RESULT_UNSUPPORTED" | "MAV_RESULT_ACCEPTED" | string
-//     },
-//     "result_param2": 0 | number,
-//     "target_component": 0 | number,
-//     "target_system": 0 | number,
-//     "type": "COMMAND_ACK"
-// }
-
-// export interface STATUSTEXT extends mavlink2RestMessageBody {
-//     "chunk_seq": 0 | number,
-//     "id": 0 | number,
-//     "severity": {
-//         "type": "MAV_SEVERITY_WARNING" | string
-//     },
-//     "text": string[],
-//     "type": "STATUSTEXT"
-// }
-
-// export interface ATTITUDE extends mavlink2RestMessageBody {
-//     "pitch": number, // 0.3690577447414398 rad?
-//     "pitchspeed": number,
-//     "roll": number,
-//     "rollspeed": number,
-//     "yaw": number,
-//     "yawspeed": number // 0.003902553580701351 ? rad/s
-//     "time_boot_ms": number,
-//     "type": "ATTITUDE"
-// }
-
+let globalMavlinkSequence = -1;
 export const addMessageHeader = (msg: Message, sequence: number = 0): Package => {
     return {
         header: {
-            system_id: 254,
-            component_id: 240,
-            sequence: sequence,
+            system_id: 255,
+            component_id: 190,
+            sequence: (globalMavlinkSequence++ % 255),
         },
         message: msg
     }
@@ -299,7 +190,7 @@ export const heartbeat = () => {
         autopilot: { type: MavAutopilot.MAV_AUTOPILOT_INVALID },
         base_mode: { bits: MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED | MavModeFlag.MAV_MODE_FLAG_MANUAL_INPUT_ENABLED }, // comes out to 192
         system_status: { type: MavState.MAV_STATE_ACTIVE },
-        mavlink_version: 1,
+        mavlink_version: 3,
         confirmation: 0,
     } as MavMessages.Heartbeat)
 }

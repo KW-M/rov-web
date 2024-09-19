@@ -7,7 +7,7 @@ import { internalConnManager } from "./internalConnManager";
 import { irovMavlinkInterface } from "./mavlinkWebsocket";
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { shutdownROV } from "./blueosAPIs/commander";
-import { logDebug, logInfo, LogLevelConsole, logWarn, mainLogr } from "./shared/logging"
+import { log, logDebug, logInfo, LogLevelConsole, logWarn, mainLogr } from "./shared/logging"
 import { LIVEKIT_BACKEND_ROOM_CONFIG } from "./shared/consts";
 import type { TrackPublishOptions, VideoCaptureOptions, VideoPreset } from "livekit-client";
 import { twitchStream } from "./twitchStream";
@@ -37,7 +37,6 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
 
     // MOVE Message - Send it to the BlueOS system
     else if (msgProto.Move) {
-
         if (designated_driver_user_id && designated_driver_user_id !== senderId) return false;
         if (!should_be_armed) return false;
         if (!rov_is_armed) irovMavlinkInterface.sendMessage(arm(true))
@@ -46,7 +45,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: rov_actions_pr
         let z = (msgProto.Move.VelocityZ || 0) * 500 + 500
         let r = (msgProto.Move.AngularVelocityYaw || 0) * 500
         let buttonBitmask = msgProto.Move.ButtonBitmask || 0
-        if (buttonBitmask) console.log("Move btn Message bitmask: ", buttonBitmask)
+        // if (buttonBitmask) console.log("Move btn Message bitmask: ", buttonBitmask)
         irovMavlinkInterface.sendMessage(manualControl(x, y, z, r, buttonBitmask))
         return true;
     }

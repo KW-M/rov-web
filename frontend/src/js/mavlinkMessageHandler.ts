@@ -13,7 +13,6 @@ import { log, logDebug } from "./shared/logging";
 // import {  MavState, MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED, MavModeFlag.MAV_MODE_FLAG_MANUAL_INPUT_ENABLED, MavModeFlag.MAV_MODE_FLAG_HIL_ENABLED, MavModeFlag.MAV_MODE_FLAG_STABILIZE_ENABLED, MavModeFlag.MAV_MODE_FLAG_GUIDED_ENABLED, MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED, MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED, STATUSTEXT } from "./shared/mavlink2RestMessages"
 
 export const handleMavlinkMessage = (msg: Package) => {
-    logDebug("@ handleMavlinkMessage", msg)
     if (!msg.message) return;
     if (!msg.message.type) return logDebug("@ invalid mavlink message rcvd: ", msg);
     const mavMsg = msg.message;

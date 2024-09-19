@@ -6,7 +6,7 @@
   // Import Three.js dependencies
   import * as THREE from "three";
   import { PerspectiveCamera } from "three";
-  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { rovDrivingVector } from "../../js/globalContext";
   import { Vector3 } from "three";
   import { showToastMessage, ToastSeverity } from "../../js/toastMessageManager";

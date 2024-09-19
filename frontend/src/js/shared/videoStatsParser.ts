@@ -195,7 +195,6 @@ export class RtpStatsParser {
                 const { availableOutgoingBitrate, availableIncomingBitrate, currentRoundTripTime, state, nominated } = stat as RTCIceCandidatePairStats;
                 if (nominated === false) continue;
                 computedStats = { ...computedStats, recieverStats: { ...computedStats.recieverStats, currentRoundTripTime }, availableOutgoingBitrate, availableIncomingBitrate, canidatePairState: state, canidatePairNominated: nominated };
-                console.log("candidate-pair", computedStats);
             }
 
             else if (type === "transport") {
@@ -204,7 +203,7 @@ export class RtpStatsParser {
                 bytesSent = bytesSent ?? 0;
                 selectedCandidatePairId = selectedCandidatePairId ?? "";
                 if (selectedCandidatePairId !== this.selectedCandidatePairId) {
-                    computedStats.selectedCandidatePairChanges++;
+                    computedStats.selectedCandidatePairChanges = (computedStats.selectedCandidatePairChanges || 0) + 1;
                     this.selectedCandidatePairId = selectedCandidatePairId;
                 }
                 if (timestamp != this.timestamp) {

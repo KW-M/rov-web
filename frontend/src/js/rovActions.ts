@@ -48,10 +48,10 @@ class RovActionsClass {
         const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
 
         if (buttonsChangedMask[BTN_LB] && buttonsChangedMask[BTN_LB].released) {
-            throttleGain.update((val) => Math.min(Math.max(10, val - 10), 100))
+            throttleGain.update((val) => Math.min(Math.max(10, val - 10), 200))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
         } else if (buttonsChangedMask[BTN_RB] && buttonsChangedMask[BTN_RB].released) {
-            throttleGain.update((val) => Math.min(Math.max(10, val + 10), 100))
+            throttleGain.update((val) => Math.min(Math.max(10, val + 10), 200))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
         }
 
@@ -177,7 +177,7 @@ class RovActionsClass {
         // if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
         rovDrivingVector.set({ VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask })
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ Move: rovDrivingVector.get() }, null);
+        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
         this.lastMove = rovDrivingVector.get();
         this.lastMovementTime = Date.now();
     }
