@@ -47,7 +47,6 @@ interface partialConsole {
 export class Logger {
 
     logsStore: LogEntry[] = [];
-    sendLogsCallback: (logLevel: LogLevel, args: any[]) => Promise<boolean>;
     rootURL: string;
     sendLogsAllowed: boolean = false;
     sendLogsInterval: number;
@@ -75,20 +74,14 @@ export class Logger {
         subscriber();
     }
 
-    sendLogs(sendLogsCallback: (logLevel: LogLevel, msg: string) => Promise<boolean>) {
-        // this.sendLogsInterval = setInterval(() => {
-        this.sendQueuedLogs(sendLogsCallback);
-        // }, 1000) as any as number;
-    }
-
-    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevelConsole, msg: string) => Promise<boolean>) {
+    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevelConsole, msg: string, logid?: string) => Promise<boolean>) {
         if (!this.sendLogsAllowed) return;
         const logsToSendCopy = this.logsStore.filter((log) => !log.sentToRemote);
         logsToSendCopy.forEach((log) => { log.sentToRemote = true });
         // if (logsToSendCopy.length === 0) return clearInterval(this.sendLogsInterval);
-        return Promise.allSettled(logsToSendCopy.map((log) => {
+        return Promise.allSettled(logsToSendCopy.map((log, i) => {
             const json = mainLogr.logToJson(log);
-            return sendLogsCallback(log.level, json);
+            return sendLogsCallback(log.level, json, log.timestamp.toString() + "_" + log.origin.toString() + "_" + i.toString());
         })).then((results) => {
             const failedToSendLogs: { log: LogEntry, result: any }[] = []
             for (let i = 0; i < results.length; i++) {
@@ -179,7 +172,7 @@ export class Logger {
 
 
     _makeJsonEncodable(thing: any, level: number = 0) {
-        if (level > 5) return "Max recursion level reached";
+        if (level > 9) return "Max recursion level reached";
         const type = typeof thing;
         if (type === "string" || type === "number" || type === "boolean") {
             return thing;

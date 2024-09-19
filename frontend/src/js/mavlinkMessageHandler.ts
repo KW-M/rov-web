@@ -41,7 +41,6 @@ export const handleMavlinkMessage = (msg: Package) => {
 }
 
 export const handleHearbeatRecived = (msg: Message.Heartbeat) => {
-    log("heartbeat", msg)
     if (msg.autopilot.type == "MAV_AUTOPILOT_INVALID") return;
     const currentFlightMode = msg.custom_mode;
     updateAutopilotFlightModeDisplay(currentFlightMode)

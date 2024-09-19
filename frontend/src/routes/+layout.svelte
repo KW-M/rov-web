@@ -24,6 +24,7 @@
   import ControlSchemeTut from "../components/Modals/Tutorials/ControlSchemeTut.svelte";
   import { setModalStore } from "../components/Modals/modals";
   import FlyModesTut from "../components/Modals/Tutorials/FlyModesTut.svelte";
+  import { mainLogr } from "../js/shared/logging";
   storePopup.set({ computePosition, autoUpdate, autoPlacement, flip, shift, offset, arrow });
   setModalStore(getModalStore());
 
@@ -33,7 +34,15 @@
   });
 
   onMount(() => {
+    mainLogr.sendLogsAllowed = true;
+    const logSaveInterval = setInterval(() => {
+      mainLogr.sendQueuedLogs((_, msg, id) => {
+        localStorage.setItem("log_" + id, msg);
+        return Promise.resolve(true);
+      });
+    }, 5000);
     initPage();
+    return () => clearInterval(logSaveInterval);
   });
   $: isRolePage = !$page.error && location.pathname.replaceAll("/", "") !== base.replaceAll("/", "");
 </script>

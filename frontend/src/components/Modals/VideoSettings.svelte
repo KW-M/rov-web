@@ -59,6 +59,7 @@
   import VideoStatsCard from "../VideoStatsCard.svelte";
   import { type ComputedRtpStats } from "../../js/shared/videoStatsParser";
   import { writable } from "svelte/store";
+  import { logDebug } from "../../js/shared/logging";
 
   const LK_STATS_ACCORDION_ID = "lk_stats_accordion";
   const SP_STATS_ACCORDION_ID = "sp_stats_accordion";
@@ -113,7 +114,28 @@
     },
   };
 
+  const logCurrentState = (msg) => {
+    logDebug(msg, {
+      useSimplePeer: useSimplePeer.get(),
+      useLivekit: useLivekit.get(),
+      useTwitch: useTwitch.get(),
+      size: size.get(),
+      maxBitrate: maxBitrate.get(),
+      updateBitrateWithResolution: updateBitrateWithResolution.get(),
+      spPlayoutDelay: spPlayoutDelay.get(),
+      lkPlayoutDelay: lkPlayoutDelay.get(),
+      codec: codec.get(),
+      keepFullResLayer: keepFullResLayer.get(),
+      allowBkupCodec: allowBkupCodec.get(),
+      lkRecieverVideoStats: lkRecieverVideoStats.get(),
+      spRecieverVideoStats: spRecieverVideoStats.get(),
+      lkSenderVideoStats: lkSenderVideoStats.get(),
+      spSenderVideoStats: spSenderVideoStats.get(),
+    });
+  };
+
   const sendTwitchLivestreamChange = () => {
+    logCurrentState("Sending twitch video change. current state:");
     frontendConnMngr.sendMessageToRov(
       rov_actions_proto.RovAction.create({
         SetLivestreamingEnabled: {
@@ -127,6 +149,7 @@
   const sendLivekitChange = (force?: boolean) => {
     if (!useLivekit.get() && force === false) return;
     lastChangeTimestamp = Date.now();
+    logCurrentState("Sending lk video change. current state:");
 
     const baseStream: rov_actions_proto.IVideoStreamOptions = {
       MaxBitrate: maxBitrate.get(),
@@ -134,7 +157,6 @@
       Fps: 60,
       Width: 0,
     };
-    console.warn("Sending livekit video change", baseStream);
     frontendConnMngr.sendMessageToRov(
       rov_actions_proto.RovAction.create({
         SetLivekitVideoOptions: {
@@ -152,6 +174,7 @@
   const sendSimplePeerChange = (force?: boolean) => {
     if (!useLivekit.get() && force === false) return;
     lastChangeTimestamp = Date.now();
+    logCurrentState("Sending sp video change. current state:");
 
     const mimeType = `video/${codec.get().toLowerCase()}`;
     frontendConnMngr.setSimplePeerCodec(mimeType);
