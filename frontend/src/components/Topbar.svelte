@@ -11,7 +11,7 @@
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { openControlTutModal, openLogsTimelineModal } from "./Modals/modals";
-  import { batteryPercent, batteryCurrent, batteryVoltage } from "../js/vehicleStats";
+  import { batteryPercent, batteryCurrent, batteryVoltage, cpuUsagePercent, memUsagePercent } from "../js/vehicleStats";
   import { frontendConnMngr } from "../js/frontendConnManager";
   import { ConnectionStates } from "../js/shared/consts";
   $: role = Array.from($page.url.pathname.split("/")).pop();
@@ -22,6 +22,7 @@
 <nav class="flex app-bar p-4 w-full relative z-10" class:-mt-20={$fullscreenOpen}>
   <div class="flex pb-20 sm:pt-0 sm:pb-0 pr-1 sm:pr-10 justify-start gap-x-1 xl:gap-x-4 sm:gap-x-2 gap-y-1 flex-1 sm:w-1/2 sm:max-w-1/2 min-w-1/2 items-center">
     <slot name="left" />
+    <span class="font-bold chip variant-filled">CPU: {Math.round($cpuUsagePercent)}% | Mem: {Math.round($memUsagePercent)}%</span>
   </div>
 
   <!-- CENTER AREA  -->
