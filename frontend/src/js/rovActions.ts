@@ -60,7 +60,7 @@ class RovActionsClass {
         }
 
         if (buttonsChangedMask[BTN_X] && buttonsChangedMask[BTN_X].released) {
-            this.moveClawToPosition(0)
+            // this.moveClawToPosition(0)
         }
 
         if (buttonsChangedMask[BTN_HELP] && buttonsChangedMask[BTN_HELP].released) {
@@ -90,7 +90,10 @@ class RovActionsClass {
         }
 
         // FIXME: this is a hack to get the buttons to work with the mavlink message
-        const rawExcludedButtons = [BTN_A, BTN_B, BTN_LT, BTN_RT, BTN_LB, BTN_RB, BTN_LSTICK, BTN_RSTICK];
+        const rawExcludedButtons = [BTN_A, BTN_B, BTN_X, BTN_Y, BTN_LT, BTN_RT, BTN_LSTICK, BTN_RSTICK];
+        // remap triggers to sholder buttons
+        buttonsChangedMask[BTN_LB] = buttonsChangedMask[BTN_LT]
+        buttonsChangedMask[BTN_RB] = buttonsChangedMask[BTN_RT]
         const pressedButtons = buttonsChangedMask.map((val, index) => {
             if (val === false) return false;
             if (rawExcludedButtons.includes(index)) return false;
