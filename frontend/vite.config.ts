@@ -4,19 +4,19 @@ import vitePluginRequire from "vite-plugin-require";
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+// nodePolyfills({
+// 	include: ["buffer", "stream", "util", "crypto", "process"],
+// 	globals: {
+// 		Buffer: true,
+// 		global: true,
+// 		process: true,
+// 	},
+// 	protocolImports: false,
+// }), vitePluginRequire(),
 
 export default defineConfig({
-	plugins: [
-		nodePolyfills({
-			include: ["buffer", "stream", "util", "crypto","process"],
-			globals: {
-				Buffer: true,
-				global: true,
-				process: true,
-			},
-			protocolImports: false,
-		}), vitePluginRequire.default(), sveltekit() ],
-		//purgeCss()
+	plugins: [sveltekit()],
+	//purgeCss()
 	server: {
 		hmr: true,
 	},

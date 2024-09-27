@@ -2,7 +2,7 @@
   import nStore from "../../js/shared/libraries/nStore";
 
   export const onLivekitVideoOptionsChange = (options: rov_actions_proto.ILivekitVideoStatsResponse) => {
-    // if (lastChangeTimestamp + 1000 > Date.now()) return;
+    // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
     // useLivekit.set(options.Enabled);
     // if (options.Enabled) {
     //   allowBkupCodec.set(options.AllowBackupCodec);
@@ -17,7 +17,7 @@
   };
 
   export const onSimplePeerVideoOptionsChange = (options: rov_actions_proto.ISimplePeerVideoStatsResponse) => {
-    // if (lastChangeTimestamp + 1000 > Date.now()) return;
+    // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
     // const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
     // const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled;
     // const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
@@ -60,6 +60,8 @@
   import { type ComputedRtpStats } from "../../js/shared/videoStatsParser";
   import { writable } from "svelte/store";
   import { logDebug } from "../../js/shared/logging";
+  import { unixTimeNow } from "../../js/shared/time";
+  import { browser } from "$app/environment";
 
   const LK_STATS_ACCORDION_ID = "lk_stats_accordion";
   const SP_STATS_ACCORDION_ID = "sp_stats_accordion";
@@ -148,7 +150,7 @@
 
   const sendLivekitChange = (force?: boolean) => {
     if (!useLivekit.get() && force === false) return;
-    lastChangeTimestamp = Date.now();
+    lastChangeTimestamp = unixTimeNow();
     logCurrentState("Sending lk video change. current state:");
 
     const baseStream: rov_actions_proto.IVideoStreamOptions = {
@@ -173,7 +175,7 @@
 
   const sendSimplePeerChange = (force?: boolean) => {
     if (!useLivekit.get() && force === false) return;
-    lastChangeTimestamp = Date.now();
+    lastChangeTimestamp = unixTimeNow();
     logCurrentState("Sending sp video change. current state:");
 
     const mimeType = `video/${codec.get().toLowerCase()}`;
@@ -200,11 +202,13 @@
   };
 
   const onSizeChange = () => {
+    if (!browser) return;
     if (updateBitrateWithResolution.get()) maxBitrate.set(sizes[size.get()].bitrate[codec.get()]);
     sendVideoUpdate();
   };
 
   const onUseSimplePeerChange = (value?: boolean) => {
+    if (!browser) return;
     if (value !== undefined) useSimplePeer.set(value);
     // if (useSimplePeer.get()) {
     //   onUseLivekitChange(false);
@@ -243,6 +247,7 @@
   };
 
   const onSpPlayoutDelayChange = async () => {
+    if (!browser) return;
     if (useSimplePeer.get()) {
       const spDelay = frontendConnMngr.simplePeerConnection.getPlayoutDelay();
       const streams = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get();

@@ -12,11 +12,11 @@
 
   // the most basic vertex shader possible:
   const vertexShader = `
-attribute vec4 position;
-void main() {
-  gl_Position = position;
-}
-`;
+      attribute vec4 position;
+      void main() {
+        gl_Position = position;
+      }
+  `;
 
   let gl: any, programInfo: any, bufferInfo: any;
   $: if (programInfo && gl) {

@@ -1,8 +1,12 @@
-<script>
-  import { Compare_arrows, Data_exploration, Download_done, Drag_handle, Flight_land, Flight_takeoff, Logo_dev, Navigation, Upload, Video_camera_front, Video_chat, Video_library } from "svelte-google-materialdesign-icons";
+<script lang="ts">
+  import { Compare_arrows, Data_exploration, Download_done, Drag_handle, Flight_land, Flight_takeoff, Logo_dev, Navigation, Upload, Video_camera_front, Video_chat, Video_library, Video_camera_back } from "svelte-google-materialdesign-icons";
   import RadioSelectGrid from "../components/RadioSelectGrid.svelte";
   import { mainLogr } from "../js/shared/logging";
-  import { openLogsTimelineModal } from "../components/Modals/modals";
+  import { openLogsTimelineModal, openTestDriveTutModal } from "../components/Modals/modals";
+  import InfoNoticeBlock from "../components/NoticeBlocks/InfoNoticeBlock.svelte";
+  import PlayArrow from "svelte-google-materialdesign-icons/Play_arrow.svelte";
+  import WifiFind from "svelte-google-materialdesign-icons/Wifi_find.svelte";
+
   let role = "pilot";
   let fileInput;
 
@@ -12,7 +16,7 @@
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
-      const text = e.target.result;
+      const text = e.target.result as string;
       const data = JSON.parse(text);
       if (data && data instanceof Array && data.length > 0) {
         for (const log of data) {
@@ -26,7 +30,19 @@
   };
 </script>
 
-<div class="container h-full mx-auto max-w-full text-center px-10 flex flex-col justify-around items-center">
+<div class="fixed right-4 bottom-4 z-10 max-w-sm hidden md:block">
+  <InfoNoticeBlock heading="Here ahead of time?">
+    <button
+      class="btn btn-sm variant-filled-surface my-1 w-full text-left px-0"
+      on:click={() => {
+        openTestDriveTutModal();
+      }}><PlayArrow tabindex="-1" variation="round" class="mr-3" />Play the Tutorial</button
+    >
+    <br />
+    <a class="btn btn-sm variant-ghost-surface my-1 w-full" href="https://livekit.io/webrtc/browser-test"><WifiFind tabindex="-1" variation="round" class="mr-3" />Check Connection</a>
+  </InfoNoticeBlock>
+</div>
+<div class="container min-h-full mx-auto max-w-full text-center px-10 flex flex-col justify-around items-center">
   <div class="flex-1 my-8 flex flex-col justify-center items-center">
     <h1 class="h1">Welcome to ROV-Web!</h1>
   </div>
@@ -38,11 +54,11 @@
       options={[
         { value: "pilot", label: "Pilot", icon: Flight_takeoff },
         { value: "navigator", label: "Navigator", icon: Navigation },
-        { value: "video-capture", label: "Video Capture", icon: Video_camera_front },
-        { value: "data-monitor", label: "Data Monitor", icon: Data_exploration },
+        { value: "video-capture", label: "Camera Operator", icon: Video_camera_back },
+        { value: "data-monitor", label: "Data Scientist", icon: Data_exploration },
       ]}
     />
-    <a class="btn variant-filled mt-12 btn-lg" href={"./" + role}>GO</a>
+    <a class="btn variant-filled mt-12 btn-lg mb-12" href={"./" + role}>GO</a>
   </div>
   <div class="py-10 space-y-3">
     <p>Funding From:</p>

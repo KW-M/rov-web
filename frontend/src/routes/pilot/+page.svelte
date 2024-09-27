@@ -1,22 +1,22 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { AppShell, Drawer, getDrawerStore } from "@skeletonlabs/skeleton";
-  import { gpadCtrl } from "../../js/gamepad";
   import OnscreenGamepads from "../../components/OnscreenGamepads.svelte";
   import VideoPlayer from "../../components/VideoPlayer.svelte";
   import Sidebar from "../../components/Sidebar.svelte";
   import Topbar from "../../components/Topbar.svelte";
   import HelpTooltips from "../../components/HelpTooltips.svelte";
   import { RovActions } from "../../js/rovActions";
-  import { FlightMode, MavStateNameMap } from "../../js/shared/mavlink2RestMessages";
-  import { autopilotArmed, autopilotMavState, autopilotMode } from "../../js/vehicleStats";
+  import { FlightMode } from "../../js/shared/mavlink2RestMessages";
+  import { autopilotArmed, autopilotMode } from "../../js/vehicleStats";
   import DropdownMenuPopup from "../../components/DropdownMenuPopup.svelte";
   import { ConnectionStates } from "../../js/shared/consts";
   import { frontendConnMngr, VideoStreamMethod } from "../../js/frontendConnManager";
   import { Dangerous, Download_done, Drag_handle, Flight_class, Flight_land, Menu, Play_arrow, Power_off, Power_settings_new, Restart_alt, Rotate_left, Upload } from "svelte-google-materialdesign-icons";
   import VideoSettings from "../../components/Modals/VideoSettings.svelte";
-  import { localStore } from "../../js/localStorage";
-  import { openControlTutModal } from "../../components/Modals/modals";
+  import { getLocalStore } from "../../js/localStorage";
+  import { openTestDriveTutModal } from "../../components/Modals/modals";
+  import { tutorialModeActive } from "../../js/globalContext";
 
   const videoMethod = frontendConnMngr.currentVideoStreamMethod;
   $: usingHDVideo = $videoMethod === VideoStreamMethod.simplePeer;
@@ -28,8 +28,8 @@
   const openSideDrawer = (): void => drawerStore.open();
 
   onMount(() => {
-    if (localStore.getItem("tutorialComplete") == null) {
-      openControlTutModal();
+    if (getLocalStore().getItem("tutorialComplete") == null) {
+      openTestDriveTutModal();
     }
   });
 
@@ -63,13 +63,13 @@
           defaultIcon={Flight_class}
           disabled={!connected}
           onChange={(value) => {
-            RovActions.setFlightMode(parseInt(value));
+            if (!tutorialModeActive.get()) RovActions.setFlightMode(parseInt(value));
           }}
           options={[
             { value: FlightMode.manual, label: "Manual", icon: Flight_land },
             { value: FlightMode.stabilize, label: "Stabilize", icon: Drag_handle },
             { value: FlightMode.depth_hold, label: "Stabilize Depth", icon: Download_done },
-            { value: FlightMode.surface, label: "Surface", icon: Upload },
+            // { value: FlightMode.surface, label: "Surface", icon: Upload },
             { value: FlightMode.acrobatic, label: "Acro", icon: Rotate_left },
           ]}
         ></DropdownMenuPopup>
@@ -112,6 +112,7 @@
   {#if connected}
     <VideoPlayer />
   {/if}
-
-  <OnscreenGamepads />
+  {#if !$tutorialModeActive}
+    <OnscreenGamepads tooltipDelay={1000} />
+  {/if}
 </AppShell>

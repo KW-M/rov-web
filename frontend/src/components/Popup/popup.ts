@@ -4,7 +4,8 @@ import type { PopupSettings } from './types';
 // Use a store to pass the Floating UI import references
 import { storePopup } from "@skeletonlabs/skeleton";
 
-export function popup(triggerNode: HTMLElement | SVGElement, args: PopupSettings) {
+export type PopupArgs = PopupSettings & { forceOpen?: boolean, middleware?: PopupSettings["middleware"] & { arrowOffset?: number } };
+export function popup(triggerNode: HTMLElement | SVGElement, args: PopupArgs) {
     // Floating UI Modules
     const { computePosition, autoUpdate, offset, shift, flip, arrow, size, autoPlacement, hide, inline } = get(storePopup) as any;
     // Local State

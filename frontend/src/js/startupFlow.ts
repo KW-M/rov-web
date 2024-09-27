@@ -2,8 +2,9 @@ import { enableIframeWebsocketProxying } from "./shared/iframeWsProxy/iframeWsPr
 import { waitfor } from "./shared/util";
 import { frontendConnMngr } from "./frontendConnManager";
 import { URL_PARAMS } from "./frontendConsts";
-import { modalConfirm } from "./uiDialogs";
+import { modalAlert, modalConfirm } from "../components/Modals/modals";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
+import { isBrowserSupported } from "livekit-client";
 
 export class FrontendStartupFlowClass {
 
@@ -11,13 +12,28 @@ export class FrontendStartupFlowClass {
         await this.checkIfInIframe()
     }
 
-    async onConnectedActions() {
-        await frontendConnMngr.startSimplePeerConnection()
+    checkLivekitSupported() {
+        if (isBrowserSupported()) {
+            return true;
+        } else {
+            modalConfirm("Browser Not Supported", {
+                body: `Live connectivity features are missing<br/>
+                       Use an updated browser such as <b>Chrome, Edge, Firefox</b>, or <b>Safari</b>.<br/>`,
+                modalClasses: "w-fit max-w-xs px-6 py-5 variant-filled-error !bg-error-500",
+                buttonTextCancel: "Check Connection",
+                buttonTextConfirm: "Ok",
+                response: (r) => {
+                    if (!r) window.location.href = "https://livekit.io/webrtc/browser-test";
+                }
+            })
+            return false;
+        }
     }
 
     async checkIfInIframe() {
+        if (!this.checkLivekitSupported()) return false;
         if (window.parent === window) {
-            log("We are not in an iframe, trying to connect to Livekit Cloud...");
+            logDebug("We are not in an iframe, trying to connect to Livekit Cloud...");
             try {
                 await frontendConnMngr.initUsingCloudLivekitConnection()
             } catch (err) {
@@ -25,8 +41,11 @@ export class FrontendStartupFlowClass {
             }
         } else {
             log("We are in an iframe, alerting user");
-            modalConfirm("Uh oh, rov control won't work here", "Click ok to open this page outside BlueOS", () => {
-                window.open(window.location.toString())
+            modalConfirm("Uh oh, rov control won't work here", {
+                body: "Click OK to open this page outside BlueOS",
+                response: () => {
+                    window.open(window.location.toString())
+                }
             })
             // log("We are in an iframe, enabling iframe proxying to local Livekit...");
             // try {

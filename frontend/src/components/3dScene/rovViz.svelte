@@ -3,17 +3,18 @@
   import environmentTexture from "./environment.jpg";
   import tinyRovModel from "./Tiny_ROV_Color.glb?url";
 
-  // Import Three.js dependencies
-  import * as THREE from "three";
-  import { PerspectiveCamera } from "three";
+  // Import js dependencies
+  import { PerspectiveCamera, Vector3, WebGLRenderer, Scene, BufferGeometry, Float32BufferAttribute, ShaderMaterial, Points, PCFShadowMap, TextureLoader, AmbientLight, DirectionalLight, PointLight, EquirectangularReflectionMapping, type Group, type Object3DEventMap } from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { rovDrivingVector } from "../../js/globalContext";
-  import { Vector3 } from "three";
+
   import { showToastMessage, ToastSeverity } from "../../js/toastMessageManager";
+  import { rovHeading, rovPitch, rovRoll } from "../../js/sensors";
   const modelLoader = new GLTFLoader();
 
   export let canvasClass = "block absolute top-2 left-2 rounded-full";
   export let showEnvironment = false;
+  export let useRovOrientationData = false;
   const canvasSize = 200;
   const rovSpeed = 0.6;
   const rovTurnSpeed = (1.2 * Math.PI) / 180;
@@ -21,8 +22,8 @@
   const dustVolumeSize = 50;
   const dustVolumesPerSide = 4;
 
-  let renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: PerspectiveCamera, rovModel: THREE.Group<THREE.Object3DEventMap>;
-  let baseDustVolumeGeometry: THREE.BufferGeometry = computeDustVolume();
+  let renderer: WebGLRenderer, scene: Scene, camera: PerspectiveCamera, rovModel: Group<Object3DEventMap>;
+  let baseDustVolumeGeometry: BufferGeometry = computeDustVolume();
   let dustVolumes = [];
   let dustVolumeOffsets = [];
   let toDispose = [];
@@ -46,16 +47,16 @@
       positions.push(x, y, z);
     }
 
-    // Make a THREE.js geometry from those points
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    // Make a js geometry from those points
+    const geometry = new BufferGeometry();
+    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.computeBoundingSphere();
     return geometry;
   }
 
   function addDustVolumes(scene) {
-    // const material = new THREE.PointsMaterial({ size: 0.6, vertexColors: false });
-    const material = new THREE.ShaderMaterial({
+    // const material = new PointsMaterial({ size: 0.6, vertexColors: false });
+    const material = new ShaderMaterial({
       uniforms: {},
       transparent: true,
       vertexShader: `
@@ -81,7 +82,7 @@
     for (let x = 0; x < dustVolumesPerSide; x++) {
       for (let y = 0; y < dustVolumesPerSide; y++) {
         for (let z = 0; z < dustVolumesPerSide; z++) {
-          const volume = new THREE.Points(baseDustVolumeGeometry, material);
+          const volume = new Points(baseDustVolumeGeometry, material);
           const pos = { x: x * dustVolumeSize - centerOffset, y: y * dustVolumeSize - centerOffset, z: z * dustVolumeSize - centerOffset };
           volume.position.set(pos.x, pos.y, pos.z);
           dustVolumeOffsets.push(pos);
@@ -94,15 +95,7 @@
   }
 
   const updateDustVolumes = () => {
-    // const positions = baseDustVolumeGeometry.attributes.position.array;
-    // for (let i = 0; i < positions.length; i += 3) {
-    //   positions[i] += Math.random() * 0.001 - 0.0005;
-    //   positions[i + 1] -= Math.random() * 0.0001;
-    //   positions[i + 2] += Math.random() * 0.001 - 0.0005;
-    // }
-    // baseDustVolumeGeometry.attributes.position.needsUpdate = true;
-
-    const rovRoundedPosition = new THREE.Vector3(rovModel.position.x / dustVolumeSize, rovModel.position.y / dustVolumeSize, rovModel.position.z / dustVolumeSize).round().multiplyScalar(dustVolumeSize);
+    const rovRoundedPosition = new Vector3(rovModel.position.x / dustVolumeSize, rovModel.position.y / dustVolumeSize, rovModel.position.z / dustVolumeSize).round().multiplyScalar(dustVolumeSize);
     for (let i = 0; i < dustVolumes.length; i++) {
       const volume = dustVolumes[i];
       const offset = dustVolumeOffsets[i];
@@ -112,40 +105,35 @@
 
   onMount(() => {
     // Create a renderer
-    renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: true });
+    renderer = new WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: true });
     renderer.setSize(canvasSize, canvasSize);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.shadowMap.type = PCFShadowMap;
     toDispose.push(renderer);
 
     // Create a scene
-    scene = new THREE.Scene();
+    scene = new Scene();
     addDustVolumes(scene);
 
     // Create a camera
-    camera = new PerspectiveCamera(
-      75,
-      1 / 1, // window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    camera = new PerspectiveCamera(75, 1 / 1, 0.1, 1000);
     camera.position.z = 5;
 
     // Create an ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new AmbientLight(0xffffff, 0.8);
     addAndDispose(ambientLight);
 
     // Create a directional light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    const directionalLight = new DirectionalLight(0xffffff, 2);
     directionalLight.position.set(0, 1, 0);
     directionalLight.rotation.set(Math.PI * 2, Math.PI * 2, 0);
     addAndDispose(directionalLight);
 
     if (showEnvironment) {
       // Add an environment texture
-      const textureLoader = new THREE.TextureLoader();
+      const textureLoader = new TextureLoader();
       const environmentMap = textureLoader.load(environmentTexture, () => {
-        environmentMap.mapping = THREE.EquirectangularReflectionMapping;
+        environmentMap.mapping = EquirectangularReflectionMapping;
         scene.background = environmentMap;
       });
       toDispose.push(environmentMap);
@@ -158,8 +146,7 @@
         rovModel = gltf.scene;
         scene.add(rovModel);
 
-        console.log("ROV Model", rovModel);
-        const headLight = new THREE.PointLight(0xffffff, 0, 100);
+        const headLight = new PointLight(0xffffff, 0, 100);
         headLight.position.set(0, 8.5, 18);
         rovModel.add(headLight);
 
@@ -173,46 +160,63 @@
         clawL.rotation.z = Math.PI;
         rovModel.add(clawL);
 
-        let cameraOffset = new THREE.Vector3(0, 25, -50);
+        const _cameraOffset = new Vector3(0, 25, -50);
+        let cameraOffsetNorm = _cameraOffset.clone().normalize();
+        let cameraOffsetLength = _cameraOffset.length();
 
         // Animation loop
         function animate() {
           if (renderer === null) return;
           requestAnimationFrame(animate);
+          rovPitch.set(rovPitch.get() + 0.003);
+          rovRoll.set(rovRoll.get() + 0.001);
+          rovHeading.set(rovHeading.get() + 0.001);
 
           const drivingVector = rovDrivingVector.get();
           const moveZ = drivingVector.VelocityX * rovSpeed;
           const moveX = -1 * drivingVector.VelocityY * rovSpeed;
           const moveY = drivingVector.VelocityZ * rovSpeed;
-          const yaw = -drivingVector.AngularVelocityYaw * rovTurnSpeed;
+
           rovModel.translateX(moveX);
           rovModel.translateY(moveY);
           rovModel.translateZ(moveZ);
-          rovModel.rotation.y += yaw;
 
-          propellerL.rotation.z += moveZ * 0.25 - yaw * 2;
-          propellerR.rotation.z += moveZ * 0.25 + yaw * 2;
+          const moveYaw = -drivingVector.AngularVelocityYaw * rovTurnSpeed;
+          propellerL.rotation.z += moveZ * 0.15 - moveYaw * 8;
+          propellerR.rotation.z += moveZ * 0.15 + moveYaw * 8;
+
+          if (useRovOrientationData) {
+            rovModel.rotation.x = rovPitch.get();
+            rovModel.rotation.z = rovRoll.get();
+            rovModel.rotation.y = rovHeading.get();
+          } else if (moveZ > 0) {
+            rovModel.rotation.y += moveYaw;
+          }
 
           clawL.rotation.y = moveY;
           clawR.rotation.y = -moveY;
 
           headLight.intensity = 500 * Math.max(-moveY, 0);
 
+          // console.log(drivingVector.ButtonBitmask);
           if (drivingVector.ButtonBitmask !== 0) {
-            cameraOffset = new THREE.Vector3(0, 20, 50);
-          } else if (moveZ > 0) {
-            cameraOffset = new THREE.Vector3(0, 25, -50);
+            const _cameraOffset = new Vector3(0, 20, 50);
+            cameraOffsetLength = _cameraOffset.length();
+            cameraOffsetNorm = _cameraOffset.normalize();
+          } else {
+            const _cameraOffset = new Vector3(0, 25, -50);
+            cameraOffsetLength = _cameraOffset.length();
+            cameraOffsetNorm = _cameraOffset.normalize();
           }
 
-          // camera follows the cube
-          const camTarget = new Vector3().copy(cameraOffset).applyMatrix4(rovModel.matrixWorld);
+          // camera smooth follows the rov from behind witout pitching or rolling
+          const camTarget = new Vector3().copy(cameraOffsetNorm).applyQuaternion(rovModel.quaternion);
+          camTarget.setY(0).normalize().setY(cameraOffsetNorm.y).multiplyScalar(cameraOffsetLength).add(rovModel.position);
           camera.position.lerp(camTarget, 0.1);
           camera.lookAt(rovModel.position);
 
-          // updateDust(dust);
-          updateDustVolumes();
-
           // Render the scene with the camera
+          updateDustVolumes();
           renderer.render(scene, camera);
         }
 

@@ -9,7 +9,7 @@
    */
 
   // Types
-  import type { CssClasses, SvelteEvent } from "../../index.js";
+  import type { CssClasses, SvelteEvent } from "@skeletonlabs/skeleton";
 
   // interface $$Events {
   // 	scroll: SvelteEvent<UIEvent, HTMLDivElement>;

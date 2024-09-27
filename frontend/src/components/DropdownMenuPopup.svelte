@@ -3,10 +3,11 @@
 <script lang="ts">
   import { focusTrap, ListBox, type PopupSettings } from "@skeletonlabs/skeleton";
   import ListBoxItem from "./SkeletonRemakes/ListBoxItem.svelte";
-  import { popup } from "./Popup/popup";
+  import { popup, type PopupArgs } from "./Popup/popup";
   import { Flight_class, Flight_takeoff, Drag_handle, Expand_more as ExpandMoreIcon, Help as HelpIcon, Flight, Flight_land, Download_done, Upload } from "svelte-google-materialdesign-icons";
   import { onDestroy, onMount } from "svelte";
   import RadioSelectGrid from "./RadioSelectGrid.svelte";
+  import { browser } from "$app/environment";
 
   export let options = [];
   export let disabled = false;
@@ -28,7 +29,7 @@
       console.log("changeSelectedOpening", delta, open);
       openButton.click();
     }
-    (document.activeElement as HTMLElement).blur ? document.activeElement.blur() : null;
+    (document.activeElement as HTMLElement).blur ? (document.activeElement as HTMLElement).blur() : null;
     let index = options.findIndex((option) => option.value === value);
     index = (index + delta + options.length) % options.length;
     value = options[index].value;
@@ -40,7 +41,7 @@
     }, 1500);
   };
 
-  let popupCombobox: PopupSettings = {
+  let popupCombobox: PopupArgs = {
     event: "click",
     target: "popup_" + defaultLabel,
     placement: "bottom",
@@ -64,10 +65,10 @@
     optionsMap.set(value, { label, icon, action });
   });
   onMount(() => {
-    document.body.appendChild(popupElement);
+    if (browser) document.body.appendChild(popupElement);
   });
   onDestroy(() => {
-    document.body.removeChild(popupElement);
+    if (browser) document.body.removeChild(popupElement);
   });
 </script>
 
@@ -86,12 +87,12 @@
 </div>
 
 <style>
-  :global(.grid-listbox-item .listbox-label) {
+  /* :global(.grid-listbox-item .listbox-label) {
     margin: 0 !important;
     user-select: none;
     pointer-events: none;
     @apply justify-center h-full w-full;
-  }
+  }*/
   :global(.ring-outset) {
     --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
   }

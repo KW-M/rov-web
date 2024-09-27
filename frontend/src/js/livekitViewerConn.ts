@@ -6,6 +6,7 @@ import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";
 import { takenLivekitUsernameIds } from "./globalContext";
 import { RtpRecieverStatsParser } from "./shared/videoStatsParser";
+import { unixTimeNow } from "./shared/time";
 
 export class LivekitViewerConnection extends LivekitBaseConnection {
     // remote video tracks maps from the track source name to the livekit track object
@@ -98,7 +99,7 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
                 if (participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 const senderId = participant.identity;
                 // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
-                this.lastMsgRecivedTimestamp = Date.now();
+                this.lastMsgRecivedTimestamp = unixTimeNow();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
                     msg: msg

@@ -4,6 +4,7 @@ import { DECODE_TXT, ENCODE_TXT, ENCRYPTED_AUTH_TOKEN_PREFIX } from "../consts";
 import { encrypt } from "../encryption";
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 import { decodeJwt } from "jose";
+import { unixTimeNow } from "../time";
 
 /** A hack to silence false warnings about including the secret key in the web bundle
  * This is fine so long as the secret key is only found in the rov internal/backend chromium instance!!
@@ -36,9 +37,9 @@ const getAccessToken = (apiKey: string, secretKey: string, options: AccessTokenO
 export const isTokenValid = async (plaintextToken: string) => {
     try {
         const tokenInfo = await decodeJwt(plaintextToken);
-        const expired = !tokenInfo.exp || (tokenInfo.exp < Date.now() / 1000);
-        const beforeValid = !!tokenInfo.nbf && (tokenInfo.nbf > Date.now() / 1000);
-        logDebug("isTokenValid() tokenInfo: ", tokenInfo, "expired: ", expired, "beforeValid: ", beforeValid, "now: ", Date.now() / 1000, "valid: ", !expired && !beforeValid, tokenInfo);
+        const expired = !tokenInfo.exp || (tokenInfo.exp < unixTimeNow() / 1000);
+        const beforeValid = !!tokenInfo.nbf && (tokenInfo.nbf > unixTimeNow() / 1000);
+        logDebug("isTokenValid() tokenInfo: ", tokenInfo, "expired: ", expired, "beforeValid: ", beforeValid, "now: ", unixTimeNow() / 1000, "valid: ", !expired && !beforeValid, tokenInfo);
         if (!expired && !beforeValid) return tokenInfo.sub; // return the user id if the token is valid
         return false;
     } catch (e) {
@@ -116,6 +117,35 @@ export async function getLongTermStarterAccessToken(apiKey: string, secretKey: s
     token.addGrant({
         roomList: true,
         roomJoin: false,
+        canPublish: false,
+        canSubscribe: false,
+        canPublishData: false,
+        canUpdateOwnMetadata: false,
+    });
+    return await token.toJwt();
+}
+
+
+/**
+ * Get a livekit server auth token that's valid for hundreds of years, but only has the ability to list open rooms.
+ * @param {string} apiKey livekit api key to use
+ * @param {string} secretKey livekit api secret key to use
+ * @returns {string} JWT token */
+export async function getLongTermTestRoomAccessToken(apiKey: string, secretKey: string): Promise<string> {
+    const token = getAccessToken(apiKey, secretKey, {
+        identity: 'lt',
+        ttl: 600,
+        // ttl: 9460800000 // 300 years
+    })
+    token.addGrant({
+
+        hidden: false,
+        room: "connection-test-room",
+        roomList: true,
+        roomJoin: true,
+        roomRecord: false,
+        roomCreate: false,
+        roomAdmin: false,
         canPublish: false,
         canSubscribe: false,
         canPublishData: false,

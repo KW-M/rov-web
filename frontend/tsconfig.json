@@ -1,9 +1,20 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "./.svelte-kit/tsconfig.json",
+	"exclude": [
+		"*/build/*",
+		"node_modules/**",
+		"./.svelte-kit/[!ambient.d.ts]**",
+		"./src/service-worker.js",
+		"./src/service-worker.ts",
+		"./src/service-worker.d.ts"
+	],
 	"compilerOptions": {
+		"moduleResolution": "Bundler",
 		"allowJs": true,
-		"checkJs": false,
+		"checkJs": true,
 		"esModuleInterop": true,
+		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": false,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
@@ -15,7 +26,7 @@
 			"DOM.Iterable",
 			"WebWorker"
 		],
-		"baseUrl": "/",
+		"baseUrl": "./",
 		"noEmit": true,
 	},
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

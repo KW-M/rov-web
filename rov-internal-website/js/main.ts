@@ -3,7 +3,7 @@ import { iRovWebSocketRelay } from "./websocketRelay";
 import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
 import { ENCODE_TXT, FRONTEND_HANDLED_MAVLINK_MESSAGE_TYPES } from "./shared/consts";
-import { getLongTermStarterAccessToken } from "./shared/livekit/livekitTokens";
+import { getLongTermStarterAccessToken, getLongTermTestRoomAccessToken } from "./shared/livekit/livekitTokens";
 import { irovMavlinkInterface } from "./mavlinkWebsocket";
 import { getCPUUsageTotal, getDiskUsagePercent, getMemoryUsagePercent, getSystemAllInfo, getTemperatureAverage } from "./blueosAPIs/systemInfo";
 import { setMessageInterval } from "./shared/mavlink2RestMessages";
@@ -18,13 +18,29 @@ import { backendArdupilotMavlinkMsgRcvd } from "./msgHandler";
 // DISABLE VITE HOT MOUDLE RELOADING:
 // @ts-ignore (Ignore TS error for this line)
 if (import.meta.hot) import.meta.hot.accept(() => import.meta.hot.invalidate())
-Object.assign(window, { "getLongTermStarterAccessToken": getLongTermStarterAccessToken })
 
 mainLogr.defaultLogOrigin = LogOrigin.ROV;
 if (URL_PARAMS.SEND_LOGS) mainLogr.sendLogsAllowed = true;
 const showLogsBtn = document.getElementById("show_recent_logs_btn")
 const logsDiv = document.getElementById("recent_logs")
 if (showLogsBtn && logsDiv) showLogsBtn.addEventListener("click", () => mainLogr.printRecentLogs(logsDiv))
+
+Object.assign(window, {
+    "getLongTermStarterAccessToken": () => {
+        getLongTermStarterAccessToken(URL_PARAMS.LIVEKIT_API_KEY, URL_PARAMS.LIVEKIT_SECRET_KEY).then((t) => {
+            console.log(t); document.write(t)
+        }).catch((e) => {
+            console.error(e); document.write((e.message || "") + " " + e.toString())
+        })
+    },
+    "getLongTermTestRoomAccessToken": () => {
+        getLongTermTestRoomAccessToken(URL_PARAMS.LIVEKIT_API_KEY, URL_PARAMS.LIVEKIT_SECRET_KEY).then((t) => {
+            console.log(t); document.write(t)
+        }).catch((e) => {
+            console.error(e); document.write((e.message || "") + " " + e.toString())
+        })
+    }
+})
 
 
 //// ------------------------------------

@@ -2,7 +2,6 @@
 import type { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { frontendConnMngr } from "./frontendConnManager";
 import { frontendRovMsgHandler } from "./rovMessageHandler"
-import { modalConfirm, modalScrollingText } from "./uiDialogs"
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 import { calculateDesiredMotion } from "./rovUtil";
 import type { buttonChangeDetails } from "virtual-gamepad-lib";
@@ -11,8 +10,9 @@ import type { FlightMode } from "./shared/mavlink2RestMessages";
 import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
-import { openControlTutModal } from "../components/Modals/modals";
+import { openTestDriveTutModal, modalConfirm, modalScrollingText } from "../components/Modals/modals";
 import { autopilotMode } from "./vehicleStats";
+import { unixTimeNow } from "./shared/time";
 
 class RovActionsClass {
 
@@ -33,7 +33,8 @@ class RovActionsClass {
     /** triggerNextFlightModeUi is function that is assigned BY the pilot page flight mode dropdown selector ui component to trigger a change to the next flight mode */
     triggerNextFlightModeUi: (delta: number) => void = null;
 
-    gamepadButtonTriggers(gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) {
+    gamepadButtonTriggers = (gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => {
+        const btnChanges = [...buttonsChangedMask]
 
         const BTN_A = GPAD_STANDARD_BUTTON_INDEX.A
         const BTN_B = GPAD_STANDARD_BUTTON_INDEX.B
@@ -47,31 +48,29 @@ class RovActionsClass {
         const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
         const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
 
-        if (buttonsChangedMask[BTN_LB] && buttonsChangedMask[BTN_LB].released) {
+        if (btnChanges[BTN_LB] && btnChanges[BTN_LB].released) {
             throttleGain.update((val) => Math.min(Math.max(10, val - 10), 200))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
-        } else if (buttonsChangedMask[BTN_RB] && buttonsChangedMask[BTN_RB].released) {
+        } else if (btnChanges[BTN_RB] && btnChanges[BTN_RB].released) {
             throttleGain.update((val) => Math.min(Math.max(10, val + 10), 200))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
         }
 
-        if (buttonsChangedMask[BTN_Y] && buttonsChangedMask[BTN_Y].released && this.triggerNextFlightModeUi) {
-            this.triggerNextFlightModeUi(1)
+        if (btnChanges[BTN_HELP] && btnChanges[BTN_HELP].released) {
+            openTestDriveTutModal()
         }
 
-        if (buttonsChangedMask[BTN_X] && buttonsChangedMask[BTN_X].released) {
-            // this.moveClawToPosition(0)
+        if (btnChanges[BTN_Y] && btnChanges[BTN_Y].released && this.triggerNextFlightModeUi) {
+            if (!tutorialModeActive.get()) this.triggerNextFlightModeUi(1)
         }
 
-        if (buttonsChangedMask[BTN_HELP] && buttonsChangedMask[BTN_HELP].released) {
-            openControlTutModal()
+        if (btnChanges[BTN_X] && btnChanges[BTN_X].released) {
+            if (!tutorialModeActive.get()) this.moveClawToPosition(0)
         }
 
-        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-
-        if (buttonsChangedMask[BTN_LT] || buttonsChangedMask[BTN_RT]) {
-            const LT = buttonsChangedMask[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
-            const RT = buttonsChangedMask[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
+        if (btnChanges[BTN_LT] || btnChanges[BTN_RT]) {
+            const LT = btnChanges[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
+            const RT = btnChanges[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
 
             const deltaL = LT - this.lastGpadLTriggerValue;
             const deltaR = RT - this.lastGpadRTriggerValue;
@@ -83,17 +82,17 @@ class RovActionsClass {
 
         }
 
-        if (buttonsChangedMask[BTN_A] && buttonsChangedMask[BTN_A].released) {
-            this.takeControl()
-        } else if (buttonsChangedMask[BTN_B] && buttonsChangedMask[BTN_B].released) {
-            this.disarm()
+        if (btnChanges[BTN_A] && btnChanges[BTN_A].released) {
+            if (!tutorialModeActive.get()) this.takeControl()
+        } else if (btnChanges[BTN_B] && btnChanges[BTN_B].released) {
+            if (!tutorialModeActive.get()) this.disarm()
         }
 
         // FIXME: this is a hack to get the buttons to work with the mavlink message
         const rawExcludedButtons = [BTN_A, BTN_B, BTN_X, BTN_Y, BTN_LT, BTN_RT, BTN_LSTICK, BTN_RSTICK];
         // remap triggers to sholder buttons
-        buttonsChangedMask[BTN_LB] = buttonsChangedMask[BTN_LT]
-        buttonsChangedMask[BTN_RB] = buttonsChangedMask[BTN_RT]
+        btnChanges[BTN_LB] = btnChanges[BTN_LT]
+        btnChanges[BTN_RB] = btnChanges[BTN_RT]
         const pressedButtons = buttonsChangedMask.map((val, index) => {
             if (val === false) return false;
             if (rawExcludedButtons.includes(index)) return false;
@@ -102,7 +101,7 @@ class RovActionsClass {
         this.sendButtonsToRov(pressedButtons);
     }
 
-    gamepadAxisTriggers(gamepad: Gamepad) {
+    gamepadAxisTriggers = (gamepad: Gamepad) => {
         const gain = throttleGain.get() / 100;
         const { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
         if (VelocityX == 0 && VelocityY == 0 && VelocityZ == 0 && AngularVelocityYaw == 0) logInfo("GAMEPAD MOTION: STOPed")
@@ -123,9 +122,9 @@ class RovActionsClass {
         if (this.requiredMsgsLoopIntervalId) return;
         this.requiredMsgsLoopIntervalId = Number(setInterval(() => {
             if (frontendConnMngr.connectionState.get() != ConnectionStates.connected) return;
-            const now = Date.now();
+            const now = unixTimeNow();
             if (now - this.lastPingTime > PING_INTERVAL) {
-                frontendRovMsgHandler.sendRovMessage({ Ping: { Time: Date.now() } }, null);
+                frontendRovMsgHandler.sendRovMessage({ Ping: { Time: now } }, null);
                 this.lastPingTime = now;
             }
             if (now - this.lastMovementTime > MOVE_MSG_TIMEOUT) {
@@ -174,15 +173,15 @@ class RovActionsClass {
 
     moveRov(VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, btnBitmask: number = -1) {
         const ButtonBitmask = btnBitmask === -1 ? this.lastMove.ButtonBitmask : btnBitmask;
-        const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
-        const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
-        // const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
-        // if (totalMovement > 0.1 && movementDelta < 0.01 && timeSinceLastMoveCmd < 400) return;
+        // const movementDelta = (VelocityX - this.lastMove.VelocityX) + (VelocityY - this.lastMove.VelocityY) + (VelocityZ - this.lastMove.VelocityZ) + (AngularVelocityYaw - this.lastMove.AngularVelocityYaw);
+        // const totalMovement = Math.abs(VelocityX) + Math.abs(VelocityY) + Math.abs(VelocityZ) + Math.abs(AngularVelocityYaw);
+        // const timeSinceLastMoveCmd = unixTimeNow() - this.lastMovementTime;
+        // if (movementDelta < 0.01 && timeSinceLastMoveCmd < 700) return;
         rovDrivingVector.set({ VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask })
-        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
         this.lastMove = rovDrivingVector.get();
-        this.lastMovementTime = Date.now();
+        this.lastMovementTime = unixTimeNow();
+        if (tutorialModeActive.get()) return; // don't send commands in tutorial mode
+        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
     }
 
     sendButtonsToRov(buttons: boolean[]) {
@@ -197,13 +196,15 @@ class RovActionsClass {
             return acc;
         }, 0)
 
-        const timeSinceLastMoveCmd = Date.now() - this.lastMovementTime;
+        const timeSinceLastMoveCmd = unixTimeNow() - this.lastMovementTime;
+        logInfo("btnBitmask" + ButtonBitmask)
         if (this.lastMove.ButtonBitmask === ButtonBitmask && timeSinceLastMoveCmd < 700) return;
-        if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        if (ButtonBitmask) logInfo("btnBitmask" + ButtonBitmask)
-        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
+        rovDrivingVector.set({ VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask })
+
         this.lastMove.ButtonBitmask = ButtonBitmask;
-        this.lastMovementTime = Date.now();
+        this.lastMovementTime = unixTimeNow();
+        if (tutorialModeActive.get()) return; // don't send commands in tutorial mode
+        frontendRovMsgHandler.sendRovMessage({ Move: { VelocityX, VelocityY, VelocityZ, AngularVelocityYaw, ButtonBitmask } }, null);
     }
 
     refreshAllSensorData() {
@@ -236,40 +237,52 @@ class RovActionsClass {
     }
 
     shutdownRov = () => {
-        modalConfirm("Shutdown the ROV?", "", () => {
-            showToastMessage("Sending Shutdown Request...", 2000, false, ToastSeverity.info)
-            this.sendActionAndWaitForDone({ ShutdownRov: {} }, (msgData) => {
-                if (msgData.Error) {
-                    showToastMessage("ROV Shutdown Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
-                } else if (msgData.Done) {
-                    showToastMessage("Please wait 20 seconds before unplugging. ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
-                    frontendConnMngr.close();
-                }
-            })
+        modalConfirm("Shutdown ROV?", {
+            response: (r) => {
+                if (!r) return;
+                showToastMessage("Sending Shutdown Request...", 2000, false, ToastSeverity.info)
+                this.sendActionAndWaitForDone({ ShutdownRov: {} }, (msgData) => {
+                    if (msgData.Error) {
+                        showToastMessage("ROV Shutdown Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
+                    } else if (msgData.Done) {
+                        showToastMessage("Please wait 20 seconds before unplugging. ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
+                        frontendConnMngr.close();
+                    }
+                })
+            }
         })
     }
 
     rebootRov = () => {
-        modalConfirm("Reboot the ROV?", "The ROV will stop responding for about two minutes and then you can re-connect.", () => {
-            showToastMessage("Sending Reboot Request...", 2000, false, ToastSeverity.info)
-            this.sendActionAndWaitForDone({ RebootRov: {} }, (msgData) => {
-                if (msgData.Error) {
-                    showToastMessage("ROV Reboot Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
-                } else if (msgData.Done) {
-                    showToastMessage("Press Connect again in about 30 seconds ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
-                    showToastMessage("ROV: " + msgData.Done.Message)
-                    frontendConnMngr.close();
-                }
-            })
+        modalConfirm("Reboot the ROV?", {
+            body: "The ROV will stop responding for about two minutes and then you can re-connect.",
+            response: (r) => {
+                if (!r) return;
+                showToastMessage("Sending Reboot Request...", 2000, false, ToastSeverity.info);
+                this.sendActionAndWaitForDone({ RebootRov: {} }, (msgData) => {
+                    if (msgData.Error) {
+                        showToastMessage("ROV Reboot Error: " + msgData.Error.Message, 5000, false, ToastSeverity.error)
+                    } else if (msgData.Done) {
+                        showToastMessage("Press Connect again in about 30 seconds ROV: " + msgData.Done.Message, 8000, false, ToastSeverity.success)
+                        showToastMessage("ROV: " + msgData.Done.Message)
+                        frontendConnMngr.close();
+                    }
+                })
+            }
         })
     }
 
     restartRovServices = () => {
-        modalConfirm("Restart ROV services?", "The ROV will stop responding for about a minute and then you can re-connect.", () => {
-            let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
-            frontendRovMsgHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
+        modalConfirm("Restart ROV services?", {
+            body: "The ROV will stop responding for about a minute and then you can re-connect.",
+            response: (r) => {
+                if (!r) return;
+                let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
+                frontendRovMsgHandler.sendRovMessage({ RestartRovServices: {} }, responseHandler)
+            }
         })
     }
+
 
     getRovStatusReport = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
@@ -288,15 +301,19 @@ class RovActionsClass {
     }
 
     disableRovWifi = () => {
-        modalConfirm("Are you sure you want to disable rov wifi?", "If the ROV is connected via wifi, <em>don't do this!</em>", () => {
-            showToastMessage("Sending Disable Wifi Command...", 2000, false, ToastSeverity.info)
-            this.sendActionAndWaitForDone({ DisableWifi: {} }, (msgData) => {
-                if (msgData.Error) {
-                    showToastMessage("Disable Wifi Error: " + msgData.Error.Message, 8000, false, ToastSeverity.error)
-                } else if (msgData.Done) {
-                    showToastMessage("Wifi Disable: " + msgData.Done.Message, 2000, false, ToastSeverity.success)
-                }
-            })
+        modalConfirm("Are you sure you want to disable rov wifi?", {
+            body: "If the ROV is connected via wifi, <em>don't do this!</em>",
+            response: (r) => {
+                if (!r) return;
+                showToastMessage("Sending Disable Wifi Command...", 2000, false, ToastSeverity.info)
+                this.sendActionAndWaitForDone({ DisableWifi: {} }, (msgData) => {
+                    if (msgData.Error) {
+                        showToastMessage("Disable Wifi Error: " + msgData.Error.Message, 8000, false, ToastSeverity.error)
+                    } else if (msgData.Done) {
+                        showToastMessage("Wifi Disable: " + msgData.Done.Message, 2000, false, ToastSeverity.success)
+                    }
+                })
+            }
         })
     }
 

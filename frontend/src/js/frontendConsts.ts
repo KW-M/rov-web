@@ -1,8 +1,9 @@
+import { type wrapperButtonConfig } from "virtual-gamepad-lib";
 import type { PopupSettings } from "../components/Popup/types";
 import { SECONDS_IN_DAY } from "./shared/consts";
 import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from "./shared/urlParameters";
 
-/** Token used by the frontend to list available livekit rooms, it does not have any other permissions, but lasts almost indefinately */
+/** Token used by the frontend to list available livekit rooms, it does not have any other permissions, but lasts effectively forever (20 years) */
 // START_LIVEKIT_FRONTEND_TOKEN
 export const LIVEKIT_LIST_ONLY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tTGlzdCI6dHJ1ZSwicm9vbUpvaW4iOmZhbHNlLCJjYW5QdWJsaXNoIjpmYWxzZSwiY2FuU3Vic2NyaWJlIjpmYWxzZSwiY2FuUHVibGlzaERhdGEiOmZhbHNlLCJjYW5VcGRhdGVPd25NZXRhZGF0YSI6ZmFsc2V9LCJpYXQiOjE2OTE0NTEzNDEsIm5iZiI6MTY5MTQ1MTM0MSwiZXhwIjoxMTE1MjI1MTM0MSwiaXNzIjoiQVBJSGQ3Qm9hOVJVVWlUIiwic3ViIjoibHQiLCJqdGkiOiJsdCJ9.X5fI6ceu2aLf0bc-h3PKc-u2PRzSAgVZEpK5FjScRGQ"
 // END_LIVEKIT_FRONTEND_TOKEN
@@ -98,20 +99,20 @@ export const GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX = {
 
 
 // export const TOUCHED_BUTTON_EQUIVELANT_VALUE = 0.5;
-export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: PopupSettings["placement"], fireWhileHolding?: boolean, remoteAction?: string, localAction?: string }
+export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: string } & wrapperButtonConfig
 export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
-    { btnName: "button_1", helpLabel: "Take Control", tooltipPlacement: "left" },
-    { btnName: "button_2", helpLabel: "HALT Motors", tooltipPlacement: "left" },
-    { btnName: "button_3", helpLabel: "Take Photo (N/A)", tooltipPlacement: "left" },
-    { btnName: "button_4", helpLabel: "Change Fly Mode", tooltipPlacement: "left" },
-    { btnName: "shoulder_button_front_left", helpLabel: "Decrease Throttle", tooltipPlacement: "right", fireWhileHolding: true, },
-    { btnName: "shoulder_button_front_right", helpLabel: "Increase Throttle", tooltipPlacement: "left", fireWhileHolding: true, },
+    { btnName: "button_1", helpLabel: "Take Control", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "button_2", helpLabel: "HALT Motors", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "button_3", helpLabel: "Take Photo (N/A)", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "button_4", helpLabel: "Change Fly Mode", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "shoulder_button_front_left", helpLabel: "Less Throttle", tooltipPlacement: "right", fireWhileHolding: true, },
+    { btnName: "shoulder_button_front_right", helpLabel: "More Throttle", tooltipPlacement: "left", fireWhileHolding: true, },
     { btnName: "shoulder_trigger_back_left", helpLabel: "Open Claw", fireWhileHolding: true, tooltipPlacement: "right" },
     { btnName: "shoulder_trigger_back_right", helpLabel: "Close Claw", fireWhileHolding: true, tooltipPlacement: "left" },
-    { btnName: "select_button", helpLabel: "Tutorial", tooltipPlacement: "right" },
-    { btnName: "start_button", helpLabel: "Move-Roll Toggle", tooltipPlacement: "left" },
-    { btnName: "stick_button_left", helpLabel: "Move Forward-Back & Turn", tooltipPlacement: "right" },
-    { btnName: "stick_button_right", helpLabel: "Move Up-Down & Left-Right", tooltipPlacement: "left" },
+    { btnName: "select_button", helpLabel: "Tutorial", tooltipPlacement: "right", fireWhileHolding: false },
+    { btnName: "start_button", helpLabel: "Move-Roll Toggle", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "stick_button_left", helpLabel: "Move Forward-Back & Turn", tooltipPlacement: "right", fireWhileHolding: false },
+    { btnName: "stick_button_right", helpLabel: "Move Up-Down & Left-Right", tooltipPlacement: "left", fireWhileHolding: false },
     { btnName: "d_pad_up", helpLabel: "Look Up", fireWhileHolding: true, tooltipPlacement: "right" },
     { btnName: "d_pad_down", helpLabel: "Look Down", fireWhileHolding: true, tooltipPlacement: "right" },
     { btnName: "d_pad_left", helpLabel: "Dim Lights", fireWhileHolding: true, tooltipPlacement: "right" },

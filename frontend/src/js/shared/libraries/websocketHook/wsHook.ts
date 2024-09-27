@@ -2,6 +2,8 @@
 /* eslint-disable accessor-pairs */
 /* eslint-disable no-global-assign */
 
+import { log, logWarn } from "../../logging";
+
 /* wsHook.js
  * https://github.com/skepticfx/wshook
  * Reference: http://www.w3.org/TR/2011/WD-websockets-20110419/#websocket

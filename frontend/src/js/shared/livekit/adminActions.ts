@@ -3,6 +3,7 @@ import { encryptAccessToken, getFrontendAccessToken, silenceFalseSecurityNotice 
 import { getHumanReadableId, getUniqueNumber, waitfor } from '../util';
 import { RoomServiceClient, type Room, EgressClient } from 'livekit-server-sdk';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
+import { unixTimeNow } from '../time';
 
 export interface AuthTokenInfo {
     // the name/id we will have (according to livekit) if we use this token.
@@ -64,11 +65,11 @@ export class LivekitRoomAdmin {
     }
 
     async waitForRateLimit() {
-        while ((Date.now() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
-            console.log("Waiting for rate limit...", Date.now() - lastLivekitApiCallTime);
+        while ((unixTimeNow() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
+            console.log("Waiting for rate limit...", unixTimeNow() - lastLivekitApiCallTime);
             await waitfor(LIVEKIT_API_MIN_DELAY);
         }
-        lastLivekitApiCallTime = Date.now();
+        lastLivekitApiCallTime = unixTimeNow();
     }
 
     async deleteLivekitRoom() {

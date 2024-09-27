@@ -2,12 +2,6 @@ import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } fro
 import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
 import type SimplePeerT from "simple-peer";
 
-declare global {
-    interface Window {
-        LIVEKIT_LIST_ONLY_TOKEN: string
-    }
-}
-
 export enum ConnectionStates {
     init = "Init",
     connecting = "Connecting",

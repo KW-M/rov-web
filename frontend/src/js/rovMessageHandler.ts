@@ -4,12 +4,13 @@ import { debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
 import { DECODE_TXT } from "./shared/consts";
-import { modalPasswordPrompt } from "./uiDialogs";
+import { modalPasswordPrompt } from "../components/Modals/modals";
 import { handleMavlinkMessage } from "./mavlinkMessageHandler";
 import { updateSystemMonitorDisplay } from "./vehicleStats";
 import { URL_PARAMS } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
 import { onLivekitVideoOptionsChange, onSimplePeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
+import { unixTimeNow } from "./shared/time";
 
 let lastTimeRecvdPong = NaN;
 
@@ -77,7 +78,7 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handlePongMsgRecived(msgData: rov_actions_proto.IPongResponse, ExchangeId: number) {
-        lastTimeRecvdPong = Date.now();
+        lastTimeRecvdPong = unixTimeNow();
         const networkPingDelay = lastTimeRecvdPong - Number.parseFloat(msgData.Time) // since the rpi replies with the ms time we sent in the ping in the pong message
         networkLatencyMs.set(networkPingDelay);
     }

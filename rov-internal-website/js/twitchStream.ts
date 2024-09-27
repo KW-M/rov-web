@@ -67,8 +67,8 @@ class TwitchStream {
                 protocol: StreamProtocol.RTMP,
                 urls: ['rtmp://live.twitch.tv/app/' + this._twitchStreamKey]
             });
-            var info = await silenceFalseSecurityNotice(() => { return this._egressClient?.startRoomCompositeEgress(this.roomName as string, output) });
-            this.streamEgressID = info.egressId;
+            let info = await silenceFalseSecurityNotice(() => { return this._egressClient?.startRoomCompositeEgress(this.roomName as string, output) });
+            this.streamEgressID = info?.egressId;
             logInfo("Twitch stream started: ", info);
         }
 

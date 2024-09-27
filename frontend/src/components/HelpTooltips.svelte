@@ -5,6 +5,11 @@
   import { fade } from "svelte/transition";
   import { onDestroy } from "svelte";
 
+  export type TooltipOptions = {
+    label: string;
+    config?: PopupSettings;
+  };
+
   interface TooltipData {
     id: string;
     label: string;
@@ -19,7 +24,7 @@
   let tooltipIndex = 0;
 
   /** create a new tooltip with */
-  export const addTooltip = (node: HTMLElement | SVGElement, opts: { label: string; config?: PopupSettings }) => {
+  export const addTooltip = (node: HTMLElement | SVGElement, opts: TooltipOptions) => {
     let { label, config } = opts;
     let tooltipId;
     tooltips.update((allTooltips) => {

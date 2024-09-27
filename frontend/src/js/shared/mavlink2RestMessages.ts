@@ -4,6 +4,7 @@ import type { Package, Message } from "./mavlink2rest-ts/messages/mavlink2rest";
 import type { Message as MavMessages } from "./mavlink2rest-ts/messages/mavlink2rest-message";
 import { MavState, MavMode, MavModeFlag, MavType, MavAutopilot, MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
 import { log, logInfo } from "./logging";
+import { unixTimeNow } from "./time";
 
 // export enum MAV_MODE_FLAG {
 //     MAV_MODE_FLAG_CUSTOM_MODE_ENABLED = 1,   // 0b00000001 Reserved for future use.
@@ -214,7 +215,7 @@ export const servoPositionControl = (servo: number, position: number, group: num
         type: "SET_ACTUATOR_CONTROL_TARGET",
         group_mlx: group,
         controls,
-        time_usec: Date.now() * 1000,
+        time_usec: unixTimeNow() * 1000,
         target_component: 1,
         target_system: 1,
     } as MavMessages.SetActuatorControlTarget)

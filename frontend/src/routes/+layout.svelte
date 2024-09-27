@@ -1,16 +1,11 @@
 <script lang="ts">
   import "../app.css";
   import { onDestroy, onMount } from "svelte";
-  import { getModalStore, initializeStores } from "@skeletonlabs/skeleton";
+  import { initializeStores } from "@skeletonlabs/skeleton";
   import { Modal, Toast } from "@skeletonlabs/skeleton";
-  import { setupToasts } from "../js/toastMessageManager";
-  import { setupModals } from "../js/uiDialogs";
-  import { initPage } from "../initilize";
+  import { setupToasts, showToastMessage, ToastSeverity } from "../js/toastMessageManager";
+  import { setupModals } from "../components/Modals/modals";
   import { RovActions } from "../js/rovActions";
-
-  initializeStores();
-  setupToasts();
-  setupModals();
 
   // Floating UI for Popups
   import { storePopup } from "@skeletonlabs/skeleton";
@@ -18,45 +13,96 @@
   import RovSelector from "../components/RovSelector.svelte";
   import LoadingIndicator from "../components/LoadingIndicator.svelte";
   import { frontendConnMngr } from "../js/frontendConnManager";
-  import { base } from "$app/paths";
   import { page } from "$app/stores";
   import LogTimeline from "../components/Modals/LogTimeline.svelte";
-  import ControlSchemeTut from "../components/Modals/Tutorials/ControlSchemeTut.svelte";
-  import { setModalStore } from "../components/Modals/modals";
+  import TestDriveTut from "../components/Modals/Tutorials/TestDriveTut.svelte";
   import FlyModesTut from "../components/Modals/Tutorials/FlyModesTut.svelte";
-  import { mainLogr } from "../js/shared/logging";
+  import { type LogEntry, mainLogr } from "../js/shared/logging";
+  import { currentServerTimeOffset, perfUnixTimeNow, unixTimeNow } from "../js/shared/time";
+  import { getGpadCtrl } from "../js/gamepad";
+  import { debugPageModeActive, fullscreenOpen } from "../js/globalContext";
+  import { frontendStartupFlow } from "../js/startupFlow";
+  import { getURLQueryStringVariable } from "../js/util";
+
+  initializeStores();
+  setupToasts();
+  const MODAL_COMPONENTS = setupModals();
   storePopup.set({ computePosition, autoUpdate, autoPlacement, flip, shift, offset, arrow });
-  setModalStore(getModalStore());
+  $: isRolePage = !$page.error && $page.route.id !== "/";
 
-  onDestroy(() => {
-    RovActions.stopRequiredMsgLoop();
-    frontendConnMngr.close();
-  });
+  // DISABLE VITE HOT MOUDLE RELOADING:
+  if (import.meta.hot) import.meta.hot.accept(() => import.meta.hot?.invalidate());
 
-  onMount(() => {
+  // Store logs in local storage
+  let logStoringInterval: NodeJS.Timeout;
+  const storeLogs = () => {
     mainLogr.sendLogsAllowed = true;
-    const logSaveInterval = setInterval(() => {
+    logStoringInterval = setInterval(() => {
       mainLogr.sendQueuedLogs((_, msg, id) => {
         localStorage.setItem("log_" + id, msg);
         return Promise.resolve(true);
       });
     }, 5000);
-    initPage();
-    return () => clearInterval(logSaveInterval);
+  };
+
+  const getStoredLogs = () => {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith("log_")) {
+        const jsonLog = localStorage.getItem(key);
+        if (jsonLog) {
+          const log = JSON.parse(jsonLog) as LogEntry;
+          mainLogr.addLog(log.level, log.args, log.trace, log.kind, log.origin, log.timestamp);
+        }
+      }
+    }
+  };
+
+  // Check server time in case the user's clock is off
+  let serverTimeCheckInterval: NodeJS.Timeout;
+  const checkServerTime = () => {
+    const TWO_MINUTES = 12000; // ms
+    const timeOffset = currentServerTimeOffset();
+    if (timeOffset === null) return;
+    if (Math.abs(timeOffset) > TWO_MINUTES) {
+      showToastMessage(`<h4 class="h4 mb-1">The clock on this device is off</h4>Please set the date & time in your computer settings`, 15000, false, ToastSeverity.warning);
+    }
+    clearInterval(serverTimeCheckInterval);
+  };
+
+  onMount(() => {
+    debugPageModeActive.set(getURLQueryStringVariable("debug") != undefined);
+    document.addEventListener("fullscreenchange", (e) => {
+      fullscreenOpen.set(document.fullscreenElement !== null);
+    });
+    window.addEventListener("beforeunload", () => {
+      frontendConnMngr.close();
+    });
+
+    // pull stored logs from local storage
+    getStoredLogs();
+    if (debugPageModeActive.get()) storeLogs();
+
+    serverTimeCheckInterval = setInterval(checkServerTime, 2000);
+    checkServerTime();
+
+    // start app:
+    frontendStartupFlow.start();
+    RovActions.startRequiredMsgLoop();
   });
-  $: isRolePage = !$page.error && location.pathname.replaceAll("/", "") !== base.replaceAll("/", "");
+
+  onDestroy(() => {
+    clearInterval(logStoringInterval);
+    clearInterval(serverTimeCheckInterval);
+    RovActions.stopRequiredMsgLoop();
+    frontendConnMngr.close();
+    getGpadCtrl().cleanup();
+  });
 </script>
 
-<Modal
-  height="max-h-full"
-  zIndex="z-40"
-  components={{
-    LogTimeline: { ref: LogTimeline },
-    ControlSchemeTut: { ref: ControlSchemeTut },
-    FlyModesTut: { ref: FlyModesTut },
-  }}
-/>
-<Toast position="b" zIndex="z-50" shadow="shadow-2xl ring-2" max={5} />
+<Modal height="max-h-screen max-w-full" zIndex="z-40" components={MODAL_COMPONENTS} />
+<Toast position="b" zIndex="z-50" shadow="shadow-3xl ring-2 ring-black" width="w-fit max-w-full" padding="py-3 px-4 lg:py-4 lg:px-4" max={5} />
+
 <slot />
 {#if isRolePage}
   <RovSelector />

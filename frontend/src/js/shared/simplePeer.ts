@@ -6,6 +6,7 @@ import type SimplePeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { waitfor } from './util';
 import { RtpStatsParser } from './videoStatsParser';
+import { perfUnixTimeNow, unixTimeNow } from './time';
 
 enum SimplePeerErrorCodes {
     ERR_WEBRTC_SUPPORT = 'ERR_WEBRTC_SUPPORT',
@@ -95,7 +96,7 @@ export class SimplePeerConnection {
         this._shouldReconnect = autoReconnect;
         this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config) as SimplePeerT.Options;
         logWarn("SP starting with opts: ", this._spConfig, startCount++)
-        if (this._spConfig.initiator) this._connectionId = Date.now();
+        if (this._spConfig.initiator) this._connectionId = perfUnixTimeNow();
         this._signalMsgRecivedCounter = 0;
         this._signalMsgSendCounter = 0;
         this._p = new SimplePeer(this._spConfig) as any as SimplePeerT.Instance;
@@ -128,7 +129,7 @@ export class SimplePeerConnection {
         })
 
         this._p.on('data', data => {
-            this.lastMsgRecivedTimestamp = Date.now();
+            this.lastMsgRecivedTimestamp = unixTimeNow();
             this.latestRecivedDataMessage.set(data);
         })
 

@@ -1,3 +1,4 @@
+import { log } from "../../logging";
 import hookWebsockets from "./wsHook";
 
 function waitfor(millisec) {

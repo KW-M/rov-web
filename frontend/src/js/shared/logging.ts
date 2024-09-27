@@ -1,4 +1,5 @@
 import { rov_actions_proto } from "./protobufs/rovActionsProto";
+import { perfUnixTimeNow } from "./time";
 
 const VITEBUILD_EXTRANIOUS_PATH = "/@fs/Users/ky/Documents/Github/rov-web";
 
@@ -26,7 +27,7 @@ export enum LogOrigin {
 export type LogLevel = rov_actions_proto.LogLevel | LogLevelConsole;
 
 export interface LogEntry {
-    timestamp: number, // Date.now()
+    timestamp: number, // unix time ms
     level: LogLevelConsole, // warning, error, info, debug, console
     args: any[],
     trace: string[],
@@ -57,12 +58,12 @@ export class Logger {
     constructor(origin: LogOrigin = LogOrigin.PILOT) {
         const { log, debug, warn, error, info } = console;
         this.rawConsole = { log, debug, warn, error, info };
-        this.rootURL = window.location.protocol + "//" + window.location.host;
+        this.rootURL = globalThis.window ? window.location.protocol + "//" + window.location.host : "unknown";
         this.defaultLogOrigin = origin;
         console.log("Logger initialized", this.rootURL)
 
         // Only Chrome & Opera have an error attribute on the event.
-        window.addEventListener("error", (e: ErrorEvent) => {
+        if (globalThis.window) window.addEventListener("error", (e: ErrorEvent) => {
             if (!e) return;
             const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
             this.addLog(LogLevelConsole.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
@@ -105,7 +106,7 @@ export class Logger {
         trace: string[] = [],
         kind: LogKind = LogKind.CONSOLE,
         origin: LogOrigin = this.defaultLogOrigin,
-        timestamp: number = Date.now(),
+        timestamp: number = perfUnixTimeNow(),
         sentToRemote: boolean = false
     ) {
         if (!trace) {
@@ -325,34 +326,34 @@ export class Logger {
         return this.logsStore;
     }
 
-    log(...args: any[]) {
+    log = (...args: any[]) => {
         this.rawConsole.log.apply(console, args);
         this.addLog(LogLevelConsole.Console, args);
     }
 
-    logDebug(...args: any[]) {
+    logDebug = (...args: any[]) => {
         this.rawConsole.debug.apply(console, args);
         this.addLog(LogLevelConsole.Debug, args);
     }
 
-    logWarn(...args: any[]) {
+    logWarn = (...args: any[]) => {
         this.rawConsole.warn.apply(console, args);
         this.addLog(LogLevelConsole.Warn, args);
     }
 
-    logError(...args: any[]) {
+    logError = (...args: any[]) => {
         this.rawConsole.error.apply(console, args);
         this.addLog(LogLevelConsole.Error, args);
     }
 
-    logInfo(...args: any[]) {
+    logInfo = (...args: any[]) => {
         this.rawConsole.info.apply(console, args);
         this.addLog(LogLevelConsole.Info, args);
     }
 }
 export const mainLogr = new Logger();
-export const logDebug = mainLogr.logDebug.bind(mainLogr);
-export const logWarn = mainLogr.logWarn.bind(mainLogr);
-export const logError = mainLogr.logError.bind(mainLogr);
-export const logInfo = mainLogr.logInfo.bind(mainLogr);
-export const log = mainLogr.log.bind(mainLogr);
+export const logDebug = mainLogr.logDebug
+export const logWarn = mainLogr.logWarn
+export const logError = mainLogr.logError
+export const logInfo = mainLogr.logInfo
+export const log = mainLogr.log

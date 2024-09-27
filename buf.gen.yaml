@@ -1,0 +1,9 @@
+# Learn more: https://buf.build/docs/configuration/v2/buf-gen-yaml
+version: v2
+clean: true
+inputs:
+  - directory: protobufs
+plugins:
+  - local: protoc-gen-es
+    opt: target=ts
+    out: frontend/src/js/shared/protobufs

@@ -8,6 +8,7 @@ import { getPublisherAccessToken } from "./shared/livekit/livekitTokens";
 import { LivekitRoomAdmin } from "./shared/livekit/adminActions";
 import { URL_PARAMS } from "./constsInternal";
 import { RtpSenderStatsParser } from "./shared/videoStatsParser";
+import { unixTimeNow } from "./shared/time";
 
 export class LivekitPublisherConnection extends LivekitBaseConnection {
     _livekitApiKey: string;
@@ -61,7 +62,7 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
                 const senderId = participant.identity;
                 const senderSID = participant.sid;
                 // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
-                this.lastMsgRecivedTimestamp = Date.now();
+                this.lastMsgRecivedTimestamp = unixTimeNow();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
                     msg: msg

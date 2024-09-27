@@ -3,15 +3,15 @@
   import { frontendConnMngr, type LivekitRoomInfo } from "../js/frontendConnManager";
   import { ConnectionStates } from "../js/shared/consts";
   import { showToastMessage, ToastSeverity } from "../js/toastMessageManager";
-  import { modalPasswordPrompt } from "../js/uiDialogs";
-  import { decrypt } from "../js/shared/encryption";
+  import { modalAlert, modalConfirm, modalPasswordPrompt } from "./Modals/modals.ts";
+  import { decrypt, supportsCryptoApi } from "../js/shared/encryption";
   import { waitfor } from "../js/shared/util";
   import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
   import { fullscreenOpen, takenLivekitUsernameIds } from "../js/globalContext";
   import { isTokenValid } from "../js/shared/livekit/livekitTokens";
   import { type AuthTokenInfo } from "../js/shared/livekit/adminlessActions";
   import { Chevron_right } from "svelte-google-materialdesign-icons";
-  import { localStore } from "../js/localStorage";
+  import { getLocalStore } from "../js/localStorage";
 
   export let selectedRov = "";
 
@@ -27,7 +27,7 @@
     selectedRov = rovRoomInfo.name;
 
     // check if there is a saved token for this ROV in local storage
-    const authTokens = localStore.getItem("authTokens") || {};
+    const authTokens = getLocalStore().getItem("authTokens") || {};
     let authToken = authTokens[rovRoomInfo.name] || null;
     if (authToken) {
       const validUserId = await isTokenValid(authToken);
@@ -37,7 +37,7 @@
       } else {
         logInfo("Cached token is invalid. Removing it.", rovRoomInfo.name, rovRoomInfo.token);
         // remove the invalid token from local storage
-        localStore.updateItem("authTokens", { [rovRoomInfo.name]: undefined });
+        getLocalStore().updateItem("authTokens", { [rovRoomInfo.name]: undefined });
         authToken = null;
       }
     }
@@ -47,6 +47,27 @@
       selectedRov = rovRoomInfo.name;
       const salt = rovRoomInfo.token.salt;
       const iv = rovRoomInfo.token.iv;
+
+      if (!supportsCryptoApi()) {
+        if (!window.isSecureContext || window.location.protocol !== "https:") {
+          return modalConfirm("Cannot access password protected ROV", {
+            body: "<b>Non-secure web address detected</b><br/>For a better experience, please use the secure website. Password protected ROVs and game controllers will only work on the secure site.",
+            modalClasses: "variant-filled-warning !bg-warning-500 w-fit max-w-xs px-6 py-5",
+            buttonTextConfirm: "Go Secure",
+            buttonTextCancel: "Cancel",
+            response: (r) => {
+              if (r) window.location.protocol = "https:";
+              else selectedRov = "";
+            },
+          });
+        } else {
+          return modalAlert("Cannot access password protected ROV", {
+            body: "This browser does not support the required encryption features.<br/>Please use a more modern browser.",
+            modalClasses: "variant-filled-warning !bg-warning-500 w-fit max-w-xs px-6 py-5",
+            response: () => (selectedRov = ""),
+          });
+        }
+      }
 
       while (true) {
         await waitfor(200);
@@ -77,7 +98,7 @@
     // if we finally have a valid authToken, connect
     if (authToken && (await isTokenValid(authToken))) {
       // save the token to local storage
-      localStore.updateItem("authTokens", { [rovRoomInfo.name]: authToken });
+      getLocalStore().updateItem("authTokens", { [rovRoomInfo.name]: authToken });
       frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
     } else {
       showToastMessage("ROV is not ready yet <br/>(Token expired or invalid)", 6000, false, ToastSeverity.warning);
@@ -122,7 +143,7 @@
   </div>
 </div>
 
-<style>
+<style lang="tailwind-css">
   #rov_chooser.disconnected {
     @apply rounded-b-xl bottom-1/2 scale-150 translate-y-1/2;
   }

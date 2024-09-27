@@ -1,9 +1,10 @@
 <script context="module" lang="ts">
+  import { logDebug } from "../js/shared/logging";
   import { LOADING_MESSAGE } from "../js/frontendConsts";
   import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
 
   let currentMsg: nStoreT<string> = nStore(null);
-  let loadingStack: { [Key: LOADING_MESSAGE]: string } = {};
+  let loadingStack = {}; //{ [Key: LOADING_MESSAGE]: string }
 
   /** show the loading indicator with the given message
    * @param msgId {LOADING_MESSAGE}

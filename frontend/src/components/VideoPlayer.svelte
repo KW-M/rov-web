@@ -11,6 +11,7 @@
   import { Hide_source, Navigation, Video_settings } from "svelte-google-materialdesign-icons";
   import { getDrawerStore } from "@skeletonlabs/skeleton";
   import { pulseVizMode } from "./Modals/VideoSettings.svelte";
+  import { browser } from "$app/environment";
 
   interface VideoStreamData {
     stream?: MediaStream | RemoteTrack;
@@ -162,8 +163,10 @@
       }
     }
 
+    // if (browser) {
     resize();
     window.addEventListener("resize", resize);
+    // }
 
     return {
       update(videoElement: HTMLVideoElement) {
@@ -171,7 +174,7 @@
         resize();
       },
       destroy() {
-        window.removeEventListener("resize", resize);
+        if (browser) window.removeEventListener("resize", resize);
       },
     };
   }
@@ -181,7 +184,14 @@
   <!-- svelte-ignore a11y-media-has-caption -->
   <CompassDial class="absolute top-2 lg:top-0 w-20 z-10 lg:-translate-y-1/2" />
 
-  <div class="relative top-0 mx-auto pointer-events-auto bg-black/70 rounded-2xl" use:resizeToFitVideo={livekitVideoStream.videoElem}>
+  <div
+    class="relative top-0 mx-auto pointer-events-auto bg-black/70 rounded-2xl"
+    use:resizeToFitVideo={(() => {
+      if (videoIsReady(livekitVideoStream)) return livekitVideoStream.videoElem;
+      else if (videoIsReady(simplePeerVideoStream)) return simplePeerVideoStream.videoElem;
+      else return livekitVideoStream.videoElem;
+    })()}
+  >
     <span class="chip variant-filled absolute bottom-2 -translate-x-1/2 left-1/2 z-10">{(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}</span>
 
     <button

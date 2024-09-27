@@ -11,10 +11,10 @@
 
   export let disabled = false;
   export let autoReset: boolean = false;
-  export let value: string = "";
+  export let value: string | number | any = "";
   export let options: Option[] = [];
   export let variant: string = "";
-  export let onChange: (value: string | number) => void = () => {};
+  export let onChange: (value: string | number | any) => void = () => {};
   let radioGroupElem = null;
 
   const focusSelected = () => {

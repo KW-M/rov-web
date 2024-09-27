@@ -1,24 +1,26 @@
 <script lang="ts">
-  import { base } from "$app/paths";
+  /// <reference types="../../js/globals.d.ts" />
+  import type * as baaaaaa from "../../js/globals.d.ts";
+
   import { onDestroy } from "svelte";
   import { Camera_alt, Video_camera_back } from "svelte-google-materialdesign-icons";
   import Topbar from "../../components/Topbar.svelte";
   import { AppShell } from "@skeletonlabs/skeleton";
 
-  var player = null;
-  var offsetSeconds = 0;
-  var interval = 0;
+  let player = null;
+  let offsetSeconds = 0;
+  let interval: NodeJS.Timeout;
 
   const setupTwitchEmbed = () => {
-    console.log("Setting up Twitch Embed", Twitch);
-    player = new Twitch.Player("twitch-clips-embed", {
+    console.log("Setting up Twitch Embed", window.Twitch);
+    player = new window.Twitch.Player("twitch-clips-embed", {
       width: "100%",
       height: "100%",
       channel: "irovweb",
       muted: true,
     });
     console.log(player, player.getVideo());
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       offsetSeconds = player.getCurrentTime();
     }, 100);
   };

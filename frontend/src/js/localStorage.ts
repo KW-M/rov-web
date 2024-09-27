@@ -63,4 +63,5 @@ class LocalStorageWrapper {
     }
 }
 
-export const localStore = new LocalStorageWrapper();
+let _localStore: LocalStorageWrapper | null = null;
+export const getLocalStore = () => (_localStore = _localStore ?? new LocalStorageWrapper());

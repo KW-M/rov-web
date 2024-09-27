@@ -10,7 +10,7 @@ import { LIVEKIT_LIST_ONLY_TOKEN, URL_PARAMS } from "./frontendConsts";
 import { frontendRovMsgHandler } from "./rovMessageHandler";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { type Room } from "livekit-server-sdk";
-import { type ComputedRecieverStats } from "./shared/videoStatsParser";
+import { type ComputedRtpStats } from "./shared/videoStatsParser";
 
 export interface LivekitRoomInfo {
     name: string;
@@ -33,8 +33,8 @@ export class FrontendConnectionManager {
     openLivekitRoomInfo = nStore<LivekitRoomInfo[]>([]);
     currentVideoStreamMethod = nStore<VideoStreamMethod>(VideoStreamMethod.none);
 
-    livekitVideoStats: nStoreT<ComputedRecieverStats | null> = nStore<ComputedRecieverStats | null>(null);
-    simplePeerVideoStats: nStoreT<ComputedRecieverStats | null> = nStore<ComputedRecieverStats | null>(null);
+    livekitVideoStats: nStoreT<ComputedRtpStats | null> = nStore<ComputedRtpStats | null>(null);
+    simplePeerVideoStats: nStoreT<ComputedRtpStats | null> = nStore<ComputedRtpStats | null>(null);
 
     // interval id for checking video stats loop
     _videoStatsIntervalId: NodeJS.Timeout | null;

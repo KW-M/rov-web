@@ -14,6 +14,7 @@ import {
 } from 'livekit-client';
 import nStore, { type nStoreT } from '../libraries/nStore'
 import { getWebsocketURL, waitfor } from '../util';
+import { unixTimeNow } from '../time';
 import { ConnectionStates } from '../consts';
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 
@@ -188,14 +189,14 @@ export class LivekitBaseConnection {
         this._accessToken = accessToken;
         this._shouldReconnect = true;
 
-        const startTime = Date.now();
+        const startTime = unixTimeNow();
         log(`LK: Starting conn with ${rovRoomName} via ${this.config.hostUrl} token = ${accessToken}`)
         try {
             // setup timeout in case of connection hang
             const timeout = setTimeout(() => { log(`livekit connect timeout for ${this.config.hostUrl}. Reconnecting...`); this._reconnect() }, 16000);
             await this._connect();
             clearTimeout(timeout);
-            log(`LK: Connected in ${Date.now() - startTime}ms ${this.config.hostUrl}`);
+            log(`LK: Connected in ${unixTimeNow() - startTime}ms ${this.config.hostUrl}`);
         } catch (err) {
             log(`LK: Error connecting to ${this.config.hostUrl}. Reconnecting...`, err);
             this._reconnect();

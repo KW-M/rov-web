@@ -5,6 +5,10 @@ import { DECODE_TXT, ENCODE_TXT } from "./consts";
 const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
 
+export function supportsCryptoApi() {
+    return !!(globalThis.window && window?.crypto?.subtle?.importKey);
+}
+
 /*
 Get some key material to use as input to the deriveKey method.
 The key material is a password supplied by the user.

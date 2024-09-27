@@ -1,6 +1,6 @@
 import { logInfo } from "./logging";
 
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(globalThis.window ? window.location.search : "");
 
 export function getStringQueryParam(name: string, defaultValue?: string): string {
     const param = urlParams.get(name);
