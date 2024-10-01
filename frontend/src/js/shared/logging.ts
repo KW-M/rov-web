@@ -1,15 +1,8 @@
-import { rov_actions_proto } from "./protobufs/rovActionsProto";
+
 import { perfUnixTimeNow } from "./time";
-
+import { LogLevel } from "./protobufs/rov_actions";
+export { LogLevel } from "./protobufs/rov_actions";
 const VITEBUILD_EXTRANIOUS_PATH = "/@fs/Users/ky/Documents/Github/rov-web";
-
-export enum LogLevelConsole {
-    Info = rov_actions_proto.LogLevel.Info,
-    Warn = rov_actions_proto.LogLevel.Warning,
-    Error = rov_actions_proto.LogLevel.Error,
-    Debug = rov_actions_proto.LogLevel.Debug,
-    Console = 4,
-}
 
 export enum LogKind {
     CONSOLE,
@@ -24,11 +17,9 @@ export enum LogOrigin {
     PILOT,
 }
 
-export type LogLevel = rov_actions_proto.LogLevel | LogLevelConsole;
-
 export interface LogEntry {
     timestamp: number, // unix time ms
-    level: LogLevelConsole, // warning, error, info, debug, console
+    level: LogLevel, // warning, error, info, debug, console
     args: any[],
     trace: string[],
     origin: LogOrigin,
@@ -50,7 +41,6 @@ export class Logger {
     logsStore: LogEntry[] = [];
     rootURL: string;
     sendLogsAllowed: boolean = false;
-    sendLogsInterval: number;
     rawConsole: partialConsole;
     defaultLogOrigin: LogOrigin;
     svelteSubscribers: (() => void)[] = [];
@@ -66,7 +56,7 @@ export class Logger {
         if (globalThis.window) window.addEventListener("error", (e: ErrorEvent) => {
             if (!e) return;
             const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
-            this.addLog(LogLevelConsole.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
+            this.addLog(LogLevel.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
         });
     }
 
@@ -75,11 +65,10 @@ export class Logger {
         subscriber();
     }
 
-    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevelConsole, msg: string, logid?: string) => Promise<boolean>) {
+    sendQueuedLogs(sendLogsCallback: (logLevel: LogLevel, msg: string, logid?: string) => Promise<boolean>) {
         if (!this.sendLogsAllowed) return;
         const logsToSendCopy = this.logsStore.filter((log) => !log.sentToRemote);
         logsToSendCopy.forEach((log) => { log.sentToRemote = true });
-        // if (logsToSendCopy.length === 0) return clearInterval(this.sendLogsInterval);
         return Promise.allSettled(logsToSendCopy.map((log, i) => {
             const json = mainLogr.logToJson(log);
             return sendLogsCallback(log.level, json, log.timestamp.toString() + "_" + log.origin.toString() + "_" + i.toString());
@@ -101,7 +90,7 @@ export class Logger {
     }
 
     addLog(
-        logLevel: LogLevelConsole,
+        logLevel: LogLevel,
         args: any[],
         trace: string[] = [],
         kind: LogKind = LogKind.CONSOLE,
@@ -172,7 +161,7 @@ export class Logger {
     }
 
 
-    _makeJsonEncodable(thing: any, level: number = 0) {
+    _makeJsonEncodable(thing: any, level: number = 0): any {
         if (level > 9) return "Max recursion level reached";
         const type = typeof thing;
         if (type === "string" || type === "number" || type === "boolean") {
@@ -206,7 +195,7 @@ export class Logger {
         } else {
             try {
                 return thing.toString();
-            } catch (e) {
+            } catch (e: any) {
                 return { instanceof: type, value: "Failed to stringify: " + e.message };
             }
         }
@@ -241,7 +230,7 @@ export class Logger {
                 } else {
                     header += " " + arg.toString();
                 }
-            } catch (e) {
+            } catch (e: any) {
                 body += " STRINGFAIL:" + typeof arg + " ";
                 console.error("Failed to stringify logs arg: " + e.message, typeof arg, arg);
             }
@@ -260,9 +249,9 @@ export class Logger {
                 } else {
                     body += " " + arg.toString();
                 }
-            } catch (e) {
+            } catch (e: any) {
                 body += " STRINGFAIL:" + typeof arg + " ";
-                console.error("Failed to stringify logs arg: " + e.message, typeof arg, arg);
+                console.error("Failed to stringify logs arg: " + e?.message, typeof arg, arg);
             }
         }
         if (log.trace && log.trace.length > 0) {
@@ -280,46 +269,45 @@ export class Logger {
     // };
 
     _consoleLogAtLevel(level: LogLevel, args: any[], trace: string[] = []) {
-        if (level === LogLevelConsole.Debug) {
+        if (level === LogLevel.Debug) {
             this.rawConsole.debug.apply(console, args);
-        } else if (level === LogLevelConsole.Warn) {
+        } else if (level === LogLevel.Warning) {
             this.rawConsole.warn.apply(console, args);
         }
-        else if (level === LogLevelConsole.Error) {
+        else if (level === LogLevel.Error) {
             this.rawConsole.error.apply(console, args);
         }
-        else if (level === LogLevelConsole.Info) {
+        else if (level === LogLevel.Info) {
             this.rawConsole.info.apply(console, args);
         }
     }
 
-    _getLevelColor(level: LogLevelConsole) {
-        if (level === LogLevelConsole.Debug) {
+    _getLevelColor(level: LogLevel) {
+        if (level === LogLevel.Debug) {
             return "color: #008888";
-        } else if (level === LogLevelConsole.Warn) {
+        } else if (level === LogLevel.Warning) {
             return "color: #888800";
-        } else if (level === LogLevelConsole.Error) {
+        } else if (level === LogLevel.Error) {
             return "color: #880000";
-        } else if (level === LogLevelConsole.Info) {
+        } else if (level === LogLevel.Info) {
             return "color: #000088";
-        } else if (level === LogLevelConsole.Console) {
+        } else if (level === LogLevel.Console) {
             return "color: #000000";
         }
     }
 
-    _getLevelIcon(level: LogLevelConsole) {
-        if (level === LogLevelConsole.Debug) {
+    _getLevelIcon(level: LogLevel) {
+        if (level === LogLevel.Debug) {
             return "🐛";
-        } else if (level === LogLevelConsole.Warn) {
+        } else if (level === LogLevel.Warning) {
             return "🟨";
-        } else if (level === LogLevelConsole.Error) {
+        } else if (level === LogLevel.Error) {
             return "🛑";
-        } else if (level === LogLevelConsole.Info) {
+        } else if (level === LogLevel.Info) {
             return "ℹ️";
-        } else if (level === LogLevelConsole.Console) {
+        } else if (level === LogLevel.Console) {
             return "ℹ️";
         }
-
     }
 
     getLogs() {
@@ -328,27 +316,27 @@ export class Logger {
 
     log = (...args: any[]) => {
         this.rawConsole.log.apply(console, args);
-        this.addLog(LogLevelConsole.Console, args);
+        this.addLog(LogLevel.Console, args);
     }
 
     logDebug = (...args: any[]) => {
         this.rawConsole.debug.apply(console, args);
-        this.addLog(LogLevelConsole.Debug, args);
+        this.addLog(LogLevel.Debug, args);
     }
 
     logWarn = (...args: any[]) => {
         this.rawConsole.warn.apply(console, args);
-        this.addLog(LogLevelConsole.Warn, args);
+        this.addLog(LogLevel.Warning, args);
     }
 
     logError = (...args: any[]) => {
         this.rawConsole.error.apply(console, args);
-        this.addLog(LogLevelConsole.Error, args);
+        this.addLog(LogLevel.Error, args);
     }
 
     logInfo = (...args: any[]) => {
         this.rawConsole.info.apply(console, args);
-        this.addLog(LogLevelConsole.Info, args);
+        this.addLog(LogLevel.Info, args);
     }
 }
 export const mainLogr = new Logger();

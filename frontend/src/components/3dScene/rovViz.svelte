@@ -173,15 +173,15 @@
           rovHeading.set(rovHeading.get() + 0.001);
 
           const drivingVector = rovDrivingVector.get();
-          const moveZ = drivingVector.VelocityX * rovSpeed;
-          const moveX = -1 * drivingVector.VelocityY * rovSpeed;
-          const moveY = drivingVector.VelocityZ * rovSpeed;
+          const moveZ = drivingVector.velocityX * rovSpeed;
+          const moveX = -1 * drivingVector.velocityY * rovSpeed;
+          const moveY = drivingVector.velocityZ * rovSpeed;
 
           rovModel.translateX(moveX);
           rovModel.translateY(moveY);
           rovModel.translateZ(moveZ);
 
-          const moveYaw = -drivingVector.AngularVelocityYaw * rovTurnSpeed;
+          const moveYaw = -drivingVector.angularVelocityYaw * rovTurnSpeed;
           propellerL.rotation.z += moveZ * 0.15 - moveYaw * 8;
           propellerR.rotation.z += moveZ * 0.15 + moveYaw * 8;
 
@@ -198,8 +198,7 @@
 
           headLight.intensity = 500 * Math.max(-moveY, 0);
 
-          // console.log(drivingVector.ButtonBitmask);
-          if (drivingVector.ButtonBitmask !== 0) {
+          if (drivingVector.buttonBitmask !== 0) {
             const _cameraOffset = new Vector3(0, 20, 50);
             cameraOffsetLength = _cameraOffset.length();
             cameraOffsetNorm = _cameraOffset.normalize();

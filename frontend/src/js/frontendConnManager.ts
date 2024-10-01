@@ -2,7 +2,6 @@ import { ConnectionStates, LIVEKIT_FRONTEND_ROOM_CONFIG, LIVEKIT_FRONTEND_ROOM_C
 import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
 import { listLivekitRoomsWithoutSDK, getAuthTokenFromLivekitRoomMetadata, type AuthTokenInfo } from "./shared/livekit/adminlessActions";
 import { LivekitViewerConnection } from "./livekitViewerConn";
-import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { SimplePeerConnection } from "./shared/simplePeer";
 import { changesSubscribe, oneShotSubscribe, waitfor } from "./shared/util";
 import { showToastMessage, ToastSeverity } from "./toastMessageManager";
@@ -11,6 +10,7 @@ import { frontendRovMsgHandler } from "./rovMessageHandler";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { type Room } from "livekit-server-sdk";
 import { type ComputedRtpStats } from "./shared/videoStatsParser";
+import { RovAction } from "./shared/protobufs/rov_actions";
 
 export interface LivekitRoomInfo {
     name: string;
@@ -52,7 +52,14 @@ export class FrontendConnectionManager {
             frontendRovMsgHandler.handleRecivedMessage(msg)
         })
         this._cleanupFuncs['outSignal'] = changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (msg) => {
-            this.sendMessageToRov({ SimplePeerSignal: { Message: msg } }, true)
+            this.sendMessageToRov({
+                body: {
+                    oneofKind: "simplePeerSignal",
+                    simplePeerSignal: {
+                        message: msg
+                    }
+                }
+            }, true)
         })
         this.startVideoStatsCollection();
     }
@@ -214,9 +221,10 @@ export class FrontendConnectionManager {
      * @param msg - the message to send to the rov
      * @param reliable - whether or not to use tcp and force the livekit connection.
      */
-    public async sendMessageToRov(msg: rov_actions_proto.IRovAction, reliable: boolean = true) {
+    public async sendMessageToRov(msg: RovAction, reliable: boolean = true) {
         if (!this.livekitConnection) throw new Error("sendMessageToRov() called before livekitConnection was initilized")
-        const msgBytes = rov_actions_proto.RovAction.encode(msg).finish();
+        // const msgBytes = rov_actions_proto.RovAction.encode(msg).finish();
+        const msgBytes = RovAction.toBinary(msg)
         const rovUserId = this.livekitConnection._rovRoomName;
         if (URL_PARAMS.DEBUG_MODE) logDebug("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg);
         if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
@@ -228,7 +236,8 @@ export class FrontendConnectionManager {
         }
     }
 
-    public async close() {
+    public close() {
+        this.connectionState.set(ConnectionStates.disconnectedOk);
         if (this.livekitConnection) this.livekitConnection.close();
         if (this.simplePeerConnection) this.simplePeerConnection.stop();
         if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);

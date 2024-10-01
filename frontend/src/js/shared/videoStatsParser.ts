@@ -1,7 +1,7 @@
-import { rov_actions_proto } from "./protobufs/rovActionsProto";
+import type { VideoBaseStats } from "./protobufs/rov_actions";
 
 export type VideoCodec = "h264" | "vp8" | "vp9" | "av1" | "h265" | "unknown";
-export type ComputedRtpStats = rov_actions_proto.IVideoBaseStats & {
+export type ComputedRtpStats = VideoBaseStats & {
 
     // ice
     selectedCandidatePairChanges?: number;
@@ -104,10 +104,10 @@ interface OutboundRtpStreamStats extends RTCOutboundRtpStreamStats {
 
 export class RtpStatsParser {
     lastStats: ComputedRtpStats;
-    timestamp: number;
-    bytesSent: number;
-    bytesReceived: number;
-    selectedCandidatePairId: string;
+    timestamp: number = 0;
+    bytesSent: number = 0;
+    bytesReceived: number = 0;
+    selectedCandidatePairId: string = "";
 
     constructor() {
         this.lastStats = {
@@ -160,7 +160,7 @@ export class RtpStatsParser {
                 pliCount = pliCount ?? 0;
                 const { codec: videoCodec, sdpFmtpLine: videoSdpFmtpLine } = codecMap.get(codecId || "") || { codec: "unknown", sdpFmtpLine: "" };
                 const estimatedPlayoutDelay = Math.max(estimatedPlayoutTimestamp ? estimatedPlayoutTimestamp - this.timestamp : 0, jitterBufferDelay);
-                computedStats.recieverStats = { ...computedStats.recieverStats, nackCount, pliCount, freezeCount, estimatedPlayoutDelay, jitterBufferDelay, jitter, frameWidth, frameHeight, framesPerSecond, videoCodec, videoSdpFmtpLine };
+                computedStats.recieverStats = { ...computedStats.recieverStats, nackCount, pliCount, freezeCount, estimatedPlayoutDelay, jitterBufferDelay, jitter, frameWidth, frameHeight, framesPerSecond: Math.floor(framesPerSecond), videoCodec, videoSdpFmtpLine };
             }
 
             else if (type === "outbound-rtp" && stat.kind === "video") {
@@ -194,11 +194,11 @@ export class RtpStatsParser {
             else if (type === "candidate-pair") {
                 const { availableOutgoingBitrate, availableIncomingBitrate, currentRoundTripTime, state, nominated } = stat as RTCIceCandidatePairStats;
                 if (nominated === false) continue;
-                computedStats = { ...computedStats, recieverStats: { ...computedStats.recieverStats, currentRoundTripTime }, availableOutgoingBitrate, availableIncomingBitrate, canidatePairState: state, canidatePairNominated: nominated };
+                computedStats = { ...computedStats, recieverStats: { ...computedStats.recieverStats, currentRoundTripTime }, availableOutgoingBitrate: Math.floor(availableOutgoingBitrate ?? 0), availableIncomingBitrate: Math.floor(availableIncomingBitrate ?? 0), canidatePairState: state, canidatePairNominated: nominated };
             }
 
             else if (type === "transport") {
-                let { bytesReceived, bytesSent, dtlsState, selectedCandidatePairId, timestamp } = stat as RTCTransportStats;
+                let { bytesReceived, bytesSent, selectedCandidatePairId, timestamp } = stat as RTCTransportStats;
                 bytesReceived = bytesReceived ?? 0;
                 bytesSent = bytesSent ?? 0;
                 selectedCandidatePairId = selectedCandidatePairId ?? "";
@@ -207,8 +207,8 @@ export class RtpStatsParser {
                     this.selectedCandidatePairId = selectedCandidatePairId;
                 }
                 if (timestamp != this.timestamp) {
-                    computedStats.bitrateReceive = (bytesReceived - this.bytesReceived) / (timestamp - this.timestamp) * 8000; // timestamp is in milliseconds and 8 bits in a byte
-                    computedStats.bitrateSend = (bytesSent - this.bytesSent) / (timestamp - this.timestamp) * 8000; // timestamp is in milliseconds and 8 bits in a byte
+                    computedStats.bitrateReceive = Math.floor((bytesReceived - this.bytesReceived) / (timestamp - this.timestamp) * 8000); // timestamp is in milliseconds and 8 bits in a byte
+                    computedStats.bitrateSend = Math.floor((bytesSent - this.bytesSent) / (timestamp - this.timestamp) * 8000); // timestamp is in milliseconds and 8 bits in a byte
                     computedStats.recieverStats = { ...computedStats.recieverStats, hung: computedStats.bitrateReceive <= 0 };
                     this.timestamp = timestamp;
                 }
@@ -218,6 +218,7 @@ export class RtpStatsParser {
         }
         computedStats.senderLayerStats = computedStats.senderLayerStats ? computedStats.senderLayerStats.sort((a, b) => (b.frameWidth || 0) * (b.frameHeight || 0) - (a.frameWidth || 0) * (a.frameHeight || 0)) : [];
         this.lastStats = computedStats;
+        console.log(computedStats)
         return computedStats;
     }
 

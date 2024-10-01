@@ -234,11 +234,12 @@ export class LivekitBaseConnection {
         return this._roomConn ? this._roomConn.name : this._rovRoomName;
     }
 
-    async close() {
+    close() {
         this._shouldReconnect = false;
+        this.connectionState.set(ConnectionStates.disconnectedOk)
         if (this._roomConn) {
             logInfo("LK: Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
-            await this._roomConn.disconnect(true);
+            this._roomConn.disconnect(true);
         }
     }
 

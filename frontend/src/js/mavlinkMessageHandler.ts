@@ -1,5 +1,3 @@
-
-import { rov_actions_proto } from "./shared/protobufs/rovActionsProto"
 import { depthM, internalTempC, pressureMbar, updateSensorValues, waterTempC } from "./sensors"
 import { autopilotArmed, updateAutopilotErrorCountDisplay, updateAutopilotFlightModeDisplay, updateAutopilotLoadDisplay, updateAutopilotStatusDisplay, updateBatteryDisplay } from "./vehicleStats";
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
@@ -9,6 +7,7 @@ import type { Package } from "./shared/mavlink2rest-ts/messages/mavlink2rest";
 import type { Message } from "./shared/mavlink2rest-ts/messages/mavlink2rest-message";
 import { MavModeFlag, MavSeverity, MavState } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
 import { log, logDebug } from "./shared/logging";
+import { SensorMeasurmentTypes } from "./shared/protobufs/rov_actions";
 
 // import {  MavState, MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED, MavModeFlag.MAV_MODE_FLAG_MANUAL_INPUT_ENABLED, MavModeFlag.MAV_MODE_FLAG_HIL_ENABLED, MavModeFlag.MAV_MODE_FLAG_STABILIZE_ENABLED, MavModeFlag.MAV_MODE_FLAG_GUIDED_ENABLED, MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED, MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED, STATUSTEXT } from "./shared/mavlink2RestMessages"
 
@@ -62,10 +61,10 @@ export const handleHearbeatRecived = (msg: Message.Heartbeat) => {
 export const handleAttitudeRecived = (msg: Message.Attitude) => {
     if (URL_PARAMS.DEBUG_MODE) logDebug("@  attitude", msg)
     updateSensorValues({
-        MeasurementUpdates: [
-            { MeasurementType: rov_actions_proto.SensorMeasurmentTypes.yaw_degrees, Value: msg.yaw / Math.PI * 180 },
-            { MeasurementType: rov_actions_proto.SensorMeasurmentTypes.pitch_degrees, Value: msg.pitch / Math.PI * 180 },
-            { MeasurementType: rov_actions_proto.SensorMeasurmentTypes.roll_degrees, Value: msg.roll / Math.PI * 180 },
+        measurementUpdates: [
+            { measurementType: SensorMeasurmentTypes.yaw_degrees, value: msg.yaw / Math.PI * 180 },
+            { measurementType: SensorMeasurmentTypes.pitch_degrees, value: msg.pitch / Math.PI * 180 },
+            { measurementType: SensorMeasurmentTypes.roll_degrees, value: msg.roll / Math.PI * 180 },
         ],
     })
 }

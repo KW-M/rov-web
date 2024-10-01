@@ -1,6 +1,5 @@
 import { type LivekitConfig, LivekitBaseConnection } from "./shared/livekit/livekitBaseConn";
-import { LocalParticipant, LocalTrackPublication, LocalVideoTrack, RemoteParticipant, RoomEvent, Track, type TrackPublishOptions, type VideoCaptureOptions, type VideoSenderStats } from "livekit-client";
-import nStore from "./shared/libraries/nStore";
+import { LocalTrackPublication, RemoteParticipant, RoomEvent, Track, type TrackPublishOptions, type VideoCaptureOptions } from "livekit-client";
 import { log, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { waitfor } from "./shared/util";

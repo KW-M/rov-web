@@ -299,60 +299,60 @@ export class GamepadUi {
         this.gpadEmulator.AddDisplayButtonEventListeners(gpadIndex, emulatorButtonConfigs);
 
         /* ----- SETUP JOYSTICK INPUTS ----- */
-        // this.gpadEmulator.AddDisplayJoystickEventListeners(gpadIndex, [
-        //     {
-        //         tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-left"),
-        //         dragDistance: 30,
-        //         xAxisIndex: 0,
-        //         yAxisIndex: 1,
-        //         lockTargetWhilePressed: true,
-        //         directions: {
-        //             [gamepadDirection.up]: true,
-        //             [gamepadDirection.down]: true,
-        //             [gamepadDirection.left]: true,
-        //             [gamepadDirection.right]: true,
-        //         },
-        //     },
-        //     {
-        //         tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-right"),
-        //         dragDistance: 30,
-        //         xAxisIndex: 2,
-        //         yAxisIndex: 3,
-        //         lockTargetWhilePressed: true,
-        //         directions: {
-        //             [gamepadDirection.up]: true,
-        //             [gamepadDirection.down]: true,
-        //             [gamepadDirection.left]: true,
-        //             [gamepadDirection.right]: true,
-        //         },
-        //     },
-        //     {
-        //         tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_left_touch_target"),
-        //         dragDistance: 30,
-        //         xAxisIndex: 0,
-        //         yAxisIndex: 1,
-        //         lockTargetWhilePressed: true,
-        //         directions: {
-        //             [gamepadDirection.up]: true,
-        //             [gamepadDirection.down]: true,
-        //             [gamepadDirection.left]: true,
-        //             [gamepadDirection.right]: true,
-        //         },
-        //     },
-        //     {
-        //         tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_right_touch_target"),
-        //         dragDistance: 30,
-        //         xAxisIndex: 2,
-        //         yAxisIndex: 3,
-        //         lockTargetWhilePressed: true,
-        //         directions: {
-        //             [gamepadDirection.up]: true,
-        //             [gamepadDirection.down]: true,
-        //             [gamepadDirection.left]: true,
-        //             [gamepadDirection.right]: true,
-        //         },
-        //     },
-        // ]);
+        this.gpadEmulator.AddDisplayJoystickEventListeners(gpadIndex, [
+            {
+                tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-left"),
+                dragDistance: 30,
+                xAxisIndex: 0,
+                yAxisIndex: 1,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
+            {
+                tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-right"),
+                dragDistance: 30,
+                xAxisIndex: 2,
+                yAxisIndex: 3,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
+            {
+                tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_left_touch_target"),
+                dragDistance: 30,
+                xAxisIndex: 0,
+                yAxisIndex: 1,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
+            {
+                tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_right_touch_target"),
+                dragDistance: 30,
+                xAxisIndex: 2,
+                yAxisIndex: 3,
+                lockTargetWhilePressed: true,
+                directions: {
+                    [gamepadDirection.up]: true,
+                    [gamepadDirection.down]: true,
+                    [gamepadDirection.left]: true,
+                    [gamepadDirection.right]: true,
+                },
+            },
+        ]);
     }
 
     cleanup() {

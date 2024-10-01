@@ -7,6 +7,7 @@ enum LogLevel {
     Warning = 2;
     Error = 3;
     Critical = 4;
+    Console = 5;
 }
 
 enum SensorMeasurmentTypes {
@@ -59,39 +60,39 @@ enum InternalWebpageEvent {
 // }
 
 message VideoSenderStats {
-    string encoderImplementation = 1;
-    bool powerEfficientEncoder = 2;
-    string qualityLimitationReason = 3;
-    float cpuLimitedQualityDurration = 4;
-    float bandwidthLimitedQualityDurration = 5;
-    float otherLimitedQualityDurration = 6;
-    float noLimitedQualityDurration = 7;
-    float totalPacketSendDelay = 8;
-    float retransmittedBytesSent = 9;
-    string scalabilityMode = 10;
-    uint32 qualityLimitationResolutionChanges = 11;
-    int32 frameWidth = 12;
-    int32 frameHeight = 13;
-    int32 framesPerSecond = 14;
-    string videoCodec = 16;
-    string videoSdpFmtpLine = 15;
+    optional string encoderImplementation = 1;
+    optional bool powerEfficientEncoder = 2;
+    optional string qualityLimitationReason = 3;
+    optional float cpuLimitedQualityDurration = 4;
+    optional float bandwidthLimitedQualityDurration = 5;
+    optional float otherLimitedQualityDurration = 6;
+    optional float noLimitedQualityDurration = 7;
+    optional float totalPacketSendDelay = 8;
+    optional float retransmittedBytesSent = 9;
+    optional string scalabilityMode = 10;
+    optional uint32 qualityLimitationResolutionChanges = 11;
+    optional uint32 frameWidth = 12;
+    optional uint32 frameHeight = 13;
+    optional uint32 framesPerSecond = 14;
+    optional string videoCodec = 16;
+    optional string videoSdpFmtpLine = 15;
 }
 
 message VideoRecieverStats {
-    bool hung = 1;
-    int32 frameWidth = 2;
-    int32 frameHeight = 3;
-    int32 framesPerSecond = 4;
-    float currentRoundTripTime = 5;
-    float jitterBufferDelay = 6;
-    float jitter = 7;
-    uint32 nackCount = 8;
-    uint32 pliCount = 9;
-    uint32 freezeCount = 10;
-    uint32 totalFreezeTime = 11;
-    float estimatedPlayoutDelay = 12;
-    string videoCodec = 13;
-    string videoSdpFmtpLine = 14;
+    optional bool hung = 1;
+    optional uint32 frameWidth = 2;
+    optional uint32 frameHeight = 3;
+    optional uint32 framesPerSecond = 4;
+    optional float currentRoundTripTime = 5;
+    optional float jitterBufferDelay = 6;
+    optional float jitter = 7;
+    optional uint32 nackCount = 8;
+    optional uint32 pliCount = 9;
+    optional uint32 freezeCount = 10;
+    optional float totalFreezeTime = 11;
+    optional float estimatedPlayoutDelay = 12;
+    optional string videoCodec = 13;
+    optional string videoSdpFmtpLine = 14;
 }
 
 message VideoBaseStats {
@@ -160,10 +161,10 @@ message TakeControlAction {
 
 message MoveAction {
     // How to move the rov (X is left/right, Y is forward/backward, Z is up/down, Yaw is rotation))
-    float VelocityX = 1;
-    float VelocityY = 2;
-    float VelocityZ = 3;
-    float AngularVelocityYaw = 4;
+    float velocityX = 1;
+    float velocityY = 2;
+    float velocityZ = 3;
+    float angularVelocityYaw = 4;
     int32 ButtonBitmask = 5; // optional
 }
 
@@ -248,9 +249,9 @@ message ActionBackendMetadata {
 // wrapper message for anything sent by a pilot/spectator to the rov (aka an "action").
 message RovAction {
     // Metadata set by backend webpage before the message is forwarded to the python code.
-    ActionBackendMetadata BackendMetadata = 1;
-    // MUST BE UNIQUE! Message exchange id (used to match up action requests and responses and prevent duplicate messages from being processed)
-    int32 ExchangeId = 2;
+    optional ActionBackendMetadata BackendMetadata = 1;
+    // IF Present, it MUST BE UNIQUE! Message exchange id (used to match up action requests and responses and prevent duplicate messages from being processed)
+    optional int32 ExchangeId = 2;
     // The body / content of the action
     oneof Body {
         // ping
@@ -446,9 +447,9 @@ message ResponseBackendMetadata {
 message RovResponse {
     // Metadata sent by the python code to the backend webpage to tell it how to send the message.
     // !!!! This field WILL be erased before the message is forwarded from the backend website to the livekit users.
-    ResponseBackendMetadata BackendMetadata = 1; // optional
+    optional ResponseBackendMetadata BackendMetadata = 1; // optional
     // Response exchange id (used to match up action requests and responses)
-    int32 ExchangeId = 2;
+    optional int32 ExchangeId = 2;
     // The body / content of the response
 	oneof Body {
         // done (action was completed successfully)

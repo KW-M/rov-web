@@ -35,11 +35,11 @@ export type dialogInfoType = {
 // };
 
 export interface RovMovementVector {
-    VelocityX: number,
-    VelocityY: number,
-    VelocityZ: number,
-    AngularVelocityYaw: number,
-    ButtonBitmask: number,
+    velocityX: number,
+    velocityY: number,
+    velocityZ: number,
+    angularVelocityYaw: number,
+    buttonBitmask: number,
 }
 
 export enum VideoSource {
@@ -62,9 +62,9 @@ export const currentVideoSource: nStoreT<VideoSource> = nStore(VideoSource.None)
 export const takenLivekitUsernameIds: nStoreT<Set<string>> = nStore(new Set());
 
 export const rovDrivingVector: nStoreT<RovMovementVector> = nStore({
-    VelocityX: 0,
-    VelocityY: 0,
-    VelocityZ: 0,
-    AngularVelocityYaw: 0,
-    ButtonBitmask: 0,
+    velocityX: 0,
+    velocityY: 0,
+    velocityZ: 0,
+    angularVelocityYaw: 0,
+    buttonBitmask: 0,
 });

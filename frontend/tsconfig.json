@@ -13,7 +13,7 @@
 		"moduleResolution": "Bundler",
 		"allowJs": true,
 		"checkJs": true,
-		"esModuleInterop": true,
+		"esModuleInterop": false,
 		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": false,
 		"resolveJsonModule": true,
@@ -26,7 +26,6 @@
 			"DOM.Iterable",
 			"WebWorker"
 		],
-		"baseUrl": "./",
 		"noEmit": true,
 	},
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

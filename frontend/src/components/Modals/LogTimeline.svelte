@@ -1,21 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { log, logDebug, logError, logInfo, LogLevelConsole, LogOrigin, logWarn, mainLogr } from "../../js/shared/logging";
+  import { log, logDebug, logError, logInfo, LogLevel, LogOrigin, logWarn, mainLogr } from "../../js/shared/logging";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { Close as CloseIcon, Save_alt as DownloadIcon, Restore as RefreshIcon } from "svelte-google-materialdesign-icons";
   import { fade } from "svelte/transition";
   import { frontendConnMngr } from "../../js/frontendConnManager";
-  import { rov_actions_proto } from "../../js/shared/protobufs/rovActionsProto";
+  import { type RovAction } from "../../js/shared/protobufs/rov_actions";
 
   // export let parent;
   const modalStore = getModalStore();
   let logs = mainLogr.getLogs();
 
   const fetchRovLogs = async () => {
-    const msg = rov_actions_proto.RovAction.create({
-      SendRovLogs: {},
+    const response = await frontendConnMngr.sendMessageToRov({
+      body: {
+        oneofKind: "sendRovLogs",
+        sendRovLogs: {},
+      },
     });
-    const response = await frontendConnMngr.sendMessageToRov(msg);
     logDebug("fetchRovLogs Response=", response);
   };
 
@@ -30,7 +32,6 @@
   };
 
   onMount(() => {
-    console.log("Log Timeline Open");
     mainLogr.subscribe(() => {
       logs = mainLogr.getLogs();
     });
@@ -49,16 +50,16 @@
       class:border-l-8={log.origin === LogOrigin.PILOT}
       class:!border-t-4={log.origin !== logs[Math.max(i - 1, 0)].origin}
       class:border-r-8={log.origin === LogOrigin.ROV}
-      class:bg-sky-700={log.level === LogLevelConsole.Info}
-      class:bg-yellow-600={log.level === LogLevelConsole.Warn}
-      class:bg-red-700={log.level === LogLevelConsole.Error}
-      class:bg-green-700={log.level === LogLevelConsole.Debug}
-      class:bg-slate-800={log.level === LogLevelConsole.Console}
-      class:border-sky-600={log.level === LogLevelConsole.Info}
-      class:border-yellow-500={log.level === LogLevelConsole.Warn}
-      class:border-red-600={log.level === LogLevelConsole.Error}
-      class:border-green-600={log.level === LogLevelConsole.Debug}
-      class:border-purple-800={log.level === LogLevelConsole.Console}
+      class:bg-sky-700={log.level === LogLevel.Info}
+      class:bg-yellow-600={log.level === LogLevel.Warning}
+      class:bg-red-700={log.level === LogLevel.Error}
+      class:bg-green-700={log.level === LogLevel.Debug}
+      class:bg-slate-800={log.level === LogLevel.Console}
+      class:border-sky-600={log.level === LogLevel.Info}
+      class:border-yellow-500={log.level === LogLevel.Warning}
+      class:border-red-600={log.level === LogLevel.Error}
+      class:border-green-600={log.level === LogLevel.Debug}
+      class:border-purple-800={log.level === LogLevel.Console}
     >
       {#if body && body.length > 0}
         <details>

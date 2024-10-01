@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
   import nStore from "../../js/shared/libraries/nStore";
 
-  export const onLivekitVideoOptionsChange = (options: rov_actions_proto.ILivekitVideoStatsResponse) => {
+  export const onLivekitVideoOptionsChange = (options: LivekitVideoStatsResponse) => {
     // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
     // useLivekit.set(options.Enabled);
     // if (options.Enabled) {
@@ -16,7 +16,7 @@
     lkSenderVideoStats.set(options.stats);
   };
 
-  export const onSimplePeerVideoOptionsChange = (options: rov_actions_proto.ISimplePeerVideoStatsResponse) => {
+  export const onSimplePeerVideoOptionsChange = (options: SimplePeerVideoStatsResponse) => {
     // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
     // const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
     // const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled;
@@ -52,7 +52,6 @@
   import { onDestroy, onMount } from "svelte";
   import { Close } from "svelte-google-materialdesign-icons";
   import { frontendConnMngr } from "../../js/frontendConnManager";
-  import { rov_actions_proto } from "../../js/shared/protobufs/rovActionsProto";
   import { waitfor } from "../../js/shared/util";
   import { ConnectionStates } from "../../js/shared/consts";
   import { displayHumanBits, displayNum } from "../../js/util";
@@ -62,6 +61,7 @@
   import { logDebug } from "../../js/shared/logging";
   import { unixTimeNow } from "../../js/shared/time";
   import { browser } from "$app/environment";
+  import type { LivekitVideoStatsResponse, RovAction, SimplePeerVideoStatsResponse, VideoStreamOptions } from "../../js/shared/protobufs/rov_actions";
 
   const LK_STATS_ACCORDION_ID = "lk_stats_accordion";
   const SP_STATS_ACCORDION_ID = "sp_stats_accordion";
@@ -139,12 +139,15 @@
   const sendTwitchLivestreamChange = () => {
     logCurrentState("Sending twitch video change. current state:");
     frontendConnMngr.sendMessageToRov(
-      rov_actions_proto.RovAction.create({
-        SetLivestreamingEnabled: {
-          Enabled: useTwitch.get(),
+      {
+        body: {
+          oneofKind: "setLivestreamingEnabled",
+          setLivestreamingEnabled: {
+            enabled: useTwitch.get(),
+          },
         },
-      }),
-      false
+      },
+      true
     );
   };
 
@@ -153,23 +156,27 @@
     lastChangeTimestamp = unixTimeNow();
     logCurrentState("Sending lk video change. current state:");
 
-    const baseStream: rov_actions_proto.IVideoStreamOptions = {
-      MaxBitrate: maxBitrate.get(),
-      Height: size.get(),
-      Fps: 60,
-      Width: 0,
+    const baseStream: VideoStreamOptions = {
+      maxBitrate: maxBitrate.get(),
+      height: size.get(),
+      width: 0,
+      fps: 60,
     };
+
     frontendConnMngr.sendMessageToRov(
-      rov_actions_proto.RovAction.create({
-        SetLivekitVideoOptions: {
-          Enabled: useLivekit.get(),
-          AllowBackupCodec: allowBkupCodec.get(),
-          Codec: codec.get(),
-          BaseStream: keepFullResLayer.get() ? undefined : baseStream,
-          SimulcastLayers: keepFullResLayer.get() ? [baseStream] : undefined,
+      {
+        body: {
+          oneofKind: "setLivekitVideoOptions",
+          setLivekitVideoOptions: {
+            enabled: useLivekit.get(),
+            allowBackupCodec: allowBkupCodec.get(),
+            codec: codec.get(),
+            baseStream: keepFullResLayer.get() ? undefined : baseStream,
+            simulcastLayers: keepFullResLayer.get() ? [baseStream] : [],
+          },
         },
-      }),
-      false
+      },
+      true
     );
   };
 
@@ -181,18 +188,23 @@
     const mimeType = `video/${codec.get().toLowerCase()}`;
     frontendConnMngr.setSimplePeerCodec(mimeType);
     frontendConnMngr.sendMessageToRov(
-      rov_actions_proto.RovAction.create({
-        SetSimplePeerVideoOptions: {
-          Enabled: useSimplePeer.get(),
-          Codec: codec.get().toUpperCase(),
-          BaseStream: {
-            Height: size.get(),
-            Width: size.get() * (16 / 9),
-            Fps: 60,
+      {
+        body: {
+          oneofKind: "setSimplePeerVideoOptions",
+          setSimplePeerVideoOptions: {
+            enabled: useSimplePeer.get(),
+            codec: codec.get().toUpperCase(),
+            bitrate: maxBitrate.get(),
+            baseStream: {
+              maxBitrate: maxBitrate.get(),
+              height: size.get(),
+              width: size.get() * (16 / 9),
+              fps: 60,
+            },
           },
         },
-      }),
-      false
+      },
+      true
     );
   };
 
@@ -260,7 +272,6 @@
       for (const [_, stream] of streams) {
         for (const track of stream.getTracks()) {
           track.enabled = true;
-          console.log(track);
         }
       }
     }

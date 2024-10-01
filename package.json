@@ -2,13 +2,13 @@
   "name": "rov-web",
   "version": "0.0.1",
   "type": "module",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.11.0",
   "private": true,
   "scripts": {
     "dev": "pnpm run dev:frontend",
     "build": "pnpm run build:frontend && pnpm run build:internal;",
     "preview": "pnpm run preview:frontend;",
-    "dev:frontend": "cd frontend; vite dev --host",
+    "dev:frontend": "cd frontend; vite dev --host --force",
     "dev:internal": "cd rov-internal-website; vite dev --host",
     "build:frontend": "cd frontend; vite build",
     "build:internal": "cd rov-internal-website; vite build",
@@ -17,9 +17,9 @@
     "sveltekit:sync": "cd frontend; svelte-kit sync",
     "sveltekit:check": "cd frontend;svelte-kit sync && svelte-check",
     "optimize:svgs": "svgo --folder frontend/src/assets/originals --output frontend/src/assets/optimized",
-    "compile:proto": "pnpm run compile:proto:python && pnpm run compile:proto:javascript",
-    "compile:proto:python": "protoc --python_betterproto_out=rov-python/protobufs/ protobufs/rov_actions.proto",
-    "compile:proto:javascript": "buf generate",
+    "compile:proto": "pnpm run compile:proto:python && pnpm run compile:proto:typescript",
+    "compile:proto:python": "protoc --experimental_allow_proto3_optional --python_betterproto_out=rov-python/protobufs/ protobufs/rov_actions.proto",
+    "compile:proto:typescript": "protoc --experimental_allow_proto3_optional --ts_out=frontend/src/js/shared/ protobufs/rov_actions.proto",
     "compile:browserify": "browserify ./src/js/shared/etc/nodeJsShims.js --standalone nodeJsShim -o ./src/js/shared/nodeShimsBundle.js",
     "compile:cython": "python3 rov-python/cython_modules/setup.py build_ext --inplace",
     "clean": "rm -r ./rov-internal-website/build; rm -r ./frontend/build; rm -r ./frontend/.svelte-kit; rm -rf ./node_modules; rm ./pnpm-lock.yaml",
@@ -27,6 +27,7 @@
     "copy_to_rov": "rsync -arvc --ignore-times --delete --exclude '.*' --exclude 'node_modules' --exclude '__pycache__'  ./ /Volumes/rovshared/rov-web/"
   },
   "devDependencies": {
+    "@protobuf-ts/plugin": "^2.9.4",
     "@skeletonlabs/skeleton": "2.10.2",
     "@skeletonlabs/tw-plugin": "0.4.0",
     "@sveltejs/adapter-static": "^3.0.5",
@@ -50,12 +51,10 @@
     "vite": "^5.4.8",
     "vite-plugin-node-polyfills": "~0.22.0",
     "vite-plugin-require": "^1.2.14",
-    "vite-plugin-tailwind-purgecss": "0.3.3",
-    "@bufbuild/buf": "^1.42.0",
-    "@bufbuild/protoc-gen-es": "^2.1.0"
+    "vite-plugin-tailwind-purgecss": "0.3.3"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^2.1.0",
+    "@protobuf-ts/runtime": "^2.9.4",
     "@floating-ui/dom": "1.6.11",
     "@thaunknown/simple-peer": "github:KW-M/simple-peer",
     "axios": "^1.7.7",

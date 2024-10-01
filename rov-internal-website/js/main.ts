@@ -1,6 +1,5 @@
 import { internalConnManager } from "./internalConnManager"
 import { iRovWebSocketRelay } from "./websocketRelay";
-import { rov_actions_proto } from "./shared/protobufs/rovActionsProto";
 import { twitchStream } from "./twitchStream";
 import { ENCODE_TXT, FRONTEND_HANDLED_MAVLINK_MESSAGE_TYPES } from "./shared/consts";
 import { getLongTermStarterAccessToken, getLongTermTestRoomAccessToken } from "./shared/livekit/livekitTokens";
@@ -13,6 +12,7 @@ import { URL_PARAMS } from "./constsInternal";
 import { LogOrigin, mainLogr } from "./shared/logging";
 import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 import { backendArdupilotMavlinkMsgRcvd } from "./msgHandler";
+import { DataTransportMethod, RovResponse } from "./shared/protobufs/rov_actions";
 
 /// ------- DEBUGGING STUFF: -----------
 // DISABLE VITE HOT MOUDLE RELOADING:
@@ -72,13 +72,13 @@ if (URL_PARAMS.PYTHON_WEBSOCKET_PORT != 0) {
 
         // Decode protobuf object from bytes
         if (msgBytes.length === 0) return;
-        const msgProto = rov_actions_proto.RovResponse.decode(msgBytes as Uint8Array)
+        const msgProto = RovResponse.fromBinary(msgBytes as Uint8Array)
 
         // Extract metadata from protobuf object
-        if (!msgProto.BackendMetadata) return logError("No BackendMetadata in message from iROV", msgProto.toJSON(), msgBytes);
-        const targetUserIds = msgProto.BackendMetadata.TargetUserIds
-        const transportMethod = msgProto.BackendMetadata.TransportMethod
-        const isReliable = transportMethod == rov_actions_proto.DataTransportMethod.LivekitReliable
+        if (!msgProto.backendMetadata) return logError("No BackendMetadata in message from iROV", RovResponse.toJson(msgProto));
+        const targetUserIds = msgProto.backendMetadata.targetUserIds
+        const transportMethod = msgProto.backendMetadata.transportMethod
+        const isReliable = transportMethod === DataTransportMethod.LivekitReliable
 
         // Send message on using livekit:
         internalConnManager.sendMessage(msgProto, isReliable, targetUserIds || [])
@@ -99,8 +99,11 @@ if (URL_PARAMS.BLUEOS_APIS_ENDPOINT) {
 
         // Encode message to bytes and create protobuf object
         const msgBytes = ENCODE_TXT(JSON.stringify(msg))
-        const msgProto = rov_actions_proto.RovResponse.create({
-            Mavlink: { Message: msgBytes }
+        const msgProto = RovResponse.create({
+            body: {
+                oneofKind: "mavlink",
+                mavlink: { message: msgBytes }
+            }
         })
 
         // Send message on using livekit:
@@ -120,13 +123,16 @@ if (URL_PARAMS.BLUEOS_APIS_ENDPOINT) {
             const diskUsage = getDiskUsagePercent(info.disk);
             const warnings: string[] = cpuTemp.warnings.concat(cpuUsage.warnings, memUsage.warnings, diskUsage.warnings);
             if (URL_PARAMS.DEBUG_MODE) logDebug("/SysInfo cpuTemp", cpuTemp, "cpuUsage", cpuUsage, "memUsage", memUsage, "diskUsage", diskUsage, warnings)
-            const msgProto = rov_actions_proto.RovResponse.create({
-                SystemMonitor: {
-                    CpuTemp: cpuTemp.value,
-                    CpuUsage: cpuUsage.value,
-                    MemoryUsage: memUsage.value,
-                    DiskUsage: diskUsage.value,
-                    Warnings: warnings
+            const msgProto = RovResponse.create({
+                body: {
+                    oneofKind: "systemMonitor",
+                    systemMonitor: {
+                        cpuTemp: cpuTemp.value,
+                        cpuUsage: cpuUsage.value,
+                        memoryUsage: memUsage.value,
+                        diskUsage: diskUsage.value,
+                        warnings: warnings
+                    }
                 }
             })
             internalConnManager.sendMessage(msgProto, true, [])

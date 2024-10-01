@@ -26,7 +26,6 @@
   export const changeSelected = (delta: number) => {
     if (!open) {
       popupCombobox.forceOpen = true;
-      console.log("changeSelectedOpening", delta, open);
       openButton.click();
     }
     (document.activeElement as HTMLElement).blur ? (document.activeElement as HTMLElement).blur() : null;

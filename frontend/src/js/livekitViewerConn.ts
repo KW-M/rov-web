@@ -1,12 +1,13 @@
 import nStore, { type nStoreT } from "./shared/libraries/nStore";
 import { type LivekitConfig, LivekitBaseConnection } from "./shared/livekit/livekitBaseConn";
 import { DisconnectReason, type RemoteParticipant, type RemoteTrack, type RemoteTrackPublication, type RemoteVideoTrack, RoomEvent, Track } from "livekit-client";
-import { log, logError, logInfo, logWarn } from "./shared/logging";
+import { log, logDebug, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";
 import { takenLivekitUsernameIds } from "./globalContext";
 import { RtpRecieverStatsParser } from "./shared/videoStatsParser";
 import { unixTimeNow } from "./shared/time";
+import { showToastMessage } from "./toastMessageManager";
 
 export class LivekitViewerConnection extends LivekitBaseConnection {
     // remote video tracks maps from the track source name to the livekit track object
@@ -81,12 +82,12 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
     // }, 600)
     // }
 
-    async close() {
-        await super.close();
+    close() {
+        super.close();
     }
 
-    async _fail() {
-        await super._fail();
+    _fail() {
+        super._fail();
     }
 
     async init(config: LivekitConfig) {
@@ -112,18 +113,19 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.ParticipantConnected, (participant) => {
                 if (participant.identity === this._rovRoomName) {
-                    console.log("LK: ROV Participant connected: ", participant.identity)
+                    logDebug("LK: ROV Participant connected: ", participant.identity)
                     this.subscribeToTracks(participant)
                 }
             })
             .on(RoomEvent.ParticipantDisconnected, (participant) => {
                 if (participant.identity === this._rovRoomName) {
-                    console.log("LK: ROV Participant disconnected: ", participant.identity)
+                    logDebug("LK: ROV Participant disconnected: ", participant.identity)
+                    showToastMessage("ROV is disconnected")
                 }
             })
             .on(RoomEvent.TrackPublished, (pub, participant) => {
                 // if (participant.identity === this._rovRoomName) {
-                console.log("LK: ROV Participant track published: ", participant.identity, pub.kind, pub.trackSid)
+                logDebug("LK: ROV Participant track published: ", participant.identity, pub.kind, pub.trackSid)
                 this.subscribeToTracks(participant)
                 // }
             })

@@ -12,6 +12,7 @@ export class mavlinkInterface {
 
     constructor() {
         this.mavlinkWebsocket = new WebSocketRelay()
+        this.onMessage = (_) => { }
     }
 
     start(wsUrl: string, onMessage: (msg: mavlink2RestFullMessage) => void, onConnected?: () => void) {

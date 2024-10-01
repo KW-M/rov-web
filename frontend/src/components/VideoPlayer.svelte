@@ -47,9 +47,6 @@
     } else {
       logInfo("VideoPlayer: Starting livekit video stream", livekitVideoStream.stream);
       if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).start();
-      if (livekitVideoStream.stream == null) {
-        showToastMessage("Waiting for livekit video stream...", 1000, false, ToastSeverity.info);
-      }
     }
     if (videoIsReady(simplePeerVideoStream)) {
       currentVideoSource.set(VideoSource.SimplePeer);
@@ -116,7 +113,7 @@
       updateVideoVisibility();
     });
     spUnsub = frontendConnMngr.simplePeerConnection.remoteVideoStreams.subscribe((streams) => {
-      console.log("spstreams", streams);
+      logDebug("spstreams", streams);
       const stream = streams.values().next().value as MediaStream | null;
       if (stream) {
         if (simplePeerVideoStream.streamId == stream.id) logWarn("VideoPlayer: SP: repeat stream ID!", stream.id);

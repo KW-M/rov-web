@@ -72,11 +72,9 @@ export class GamepadController {
         if (connectedGamepadCount != 0 && gamepads[0]?.emulation === "emulated") connectedGamepadCount -= 1;
         if (connectedGamepadCount > 1) log("WARNING: More than one gamepad connected!", gamepads);
         this.realGamepadsConnected.set(connectedGamepadCount);
-        console.log("Gamepad connect/disconnect event", gamepads, connectedGamepadCount);
     }
 
     handleButtonChange = (gpadIndex, gamepad, buttonsChangedMask) => {
-        console.log(gpadIndex, gamepad, buttonsChangedMask)
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
         if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
     }
