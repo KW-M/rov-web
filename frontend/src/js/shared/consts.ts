@@ -20,20 +20,6 @@ export const ENCRYPTED_AUTH_TOKEN_PREFIX = "AUTHTOKEN:";
 
 export const SEA_LEVEL_PRESSURE = 1013.25; // mbar
 
-// export let DEBUG_MODE = false;
-// export let ROV_NAME = 'Default-ROV'
-// export let ROV_CONTROL_PASSWORD = ''
-// export let LIVEKIT_API_KEY = ''
-// export let LIVEKIT_SECRET_KEY = ''
-// export let TWITCH_STREAM_KEY = 'None'
-// export let ENABLE_LIVEKIT_LOCAL = false
-// export let ENABLE_LIVEKIT_CLOUD = true
-// export let PYTHON_WEBSOCKET_PORT = 0
-// export let AUTH_TOKEN_TIMEOUT = 60 * 60 * 24 // 1 day
-// export let BLUEOS_APIS_ENDPOINT = 'http://blueos.local'
-// export let LIVEKIT_CLOUD_ENDPOINT = 'https://rov-web.livekit.cloud'
-// export let LIVEKIT_LOCAL_ENDPOINT = 'http://localhost:7880'
-
 // export function setRuntimeConsts(livekitConfig: LivekitSetupOptions) {
 
 
@@ -117,7 +103,7 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 export const SIMPLEPEER_BASE_CONFIG: SimplePeerT.Options & { iceRestartEnabled: string | boolean } = {
     initiator: true,
     trickle: true,
-    iceRestartEnabled: 'onDisconnect',
+    iceRestartEnabled: false, //'onDisconnect'
     offerOptions: {
         offerToReceiveAudio: false,
         offerToReceiveVideo: false,

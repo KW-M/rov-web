@@ -18,9 +18,58 @@
   $: role = $page.route.id.split("/").pop();
   const spState = frontendConnMngr.simplePeerConnection.connectionState;
   const lkState = frontendConnMngr.livekitConnection.connectionState;
+
+  let _hovered = false;
+  let hovered = false;
+  let mouseInScreen = true;
+  $: hiddenToolbar = $fullscreenOpen && !hovered && mouseInScreen;
+
+  onMount(() => {
+    const mousein = () => (mouseInScreen = true);
+    const mouseout = () => (mouseInScreen = false);
+    const clickOutside = (e) => {
+      if (hovered) hovered = false;
+    };
+    document.addEventListener("mouseenter", mousein);
+    document.addEventListener("mouseleave", mouseout);
+    document.addEventListener("pointerdown", clickOutside);
+    return () => {
+      document.removeEventListener("mouseenter", mousein);
+      document.removeEventListener("mouseleave", mouseout);
+      document.removeEventListener("pointerdown", clickOutside);
+    };
+  });
 </script>
 
-<nav class="flex app-bar p-4 w-full relative z-10 overflow-auto" class:-mt-20={$fullscreenOpen}>
+<nav
+  class="flex app-bar p-4 w-full relative z-10 overflow-auto translate-y-0 transition-transform"
+  class:fullscreen-toolbar={$fullscreenOpen}
+  class:hidden-toolbar={hiddenToolbar}
+  on:mouseenter={() => {
+    _hovered = true;
+    hovered = true;
+  }}
+  on:scroll={() => {
+    if (!hovered) hovered = true;
+  }}
+  on:focusin={() => {
+    if (!hovered) hovered = true;
+  }}
+  on:focusout={() => {
+    if (hovered) hovered = false;
+  }}
+  on:mouseleave={() => {
+    _hovered = false;
+    setTimeout(() => {
+      if (!_hovered) hovered = false;
+    }, 1000);
+  }}
+  on:pointerdown={(e) => {
+    if (!hovered) hovered = true;
+    if (e.target === e.currentTarget && hovered) hovered = false;
+    e.stopImmediatePropagation();
+  }}
+>
   <div class="flex pb-20 sm:pt-0 sm:pb-0 pr-1 sm:pr-10 justify-start gap-x-1 xl:gap-x-4 sm:gap-x-2 gap-y-1 flex-1 sm:w-1/2 sm:max-w-1/2 min-w-1/2 items-center">
     <slot name="left" />
     <span class="font-bold chip variant-filled hidden xl:inline-block">CPU: {Math.round($cpuUsagePercent)}% | Mem: {Math.round($memUsagePercent)}%</span>
@@ -104,24 +153,32 @@
       <button class="btn btn-sm variant-filled-error bg-orange-500">Disconnect</button>
     </div> -->
     {#if browser && supportsFullscreen()}
-      <button
-        class="btn btn-lg btn-icon bg-initial"
-        class:translate-y-20={$fullscreenOpen}
-        on:click={(e) => {
-          toggleFullscreen(e, null);
-        }}
-      >
-        {#if $fullscreenOpen}
-          <Fullscreen_exit class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
-        {:else}
-          <Fullscreen class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
-        {/if}
+      <button class="btn variant-soft-surface btn-icon-lg btn-icon bg-initial" class:opacity-0={$fullscreenOpen} on:click={(e) => toggleFullscreen(e, null)}>
+        <Fullscreen class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
       </button>
     {/if}
-    <div class="rounded-full w-1.5 h-1.5 absolute top-1 right-2 bg-green-500 opacity-30" aria-hidden="true" class:!opacity-100={$spState == ConnectionStates.connected} class:animate-pulse-full={$spState == ConnectionStates.connecting || $spState == ConnectionStates.reconnecting}></div>
-    <div class="rounded-full w-1.5 h-1.5 absolute top-1 right-4 bg-orange-500 opacity-30" aria-hidden="true" class:!opacity-100={$lkState == ConnectionStates.connected} class:animate-pulse-full={$lkState == ConnectionStates.connecting || $lkState == ConnectionStates.reconnecting}></div>
   </div>
+  {#if $fullscreenOpen}
+    <div class="w-14 h-1.5 rounded-2xl fixed bg-white/80 left-[50vw] -translate-x-1/2 bottom-2 pointer-events-none"></div>
+  {/if}
 </nav>
+
+<div class="rounded-full w-1.5 h-1.5 absolute top-1 right-2 bg-green-500 opacity-30" aria-hidden="true" class:!opacity-100={$spState == ConnectionStates.connected} class:animate-pulse-full={$spState == ConnectionStates.connecting || $spState == ConnectionStates.reconnecting}></div>
+<div class="rounded-full w-1.5 h-1.5 absolute top-1 right-4 bg-orange-500 opacity-30" aria-hidden="true" class:!opacity-100={$lkState == ConnectionStates.connected} class:animate-pulse-full={$lkState == ConnectionStates.connecting || $lkState == ConnectionStates.reconnecting}></div>
+
+{#if $fullscreenOpen}
+  <button
+    class="btn variant-soft-surface btn-icon-lg btn-icon bg-initial fixed top-4 right-4 z-10"
+    on:click={(e) => toggleFullscreen(e, null)}
+    on:mouseenter={() => (hovered = true)}
+    on:mouseleave={() => (hovered = false)}
+    on:pointerdown={() => {
+      if (!hovered) hovered = true;
+    }}
+  >
+    <Fullscreen_exit class="text-2xl pointer-events-none" tabindex="-1" variation="round" />
+  </button>
+{/if}
 
 <slot name="popups" />
 <div data-popup="battery_info_popup" class="z-10">
@@ -164,5 +221,15 @@
   }
   .animate-pulse-full {
     animation: pulse-full 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .fullscreen-toolbar.hidden-toolbar {
+    --tw-translate-y: calc(-100% + 1.3em);
+  }
+
+  .fullscreen-toolbar {
+    --tw-translate-y: 0;
+    position: fixed !important;
+    @apply bg-surface-900/40 backdrop-blur-md shadow-md;
   }
 </style>

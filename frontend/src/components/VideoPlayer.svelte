@@ -24,8 +24,6 @@
   let livekitVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let simplePeerVideoStream: VideoStreamData = { playable: false, videoElem: null };
   let videoContainerElem: HTMLDivElement | null = null;
-  let videoHovered = false;
-  let videoSwitchInProgress = false;
   let videoAspectRatio = 4 / 3;
   let rovVizVisible = false;
 
@@ -38,9 +36,7 @@
   }
 
   const updateVideoVisibility = () => {
-    log("updateVideoVisibility", videoIsReady(livekitVideoStream), videoIsReady(simplePeerVideoStream));
     if (!videoContainerElem) return;
-    videoSwitchInProgress = false;
     if (videoIsReady(simplePeerVideoStream)) {
       logInfo("VideoPlayer: Stopping livekit video stream", livekitVideoStream.stream);
       if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).stop();
@@ -59,18 +55,19 @@
 
   const canPlay = (debugLabel: VideoSource) => {
     return (e: Event) => {
-      log("Video CanPlay", debugLabel, e && e.type ? e.type : null);
       if (debugLabel == VideoSource.Livekit) {
         livekitVideoStream.playable = true;
         livekitVideoStream = livekitVideoStream;
+        logInfo("LK: Can Play Video", e && e.type ? e.type : null, videoIsReady(livekitVideoStream));
       } else if (debugLabel == VideoSource.SimplePeer) {
         simplePeerVideoStream.playable = true;
         simplePeerVideoStream = simplePeerVideoStream;
         simplePeerVideoStream.videoElem.play().catch((err) => {
-          log("Video cannot play", err);
-          showToastMessage("Click this message to play or try reloading the page", 5000, false, ToastSeverity.warning, () => simplePeerVideoStream.videoElem.play());
+          logWarn("SP: CANNOT Play Video - User Interaction Needed", err);
+          showToastMessage("Click here to start video (or try reloading the page)", 5000, false, ToastSeverity.info, () => simplePeerVideoStream.videoElem.play());
           cantPlay(debugLabel)(null);
         });
+        logInfo("SP: Can Play Video", e && e.type ? e.type : null, videoIsReady(simplePeerVideoStream));
       }
       updateVideoVisibility();
     };
@@ -78,13 +75,14 @@
 
   const cantPlay = (debugLabel: VideoSource) => {
     return (e: Event) => {
-      log("Video CantPlay", debugLabel, e && e.type ? e.type : null, e);
       if (debugLabel == VideoSource.Livekit) {
         livekitVideoStream.playable = false;
         livekitVideoStream = livekitVideoStream;
+        logWarn("LK: CANNOT Play Video", e && e.type ? e.type : null, videoIsReady(livekitVideoStream));
       } else if (debugLabel == VideoSource.SimplePeer) {
         simplePeerVideoStream.playable = false;
         simplePeerVideoStream = simplePeerVideoStream;
+        logWarn("SP: CANNOT Play Video", e && e.type ? e.type : null, videoIsReady(simplePeerVideoStream));
       }
       updateVideoVisibility();
     };
@@ -94,12 +92,12 @@
   onMount(() => {
     lkUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((streams) => {
       const stream = streams.values().next().value as RemoteTrack;
-      if (livekitVideoStream.stream && (livekitVideoStream.stream as RemoteTrack).detach != undefined) {
-        log("Video detach stream lk", Object.assign({}, livekitVideoStream.stream), Object.assign({}, stream));
+      if (livekitVideoStream.stream && (livekitVideoStream.stream as RemoteTrack).detach !== undefined && livekitVideoStream.videoElem && (livekitVideoStream.stream as RemoteTrack).attachedElements.includes(livekitVideoStream.videoElem)) {
+        log("LK: Video replace - Detaching existing video element", Object.assign({}, livekitVideoStream.stream), Object.assign({}, stream));
         (livekitVideoStream.stream as RemoteTrack).detach(livekitVideoStream.videoElem);
       }
       if (stream) {
-        if (livekitVideoStream.streamId == stream.mediaStreamID) logWarn("VideoPlayer: LK: repeat stream ID!", stream.mediaStreamID);
+        if (livekitVideoStream.streamId === stream.mediaStreamID) logWarn("LK: repeat stream ID!", stream.mediaStreamID);
         stream.attach(livekitVideoStream.videoElem);
         livekitVideoStream.streamId = stream.mediaStreamID;
         livekitVideoStream.stream = stream;
@@ -116,7 +114,7 @@
       logDebug("spstreams", streams);
       const stream = streams.values().next().value as MediaStream | null;
       if (stream) {
-        if (simplePeerVideoStream.streamId == stream.id) logWarn("VideoPlayer: SP: repeat stream ID!", stream.id);
+        if (simplePeerVideoStream.streamId === stream.id) logWarn("SP: repeat stream ID!", stream.id);
         simplePeerVideoStream.videoElem.srcObject = stream;
         simplePeerVideoStream.streamId = stream.id;
         simplePeerVideoStream.stream = stream;
@@ -179,7 +177,7 @@
 
 <div id="livestream_container" class="px-2 pointer-events-none" class:full={$fullscreenOpen} bind:this={videoContainerElem}>
   <!-- svelte-ignore a11y-media-has-caption -->
-  <CompassDial class="absolute top-2 lg:top-0 w-20 z-10 lg:-translate-y-1/2" />
+  <CompassDial class={`absolute top-2  w-20 z-10 ${!$fullscreenOpen ? "lg:top-0 lg:-translate-y-1/2" : ""}`} />
 
   <div
     class="relative top-0 mx-auto pointer-events-auto bg-black/70 rounded-2xl"
@@ -189,10 +187,11 @@
       else return livekitVideoStream.videoElem;
     })()}
   >
-    <span class="chip variant-filled absolute bottom-2 -translate-x-1/2 left-1/2 z-10">{(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}</span>
+    <span class="chip variant-filled absolute top-2 -translate-x-1/2 left-1/2 z-10">{(videoIsReady(simplePeerVideoStream) ? "SP Live" : "SP Stall") + " | " + (videoIsReady(livekitVideoStream) ? "LK Live" : "LK Stall") + " "}</span>
 
     <button
       class="btn btn-icon variant-glass-surface shadow-md absolute top-4 right-4 z-10 lg:btn-icon-lg"
+      class:!right-20={$fullscreenOpen}
       use:blurOnClick
       on:click={() => {
         drawerStore.open({
@@ -207,7 +206,7 @@
       <Video_settings class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
     </button>
 
-    <button class="btn btn-icon lg:btn-icon-lg variant-glass-secondary shadow-md absolute top-4 left-4 z-20 pointer-events-auto" use:blurOnClick on:click={() => (rovVizVisible = !rovVizVisible)}>
+    <button class="btn btn-icon lg:btn-icon-lg variant-glass-secondary shadow-md absolute top-4 left-4 z-20 pointer-events-auto" class:!left-20={$fullscreenOpen} use:blurOnClick on:click={() => (rovVizVisible = !rovVizVisible)}>
       {#if rovVizVisible}
         <Hide_source class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
       {:else}
@@ -241,10 +240,8 @@
       muted
       playsinline
       autoplay
-      controls={true}
+      controls={false}
       tabindex="-1"
-      on:pointerenter={() => (videoHovered = true)}
-      on:pointerleave={() => (videoHovered = false)}
       bind:this={livekitVideoStream.videoElem}
       on:canplay={canPlay(VideoSource.Livekit)}
       on:playing={canPlay(VideoSource.Livekit)}
@@ -267,10 +264,8 @@
       muted
       playsinline
       autoplay
-      controls={true}
+      controls={false}
       tabindex="-1"
-      on:pointerenter={() => (videoHovered = true)}
-      on:pointerleave={() => (videoHovered = false)}
       bind:this={simplePeerVideoStream.videoElem}
       on:canplay={canPlay(VideoSource.SimplePeer)}
       on:playing={canPlay(VideoSource.SimplePeer)}
@@ -300,7 +295,9 @@
   }
 
   #livestream_container.full {
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 1rem;
     bottom: 0;
   }
 

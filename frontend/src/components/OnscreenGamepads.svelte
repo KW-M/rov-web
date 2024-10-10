@@ -62,11 +62,11 @@
     <span id="gamepad-help-text">Gamepad Help</span>
   </div> -->
   </div>
-  <button
+  <!-- <button
     on:click={() => {
       collapsedMode = !collapsedMode;
     }}>{collapsedMode ? "Show Gamepads" : "Hide Gamepads"}</button
-  >
+  > -->
 </div>
 
 <style>
@@ -77,8 +77,11 @@
     position: absolute;
     bottom: 0;
     cursor: all-scroll;
-    width: 50%;
+    width: 10cm;
     height: 10cm;
+    max-height: 50vh;
+    max-width: 33vw;
+    background: #000;
 
     background-color: #0c61d800;
     pointer-events: all;

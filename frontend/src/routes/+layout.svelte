@@ -22,7 +22,7 @@
   import { getGpadCtrl } from "../js/gamepad";
   import { debugPageModeActive, fullscreenOpen } from "../js/globalContext";
   import { frontendStartupFlow } from "../js/startupFlow";
-  import { getURLQueryStringVariable } from "../js/util";
+  import { URL_PARAMS } from "../js/frontendConsts";
 
   initializeStores();
   setupToasts();
@@ -71,7 +71,7 @@
   };
 
   onMount(() => {
-    debugPageModeActive.set(getURLQueryStringVariable("debug") != undefined);
+    debugPageModeActive.set(URL_PARAMS.DEBUG_MODE);
     document.addEventListener("fullscreenchange", (e) => {
       fullscreenOpen.set(document.fullscreenElement !== null);
     });
@@ -100,7 +100,7 @@
   });
 </script>
 
-<Modal height="max-h-screen max-w-full" zIndex="z-40" components={MODAL_COMPONENTS} />
+<Modal height="h-auto max-h-screen" width="w-modal max-w-full" zIndex="z-40" regionBackdrop="!overflow-y-auto" components={MODAL_COMPONENTS} />
 <Toast position="b" zIndex="z-50" shadow="shadow-3xl ring-2 ring-black" width="w-fit max-w-full" padding="py-3 px-4 lg:py-4 lg:px-4" max={5} />
 
 <slot />

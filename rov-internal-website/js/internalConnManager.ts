@@ -141,7 +141,8 @@ class InternalConnectionManager {
         const spCameraOpts = this.simplePeerCameraOptions.get();
         for (const [userId, spConn] of this._simplePeerConnections) {
             if (!spConn || spConn.connectionState.get() !== ConnectionStates.connected) continue;
-            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return { allStats: [String(e)] } as ComputedRtpStats }) as ComputedRtpStats;
+            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return null });
+            if (!spStats) continue;
             this.sendMessage({
                 body: {
                     oneofKind: "simplePeerVideoStats",

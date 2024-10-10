@@ -218,7 +218,6 @@ export class RtpStatsParser {
         }
         computedStats.senderLayerStats = computedStats.senderLayerStats ? computedStats.senderLayerStats.sort((a, b) => (b.frameWidth || 0) * (b.frameHeight || 0) - (a.frameWidth || 0) * (a.frameHeight || 0)) : [];
         this.lastStats = computedStats;
-        console.log(computedStats)
         return computedStats;
     }
 

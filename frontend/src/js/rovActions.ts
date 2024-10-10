@@ -198,7 +198,6 @@ class RovActionsClass {
         }, 0)
 
         const timeSinceLastMoveCmd = unixTimeNow() - this.lastMovementTime;
-        logInfo("btnBitmask" + buttonBitmask)
         if (this.lastMove.buttonBitmask === buttonBitmask && timeSinceLastMoveCmd < 700) return;
         rovDrivingVector.set({ velocityX, velocityY, velocityZ, angularVelocityYaw, buttonBitmask })
 

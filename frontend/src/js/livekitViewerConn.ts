@@ -30,7 +30,7 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
 
             // Audio in case we want to listen to the ROV underwater audio
             participant.audioTrackPublications.forEach((pub: RemoteTrackPublication) => pub.setSubscribed(true))
-            logInfo("canPlayback audio = ", this._roomConn.canPlaybackAudio, " video = ", this._roomConn.canPlaybackVideo);
+            logInfo(`Can playback - audio: ${this._roomConn.canPlaybackAudio}, video: ${this._roomConn.canPlaybackVideo}`);
         }
     }
 
