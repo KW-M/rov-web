@@ -17,7 +17,7 @@
     "sveltekit:sync": "cd frontend; svelte-kit sync",
     "sveltekit:check": "cd frontend;svelte-kit sync && svelte-check",
     "optimize:svgs": "svgo --folder frontend/src/assets/originals --output frontend/src/assets/optimized",
-    "compile:proto": "pnpm run compile:proto:python && pnpm run compile:proto:typescript",
+    "compile:proto": "pnpm run compile:proto:typescript",
     "compile:proto:python": "protoc --experimental_allow_proto3_optional --python_betterproto_out=rov-python/protobufs/ protobufs/rov_actions.proto",
     "compile:proto:typescript": "protoc --experimental_allow_proto3_optional --ts_out=frontend/src/js/shared/ protobufs/rov_actions.proto",
     "compile:browserify": "browserify ./src/js/shared/etc/nodeJsShims.js --standalone nodeJsShim -o ./src/js/shared/nodeShimsBundle.js",

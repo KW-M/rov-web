@@ -55,11 +55,11 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: "pip" # caching pip dependencies
 
       - name: Install Betterproto
-        run: pip install "betterproto[compiler]"
+        run: pip install "betterproto[compiler]==2.0.0b7"
 
       # - name: Install Cython
       #   run: pip install Cython
