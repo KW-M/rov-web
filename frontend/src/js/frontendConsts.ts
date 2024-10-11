@@ -16,10 +16,10 @@ export const URL_PARAMS = {
 }
 
 Object.defineProperties(URL_PARAMS, {
-    DEBUG_MODE: { writable: false, get: () => getBooleanQueryParam("DEBUG_MODE", false) },
-    SHOW_REMOTE_LOGS: { writable: false, get: () => getBooleanQueryParam("SHOW_REMOTE_LOGS", true) },
-    LIVEKIT_CLOUD_ENDPOINT: { writable: false, get: () => getStringQueryParam("LIVEKIT_CLOUD_URL", 'https://rov-web.livekit.cloud') },
-    LIVEKIT_LOCAL_ENDPOINT: { writable: false, get: () => getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880') },
+    DEBUG_MODE: { get: () => getBooleanQueryParam("DEBUG_MODE", false) },
+    SHOW_REMOTE_LOGS: { get: () => getBooleanQueryParam("SHOW_REMOTE_LOGS", true) },
+    LIVEKIT_CLOUD_ENDPOINT: { get: () => getStringQueryParam("LIVEKIT_CLOUD_URL", 'https://rov-web.livekit.cloud') },
+    LIVEKIT_LOCAL_ENDPOINT: { get: () => getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880') },
 })
 
 export const PING_INTERVAL = 1000 // 1 second in ms

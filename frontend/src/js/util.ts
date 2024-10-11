@@ -1,6 +1,5 @@
 /// <reference path="./globals.d.ts" />
 import type { nStoreT } from './shared/libraries/nStore';
-import { EMOJI_MAP } from "./frontendConsts";
 import { changesSubscribe } from './shared/util';
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 
@@ -198,29 +197,7 @@ export function getDayOfYear(date = new Date()): number {
     return differenceInDays;
 }
 
-/** Returns a unique emoji for every day of the year */
-export function emojiOfTheDay() {
-    return EMOJI_MAP[getDayOfYear()]
-}
 
-/**
- * converts a number expressed as hex to a string of emojis that is unique for every number (just a base conversion to the list of emojis)
- * @param hexString a number expressed as a hex string to convert to emojis
- * @param itterCount the number of emojis to put into the output string.
- * @returns
- */
-export function hexToEmojiEncoding(hexString = "FF", itterCount) {
-    let out = ""
-    let emojiCount = BigInt(EMOJI_MAP.length)
-    hexString = "0x" + hexString
-    let value = BigInt(hexString);
-    while (itterCount > 0 && value > 0) {
-        out += EMOJI_MAP[Number(value % emojiCount)];
-        value = value / emojiCount;
-        itterCount--
-    }
-    return out
-}
 
 /* generateStateChangeFunction is a function generator for an xstate machine that will return a function that will run a callback and send the named state transition with the data or event from the calling transition */
 export function generateStateChangeFunction(sendStateChange, stateTransition, data, additionalCallback) {

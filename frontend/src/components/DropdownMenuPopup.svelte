@@ -85,7 +85,7 @@
   <RadioSelectGrid bind:value {options} onChange={onChangeInternal} {disabled} {autoReset} {variant} class={"variant-glass" + variant} />
 </div>
 
-<style>
+<style lang="postcss">
   /* :global(.grid-listbox-item .listbox-label) {
     margin: 0 !important;
     user-select: none;

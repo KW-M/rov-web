@@ -283,7 +283,7 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   #livestream_container {
     position: absolute;
     box-sizing: border-box;

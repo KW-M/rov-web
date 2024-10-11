@@ -12,7 +12,7 @@ const config = {
 		inspector: true,
 	},
 	kit: {
-		adapter: adapterStatic({ fallback: 'index.html', strict: false, precompress: true }),
+		adapter: adapterStatic({ fallback: "404.html", strict: false, precompress: true }),
 		paths: { relative: true, base: '/rov-web' },
 		prerender: {},
 		serviceWorker: {

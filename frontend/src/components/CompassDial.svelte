@@ -15,7 +15,7 @@
   <div class="bg" id="compassDiscImg" style:transform={`translateX(${$rovHeading}px)`} />
 </div>
 
-<style>
+<style lang="postcss">
   /* ********* Compass Display ********* */
 
   .compass {

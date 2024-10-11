@@ -69,7 +69,7 @@
   > -->
 </div>
 
-<style>
+<style lang="postcss">
   /* ********* Onscreen Gamepad Related ********* */
   /* *********  Gamepad Display Related ********* */
 

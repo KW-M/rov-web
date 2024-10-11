@@ -327,7 +327,7 @@ export class SimplePeerConnection {
 
     }
 
-    sortCodecsByMimeTypes(codecs: RTCRtpCodecCapability[], preferredOrder: string[]) {
+    sortCodecsByMimeTypes(codecs: RTCRtpCodec[], preferredOrder: string[]) {
         // function taken from https://blog.mozilla.org/webrtc/cross-browser-support-for-choosing-webrtc-codecs/
         return codecs.sort((a, b) => {
             const indexA = preferredOrder.indexOf(a.mimeType.toLowerCase());

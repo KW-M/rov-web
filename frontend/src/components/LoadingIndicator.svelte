@@ -43,7 +43,7 @@
   </div>
 {/if}
 
-<style>
+<style lang="postcss">
   #site_loading_indicator {
     padding: 1rem 2rem;
     transform: translate(-50%, -20vh);

@@ -93,7 +93,7 @@
   </div>
 {/each}
 
-<style>
+<style lang="postcss">
   /* ***** Popper Tooltip Customizations ***** */
 
   .arrow.triangle {

@@ -278,7 +278,7 @@ class RovActionsClass {
             response: (r) => {
                 if (!r) return;
                 let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
-                frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "restartRovServices", RestartRovServices: {} } }, responseHandler)
+                frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "restartRovServices", restartRovServices: {} } }, responseHandler)
             }
         })
     }
@@ -286,7 +286,7 @@ class RovActionsClass {
 
     getRovStatusReport = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "rovStatusReport", RovStatusReport: {} } }, responseHandler)
+        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "rovStatusReport", rovStatusReport: {} } }, responseHandler)
     }
 
     enableRovWifi = () => {

@@ -1,0 +1,4 @@
+pnpm run "sveltekit:check"
+pnpm run "compile:proto"
+pnpm run "optimize:svgs"
+pnpm run "build"

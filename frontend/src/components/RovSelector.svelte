@@ -143,7 +143,7 @@
   </div>
 </div>
 
-<style lang="tailwind-css">
+<style lang="postcss">
   #rov_chooser.disconnected {
     @apply rounded-b-xl bottom-1/2 scale-150 translate-y-1/2;
   }

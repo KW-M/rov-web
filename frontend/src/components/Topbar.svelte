@@ -207,7 +207,7 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   @keyframes pulse-full {
     0% {
       opacity: 1;
