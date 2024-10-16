@@ -9,37 +9,33 @@ Example:
 ```
 */
 export default { //  use module.exports = { ...stuff... }  for commonjs
-    type: 'perItem',
     name: 'idClassSplitter',
-    fn: function (item) {
+    fn: () => {
+        return {
+            element: {
+                enter: (node, parentNode) => {
+                    /** @type {SVGElement} */
+                    const item = node;
+                    if (item.attributes.id) {
+                        let classes = item.attributes.id.split('.');
+                        if (classes.length == 0) return;
+                        let id = classes.shift();
 
-        if (item.isElem() && item.hasAttr('id')) {
-            let classes = item.attr('id').value.split('.');
-            if (classes.length == 1) return;
-            let id = classes.shift();
-            if (id[0] == '#') id = id.substring(1); // remove leading #
-            const classNames = classes.join(" ")//.replace("  ", " ").trim();
+                        // replace the id
+                        if (id[0] === '#') id = id.substring(1); // remove leading '#'
+                        if (id && id !== '') item.attributes.id = id;
+                        else delete item.attributes.id;
 
-            // Add the classes
-            if (classNames != "") {
-                item.addAttr({
-                    name: 'class',
-                    value: '',
-                    prefix: '',
-                    local: 'class'
-                })
-                item.class.setClassValue(classNames)
+                        // Add the classes
+                        if (classes.length == 0) return;
+                        const classNames = classes.join(" ").replace("  ", " ").trim();
+                        if (classNames != "") {
+                            item.attributes.class = classNames;
+                        }
+
+                    }
+                }
             }
-
-            // replace the id
-            item.removeAttr('id')
-            if (id && id !== '') item.addAttr({
-                name: 'id',
-                value: id,
-                prefix: '',
-                local: 'id'
-            });
-
         }
     }
 }

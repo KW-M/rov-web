@@ -19,6 +19,7 @@
 
   onMount(() => {
     if (browser) {
+      if (!GPAD_DISPLAY_CONTAINER) console.error("missing GPAD_DISPLAY_CONTAINER", GPAD_DISPLAY_CONTAINER);
       const gpadCtrl = getGpadCtrl();
       gpadCtrl.start(RovActions.gamepadAxisTriggers, RovActions.gamepadButtonTriggers);
       gpadUi = new GamepadUi(gpadCtrl.gpadApiWrapper, gpadCtrl.gpadEmulator, GPAD_DISPLAY_CONTAINER, tooltipDelay);

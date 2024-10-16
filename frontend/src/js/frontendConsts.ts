@@ -119,7 +119,7 @@ export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
     { btnName: "d_pad_up", helpLabel: "Look Up", fireWhileHolding: true, tooltipPlacement: "right" },
     { btnName: "d_pad_down", helpLabel: "Look Down", fireWhileHolding: true, tooltipPlacement: "right" },
     { btnName: "d_pad_left", helpLabel: "Dim Lights", fireWhileHolding: true, tooltipPlacement: "right" },
-    { btnName: "d_pad_right", helpLabel: "Brighten Lights", fireWhileHolding: true, tooltipPlacement: "right" },
+    { btnName: "d_pad_right", helpLabel: "Bright Lights", fireWhileHolding: true, tooltipPlacement: "right" },
     // { btnName: "vendor", helpLabel: "TBD", tooltipPlacement: "top" }, // note that the vendor button is often used by windows / android, so we can't use it.
 ];
 
