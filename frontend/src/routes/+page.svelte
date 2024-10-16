@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Compare_arrows, Data_exploration, Download_done, Drag_handle, Flight_land, Flight_takeoff, Logo_dev, Navigation, Upload, Video_camera_front, Video_chat, Video_library, Video_camera_back } from "svelte-google-materialdesign-icons";
+  import { Compare_arrows, Data_exploration, Download_done, Drag_handle, Flight_land, Flight_takeoff, Logo_dev, Navigation, Upload, Video_camera_front, Video_chat, Video_library, Video_camera_back, Delete } from "svelte-google-materialdesign-icons";
   import RadioSelectGrid from "../components/RadioSelectGrid.svelte";
   import { mainLogr } from "../js/shared/logging";
   import { openLogsTimelineModal, openTestDriveTutModal } from "../components/Modals/modals";
@@ -28,6 +28,11 @@
     };
     reader.readAsText(file);
   };
+
+  const clearLocalStorage = () => {
+    localStorage.clear();
+    location.reload();
+  };
 </script>
 
 <div class="fixed right-4 bottom-4 z-10 max-w-sm hidden md:block">
@@ -38,8 +43,17 @@
         openTestDriveTutModal();
       }}><PlayArrow tabindex="-1" variation="round" class="mr-3" />Play the Tutorial</button
     >
+
     <br />
-    <a class="btn btn-sm variant-ghost-surface my-1 w-full" href="https://livekit.io/webrtc/browser-test"><WifiFind tabindex="-1" variation="round" class="mr-3" />Check Connection</a>
+    <a class="btn btn-sm variant-ghost-tertiary my-1 w-full" href="https://livekit.io/webrtc/browser-test"><WifiFind tabindex="-1" variation="round" class="mr-3" />Check Connection</a>
+
+    <br />
+    <button
+      class="btn btn-sm variant-ghost-error my-1 w-full text-left px-0"
+      on:click={() => {
+        clearLocalStorage();
+      }}><Delete tabindex="-1" variation="round" class="mr-3" />Clear Saved Data</button
+    >
   </InfoNoticeBlock>
 </div>
 <div class="container min-h-full mx-auto max-w-full text-center px-10 flex flex-col justify-around items-center">
