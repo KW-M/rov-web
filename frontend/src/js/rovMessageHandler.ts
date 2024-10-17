@@ -58,7 +58,9 @@ export class FrontendRovMsgHandlerClass {
             return this.handleClientDisconnectedMsgRecived(msgBody.clientDisconnected, ExchangeId);
         } else if (msgType === "simplePeerSignal") {
             if (msgBody.simplePeerSignal.message) frontendConnMngr.ingestSimplePeerSignallingMsg(msgBody.simplePeerSignal.message);
-        } else if (msgType === "mavlink") {
+        }
+
+        if (msgType === "mavlink") {
             return this.handleMavlinkMessageRecived(msgBody.mavlink, ExchangeId);
         } else if (msgType === "systemMonitor") {
             // @ts-expect-error unfortunate limit on union types in ts

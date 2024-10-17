@@ -61,7 +61,6 @@ export default {  //  use module.exports = { ...stuff... }  for commonjs
                     if (!path) return '';
                     const hash = Math.abs(getHash(path)).toString(36).substring(0, 6)
                     const collisionHash = globalPrefixCollisionMap.get(id)
-                    console.log(id, path, hash, collisionHash)
                     if (collisionHash === undefined) {
                         globalPrefixCollisionMap.set(id, hash)
                         return ''

@@ -25,6 +25,7 @@
     "clean": "rm -r ./rov-internal-website/build; rm -r ./frontend/build; rm -r ./frontend/.svelte-kit; rm -rf ./node_modules; rm ./pnpm-lock.yaml",
     "run_py": "python3 rov-python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json",
     "copy_to_rov": "rsync -arvc --ignore-times --delete --exclude '.*' --exclude 'node_modules' --exclude '__pycache__'  ./ /Volumes/rovshared/rov-web/",
+    "pre_push": "pnpm run 'sveltekit:check' && pnpm run 'compile:proto' && pnpm run 'optimize:svgs' && pnpm run 'build'",
     "prepare": "husky"
   },
   "devDependencies": {

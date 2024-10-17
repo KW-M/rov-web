@@ -1,4 +1,1 @@
-pnpm run "sveltekit:check"
-pnpm run "compile:proto"
-pnpm run "optimize:svgs"
-pnpm run "build"
+echo "run pre_push first: pnpm run pre_push" && exit 1
