@@ -7,7 +7,7 @@
   import { decrypt, supportsCryptoApi } from "../js/shared/encryption";
   import { waitfor } from "../js/shared/util";
   import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
-  import { fullscreenOpen, takenLivekitUsernameIds } from "../js/globalContext";
+  import { fullscreenOpen, takenLivekitUsernames } from "../js/globalContext";
   import { isTokenValid } from "../js/shared/livekit/livekitTokens";
   import { type AuthTokenInfo } from "../js/shared/livekit/adminlessActions";
   import { Chevron_right } from "svelte-google-materialdesign-icons";
@@ -31,7 +31,7 @@
     let authToken = authTokens[rovRoomInfo.name] || null;
     if (authToken) {
       const validUserId = await isTokenValid(authToken);
-      if (validUserId && rovRoomInfo.token.encrypted && !takenLivekitUsernameIds.get().has(validUserId)) {
+      if (validUserId && rovRoomInfo.token.encrypted && !takenLivekitUsernames.get().has(validUserId)) {
         logInfo("Using cached token for ROV", rovRoomInfo.name);
         return frontendConnMngr.connectToLivekitRoom(rovRoomInfo.name, authToken);
       } else {
@@ -106,7 +106,7 @@
     }
   }
 
-  const tokenAvailable = (tokenInfo: AuthTokenInfo) => tokenInfo && !takenLivekitUsernameIds.get().has(tokenInfo.userGivenIdentity);
+  const tokenAvailable = (tokenInfo: AuthTokenInfo) => tokenInfo && !takenLivekitUsernames.get().has(tokenInfo.userGivenIdentity);
 
   const disconnect = () => {
     frontendConnMngr.close();

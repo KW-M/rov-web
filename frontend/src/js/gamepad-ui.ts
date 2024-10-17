@@ -212,7 +212,7 @@ export class GamepadUi {
                     highlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_highlight"),
                     buttonElement: GPAD_HTML_CONTAINER.querySelector("#" + name),
                     direction: gamepadDirection.down,
-                    // directionHighlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_direction_highlight"),
+                    directionHighlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_direction_highlight"),
                     movementRange: 10,
                 } as GamepadDisplayVariableButton;
                 // return null

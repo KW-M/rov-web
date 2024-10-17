@@ -9,7 +9,7 @@ export function calculateDesiredMotion(axes) {
     return {
         velocityX: forward,
         velocityY: strafe,
-        velocityZ: vertical, // vector in the form [x,y,z]
+        velocityZ: vertical,
         angularVelocityYaw: turn,
     }
 }

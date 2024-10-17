@@ -856,17 +856,17 @@ export interface ClientDisconnectedResponse {
     clientPeerId: string;
 }
 /**
- * sent at a regular interval to all clients regardless of their connection status.
+ * sent to all clients as soon as the an arm or disarm command is recived but before the arming is actually confirmed by the ardupilot.
  *
- * @generated from protobuf message rov_actions_proto.HeartbeatResponse
+ * @generated from protobuf message rov_actions_proto.ArmingResponse
  */
-export interface HeartbeatResponse {
+export interface ArmingResponse {
     /**
-     * The time the heartbeat was sent
+     * If the rov is going to be armed or not
      *
-     * @generated from protobuf field: int64 Time = 1 [json_name = "Time"];
+     * @generated from protobuf field: bool armed = 1;
      */
-    time: bigint;
+    armed: boolean;
 }
 /**
  * sent to a specific client for responses that have multiple parts such as logs or shell command output that output in an async manner.
@@ -1142,13 +1142,13 @@ export interface RovResponse {
          */
         clientDisconnected: ClientDisconnectedResponse;
     } | {
-        oneofKind: "heartbeat";
+        oneofKind: "arming";
         /**
          * heartbeat
          *
-         * @generated from protobuf field: rov_actions_proto.HeartbeatResponse Heartbeat = 16 [json_name = "Heartbeat"];
+         * @generated from protobuf field: rov_actions_proto.ArmingResponse arming = 16;
          */
-        heartbeat: HeartbeatResponse;
+        arming: ArmingResponse;
     } | {
         oneofKind: "mavlink";
         /**
@@ -3565,26 +3565,26 @@ class ClientDisconnectedResponse$Type extends MessageType<ClientDisconnectedResp
  */
 export const ClientDisconnectedResponse = new ClientDisconnectedResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class HeartbeatResponse$Type extends MessageType<HeartbeatResponse> {
+class ArmingResponse$Type extends MessageType<ArmingResponse> {
     constructor() {
-        super("rov_actions_proto.HeartbeatResponse", [
-            { no: 1, name: "Time", kind: "scalar", jsonName: "Time", T: 3 /*ScalarType.INT64*/, L: 0 /*LongType.BIGINT*/ }
+        super("rov_actions_proto.ArmingResponse", [
+            { no: 1, name: "armed", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
-    create(value?: PartialMessage<HeartbeatResponse>): HeartbeatResponse {
+    create(value?: PartialMessage<ArmingResponse>): ArmingResponse {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.time = 0n;
+        message.armed = false;
         if (value !== undefined)
-            reflectionMergePartial<HeartbeatResponse>(this, message, value);
+            reflectionMergePartial<ArmingResponse>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: HeartbeatResponse): HeartbeatResponse {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ArmingResponse): ArmingResponse {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* int64 Time = 1 [json_name = "Time"];*/ 1:
-                    message.time = reader.int64().toBigInt();
+                case /* bool armed */ 1:
+                    message.armed = reader.bool();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3597,10 +3597,10 @@ class HeartbeatResponse$Type extends MessageType<HeartbeatResponse> {
         }
         return message;
     }
-    internalBinaryWrite(message: HeartbeatResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* int64 Time = 1 [json_name = "Time"]; */
-        if (message.time !== 0n)
-            writer.tag(1, WireType.Varint).int64(message.time);
+    internalBinaryWrite(message: ArmingResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool armed = 1; */
+        if (message.armed !== false)
+            writer.tag(1, WireType.Varint).bool(message.armed);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -3608,9 +3608,9 @@ class HeartbeatResponse$Type extends MessageType<HeartbeatResponse> {
     }
 }
 /**
- * @generated MessageType for protobuf message rov_actions_proto.HeartbeatResponse
+ * @generated MessageType for protobuf message rov_actions_proto.ArmingResponse
  */
-export const HeartbeatResponse = new HeartbeatResponse$Type();
+export const ArmingResponse = new ArmingResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ContinuedOutputResponse$Type extends MessageType<ContinuedOutputResponse> {
     constructor() {
@@ -4112,7 +4112,7 @@ class RovResponse$Type extends MessageType<RovResponse> {
             { no: 13, name: "PilotChanged", kind: "message", jsonName: "PilotChanged", oneof: "body", T: () => PilotChangedResponse },
             { no: 14, name: "ClientConnected", kind: "message", jsonName: "ClientConnected", oneof: "body", T: () => ClientConnectedResponse },
             { no: 15, name: "ClientDisconnected", kind: "message", jsonName: "ClientDisconnected", oneof: "body", T: () => ClientDisconnectedResponse },
-            { no: 16, name: "Heartbeat", kind: "message", jsonName: "Heartbeat", oneof: "body", T: () => HeartbeatResponse },
+            { no: 16, name: "arming", kind: "message", oneof: "body", T: () => ArmingResponse },
             { no: 17, name: "Mavlink", kind: "message", jsonName: "Mavlink", oneof: "body", T: () => MavlinkResponse },
             { no: 18, name: "SimplePeerSignal", kind: "message", jsonName: "SimplePeerSignal", oneof: "body", T: () => SimplePeerSignalResponse },
             { no: 19, name: "SystemMonitor", kind: "message", jsonName: "SystemMonitor", oneof: "body", T: () => SystemMonitorResponse },
@@ -4205,10 +4205,10 @@ class RovResponse$Type extends MessageType<RovResponse> {
                         clientDisconnected: ClientDisconnectedResponse.internalBinaryRead(reader, reader.uint32(), options, (message.body as any).clientDisconnected)
                     };
                     break;
-                case /* rov_actions_proto.HeartbeatResponse Heartbeat = 16 [json_name = "Heartbeat"];*/ 16:
+                case /* rov_actions_proto.ArmingResponse arming */ 16:
                     message.body = {
-                        oneofKind: "heartbeat",
-                        heartbeat: HeartbeatResponse.internalBinaryRead(reader, reader.uint32(), options, (message.body as any).heartbeat)
+                        oneofKind: "arming",
+                        arming: ArmingResponse.internalBinaryRead(reader, reader.uint32(), options, (message.body as any).arming)
                     };
                     break;
                 case /* rov_actions_proto.MavlinkResponse Mavlink = 17 [json_name = "Mavlink"];*/ 17:
@@ -4298,9 +4298,9 @@ class RovResponse$Type extends MessageType<RovResponse> {
         /* rov_actions_proto.ClientDisconnectedResponse ClientDisconnected = 15 [json_name = "ClientDisconnected"]; */
         if (message.body.oneofKind === "clientDisconnected")
             ClientDisconnectedResponse.internalBinaryWrite(message.body.clientDisconnected, writer.tag(15, WireType.LengthDelimited).fork(), options).join();
-        /* rov_actions_proto.HeartbeatResponse Heartbeat = 16 [json_name = "Heartbeat"]; */
-        if (message.body.oneofKind === "heartbeat")
-            HeartbeatResponse.internalBinaryWrite(message.body.heartbeat, writer.tag(16, WireType.LengthDelimited).fork(), options).join();
+        /* rov_actions_proto.ArmingResponse arming = 16; */
+        if (message.body.oneofKind === "arming")
+            ArmingResponse.internalBinaryWrite(message.body.arming, writer.tag(16, WireType.LengthDelimited).fork(), options).join();
         /* rov_actions_proto.MavlinkResponse Mavlink = 17 [json_name = "Mavlink"]; */
         if (message.body.oneofKind === "mavlink")
             MavlinkResponse.internalBinaryWrite(message.body.mavlink, writer.tag(17, WireType.LengthDelimited).fork(), options).join();

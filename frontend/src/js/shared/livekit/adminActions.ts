@@ -116,11 +116,10 @@ export class LivekitRoomAdmin {
         const NUM_TOKENS_TO_GENERATE = 3;
         let accessTokens: AuthTokenInfo[] = [], userName;
         for (let i = 0; i < NUM_TOKENS_TO_GENERATE; i++) {
-            // do {
-            //     userName = getHumanReadableId(getUniqueNumber());
-            // } while (alreadyTakenNames.includes(userName))
-            // alreadyTakenNames.push(userName);
-            userName = getHumanReadableId(i);
+            do {
+                userName = getHumanReadableId(getUniqueNumber());
+            } while (alreadyTakenNames.includes(userName))
+            alreadyTakenNames.push(userName);
 
             // generate an auth token for this user and add it to the list
             const token = await getFrontendAccessToken(this.apiKey, this.secretKey, this.roomName, userName);

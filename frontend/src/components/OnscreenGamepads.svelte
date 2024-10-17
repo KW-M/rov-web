@@ -8,6 +8,7 @@
   import { getGpadCtrl } from "../js/gamepad";
   import { browser } from "$app/environment";
   import { GamepadUi } from "../js/gamepad-ui";
+  import { autopilotArmed } from "../js/vehicleStats";
 
   /**  @type {HTMLElement}  */
   let GPAD_DISPLAY_CONTAINER;
@@ -16,6 +17,7 @@
   export let visible: boolean = false;
   export let tooltipDelay: number = 0;
   let gpadUi: GamepadUi;
+  $: rovArmed = $autopilotArmed;
 
   onMount(() => {
     if (browser) {
@@ -29,7 +31,7 @@
   onDestroy(() => {
     if (browser) {
       gpadUi.cleanup();
-      // gpadCtrl is stopped when the main layout is unloaded
+      // NOTE: gpadCtrl is stopped when the main layout is unloaded
     }
   });
 </script>
@@ -37,6 +39,7 @@
 <div bind:this={GPAD_DISPLAY_CONTAINER} class="contents">
   <!-- Gamepad joystick touch start areas -->
   <div id="gamepad-joystick-touch-area-left" class="gamepad-joystick-touch-area" />
+
   <div id="gamepad-joystick-touch-area-right" class="gamepad-joystick-touch-area" />
 
   <div class:hidden={collapsedMode} class="inset-0 opacity-100 absolute pointer-events-none" transition:fade={{ duration: 100 }}>
@@ -46,7 +49,7 @@
     </div>
 
     <!-- SPLIT gamepad right -->
-    <div class="gpad-display gpad-display-right" class:hidden={!visible}>
+    <div class="gpad-display gpad-display-right" class:hidden={!visible} class:rov-armed={$autopilotArmed}>
       {@html GamepadRightSvg}
     </div>
 
@@ -126,6 +129,14 @@
     width: 100%;
     max-width: 100vw;
     transform: translateX(-50%);
+  }
+
+  :global(.gpad-display.rov-armed svg .go-icon) {
+    visibility: hidden;
+  }
+
+  :global(.gpad-display:not(.rov-armed) svg .stop-icon) {
+    visibility: hidden;
   }
 
   :global(.gpad-highlight) {

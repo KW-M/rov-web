@@ -1,6 +1,6 @@
 
 import { ONSCREEN_GPAD_BUTTON_LABELS } from './frontendConsts';
-import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, CenterTransformOrigin, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton, type buttonChangeDetails, type EGamepad } from "virtual-gamepad-lib";
+import { GamepadApiWrapper, GamepadEmulator, GamepadDisplay, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, gamepadButtonType, gamepadDirection, CenterTransformOrigin, type VariableButtonConfig, type ButtonConfig, type GamepadDisplayVariableButton, type GamepadDisplayButton, type buttonChangeDetails, type EGamepad, standardGpadButtonMap } from "virtual-gamepad-lib";
 // import { gamepadEmulationState, CenterTransformOriginDebug } from "virtual-gamepad-lib";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./frontendConsts";
 import { throttle } from "./util";
@@ -11,7 +11,7 @@ import { frontendConnMngr } from './frontendConnManager';
 import { addTooltip } from '../components/HelpTooltips.svelte';
 import { tutorialModeActive } from './globalContext';
 import { log } from './shared/logging';
-import nStore from './shared/libraries/nStore';
+import nStore, { type nStoreT } from './shared/libraries/nStore';
 
 // CONSTS
 const LEFT_X_AXIS_INDEX = 0;
@@ -22,22 +22,52 @@ const X_BUTTON_INDEX = 0;
 const A_BUTTON_INDEX = 1;
 const B_BUTTON_INDEX = 2;
 const Y_BUTTON_INDEX = 3;
-const gpadHelpTooltips = [];
 const EMULATED_GPAD_INDEX = 0; // in this example we will only add one emulated gamepad at position/index 0 in the navigator.getGamepads() array.
+
+
+const KEYMAP = {
+    " ": standardGpadButtonMap.A,
+    "\\": standardGpadButtonMap.Y,
+    "enter": standardGpadButtonMap.B,
+    "shift": standardGpadButtonMap.X,
+    "tab": standardGpadButtonMap.Back,
+    "?": standardGpadButtonMap.Start,
+    "/": standardGpadButtonMap.Start,
+    ",": standardGpadButtonMap.DPadLeft,
+    "<": standardGpadButtonMap.DPadLeft,
+    ".": standardGpadButtonMap.DPadRight,
+    ">": standardGpadButtonMap.DPadRight,
+    "1": standardGpadButtonMap.DPadLeft,
+    "2": standardGpadButtonMap.DPadLeft,
+    "3": standardGpadButtonMap.DPadRight,
+    "4": standardGpadButtonMap.DPadRight,
+    "q": standardGpadButtonMap.DPadUp,
+    "e": standardGpadButtonMap.DPadDown,
+    "-": standardGpadButtonMap.LTrigger,
+    "_": standardGpadButtonMap.LTrigger,
+    "+": standardGpadButtonMap.RTrigger,
+    "=": standardGpadButtonMap.RTrigger,
+    "]": standardGpadButtonMap.RShoulder,
+    "[": standardGpadButtonMap.LShoulder,
+    "}": standardGpadButtonMap.RShoulder,
+    "{": standardGpadButtonMap.LShoulder,
+}
+
+// export const latestGamepadButtonState: nStoreT<{ gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[] } | null> = nStore(null);
+// export const latestGamepadAxisState: nStoreT<Gamepad | null> = nStore(null);
+
+export const latestGamepadButtonChanges: nStoreT<(false | (buttonChangeDetails & { value: number }))[]> = nStore([]);
+export const latestGamepadAxisState: nStoreT<number[]> = nStore([0, 0, 0, 0]);
 
 
 export class GamepadController {
     gpadEmulator: GamepadEmulator;
     gpadApiWrapper: GamepadApiWrapper;
-    onAxisChange: null | ((gamepad: Gamepad) => void);
-    onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void);
     realGamepadsConnected = nStore(0);
 
-    constructor() {
+    constructor() { }
 
-    }
-
-    start(onAxisChange: null | ((gamepad: Gamepad) => void), onButtonChange: null | ((gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => void)) {
+    start(onAxisChange: (axes: number[]) => void, onButtonChange: (buttonsChangedMask: (false | (buttonChangeDetails & { value: number }))[]) => void) {
         if (this.gpadEmulator) return;
 
         // override the default browser gamepad api with the gamepad emulator before setting up the events,
@@ -54,8 +84,8 @@ export class GamepadController {
         });
 
         // setup gpadApiWrapper gamepad events.
-        this.onAxisChange = onAxisChange;
-        this.onButtonChange = onButtonChange;
+        latestGamepadAxisState.subscribe(onAxisChange);
+        latestGamepadButtonChanges.subscribe(onButtonChange);
         this.gpadApiWrapper.onGamepadConnect(this.gamepadConnectDisconnectHandler);
         this.gpadApiWrapper.onGamepadDisconnect(this.gamepadConnectDisconnectHandler);
         this.gpadApiWrapper.onGamepadAxisChange(this.handleAxisChange);
@@ -76,35 +106,33 @@ export class GamepadController {
 
     handleButtonChange = (gpadIndex, gamepad, buttonsChangedMask) => {
         if (gpadIndex != 0 || !gamepad || !gamepad.buttons) return;
-        if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
+        // if (this.onButtonChange) this.onButtonChange(gamepad, buttonsChangedMask);
+        buttonsChangedMask.forEach((btn, i) => {
+            if (btn) btn.value = gamepad.buttons[i].value;
+        });
+        latestGamepadButtonChanges.set(buttonsChangedMask);
     }
 
     handleAxisChange = (gpadIndex, gamepad) => {
         if (gpadIndex != 0 || !gamepad || !gamepad.axes) return;
-        if (this.onAxisChange) this.onAxisChange(gamepad);
+        // if (this.onAxisChange) this.onAxisChange(gamepad);
+        latestGamepadAxisState.set(gamepad.axes);
     }
 
     /** Add events to translate keyboard events to to the gamepad emulator (NOTE that this is through the gamepad emulator. The page thinks it is reciving gamepad events) */
     addEmulatedGamepadKeyboardBindings(EMULATED_GPAD_INDEX) {
         const handleKeyEvent = (keyDown, e: KeyboardEvent) => {
-            // don't handle keyboard events if the user is typing in an input field
+            // IGNORE if the user is typing in an input field
             const formElements = ['INPUT', 'TEXTAREA', 'SELECT', 'OPTION'];
             if (e.target && formElements.includes((e.target as HTMLElement).tagName)) return;
 
-            // try to parse the key name as a digit (0-9) or a lowercase letter
-            const numberKey = parseInt(e.key);
+            // convert the key to lowercase and get the value (1 or 0) for the button press
             const lowercaseKey = e.key.toLowerCase();
+            const value = keyDown ? 1 : 0;
+            const touched = keyDown
 
-            if (e.key === "Space" && keyDown) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, X_BUTTON_INDEX, 1, true); // spacebar to press the "start" button
-
-            // wasd to move the left stick
-            if (lowercaseKey === "a") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_X_AXIS_INDEX, keyDown ? -1 : 0);
-            else if (lowercaseKey === "d") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_X_AXIS_INDEX, keyDown ? 1 : 0);
-            else if (lowercaseKey === "w") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_Y_AXIS_INDEX, keyDown ? -1 : 0);
-            else if (lowercaseKey === "s") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_Y_AXIS_INDEX, keyDown ? 1 : 0);
-
-            // arrow keys to move the right stick (prevent default to prevent scrolling)
-            else if (e.key === "ArrowLeft") {
+            // RIGHT JOYSTICK: arrow keys to move the right stick (prevent default is to prevent scrolling)
+            if (e.key === "ArrowLeft") {
                 this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, RIGHT_X_AXIS_INDEX, keyDown ? -1 : 0);
                 e.preventDefault();
             } else if (e.key === "ArrowRight") {
@@ -118,9 +146,16 @@ export class GamepadController {
                 e.preventDefault();
             }
 
-            // all other gamepad buttons are mapped to the number keys or keycodes for high button numbers
-            else if (!isNaN(numberKey)) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, Math.max(numberKey - 1, 0), keyDown ? 1 : 0, keyDown);
-            else if (e.keyCode) this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, e.keyCode - 66 + 9, keyDown ? 1 : 0, keyDown); // 66 is the keycode for "B" (A is already used), 10 is the count of number keys on the keyboard (0-9), so "b" is button #10, "c" is button #11, etc.
+            // LEFT JOYSTICK: wasd to move the left stick
+            else if (lowercaseKey === "a") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_X_AXIS_INDEX, keyDown ? -1 : 0);
+            else if (lowercaseKey === "d") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_X_AXIS_INDEX, keyDown ? 1 : 0);
+            else if (lowercaseKey === "w") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_Y_AXIS_INDEX, keyDown ? -1 : 0);
+            else if (lowercaseKey === "s") this.gpadEmulator.MoveAxis(EMULATED_GPAD_INDEX, LEFT_Y_AXIS_INDEX, keyDown ? 1 : 0);
+
+            // BUTTONS: handle keybindings for buttons
+            else if (KEYMAP[lowercaseKey] !== undefined) {
+                this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, KEYMAP[lowercaseKey], value, touched);
+            } else console.log("KEY NOT MAPPED: ", `"${lowercaseKey}"`);
         }
         window.onkeydown = (e) => handleKeyEvent(true, e);
         window.onkeyup = (e) => handleKeyEvent(false, e);

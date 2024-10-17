@@ -4,7 +4,7 @@ import { DisconnectReason, type RemoteParticipant, type RemoteTrack, type Remote
 import { log, logDebug, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { appendLog } from "./shared/util";
-import { takenLivekitUsernameIds } from "./globalContext";
+import { takenLivekitUsernames } from "./globalContext";
 import { RtpRecieverStatsParser } from "./shared/videoStatsParser";
 import { unixTimeNow } from "./shared/time";
 import { showToastMessage } from "./toastMessageManager";
@@ -160,7 +160,7 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
                 if (reason === DisconnectReason.DUPLICATE_IDENTITY) {
-                    takenLivekitUsernameIds.update((ids) => {
+                    takenLivekitUsernames.update((ids) => {
                         ids.add(this.getLivekitIdentitiy());
                         return ids;
                     })

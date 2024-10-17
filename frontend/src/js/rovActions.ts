@@ -7,11 +7,24 @@ import { ConnectionStates } from "./shared/consts";
 import type { FlightMode } from "./shared/mavlink2RestMessages";
 import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
-import { rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
+import { armButtonPressed, rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
 import { openTestDriveTutModal, modalConfirm, modalScrollingText } from "../components/Modals/modals";
-import { autopilotMode } from "./vehicleStats";
+import { autopilotArmed, autopilotMode } from "./vehicleStats";
 import { unixTimeNow } from "./shared/time";
 import type { RovAction, RovResponse } from "./shared/protobufs/rov_actions";
+import { changesSubscribe } from "./shared/util";
+
+const BTN_A = GPAD_STANDARD_BUTTON_INDEX.A
+const BTN_B = GPAD_STANDARD_BUTTON_INDEX.B
+const BTN_X = GPAD_STANDARD_BUTTON_INDEX.X
+const BTN_Y = GPAD_STANDARD_BUTTON_INDEX.Y
+const BTN_LT = GPAD_STANDARD_BUTTON_INDEX.LT
+const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
+const BTN_RB = GPAD_STANDARD_BUTTON_INDEX.RB
+const BTN_LB = GPAD_STANDARD_BUTTON_INDEX.LB
+const BTN_LSTICK = GPAD_STANDARD_BUTTON_INDEX.LSTICK
+const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
+const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
 
 class RovActionsClass {
 
@@ -32,21 +45,37 @@ class RovActionsClass {
     /** triggerNextFlightModeUi is function that is assigned BY the pilot page flight mode dropdown selector ui component to trigger a change to the next flight mode */
     triggerNextFlightModeUi: (delta: number) => void = null;
 
-    gamepadButtonTriggers = (gamepad: Gamepad, buttonsChangedMask: (false | buttonChangeDetails)[]) => {
-        const btnChanges = [...buttonsChangedMask]
+    gamepadButtonTriggers = (buttonsChanges: (false | (buttonChangeDetails & { value: number }))[]) => {
+        const btnChanges = [...buttonsChanges]
 
-        const BTN_A = GPAD_STANDARD_BUTTON_INDEX.A
-        const BTN_B = GPAD_STANDARD_BUTTON_INDEX.B
-        const BTN_X = GPAD_STANDARD_BUTTON_INDEX.X
-        const BTN_Y = GPAD_STANDARD_BUTTON_INDEX.Y
-        const BTN_LT = GPAD_STANDARD_BUTTON_INDEX.LT
-        const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
-        const BTN_RB = GPAD_STANDARD_BUTTON_INDEX.RB
-        const BTN_LB = GPAD_STANDARD_BUTTON_INDEX.LB
-        const BTN_LSTICK = GPAD_STANDARD_BUTTON_INDEX.LSTICK
-        const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
-        const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
+        // HELP BUTTON
+        if (btnChanges[BTN_HELP] && btnChanges[BTN_HELP].released) {
+            openTestDriveTutModal()
+        }
 
+        // X
+        if (btnChanges[BTN_X] && btnChanges[BTN_X].released) {
+            if (!tutorialModeActive.get()) this.moveClawToPosition(0)
+        }
+
+        // Y
+        if (btnChanges[BTN_Y] && btnChanges[BTN_Y].released && this.triggerNextFlightModeUi) {
+            if (!tutorialModeActive.get()) this.triggerNextFlightModeUi(1)
+        }
+
+        // A
+        if (btnChanges[BTN_A] && btnChanges[BTN_A].pressed) {
+            armButtonPressed.set(true)
+        } else if (btnChanges[BTN_A] && btnChanges[BTN_A].released) {
+            armButtonPressed.set(false)
+        }
+
+        // B
+        if (btnChanges[BTN_B] && btnChanges[BTN_B].released) {
+            if (!tutorialModeActive.get()) this.startVideoRecording()
+        }
+
+        // SHOULDER BUTTONS
         if (btnChanges[BTN_LB] && btnChanges[BTN_LB].released) {
             throttleGain.update((val) => Math.min(Math.max(10, val - 10), 200))
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
@@ -55,21 +84,11 @@ class RovActionsClass {
             showToastMessage("Throttle " + throttleGain.get() + "%", 1000, false, ToastSeverity.info)
         }
 
-        if (btnChanges[BTN_HELP] && btnChanges[BTN_HELP].released) {
-            openTestDriveTutModal()
-        }
 
-        if (btnChanges[BTN_Y] && btnChanges[BTN_Y].released && this.triggerNextFlightModeUi) {
-            if (!tutorialModeActive.get()) this.triggerNextFlightModeUi(1)
-        }
-
-        if (btnChanges[BTN_X] && btnChanges[BTN_X].released) {
-            if (!tutorialModeActive.get()) this.moveClawToPosition(0)
-        }
-
+        // TRIGGERS
         if (btnChanges[BTN_LT] || btnChanges[BTN_RT]) {
-            const LT = btnChanges[BTN_LT] ? gamepad.buttons[BTN_LT].value : 0;
-            const RT = btnChanges[BTN_RT] ? gamepad.buttons[BTN_RT].value : 0;
+            const LT = btnChanges[BTN_LT] ? btnChanges[BTN_LT].value : 0;
+            const RT = btnChanges[BTN_RT] ? btnChanges[BTN_RT].value : 0;
 
             const deltaL = LT - this.lastGpadLTriggerValue;
             const deltaR = RT - this.lastGpadRTriggerValue;
@@ -81,29 +100,23 @@ class RovActionsClass {
 
         }
 
-        if (btnChanges[BTN_A] && btnChanges[BTN_A].released) {
-            if (!tutorialModeActive.get()) this.takeControl()
-        } else if (btnChanges[BTN_B] && btnChanges[BTN_B].released) {
-            if (!tutorialModeActive.get()) this.disarm()
-        }
 
         // FIXME: this is a hack to get the buttons to work with the mavlink message
         const rawExcludedButtons = [BTN_A, BTN_B, BTN_X, BTN_Y, BTN_LT, BTN_RT, BTN_LSTICK, BTN_RSTICK];
         // remap triggers to sholder buttons
         btnChanges[BTN_LB] = btnChanges[BTN_LT]
         btnChanges[BTN_RB] = btnChanges[BTN_RT]
-        const pressedButtons = buttonsChangedMask.map((val, index) => {
-            if (val === false) return false;
-            if (rawExcludedButtons.includes(index)) return false;
+        const pressedButtons = btnChanges.map((val, index) => {
+            if (!val || rawExcludedButtons.includes(index)) return false;
             return val.pressed || val.heldDown;
         })
         this.sendButtonsToRov(pressedButtons);
     }
 
-    gamepadAxisTriggers = (gamepad: Gamepad) => {
+    gamepadAxisTriggers = (axes: number[]) => {
         const gain = throttleGain.get() / 100;
-        const { velocityX, velocityY, velocityZ, angularVelocityYaw } = calculateDesiredMotion(gamepad.axes);
-        if (velocityX == 0 && velocityY == 0 && velocityZ == 0 && angularVelocityYaw == 0) logInfo("GAMEPAD MOTION: STOPed")
+        const { velocityX, velocityY, velocityZ, angularVelocityYaw } = calculateDesiredMotion(axes);
+        // if (velocityX === 0 && velocityY === 0 && velocityZ === 0 && angularVelocityYaw === 0) return;
         this.moveRov(velocityX * gain, velocityY * gain, velocityZ * gain, angularVelocityYaw * gain);
     }
 
@@ -157,12 +170,14 @@ class RovActionsClass {
     /** attempt to become the designated driver for this rov, rov will send a password prompt response if not already authorized */
     takeControl() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+        // autopilotArmed.set(true); // proactively display the autopilot armed status
         frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "takeControl", takeControl: {} } }, null);
     }
 
     /** disarm the rov, this will stop all motors and prevent any movement */
     disarm() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
+        // autopilotArmed.set(false); // proactively display the autopilot armed status
         frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "disarm", disarm: {} } }, null);
     }
 

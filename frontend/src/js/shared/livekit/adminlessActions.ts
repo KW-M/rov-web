@@ -1,4 +1,4 @@
-import { takenLivekitUsernameIds } from "../../globalContext";
+import { takenLivekitUsernames } from "../../globalContext";
 import { log, logDebug, logInfo, logWarn, logError } from "../logging"
 import { livekitRoomTokenApis, type AuthTokenInfo as ATI } from "./adminActions";
 import { isTokenValid } from "./livekitTokens";
@@ -26,7 +26,7 @@ export function getAuthTokenFromLivekitRoomMetadata(roomMetadata: string, numRoo
                 let tokenInfo = tokens[(i + j) % tokens.length];
                 if (!tokenInfo) continue;
                 if (!tokenInfo.userGivenIdentity) continue;
-                if (takenLivekitUsernameIds.get().has(tokenInfo.userGivenIdentity)) continue;
+                if (takenLivekitUsernames.get().has(tokenInfo.userGivenIdentity)) continue;
                 if (!tokenInfo.encrypted && !isTokenValid(tokenInfo.token)) continue;
                 return tokenInfo;
             }

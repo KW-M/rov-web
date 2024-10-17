@@ -6,10 +6,11 @@
   // Import js dependencies
   import { PerspectiveCamera, Vector3, WebGLRenderer, Scene, BufferGeometry, Float32BufferAttribute, ShaderMaterial, Points, PCFShadowMap, TextureLoader, AmbientLight, DirectionalLight, PointLight, EquirectangularReflectionMapping, type Group, type Object3DEventMap } from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-  import { rovDrivingVector } from "../../js/globalContext";
+  import { rovDrivingVector, tutorialModeActive } from "../../js/globalContext";
 
   import { showToastMessage, ToastSeverity } from "../../js/toastMessageManager";
   import { rovHeading, rovPitch, rovRoll } from "../../js/sensors";
+  import { autopilotArmed } from "../../js/vehicleStats";
   const modelLoader = new GLTFLoader();
 
   export let canvasClass = "block absolute top-2 left-2 rounded-full";
@@ -168,20 +169,18 @@
         function animate() {
           if (renderer === null) return;
           requestAnimationFrame(animate);
-          rovPitch.set(rovPitch.get() + 0.003);
-          rovRoll.set(rovRoll.get() + 0.001);
-          rovHeading.set(rovHeading.get() + 0.001);
 
+          const mult = autopilotArmed.get() || !useRovOrientationData ? 1 : 0;
           const drivingVector = rovDrivingVector.get();
-          const moveZ = drivingVector.velocityX * rovSpeed;
-          const moveX = -1 * drivingVector.velocityY * rovSpeed;
-          const moveY = drivingVector.velocityZ * rovSpeed;
+          const moveZ = drivingVector.velocityX * rovSpeed * mult;
+          const moveX = -1 * drivingVector.velocityY * rovSpeed * mult;
+          const moveY = drivingVector.velocityZ * rovSpeed * mult;
 
           rovModel.translateX(moveX);
           rovModel.translateY(moveY);
           rovModel.translateZ(moveZ);
 
-          const moveYaw = -drivingVector.angularVelocityYaw * rovTurnSpeed;
+          const moveYaw = -drivingVector.angularVelocityYaw * rovTurnSpeed * mult;
           propellerL.rotation.z += moveZ * 0.15 - moveYaw * 8;
           propellerR.rotation.z += moveZ * 0.15 + moveYaw * 8;
 

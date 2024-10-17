@@ -9,20 +9,6 @@
   import RadioSelectGrid from "./RadioSelectGrid.svelte";
   import { browser } from "$app/environment";
 
-  export let options = [];
-  export let disabled = false;
-  export let autoReset = false;
-  export let defaultIcon = Flight_class;
-  export let defaultLabel = "";
-  export let value: any = "";
-  export let variant = "";
-  export let btnClass = "btn variant-filled rounded-3xl lg:w-48 ";
-  let openButton: HTMLButtonElement;
-  let popupElement: HTMLDivElement;
-  let open = false;
-
-  let changeSelectTimeout: NodeJS.Timeout;
-  export let onChange = (value: string) => {};
   export const changeSelected = (delta: number) => {
     if (!open) {
       popupCombobox.forceOpen = true;
@@ -39,6 +25,21 @@
       onChange(value);
     }, 1500);
   };
+
+  export let options = [];
+  export let disabled = false;
+  export let autoReset = false;
+  export let defaultIcon = Flight_class;
+  export let defaultLabel = "";
+  export let value: any = "";
+  export let variant = "";
+  export let btnClass = "btn variant-filled rounded-3xl lg:w-48 ";
+  let openButton: HTMLButtonElement;
+  let popupElement: HTMLDivElement;
+  let open = false;
+
+  let changeSelectTimeout: NodeJS.Timeout;
+  export let onChange = (value: string) => {};
 
   let popupCombobox: PopupArgs = {
     event: "click",

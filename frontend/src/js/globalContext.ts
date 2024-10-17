@@ -1,4 +1,5 @@
 import { default as nStore, type nStoreT } from "./shared/libraries/nStore";
+import { getBooleanQueryParam, getStringQueryParam } from "./shared/urlParameters";
 
 export enum DIALOG_TYPE {
     Alert = 0,
@@ -53,13 +54,12 @@ export const fullscreenOpen: nStoreT<boolean> = nStore(false);
 export const sidebarExpanded: nStoreT<boolean> = nStore(false);
 export const tutorialModeActive: nStoreT<boolean> = nStore(false);
 export const throttleGain: nStoreT<number> = nStore(50);
+export const armButtonPressed = nStore(false);
 
-
-export const attemptingNewRovPeerId: nStoreT<boolean> = nStore(false);
 export const isRovDriver: nStoreT<boolean> = nStore(false);
-export const ourPeerId: nStoreT<string> = nStore("No Peer Id");
+export const currentRovDriverId: nStoreT<string> = nStore("");
 export const currentVideoSource: nStoreT<VideoSource> = nStore(VideoSource.None);
-export const takenLivekitUsernameIds: nStoreT<Set<string>> = nStore(new Set());
+export const takenLivekitUsernames: nStoreT<Set<string>> = nStore(new Set());
 
 export const rovDrivingVector: nStoreT<RovMovementVector> = nStore({
     velocityX: 0,

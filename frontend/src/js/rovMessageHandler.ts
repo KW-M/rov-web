@@ -1,12 +1,12 @@
 import { RovResponse, RovAction } from "./shared/protobufs/rov_actions";
-import type { DoneResponse, ErrorResponse, PongResponse, ContinuedOutputResponse, SensorUpdatesResponse, SystemMonitorResponse, PasswordRequiredResponse, PasswordAcceptedResponse, PasswordInvalidResponse, PilotChangedResponse, MavlinkResponse, ClientConnectedResponse, LogMessageResponse, ClientDisconnectedResponse, LivekitVideoStatsResponse, SimplePeerVideoStatsResponse } from "./shared/protobufs/rov_actions";
+import type { DoneResponse, ErrorResponse, PongResponse, ContinuedOutputResponse, SensorUpdatesResponse, SystemMonitorResponse, PasswordRequiredResponse, PasswordAcceptedResponse, PasswordInvalidResponse, PilotChangedResponse, MavlinkResponse, ClientConnectedResponse, LogMessageResponse, ClientDisconnectedResponse, LivekitVideoStatsResponse, SimplePeerVideoStatsResponse, ArmingResponse } from "./shared/protobufs/rov_actions";
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
-import { debugPageModeActive, isRovDriver } from "./globalContext";
+import { currentRovDriverId, debugPageModeActive, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
 import { DECODE_TXT } from "./shared/consts";
 import { handleMavlinkMessage } from "./mavlinkMessageHandler";
-import { updateSystemMonitorDisplay } from "./vehicleStats";
+import { autopilotArmed, updateSystemMonitorDisplay } from "./vehicleStats";
 import { URL_PARAMS } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
 import { onLivekitVideoOptionsChange, onSimplePeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
@@ -46,8 +46,12 @@ export class FrontendRovMsgHandlerClass {
             //     return this.handlePasswordAcceptedMsgRecived(msgBody.passwordAccepted, ExchangeId);
             // } else if (msgType === "passwordInvalid") {
             //     return this.handlePasswordInvalidMsgRecived(msgBody.passwordInvalid, ExchangeId);
+
+
         } else if (msgType === "pilotChanged") {
             return this.handlePilotChangedMsgRecived(msgBody.pilotChanged, ExchangeId);
+        } else if (msgType === "arming") {
+            return this.handleArmingMessageRecived(msgBody.arming, ExchangeId);
         } else if (msgType === "clientConnected") {
             return this.handleClientConnectedMsgRecived(msgBody.clientConnected, ExchangeId);
         } else if (msgType === "clientDisconnected") {
@@ -139,6 +143,7 @@ export class FrontendRovMsgHandlerClass {
             showToastMessage("ROV Driver is now " + msgData.pilotIdentity);
             isRovDriver.set(false);
         }
+        currentRovDriverId.set(msgData.pilotIdentity);
     }
 
     handleMavlinkMessageRecived(msgData: MavlinkResponse, ExchangeId: number) {
@@ -150,6 +155,11 @@ export class FrontendRovMsgHandlerClass {
         } catch (e) {
             logWarn("@ Mav MSG RECIVED W INVALID JSON: ", mavMessage);
         }
+    }
+
+    handleArmingMessageRecived(msgData: ArmingResponse, ExchangeId: number) {
+        const armed = msgData.armed;
+        autopilotArmed.set(armed)
     }
 
     handleClientConnectedMsgRecived(msgData: ClientConnectedResponse, ExchangeId: number) {

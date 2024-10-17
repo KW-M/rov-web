@@ -12,11 +12,12 @@
   import DropdownMenuPopup from "../../components/DropdownMenuPopup.svelte";
   import { ConnectionStates } from "../../js/shared/consts";
   import { frontendConnMngr, VideoStreamMethod } from "../../js/frontendConnManager";
-  import { Dangerous, Download_done, Drag_handle, Flight_class, Flight_land, Menu, Play_arrow, Power_off, Power_settings_new, Restart_alt, Rotate_left, Upload } from "svelte-google-materialdesign-icons";
+  import { Dangerous, Download_done, Drag_handle, Flight_class, Flight_land, Mode_fan_off, Menu, Play_arrow, Power_off, Power_settings_new, Restart_alt, Rotate_left, Upload } from "svelte-google-materialdesign-icons";
   import VideoSettings from "../../components/Modals/VideoSettings.svelte";
   import { getLocalStore } from "../../js/localStorage";
   import { openTestDriveTutModal } from "../../components/Modals/modals";
   import { tutorialModeActive } from "../../js/globalContext";
+  import ArmReminder from "../../components/ArmReminder.svelte";
 
   const videoMethod = frontendConnMngr.currentVideoStreamMethod;
   $: usingHDVideo = $videoMethod === VideoStreamMethod.simplePeer;
@@ -74,17 +75,15 @@
           ]}
         ></DropdownMenuPopup>
 
-        {#if $autopilotArmed}
-          <button disabled={!connected} class="variant-filled-error max-lg:btn-icon-md max-lg:btn-icon lg:btn btn-base" on:click={RovActions.disarm}>
-            <Dangerous class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
-            <span class="hidden xl:inline">Halt Motors</span>
-          </button>
-        {:else}
-          <button disabled={!connected} class="variant-filled-success max-lg:btn-icon-md max-lg:btn-icon lg:btn btn-base" on:click={RovActions.takeControl}>
+        <div role="button" class="chip variant-filled-success rounded-full select-none" class:!bg-orange-500={!$autopilotArmed} on:pointerdown={() => (autopilotArmed.get() ? RovActions.disarm() : RovActions.takeControl())}>
+          {#if $autopilotArmed}
             <Play_arrow class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
-            <span class="hidden xl:inline">Enable Motors</span>
-          </button>
-        {/if}
+            <b>ON</b>
+          {:else}
+            <Mode_fan_off class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
+            <b>OFF</b>
+          {/if}
+        </div>
       </svelte:fragment>
       <svelte:fragment slot="right">
         <!-- <span class="px-2">MavState: {MavStateNameMap[$autopilotMavState]}</span> -->
@@ -109,10 +108,14 @@
   <!-- <svelte:fragment slot="sidebarLeft">
     <Sidebar />
   </svelte:fragment> -->
+
   {#if connected}
     <VideoPlayer />
   {/if}
   {#if !$tutorialModeActive}
     <OnscreenGamepads tooltipDelay={1000} />
+    {#if connected}
+      <ArmReminder />
+    {/if}
   {/if}
 </AppShell>

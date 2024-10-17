@@ -8,20 +8,6 @@ import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from 
 export const LIVEKIT_LIST_ONLY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2aWRlbyI6eyJyb29tTGlzdCI6dHJ1ZSwicm9vbUpvaW4iOmZhbHNlLCJjYW5QdWJsaXNoIjpmYWxzZSwiY2FuU3Vic2NyaWJlIjpmYWxzZSwiY2FuUHVibGlzaERhdGEiOmZhbHNlLCJjYW5VcGRhdGVPd25NZXRhZGF0YSI6ZmFsc2V9LCJpYXQiOjE2OTE0NTEzNDEsIm5iZiI6MTY5MTQ1MTM0MSwiZXhwIjoxMTE1MjI1MTM0MSwiaXNzIjoiQVBJSGQ3Qm9hOVJVVWlUIiwic3ViIjoibHQiLCJqdGkiOiJsdCJ9.X5fI6ceu2aLf0bc-h3PKc-u2PRzSAgVZEpK5FjScRGQ"
 // END_LIVEKIT_FRONTEND_TOKEN
 
-export const URL_PARAMS = {
-    DEBUG_MODE: false,
-    SHOW_REMOTE_LOGS: true,
-    LIVEKIT_CLOUD_ENDPOINT: 'https://rov-web.livekit.cloud',
-    LIVEKIT_LOCAL_ENDPOINT: 'http://localhost:7880',
-}
-
-Object.defineProperties(URL_PARAMS, {
-    DEBUG_MODE: { get: () => getBooleanQueryParam("DEBUG_MODE", false) },
-    SHOW_REMOTE_LOGS: { get: () => getBooleanQueryParam("SHOW_REMOTE_LOGS", true) },
-    LIVEKIT_CLOUD_ENDPOINT: { get: () => getStringQueryParam("LIVEKIT_CLOUD_URL", 'https://rov-web.livekit.cloud') },
-    LIVEKIT_LOCAL_ENDPOINT: { get: () => getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880') },
-})
-
 export const PING_INTERVAL = 1000 // 1 second in ms
 export const MOVE_MSG_TIMEOUT = 100 // 0.8 seconds in ms
 
@@ -41,6 +27,21 @@ export enum ConnectionTransitions {
 export type EventHandlerStore = {
     [key: string]: (e?: any) => void;
 }
+
+export const URL_PARAMS = {
+    DEBUG_MODE: false,
+    SHOW_REMOTE_LOGS: true,
+    LIVEKIT_CLOUD_ENDPOINT: 'https://rov-web.livekit.cloud',
+    LIVEKIT_LOCAL_ENDPOINT: 'http://localhost:7880',
+}
+
+const _URL_PARAMS = {}
+Object.defineProperties(URL_PARAMS, {
+    DEBUG_MODE: { get: () => _URL_PARAMS["DEBUG_MODE"] ?? (_URL_PARAMS["DEBUG_MODE"] = getBooleanQueryParam("DEBUG_MODE", false)) },
+    SHOW_REMOTE_LOGS: { get: () => _URL_PARAMS["SHOW_REMOTE_LOGS"] ?? (_URL_PARAMS["SHOW_REMOTE_LOGS"] = getBooleanQueryParam("SHOW_REMOTE_LOGS", true)) },
+    LIVEKIT_CLOUD_ENDPOINT: { get: () => _URL_PARAMS["LIVEKIT_CLOUD_ENDPOINT"] ?? (_URL_PARAMS["LIVEKIT_CLOUD_ENDPOINT"] = getStringQueryParam("LIVEKIT_CLOUD_URL", 'https://rov-web.livekit.cloud')) },
+    LIVEKIT_LOCAL_ENDPOINT: { get: () => _URL_PARAMS["LIVEKIT_LOCAL_ENDPOINT"] ?? (_URL_PARAMS["LIVEKIT_LOCAL_ENDPOINT"] = getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880')) },
+})
 
 /******* UI RELATED CONSTANTS ********/
 

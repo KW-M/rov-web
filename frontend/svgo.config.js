@@ -54,6 +54,7 @@ export default {  //  use module.exports = { ...stuff... }  for commonjs
             name: 'prefixIds',
             params: {
                 prefixIds: true,
+                prefixClasses: false,
                 delim: '',
                 prefix: (node, { path, multipassCount }) => {
                     const id = node.attributes.id;

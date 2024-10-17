@@ -214,7 +214,7 @@
       {/if}
     </button>
     {#if rovVizVisible}
-      <RovViz canvasClass="block absolute top-2 left-2 z-10 " />
+      <RovViz canvasClass="block absolute top-2 left-2 z-10 " useRovOrientationData={true}/>
     {/if}
 
     <!-- <button

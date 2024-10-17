@@ -17,6 +17,21 @@ let designated_driver_user_id: string | null = null
 let should_be_armed = false;
 let rov_is_armed = false;
 let i = 0, j = 1;
+
+function setAutopilotArmed(armed: boolean, force: boolean = true) {
+    // if (should_be_armed != armed) {
+    should_be_armed = armed;
+    internalConnManager.sendMessage(RovResponse.create({
+        body: {
+            oneofKind: "arming",
+            arming: { armed: armed }
+        }
+    }), true, [])
+    // }
+    if (should_be_armed) irovMavlinkInterface.sendMessage(arm(force))
+    else irovMavlinkInterface.sendMessage(disarm(force))
+}
+
 function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
 
     const msgBody = msgProto.body
@@ -46,7 +61,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
     else if (msgType === "move") {
         if (designated_driver_user_id && designated_driver_user_id !== senderId) return false;
         if (!should_be_armed) return false;
-        if (!rov_is_armed) irovMavlinkInterface.sendMessage(arm(true))
+        if (!rov_is_armed) setAutopilotArmed(true)
         let x = (msgBody.move.velocityX || 0) * 1000 // X is forward in the ROV
         let y = (msgBody.move.velocityY || 0) * 1000 // Y is left/right in the ROV)
         let z = (msgBody.move.velocityZ || 0) * 500 + 500
@@ -111,9 +126,8 @@ function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
 
     // DISARM Message - Send it to the BlueOS system
     else if (msgType === "disarm") {
-        irovMavlinkInterface.sendMessage(disarm(true))
-        should_be_armed = false;
-        return true;
+        setAutopilotArmed(false)
+        return true
     }
 
     // TAKE CONTROL Message - Send it to the BlueOS system as arm and notify others of the take over
@@ -125,8 +139,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
                 pilotChanged: { pilotIdentity: senderId }
             }
         }), false, [])
-        should_be_armed = true;
-        irovMavlinkInterface.sendMessage(arm(true))
+        setAutopilotArmed(true)
         return true;
     }
 

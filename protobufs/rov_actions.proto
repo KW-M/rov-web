@@ -373,10 +373,10 @@ message ClientDisconnectedResponse {
     string ClientPeerId = 1;
 }
 
-// sent at a regular interval to all clients regardless of their connection status.
-message HeartbeatResponse {
-    // The time the heartbeat was sent
-    int64 Time = 1;
+// sent to all clients as soon as the an arm or disarm command is recived but before the arming is actually confirmed by the ardupilot.
+message ArmingResponse {
+    // If the rov is going to be armed or not
+    bool armed = 1;
 }
 
 // sent to a specific client for responses that have multiple parts such as logs or shell command output that output in an async manner.
@@ -475,7 +475,7 @@ message RovResponse {
         // client_disconnected
         ClientDisconnectedResponse ClientDisconnected = 15;
         // heartbeat
-        HeartbeatResponse Heartbeat = 16;
+        ArmingResponse arming = 16;
         // mavlink
         MavlinkResponse Mavlink = 17;
         // simplePeer_signal
