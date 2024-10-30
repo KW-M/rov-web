@@ -1,6 +1,6 @@
 import { type RoomConnectOptions, DefaultReconnectPolicy, type RoomOptions } from "livekit-client"
 import { MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
-import type SimplePeerT from "simple-peer";
+import type { SimplePeerOptions } from "@thaunknown/simple-peer/index.js";
 
 export enum ConnectionStates {
     init = "Init",
@@ -75,7 +75,7 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
         },
         backupCodec: true,
         simulcast: false,
-        degradationPreference: "maintain-resolution",
+        degradationPreference: "maintain-framerate",
         // backupCodec: {
         //     codec: "h264",
         //     encoding: {
@@ -100,28 +100,12 @@ export const LIVEKIT_FRONTEND_ROOM_CONFIG: RoomOptions = {
 
 }
 
-export const SIMPLEPEER_BASE_CONFIG: SimplePeerT.Options & { iceRestartEnabled: string | boolean } = {
-    initiator: true,
+export const SIMPLEPEER_BASE_CONFIG: SimplePeerOptions & { iceRestartEnabled: string | false, iceFailureRecoveryTimeout: number } = {
     trickle: true,
-    iceRestartEnabled: false, //'onDisconnect'
-    offerOptions: {
-        offerToReceiveAudio: false,
-        offerToReceiveVideo: false,
-    },
     config: {
         bundlePolicy: "balanced",
         iceTransportPolicy: "all",
     } as RTCConfiguration,
-    iceCompleteTimeout: 1000,
-
-}
-
-export const SIMPLEPEER_CAPTURE_CONFIG: MediaStreamConstraints = {
-    video: {
-        width: 1920,
-        height: 1080,
-        frameRate: 60,
-        facingMode: 'environment',
-    },
-    audio: false,
+    iceRestartEnabled: false,
+    iceFailureRecoveryTimeout: 100000,
 }

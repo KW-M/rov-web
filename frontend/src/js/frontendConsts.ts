@@ -1,7 +1,8 @@
-import { type wrapperButtonConfig } from "virtual-gamepad-lib";
+import { standardGpadButtonMap, type wrapperButtonConfig } from "virtual-gamepad-lib";
 import type { PopupSettings } from "../components/Popup/types";
-import { SECONDS_IN_DAY } from "./shared/consts";
+import { SECONDS_IN_DAY, SIMPLEPEER_BASE_CONFIG } from "./shared/consts";
 import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from "./shared/urlParameters";
+import type { SimplePeerOptions } from "@thaunknown/simple-peer/index.js";
 
 /** Token used by the frontend to list available livekit rooms, it does not have any other permissions, but lasts effectively forever (20 years) */
 // START_LIVEKIT_FRONTEND_TOKEN
@@ -43,6 +44,10 @@ Object.defineProperties(URL_PARAMS, {
     LIVEKIT_LOCAL_ENDPOINT: { get: () => _URL_PARAMS["LIVEKIT_LOCAL_ENDPOINT"] ?? (_URL_PARAMS["LIVEKIT_LOCAL_ENDPOINT"] = getStringQueryParam("LIVEKIT_LOCAL_URL", 'http://localhost:7880')) },
 })
 
+export const SIMPLEPEER_PILOT_CONFIG: SimplePeerOptions & { iceRestartEnabled: string | false, iceFailureRecoveryTimeout: number } = Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
+    initiator: true, offerOptions: { offerToReceiveVideo: true, offerToReciveAudio: false }
+})
+
 /******* UI RELATED CONSTANTS ********/
 
 export enum LOADING_MESSAGE {
@@ -61,44 +66,24 @@ export enum LOADING_MESSAGE {
 
 /****** GAMEPAD RELATED ***********/
 
-export enum GPAD_STANDARD_BUTTON_INDEX {
-    A = 0,
-    B = 1,
-    X = 2,
-    Y = 3,
-    LB = 4,
-    RB = 5,
-    LT = 6,
-    RT = 7,
-    SELECT = 8,
-    START = 9,
-    LSTICK = 10,
-    RSTICK = 11,
-    DPAD_UP = 12,
-    DPAD_DOWN = 13,
-    DPAD_LEFT = 14,
-    DPAD_RIGHT = 15,
-    VENDOR = 16,
-}
-
 export const GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX = {
-    [GPAD_STANDARD_BUTTON_INDEX.A]: 0,
-    [GPAD_STANDARD_BUTTON_INDEX.B]: 1,
-    [GPAD_STANDARD_BUTTON_INDEX.X]: 2,
-    [GPAD_STANDARD_BUTTON_INDEX.Y]: 3,
-    [GPAD_STANDARD_BUTTON_INDEX.LB]: 9,
-    [GPAD_STANDARD_BUTTON_INDEX.RB]: 10,
-    // [GPAD_STANDARD_BUTTON_INDEX.LT]: -1,
-    // [GPAD_STANDARD_BUTTON_INDEX.RT]: -1,
-    [GPAD_STANDARD_BUTTON_INDEX.SELECT]: 4,
-    [GPAD_STANDARD_BUTTON_INDEX.START]: 6,
-    [GPAD_STANDARD_BUTTON_INDEX.LSTICK]: 7,
-    [GPAD_STANDARD_BUTTON_INDEX.RSTICK]: 8,
-    [GPAD_STANDARD_BUTTON_INDEX.DPAD_UP]: 11,
-    [GPAD_STANDARD_BUTTON_INDEX.DPAD_DOWN]: 12,
-    [GPAD_STANDARD_BUTTON_INDEX.DPAD_LEFT]: 13,
-    [GPAD_STANDARD_BUTTON_INDEX.DPAD_RIGHT]: 14,
-    [GPAD_STANDARD_BUTTON_INDEX.VENDOR]: 5,
+    [standardGpadButtonMap.A]: 0,
+    [standardGpadButtonMap.B]: 1,
+    [standardGpadButtonMap.X]: 2,
+    [standardGpadButtonMap.Y]: 3,
+    [standardGpadButtonMap.LShoulder]: 9,
+    [standardGpadButtonMap.RShoulder]: 10,
+    // [standardGpadButtonMap.LT]: -1,
+    // [standardGpadButtonMap.RT]: -1,
+    [standardGpadButtonMap.Back]: 4,
+    [standardGpadButtonMap.Start]: 6,
+    [standardGpadButtonMap.LStick]: 7,
+    [standardGpadButtonMap.RStick]: 8,
+    [standardGpadButtonMap.DPadUp]: 11,
+    [standardGpadButtonMap.DPadDown]: 12,
+    [standardGpadButtonMap.DPadLeft]: 13,
+    [standardGpadButtonMap.DPadRight]: 14,
+    [standardGpadButtonMap.Xbox]: 5,
 }
 
 
@@ -106,8 +91,8 @@ export const GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX = {
 export type GpadBtnConfig = { btnName: string, helpLabel: string, tooltipPlacement: string } & wrapperButtonConfig
 export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
     { btnName: "button_1", helpLabel: "Take Control", tooltipPlacement: "left", fireWhileHolding: false },
-    { btnName: "button_2", helpLabel: "HALT Motors", tooltipPlacement: "left", fireWhileHolding: false },
-    { btnName: "button_3", helpLabel: "Take Photo (N/A)", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "button_2", helpLabel: "Record Video", tooltipPlacement: "left", fireWhileHolding: false },
+    { btnName: "button_3", helpLabel: "Take Photo", tooltipPlacement: "left", fireWhileHolding: false },
     { btnName: "button_4", helpLabel: "Change Fly Mode", tooltipPlacement: "left", fireWhileHolding: false },
     { btnName: "shoulder_button_front_left", helpLabel: "Less Throttle", tooltipPlacement: "right", fireWhileHolding: true, },
     { btnName: "shoulder_button_front_right", helpLabel: "More Throttle", tooltipPlacement: "left", fireWhileHolding: true, },

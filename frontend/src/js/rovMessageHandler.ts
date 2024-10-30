@@ -1,7 +1,7 @@
 import { RovResponse, RovAction } from "./shared/protobufs/rov_actions";
 import type { DoneResponse, ErrorResponse, PongResponse, ContinuedOutputResponse, SensorUpdatesResponse, SystemMonitorResponse, PasswordRequiredResponse, PasswordAcceptedResponse, PasswordInvalidResponse, PilotChangedResponse, MavlinkResponse, ClientConnectedResponse, LogMessageResponse, ClientDisconnectedResponse, LivekitVideoStatsResponse, SimplePeerVideoStatsResponse, ArmingResponse } from "./shared/protobufs/rov_actions";
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
-import { currentRovDriverId, debugPageModeActive, isRovDriver } from "./globalContext";
+import { currentRovDriverId, debugModeOn, isRovDriver } from "./globalContext";
 import { frontendConnMngr } from "./frontendConnManager";
 import { networkLatencyMs, updateSensorValues } from "./sensors";
 import { DECODE_TXT } from "./shared/consts";
@@ -30,57 +30,45 @@ export class FrontendRovMsgHandlerClass {
         const msgType = msgBody.oneofKind;
 
         this.runExchangeCallback(msgData, ExchangeId);
-        if (msgType === "done") {
-            return this.handleDoneMsgRecived(msgBody.done, ExchangeId);
-        } else if (msgType === "error") {
-            return this.handleErrorMsgRecived(msgBody.error, ExchangeId);
-        } else if (msgType === "pong") {
-            return this.handlePongMsgRecived(msgBody.pong, ExchangeId);
-        } else if (msgType === "continuedOutput") {
-            return this.handleContinuedOutputMsgRecived(msgBody.continuedOutput, ExchangeId);
-        } else if (msgType === "sensorUpdates") {
-            return this.handleSensorUpdatesMsgRecived(msgBody.sensorUpdates, ExchangeId);
-            // } else if (msgType === "passwordRequired") {
-            //     return this.handlePasswordRequiredMsgRecived(msgBody.passwordRequired, ExchangeId);
-            // } else if (msgType === "passwordAccepted") {
-            //     return this.handlePasswordAcceptedMsgRecived(msgBody.passwordAccepted, ExchangeId);
-            // } else if (msgType === "passwordInvalid") {
-            //     return this.handlePasswordInvalidMsgRecived(msgBody.passwordInvalid, ExchangeId);
-
-
-        } else if (msgType === "pilotChanged") {
-            return this.handlePilotChangedMsgRecived(msgBody.pilotChanged, ExchangeId);
-        } else if (msgType === "arming") {
-            return this.handleArmingMessageRecived(msgBody.arming, ExchangeId);
-        } else if (msgType === "clientConnected") {
-            return this.handleClientConnectedMsgRecived(msgBody.clientConnected, ExchangeId);
-        } else if (msgType === "clientDisconnected") {
-            return this.handleClientDisconnectedMsgRecived(msgBody.clientDisconnected, ExchangeId);
-        } else if (msgType === "simplePeerSignal") {
-            if (msgBody.simplePeerSignal.message) frontendConnMngr.ingestSimplePeerSignallingMsg(msgBody.simplePeerSignal.message);
-        }
-
-        if (msgType === "mavlink") {
-            return this.handleMavlinkMessageRecived(msgBody.mavlink, ExchangeId);
-        } else if (msgType === "systemMonitor") {
-            // @ts-expect-error unfortunate limit on union types in ts
-            return this.handleSystemMonitorMsgRecived(msgBody.systemMonitor, ExchangeId);
-        } else if (msgType === "logMessage") {
-            // @ts-expect-error unfortunate limit on union types in ts
-            return this.handleLogMsgRecived(msgBody.logMessage, ExchangeId);
-        } else if (msgType === "livekitVideoStats") {
-            // @ts-expect-error unfortunate limit on union types in ts
-            return this.handleLivekitVideoStatsMsgRecived(msgBody.livekitVideoStats, ExchangeId);
-        } else if (msgType === "simplePeerVideoStats") {
-            // @ts-expect-error unfortunate limit on union types in ts
-            return this.handleSimplePeerVideoStatsMsgRecived(msgBody.simplePeerVideoStats, ExchangeId);
-        } else {
-            logWarn("Unhandled ROV message recived: ", msgData);
+        switch (msgType) {
+            case "done":
+                return this.handleDoneMsgRecived(msgBody.done, ExchangeId);
+            case "error":
+                return this.handleErrorMsgRecived(msgBody.error, ExchangeId);
+            case "pong":
+                return this.handlePongMsgRecived(msgBody.pong, ExchangeId);
+            case "continuedOutput":
+                return this.handleContinuedOutputMsgRecived(msgBody.continuedOutput, ExchangeId);
+            case "sensorUpdates":
+                return this.handleSensorUpdatesMsgRecived(msgBody.sensorUpdates, ExchangeId);
+            case "pilotChanged":
+                return this.handlePilotChangedMsgRecived(msgBody.pilotChanged, ExchangeId);
+            case "arming":
+                return this.handleArmingMessageRecived(msgBody.arming, ExchangeId);
+            case "clientConnected":
+                return this.handleClientConnectedMsgRecived(msgBody.clientConnected, ExchangeId);
+            case "clientDisconnected":
+                return this.handleClientDisconnectedMsgRecived(msgBody.clientDisconnected, ExchangeId);
+            case "simplePeerSignal":
+                if (msgBody.simplePeerSignal.message) return frontendConnMngr.ingestSimplePeerSignallingMsg(msgBody.simplePeerSignal.message);
+                else return logWarn("SP: rcvd simplePeerSignal message is empty");
+            case "mavlink":
+                return this.handleMavlinkMessageRecived(msgBody.mavlink, ExchangeId);
+            case "systemMonitor":
+                return this.handleSystemMonitorMsgRecived(msgBody.systemMonitor, ExchangeId);
+            case "logMessage":
+                return this.handleLogMsgRecived(msgBody.logMessage, ExchangeId);
+            case "livekitVideoStats":
+                return this.handleLivekitVideoStatsMsgRecived(msgBody.livekitVideoStats, ExchangeId);
+            case "simplePeerVideoStats":
+                return this.handleSimplePeerVideoStatsMsgRecived(msgBody.simplePeerVideoStats, ExchangeId);
+            default:
+                logWarn("Unhandled ROV message recived: ", msgData);
         }
     }
 
     handleDoneMsgRecived(msgData: DoneResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) logDebug("Done: ", msgData);
+        if (debugModeOn.get()) logDebug("Done: ", msgData);
     }
 
     handleErrorMsgRecived(msgData: ErrorResponse, ExchangeId: number) {
@@ -96,11 +84,11 @@ export class FrontendRovMsgHandlerClass {
     }
 
     handleContinuedOutputMsgRecived(msgData: ContinuedOutputResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) logDebug("ContinuedOutput: ", ExchangeId, msgData);
+        if (debugModeOn.get()) logDebug("ContinuedOutput: ", ExchangeId, msgData);
     }
 
     handleSensorUpdatesMsgRecived(msgData: SensorUpdatesResponse, ExchangeId: number) {
-        if (URL_PARAMS.DEBUG_MODE) logDebug("SensorUpdates: ", msgData);
+        if (debugModeOn.get()) logDebug("SensorUpdates: ", msgData);
         updateSensorValues(msgData);
     }
 
@@ -109,7 +97,7 @@ export class FrontendRovMsgHandlerClass {
     }
 
     // handlePasswordRequiredMsgRecived(msgData: PasswordRequiredResponse, ExchangeId: number) {
-    //     if (URL_PARAMS.DEBUG_MODE) logDebug("PasswordRequired for rovId:", msgData.rovId);
+    //     if (debugModeOn.get()) logDebug("PasswordRequired for rovId:", msgData.rovId);
     //     // TODO: use the rovId to determine if we have authtoken
     //     modalPasswordPrompt("Enter ROV Password", "").then((password) => {
     //         if (password) {

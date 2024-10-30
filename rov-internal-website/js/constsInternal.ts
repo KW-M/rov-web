@@ -1,5 +1,6 @@
-import { SECONDS_IN_DAY } from "./shared/consts.ts";
+import { SECONDS_IN_DAY, SIMPLEPEER_BASE_CONFIG } from "./shared/consts.ts";
 import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from "./shared/urlParameters.ts";
+import type { SimplePeerOptions } from "@thaunknown/simple-peer/index.js";
 
 export const URL_PARAMS = {
     DEBUG_MODE: getBooleanQueryParam("DEBUG_MODE", false),
@@ -17,3 +18,23 @@ export const URL_PARAMS = {
 }
 
 export const CLAW_SERVO_PIN = 18;
+
+
+
+export const SIMPLEPEER_ROV_CONFIG: SimplePeerOptions & { iceRestartEnabled: string | false, iceFailureRecoveryTimeout: number } = Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
+    initiator: false,
+    offerOptions: {
+        offerToReceiveAudio: false,
+        offerToReceiveVideo: false,
+    }
+})
+
+export const SIMPLEPEER_CAPTURE_CONFIG: MediaStreamConstraints = {
+    video: {
+        width: 1920,
+        height: 1080,
+        frameRate: 60,
+        facingMode: 'environment',
+    },
+    audio: false,
+}

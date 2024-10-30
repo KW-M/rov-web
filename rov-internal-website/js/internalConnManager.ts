@@ -1,14 +1,15 @@
-import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates, SIMPLEPEER_BASE_CONFIG, SIMPLEPEER_CAPTURE_CONFIG } from './shared/consts';
+import { LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG, LIVEKIT_BACKEND_ROOM_CONFIG, ConnectionStates, SIMPLEPEER_BASE_CONFIG } from './shared/consts';
+import { SIMPLEPEER_CAPTURE_CONFIG, URL_PARAMS } from "./constsInternal";
 import { asyncExpBackoff, changesSubscribe, waitforCondition } from './shared/util';
 import { backendHandleWebrtcMsgRcvd } from './msgHandler'
 import { SimplePeerConnection } from "./shared/simplePeer"
-import { URL_PARAMS } from "./constsInternal";
 import { log, logDebug, logInfo, logWarn, logError } from "./shared/logging"
 import type { TrackPublishOptions, VideoCaptureOptions, VideoSenderStats } from "livekit-client";
 import { LivekitPublisherConnection } from './livekitPubConn';
 import nStore from './shared/libraries/nStore';
 import { type ComputedRtpStats } from './shared/videoStatsParser';
-import { ResponseBackendMetadata, RovResponse } from './shared/protobufs/rov_actions';
+import { LivekitVideoStatsResponse, ResponseBackendMetadata, RovResponse, SimplePeerVideoStatsResponse } from './shared/protobufs/rov_actions';
+import { twitchStream } from './twitchStream';
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -31,6 +32,8 @@ class InternalConnectionManager {
     // keeps track of the current parameters of the video stream being sent to all simplePeer clients/users.
     simplePeerCameraOptions = nStore<MediaStreamConstraints>(SIMPLEPEER_CAPTURE_CONFIG);
 
+    _cancelGetUserMedia: null | (() => void) = null;
+
     // // video stats for the cloud livekit connection & simplePeer connections
     // livekitVideoStats = nStore<ComputedSenderStats | null>(null);
     // simplePeerVideoStats = nStore<Map<string, ComputedSenderStats>>(new Map());
@@ -39,7 +42,6 @@ class InternalConnectionManager {
     _videoStatsIntervalId: NodeJS.Timeout | null = null;
 
     constructor() {
-
         // Initlize (but don't start) the cloud livekit connection:
         this._cloudLivekitConnection.init({
             hostUrl: URL_PARAMS.LIVEKIT_CLOUD_ENDPOINT,
@@ -54,69 +56,105 @@ class InternalConnectionManager {
             const { senderId, msg } = msgObj;
             backendHandleWebrtcMsgRcvd(senderId, msg)
         })
-        changesSubscribe(this._cloudLivekitConnection.connectionState, (state) => {
-            log("Cloud Conn State Changed: " + state)
-            if (state == ConnectionStates.connected) {
-                // twitchStream.startStream()
-                // this._cloudLivekitConnection
-            }
-        })
         changesSubscribe(this._cloudLivekitConnection.participantConnectionEvents, (evt) => {
             log("Cloud Conn Participant Event: ", evt)
         })
+    }
 
-        // Initlize (but don't start) the local livekit connection:
-        // this._localLivekitConnection.init({
-        //     hostUrl: LIVEKIT_LOCAL_ENDPOINT,
-        //     publishVideo: true,
-        //     reconnectAttempts: 300,
-        //     roomConnectionConfig: LIVEKIT_BACKEND_ROOM_CONNECTION_CONFIG,
-        //     roomConfig: LIVEKIT_BACKEND_ROOM_CONFIG
-        // })
 
-        // changesSubscribe(this._localLivekitConnection.latestRecivedDataMessage, (msgObj) => {
-        //     if (!msgObj) return;
-        //     const { senderId, msg } = msgObj;
-        //     backendHandleWebrtcMsgRcvd(senderId, msg)
-        // })
-        // changesSubscribe(this._localLivekitConnection.connectionState, (state) => {
-        //     log("Local Conn State Changed: " + state)
-        // })
-        // changesSubscribe(this._localLivekitConnection.participantConnectionEvents, (evt) => {
-        //     log("Local Conn Participant Event: ", evt)
-        // })
+
+    onConnectedActions() {
+        // twitchStream.startStream();
+        this.sendPeriodicVideoStats();
+        this.initSimplepeerCameraStream();
+    }
+
+    onReconnectedActions() {
+        this.sendPeriodicVideoStats();
+    }
+
+    onDisconnectedActions() {
+        // clearInterval(this._videoStatsIntervalId!);
+    }
+
+    /** Setup the separate camera video stream used for simplePeer connections */
+    initSimplepeerCameraStream() {
+        if (this._cancelGetUserMedia) this._cancelGetUserMedia();
+        const { promise, cancel } = asyncExpBackoff({
+            fn: () => navigator.mediaDevices.getUserMedia(this.simplePeerCameraOptions.get()),
+            exponent: 1.3,
+            maxRetries: 10,
+            initialDelay: 500,
+        })
+        this._cancelGetUserMedia = cancel;
+        promise.then((stream) => {
+            logDebug("SP: Camera Stream Initialized: ", Object.assign({}, stream), stream, stream.active)
+            this._simplePeerCameraStream = stream;
+            this._cancelGetUserMedia = null;
+            this.setPreviewVideoElement(this._simplePeerCameraStream);
+            this._simplePeerConnections.forEach((spConn) => {
+                spConn.changeMediaStream(stream);
+            })
+        }).catch((e) => {
+            logError("Error getting separate camera stream for simplePeer: ", e)
+            this._cancelGetUserMedia = null;
+        })
+        return this._simplePeerCameraStream
     }
 
     public async start(livekitSetup: InternalLivekitSetupOptions) {
-        let lastCloudConnState = this._cloudLivekitConnection.connectionState.get();
-        this._cloudLivekitConnection.connectionState.subscribe((state) => {
-            if (state === ConnectionStates.failed || state === ConnectionStates.init) {
-                logInfo("Creating & Starting Livekit Room: " + livekitSetup.RovName)
-                const backoff = asyncExpBackoff(this._cloudLivekitConnection.startRoom, this._cloudLivekitConnection, 10, 1000, 1.3);
-                backoff(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey).catch((e) => { logError(e); log("Too many errors: Triggering Page Reload"); window.location.reload() });
-            }
-            lastCloudConnState = state;
-        })
+        let starting = false;
 
-        logInfo("Connection Manager Started")
-        await waitforCondition(() => this._cloudLivekitConnection && this._cloudLivekitConnection.connectionState && this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected)
-        this.onConnectedActions();
+        const startLivekitRoom = () => {
+            if (starting) return;
+            starting = true;
+            logInfo("Creating & Starting Livekit Room: " + livekitSetup.RovName)
+            const { promise } = asyncExpBackoff({
+                fn: () => this._cloudLivekitConnection.startRoom(livekitSetup.RovName, livekitSetup.APIKey, livekitSetup.SecretKey),
+                exponent: 1.3,
+                maxRetries: 10,
+                initialDelay: 1000,
+            })
+            promise.then(() => {
+                logInfo("Livekit Room Started: " + livekitSetup.RovName)
+                starting = false;
+            }).catch((e) => {
+                logError(e);
+                log("Too many room startup errors: Triggering Page Reload");
+                window.location.reload()
+            })
+        }
+
+        startLivekitRoom();
+        changesSubscribe(this._cloudLivekitConnection.connectionState, (state, prevState) => {
+            if (state === ConnectionStates.failed || state === ConnectionStates.init || state === ConnectionStates.disconnectedOk) {
+                startLivekitRoom();
+            } else if (state === ConnectionStates.connected && prevState === ConnectionStates.init) {
+                this.onConnectedActions();
+            } else if (state === ConnectionStates.connected) {
+                this.onReconnectedActions();
+            } else {
+                this.onDisconnectedActions();
+            }
+        })
     }
 
-    onConnectedActions() {
+    sendPeriodicVideoStats() {
         this.sendVideoStatsUpdate();
+        clearInterval(this._videoStatsIntervalId!);
         this._videoStatsIntervalId = setInterval(() => {
-            this.sendVideoStatsUpdate();
+            if (this._simplePeerCameraStream?.active !== true && this._cancelGetUserMedia === null) this.initSimplepeerCameraStream();
+            this.sendVideoStatsUpdate()
         }, 1000)
     }
 
     public async sendVideoStatsUpdate() {
         const lkStats = await this._cloudLivekitConnection.getVideoStats().catch((e) => { logWarn("LK: Error getting RTP video stats: ", e); return { allStats: [String(e)] } as ComputedRtpStats }) as ComputedRtpStats;
-        if (!lkStats) return;
+
         this.sendMessage({
             body: {
                 oneofKind: "livekitVideoStats",
-                livekitVideoStats: {
+                livekitVideoStats: LivekitVideoStatsResponse.create({
                     enabled: !!this._cloudLivekitConnection.camTrack && this._cloudLivekitConnection._roomConn?.localParticipant.videoTrackPublications.size > 0,
                     allowBackupCodec: !!this._cloudLivekitConnection._videoPublishOptions?.backupCodec,
                     baseStream: {
@@ -135,20 +173,20 @@ class InternalConnectionManager {
                         }
                     }) || [],
                     stats: { ...lkStats }
-                }
+                })
             }
-        }, false, [])
+        }, false, []).catch((e) => logWarn("LK: Error sending video stats update: ", e))
         const spCameraOpts = this.simplePeerCameraOptions.get();
         for (const [userId, spConn] of this._simplePeerConnections) {
             if (!spConn || spConn.connectionState.get() !== ConnectionStates.connected) continue;
-            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return null });
-            if (!spStats) continue;
+            const enabled = spConn && !([ConnectionStates.disconnectedOk, ConnectionStates.failed].includes(spConn.connectionState.get()));
+            const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return {} as ComputedRtpStats });
             this.sendMessage({
                 body: {
                     oneofKind: "simplePeerVideoStats",
-                    simplePeerVideoStats: {
-                        enabled: !!spConn,
-                        codec: "h264",
+                    simplePeerVideoStats: SimplePeerVideoStatsResponse.create({
+                        enabled: enabled,
+                        codec: spStats.senderLayerStats[0]?.videoCodec || "unknown",
                         baseStream: {
                             width: Number((spCameraOpts.video as MediaTrackConstraints)?.width),
                             height: Number((spCameraOpts.video as MediaTrackConstraints)?.height),
@@ -156,9 +194,9 @@ class InternalConnectionManager {
                             maxBitrate: Number(0),
                         },
                         stats: { ...spStats }
-                    }
+                    })
                 }
-            }, false, [userId])
+            }, false, [userId]).catch((e) => logWarn("SP: Error sending video stats update to user " + userId + ":", e))
         }
     }
 
@@ -173,12 +211,10 @@ class InternalConnectionManager {
             logWarn("SP: createSimplePeer() err - Connection already exists for user: " + userId);
             return existing;
         }
-        //     existing.stop();
-        //     this._simplePeerConnections.delete(userId);
-        // }
 
         // Create a new simplePeer connection
-        const spConn = new SimplePeerConnection();
+        const streams = this._simplePeerCameraStream ? [this._simplePeerCameraStream] : [];
+        const spConn = new SimplePeerConnection(SIMPLEPEER_BASE_CONFIG, streams);
         this._simplePeerConnections.set(userId, spConn);
         if (firstSignalMsg) spConn.ingestSignalingMsg(firstSignalMsg);
         changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
@@ -186,6 +222,19 @@ class InternalConnectionManager {
         })
         changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
             this.sendMessage({ body: { oneofKind: "simplePeerSignal", simplePeerSignal: { message: msg ?? "" } } }, true, [userId])
+        })
+        changesSubscribe(spConn.connectionState, (state) => {
+            log("SP: Connection State Changed for " + userId + ":", state)
+            if (state === ConnectionStates.disconnectedOk || state === ConnectionStates.failed) {
+                this.sendMessage({
+                    body: {
+                        oneofKind: "simplePeerVideoStats",
+                        simplePeerVideoStats: SimplePeerVideoStatsResponse.create({
+                            enabled: false,
+                        })
+                    }
+                }, false, [userId]).catch((e) => logWarn("SP: Error sending sp diabled update to user " + userId + ":", e))
+            }
         })
         return spConn;
     }
@@ -195,26 +244,8 @@ class InternalConnectionManager {
         if (videoElement) videoElement.srcObject = stream;
     }
 
-    public async startSimplePeerConnection(userId: string) {
-        // Get a separate video stream for simplePeer
-        if (!this._simplePeerCameraStream) {
-            this._simplePeerCameraStream = await asyncExpBackoff(navigator.mediaDevices.getUserMedia, navigator.mediaDevices, 10, 1000, 1.3)(this.simplePeerCameraOptions.get())
-
-        }
-
-        this.setPreviewVideoElement(this._simplePeerCameraStream);
-        const spConn = this._simplePeerConnections.get(userId);
-        if (!spConn) throw new Error("SimplePeer Connection not created for user: " + userId);
-
-        await spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
-            initiator: false,
-            streams: [this._simplePeerCameraStream]
-        }), false)
-    }
-
     public async setSimplePeerVideoOptions(enabled: boolean, userId: string, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
         if (enabled) {
-            console.log("Setting SimplePeer Video Options for " + userId + ":", captureOptions, publishOptions);
             this.simplePeerCameraOptions.update((opts) => {
                 const video = (opts?.video ? opts.video : SIMPLEPEER_CAPTURE_CONFIG.video) as MediaTrackConstraints;
                 return {
@@ -227,22 +258,11 @@ class InternalConnectionManager {
                     },
                 }
             });
-            const newCameraStream = await navigator.mediaDevices.getUserMedia(this.simplePeerCameraOptions.get());
-            const oldStream = this._simplePeerCameraStream;
-            this._simplePeerCameraStream = newCameraStream;
-            this.setPreviewVideoElement(this._simplePeerCameraStream);
+            this.initSimplepeerCameraStream();
             let spConn = this._simplePeerConnections.get(userId)
-            if (!spConn) {
-                spConn = this.createSimplePeer(userId);
-                spConn.start(Object.assign({}, SIMPLEPEER_BASE_CONFIG, {
-                    initiator: false,
-                    streams: [this._simplePeerCameraStream]
-                }), false)
-            } else {
-                spConn.changeMediaStream(this._simplePeerCameraStream);
-            }
-            // spConn.setCodecPreferences([publishOptions?.videoCodec || "vp9"]);
+            if (!spConn) spConn = this.createSimplePeer(userId);
         } else {
+            if (this._cancelGetUserMedia) this._cancelGetUserMedia();
             this._simplePeerCameraStream?.getTracks().forEach((track) => track.stop())
             this._simplePeerCameraStream = null;
         }
@@ -253,7 +273,6 @@ class InternalConnectionManager {
         // log("SP: Ingesting Signalling Message from " + userId + ":", spConn ? spConn.connectionState.get() : "No SP Conn");
         if (spConn === undefined) {
             this.createSimplePeer(userId, signalMsg);
-            await this.startSimplePeerConnection(userId);
         } else {
             spConn.ingestSignalingMsg(signalMsg);
         }

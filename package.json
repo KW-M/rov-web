@@ -8,7 +8,7 @@
     "dev": "pnpm run dev:frontend",
     "build": "pnpm run build:frontend && pnpm run build:internal;",
     "preview": "pnpm run preview:frontend;",
-    "dev:frontend": "cd frontend; vite dev --host --force",
+    "dev:frontend": "cd frontend; vite dev --host",
     "dev:internal": "cd rov-internal-website; vite dev --host",
     "build:frontend": "cd frontend; vite build",
     "build:internal": "cd rov-internal-website; vite build",

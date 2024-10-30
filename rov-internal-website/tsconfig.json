@@ -11,6 +11,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": false,
+		"allowImportingTsExtensions": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
@@ -23,6 +24,6 @@
 			"WebWorker"
 		],
 		"baseUrl": "./",
-		"noEmit": false,
+		"noEmit": true,
 	},
 }

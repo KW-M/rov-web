@@ -49,7 +49,7 @@ export enum VideoSource {
     SimplePeer = "SP",
 }
 
-export const debugPageModeActive: nStoreT<boolean> = nStore(false);
+export const debugModeOn: nStoreT<boolean> = nStore(false);
 export const fullscreenOpen: nStoreT<boolean> = nStore(false);
 export const sidebarExpanded: nStoreT<boolean> = nStore(false);
 export const tutorialModeActive: nStoreT<boolean> = nStore(false);

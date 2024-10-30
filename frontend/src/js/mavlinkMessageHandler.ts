@@ -8,6 +8,7 @@ import type { Message } from "./shared/mavlink2rest-ts/messages/mavlink2rest-mes
 import { MavModeFlag, MavSeverity, MavState } from "./shared/mavlink2rest-ts/messages/mavlink2rest-enum";
 import { log, logDebug } from "./shared/logging";
 import { SensorMeasurmentTypes } from "./shared/protobufs/rov_actions";
+import { debugModeOn } from "./globalContext";
 
 // import {  MavState, MavModeFlag.MAV_MODE_FLAG_SAFETY_ARMED, MavModeFlag.MAV_MODE_FLAG_MANUAL_INPUT_ENABLED, MavModeFlag.MAV_MODE_FLAG_HIL_ENABLED, MavModeFlag.MAV_MODE_FLAG_STABILIZE_ENABLED, MavModeFlag.MAV_MODE_FLAG_GUIDED_ENABLED, MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED, MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED, STATUSTEXT } from "./shared/mavlink2RestMessages"
 
@@ -35,7 +36,7 @@ export const handleMavlinkMessage = (msg: Package) => {
             handleScaledPressure2Recived(mavMsg as Message.ScaledPressure2)
             break;
         default:
-            if (URL_PARAMS.DEBUG_MODE) logDebug("@ unhandled mavlink message " + String(mavMsg.type), mavMsg)
+            logDebug("@ unhandled mavlink message " + String(mavMsg.type), mavMsg)
     }
 }
 
@@ -55,11 +56,11 @@ export const handleHearbeatRecived = (msg: Message.Heartbeat) => {
     const auto_enabled = (currentFlightFlags & MavModeFlag.MAV_MODE_FLAG_AUTO_ENABLED) > 0;
     const test_enabled = (currentFlightFlags & MavModeFlag.MAV_MODE_FLAG_TEST_ENABLED) > 0;
 
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  autopilot state", currentAutopilotState, "flight mode", currentFlightMode, "armed", armed, "manual_enabled", manual_enabled, "hil_enabled", hil_enabled, "stabilize_enabled", stabilize_enabled, "guided_enabled", guided_enabled, "auto_enabled", auto_enabled, "test_enabled", test_enabled)
+    if (debugModeOn.get()) logDebug("@  autopilot state", currentAutopilotState, "flight mode", currentFlightMode, "armed", armed, "manual_enabled", manual_enabled, "hil_enabled", hil_enabled, "stabilize_enabled", stabilize_enabled, "guided_enabled", guided_enabled, "auto_enabled", auto_enabled, "test_enabled", test_enabled)
 }
 
 export const handleAttitudeRecived = (msg: Message.Attitude) => {
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  attitude", msg)
+    if (debugModeOn.get()) logDebug("@  attitude", msg)
     updateSensorValues({
         measurementUpdates: [
             { measurementType: SensorMeasurmentTypes.yaw_degrees, value: msg.yaw / Math.PI * 180 },
@@ -70,21 +71,21 @@ export const handleAttitudeRecived = (msg: Message.Attitude) => {
 }
 
 export const handleScaledPressureRecived = (msg: Message.ScaledPressure) => {
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  scaled pressure", msg)
+    if (debugModeOn.get()) logDebug("@  scaled pressure", msg)
     pressureMbar.set(msg.press_abs)
     depthM.set((msg.press_abs - SEA_LEVEL_PRESSURE) * 0.009962143853); // milibar to meters of sea water depth
     internalTempC.set(msg.temperature / 100) // 5834
 }
 
 export const handleScaledPressure2Recived = (msg: Message.ScaledPressure2) => {
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  scaled pressure 2", msg)
+    if (debugModeOn.get()) logDebug("@  scaled pressure 2", msg)
     waterTempC.set(msg.temperature / 100) // 5834
 }
 
 
 
 export const handleSystemStatusRecived = (msg: Message.SysStatus) => {
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  system status", msg)
+    if (debugModeOn.get()) logDebug("@  system status", msg)
     const voltage = msg.voltage_battery / 1000;
     const current = msg.current_battery / 100;
     const all_error_count = msg.errors_comm + msg.errors_count1 + msg.errors_count2 + msg.errors_count3 + msg.errors_count4;
@@ -100,7 +101,7 @@ export const handleSystemStatusRecived = (msg: Message.SysStatus) => {
 export const handleStatusTextRecived = (msg: Message.Statustext) => {
     const severity = msg.severity.type
     const text = msg.text.join("")
-    if (URL_PARAMS.DEBUG_MODE) logDebug("@  status text", msg)
+    if (debugModeOn.get()) logDebug("@  status text", msg)
     const severityMap = {
         [MavSeverity.MAV_SEVERITY_INFO]: ToastSeverity.info,
         [MavSeverity.MAV_SEVERITY_DEBUG]: ToastSeverity.info,

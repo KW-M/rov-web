@@ -1,4 +1,5 @@
 import type { VideoBaseStats } from "./protobufs/rov_actions";
+import { removeUndefinedNanNumbers } from "./util";
 
 export type VideoCodec = "h264" | "vp8" | "vp9" | "av1" | "h265" | "unknown";
 export type ComputedRtpStats = VideoBaseStats & {
@@ -130,7 +131,7 @@ export class RtpStatsParser {
         }
     }
 
-    parse(statsList?: RTCStatsReport | any[]) {
+    parse(statsList?: RTCStatsReport | any[]): ComputedRtpStats {
         let computedStats: ComputedRtpStats = {
             ...this.lastStats,
         };
@@ -218,7 +219,7 @@ export class RtpStatsParser {
         }
         computedStats.senderLayerStats = computedStats.senderLayerStats ? computedStats.senderLayerStats.sort((a, b) => (b.frameWidth || 0) * (b.frameHeight || 0) - (a.frameWidth || 0) * (a.frameHeight || 0)) : [];
         this.lastStats = computedStats;
-        return computedStats;
+        return removeUndefinedNanNumbers(computedStats);
     }
 
 }

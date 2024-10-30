@@ -1,7 +1,7 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
 import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-import SimplePeer from '@thaunknown/simple-peer/full.js';
+import SimplePeer from '@thaunknown/simple-peer/index.js';
 import type SimplePeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { waitfor } from './util';
@@ -68,6 +68,8 @@ export class SimplePeerConnection {
     _reconnectAttemptCount: number;
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
+    // flag used to signal that the connection is being stopped (to avoid injesting additional signalling messages durring this).
+    _stopping: boolean = false;
     // flag used to track if this side is the initiator (user) or not.
     _initiator: boolean = false;
     // the unique id of this connection.
@@ -80,9 +82,13 @@ export class SimplePeerConnection {
     _videoStatsParser: RtpStatsParser = new RtpStatsParser();
 
 
-    constructor() { }
+
+    constructor(simplePeerOpts: SimplePeerT.Options, streams: MediaStream[] = []) {
+        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config, { streams }) as SimplePeerT.Options;
+    }
 
     setStreamsEnabled(enabled: boolean) {
+        if (this.remoteVideoStreams.get().size === 0) return;
         this.remoteVideoStreams.update((streams) => {
             streams.forEach((stream) => {
                 if (stream) stream.getTracks().forEach((track) => track.enabled = enabled)
@@ -91,11 +97,20 @@ export class SimplePeerConnection {
         })
     }
 
-    start(simplePeerOpts: SimplePeerT.Options, autoReconnect: boolean = true, reconnectAttemptCount: number = 0) {
+    resetVideoStreamMap() {
+        let streams = this.remoteVideoStreams.get();
+        this.remoteVideoStreams.set(new Map());
+        streams.forEach((stream) => {
+            if (stream) stream.getTracks().forEach((track) => track.stop())
+        })
+    }
+
+    start(autoReconnect: boolean = true, reconnectAttemptCount: number = 0, streams: MediaStream[] = []) {
         if (this._p) this.stop();
+        this._stopping = false;
         this._shouldReconnect = autoReconnect;
-        this._spConfig = Object.assign({}, simplePeerOpts, SimplePeer.config) as SimplePeerT.Options;
-        logWarn("SP starting with opts: ", this._spConfig, startCount++)
+        if (streams.length !== 0) this._spConfig.streams = streams
+        logWarn("SP: starting with opts: ", this._spConfig, startCount++)
         if (this._spConfig.initiator) this._connectionId = perfUnixTimeNow();
         this._signalMsgRecivedCounter = 0;
         this._signalMsgSendCounter = 0;
@@ -109,7 +124,7 @@ export class SimplePeerConnection {
 
         this._p.on('signal', (signalData: Object) => {
             if (this._connectionId === -1) {
-                alert("SP sending signal message when connectionId is -1, this should not happen!")
+                logError("SP sending signal message when connectionId is -1, this should not happen!")
                 return;
             }
 
@@ -117,7 +132,6 @@ export class SimplePeerConnection {
             this._signalMsgSendCounter++;
             logDebug("SP: signal out", signalData)
             this.outgoingSignalingMessages.set(JSON.stringify(signalData));
-
         })
 
         this._p.on('connect', () => {
@@ -155,23 +169,26 @@ export class SimplePeerConnection {
         this._p.on('close', () => {
             if (!this._initiator) this.resetConnectionStats(); // TODO: check if this is the right place to reset the connection stats.
             logWarn('SP connection closed')
-            // this.remoteVideoStreams.set(new Map());
-            // if (!this._shouldReconnect) {
-            //     this.resetConnectionStats();
-            //     this.connectionState.set(ConnectionStates.disconnectedOk);
-            // }
+            this.resetVideoStreamMap();
+            if (!this._shouldReconnect) {
+                // this.resetConnectionStats();
+                this.connectionState.set(ConnectionStates.disconnectedOk);
+            }
             // this.stop();
         })
 
-        this._p.on("end", () => { logWarn("SP connection ended") })
-        this._p.on("pause", () => { logWarn("SP connection paused") })
+        this._p.on("end", () => {
+            this.resetVideoStreamMap()
+            logInfo("SP: connection ended")
+        })
+        this._p.on("pause", () => { logInfo("SP: connection paused") })
 
 
         // Fired when a fatal error occurs. Usually, this means bad signaling data was received from the remote peer.
         this._p.on('error', (err: SimplePeerError) => {
             // this.resetConnectionStats();
-            logError('SP error ', err)
-            this.remoteVideoStreams.set(new Map());
+            logError('SP: ERROR ', err)
+            this.resetVideoStreamMap();
             this._shouldReconnect = false;
 
             // this.currentVideoStream.set(null);
@@ -201,13 +218,19 @@ export class SimplePeerConnection {
     }
 
     stop() {
+        this._stopping = true;
         this.resetConnectionStats();
         this.connectionState.set(ConnectionStates.disconnectedOk);
-        this.remoteVideoStreams.set(new Map());
+        // this.remoteVideoStreams.set(new Map());
         this._shouldReconnect = false;
-        logDebug("SP Stop", this._connectionId, this._p?.destroyed, this._p?.destroying)
+        logWarn("SP: Stop", this._connectionId, this._p?.destroyed, this._p?.destroying)
         if (this._p) this._p.destroy();
         this._p = null;
+    }
+
+    restartIce() {
+        if (!this._p) return;
+        this._p.restartIce();
     }
 
     async restart(connectionId?: number, signalingMsg?: string) {
@@ -216,9 +239,9 @@ export class SimplePeerConnection {
         this._reconnectAttemptCount++;
         this.stop();
         this._connectionId = connectionId || -1;
-        // await waitfor(500 * this._reconnectAttemptCount)
-        console.log("SP Restart2", this._spConfig)
-        this.start(this._spConfig, this._shouldReconnect, this._reconnectAttemptCount);
+        await waitfor(500 * this._reconnectAttemptCount)
+        logDebug("SP Restart2", this._spConfig)
+        this.start(this._shouldReconnect, this._reconnectAttemptCount);
         if (signalingMsg) this.ingestSignalingMsg(signalingMsg);
     }
 
@@ -231,9 +254,9 @@ export class SimplePeerConnection {
     }
 
     changeMediaStream(stream: MediaStream) {
-        if (!this._p) return;
+        if (!this._p || this._stopping === true) return;
         try {
-            console.log("SP: changeMediaStream replacing track", stream.getVideoTracks()[0].getSettings())
+            logDebug("SP: changeMediaStream replacing track", stream.getVideoTracks()[0].getSettings())
             const existingStream = this._p.streams[0];
             const existingTrack = existingStream.getVideoTracks()[0];
             this._p.replaceTrack(existingTrack, stream.getVideoTracks()[0], existingStream);
@@ -283,7 +306,7 @@ export class SimplePeerConnection {
     }
 
     async getStats() {
-        if (!this._p) return;
+        if (!this._p || !this._p._pc) return;
         const stats = await new Promise((resolve, reject) => {
             if (!this._p || !this._p._pc) reject("No active simplePeer instance found!")
             this._p.getStats((err, stats) => {
@@ -291,7 +314,7 @@ export class SimplePeerConnection {
                 resolve(stats);
             })
         }) as any[];
-        return this._videoStatsParser.parse(stats);;
+        return this._videoStatsParser.parse(stats);
     }
 
     getPlayoutDelay() {
@@ -367,10 +390,10 @@ export class SimplePeerConnection {
     }
 
     _processSignalMsgQueue() {
-        if (!this._p) return;
-        console.log("SP: processing signal queue", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
+        if (!this._p || this._stopping === true) return;
+        // console.log("SP: processing signal queue", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
         for (let i = 0; i < this._incomingSignalQueue.length; i++) {
-            console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
+            // console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
             if (this._incomingSignalQueue.length === 0) return;
             const signalIndex = this._incomingSignalQueue.findIndex((signal) => signal?.msgNum === this._consecutiveSignalMsgsProcessed);
             if (signalIndex === -1) return;

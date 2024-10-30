@@ -66,7 +66,7 @@ export class LivekitRoomAdmin {
 
     async waitForRateLimit() {
         while ((unixTimeNow() - lastLivekitApiCallTime) < LIVEKIT_API_MIN_DELAY) {
-            console.log("Waiting for rate limit...", unixTimeNow() - lastLivekitApiCallTime);
+            console.debug("Waiting for rate limit...", unixTimeNow() - lastLivekitApiCallTime);
             await waitfor(LIVEKIT_API_MIN_DELAY);
         }
         lastLivekitApiCallTime = unixTimeNow();

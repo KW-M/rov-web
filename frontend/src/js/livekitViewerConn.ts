@@ -118,9 +118,9 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
                 }
             })
             .on(RoomEvent.ParticipantDisconnected, (participant) => {
-                if (participant.identity === this._rovRoomName) {
+                if (participant.identity === this._rovRoomName && this.connectionState.get() === ConnectionStates.connected) {
                     logDebug("LK: ROV Participant disconnected: ", participant.identity)
-                    showToastMessage("ROV is disconnected")
+                    showToastMessage("ROV is offline")
                 }
             })
             .on(RoomEvent.TrackPublished, (pub, participant) => {

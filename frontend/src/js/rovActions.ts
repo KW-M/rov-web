@@ -2,29 +2,29 @@ import { frontendConnMngr } from "./frontendConnManager";
 import { frontendRovMsgHandler } from "./rovMessageHandler"
 import { ToastSeverity, showToastMessage } from "./toastMessageManager";
 import { calculateDesiredMotion } from "./rovUtil";
-import type { buttonChangeDetails } from "virtual-gamepad-lib";
+import { standardGpadButtonMap, type buttonChangeDetails } from "virtual-gamepad-lib";
 import { ConnectionStates } from "./shared/consts";
 import type { FlightMode } from "./shared/mavlink2RestMessages";
-import { GPAD_STANDARD_BUTTON_INDEX, GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
+import { GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX, MOVE_MSG_TIMEOUT, PING_INTERVAL } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { armButtonPressed, rovDrivingVector, throttleGain, tutorialModeActive } from "./globalContext";
 import { openTestDriveTutModal, modalConfirm, modalScrollingText } from "../components/Modals/modals";
 import { autopilotArmed, autopilotMode } from "./vehicleStats";
 import { unixTimeNow } from "./shared/time";
 import type { RovAction, RovResponse } from "./shared/protobufs/rov_actions";
-import { changesSubscribe } from "./shared/util";
+import { changesSubscribe, dec2bin } from "./shared/util";
 
-const BTN_A = GPAD_STANDARD_BUTTON_INDEX.A
-const BTN_B = GPAD_STANDARD_BUTTON_INDEX.B
-const BTN_X = GPAD_STANDARD_BUTTON_INDEX.X
-const BTN_Y = GPAD_STANDARD_BUTTON_INDEX.Y
-const BTN_LT = GPAD_STANDARD_BUTTON_INDEX.LT
-const BTN_RT = GPAD_STANDARD_BUTTON_INDEX.RT
-const BTN_RB = GPAD_STANDARD_BUTTON_INDEX.RB
-const BTN_LB = GPAD_STANDARD_BUTTON_INDEX.LB
-const BTN_LSTICK = GPAD_STANDARD_BUTTON_INDEX.LSTICK
-const BTN_RSTICK = GPAD_STANDARD_BUTTON_INDEX.RSTICK
-const BTN_HELP = GPAD_STANDARD_BUTTON_INDEX.SELECT
+const BTN_A = standardGpadButtonMap.A
+const BTN_B = standardGpadButtonMap.B
+const BTN_X = standardGpadButtonMap.X
+const BTN_Y = standardGpadButtonMap.Y
+const BTN_LT = standardGpadButtonMap.LTrigger
+const BTN_RT = standardGpadButtonMap.RTrigger
+const BTN_RB = standardGpadButtonMap.RShoulder
+const BTN_LB = standardGpadButtonMap.LShoulder
+const BTN_LSTICK = standardGpadButtonMap.LStick
+const BTN_RSTICK = standardGpadButtonMap.RStick
+const BTN_HELP = standardGpadButtonMap.Start
 
 class RovActionsClass {
 
@@ -55,7 +55,7 @@ class RovActionsClass {
 
         // X
         if (btnChanges[BTN_X] && btnChanges[BTN_X].released) {
-            if (!tutorialModeActive.get()) this.moveClawToPosition(0)
+            // if (!tutorialModeActive.get()) this.moveClawToPosition(0)
         }
 
         // Y
@@ -207,7 +207,7 @@ class RovActionsClass {
         const angularVelocityYaw = this.lastMove.angularVelocityYaw;
         const buttonBitmask = buttons.reduce((acc, val, index) => {
             if (val) {
-                acc |= 1 << GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX[index];;
+                acc |= 1 << GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX[index];
             }
             return acc;
         }, 0)

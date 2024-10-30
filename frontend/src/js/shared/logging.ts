@@ -314,6 +314,11 @@ export class Logger {
         return this.logsStore;
     }
 
+    clearLogs() {
+        this.logsStore = [];
+        this.svelteSubscribers.forEach((subscriber) => subscriber());
+    }
+
     log = (...args: any[]) => {
         this.rawConsole.log.apply(console, args);
         this.addLog(LogLevel.Console, args);

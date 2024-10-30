@@ -2,7 +2,7 @@
 // https://gist.github.com/patrickelectric/26a407c4e7749cdaa58d06b52212cb1e
 import type { Package, Message } from "./mavlink2rest-ts/messages/mavlink2rest";
 import type { Message as MavMessages } from "./mavlink2rest-ts/messages/mavlink2rest-message";
-import { MavState, MavMode, MavModeFlag, MavType, MavAutopilot, MAVLinkType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
+import { MavState, MavMode, MavModeFlag, MavType, MavAutopilot, MAVLinkType, MavParamType } from "./mavlink2rest-ts/messages/mavlink2rest-enum";
 import { log, logInfo } from "./logging";
 import { unixTimeNow } from "./time";
 
@@ -168,7 +168,7 @@ export const setMessageInterval = (messageID: number = 1.0, interval: number = 3
 export const setMode = (mode?: FlightMode | null) => {
     mode = mode || FlightMode.manual;
     return addMessageHeader({
-        type: "COMMAND_LONG",
+        type: MAVLinkType.COMMAND_LONG,
         command: { type: "MAV_CMD_DO_SET_MODE" },
         param1: 1,
         param2: Number(mode),
@@ -198,7 +198,7 @@ export const heartbeat = () => {
 
 export const manualControl = (x: number, y: number, z: number, r: number, buttonBitmask: number) => {
     return addMessageHeader({
-        type: "MANUAL_CONTROL",
+        type: MAVLinkType.MANUAL_CONTROL,
         x: Math.floor(x), // X is forward in the ROV
         y: Math.floor(y), // Y is left/right in the ROV
         z: Math.floor(z), // Z is up/down in the ROV
@@ -206,6 +206,33 @@ export const manualControl = (x: number, y: number, z: number, r: number, button
         buttons: buttonBitmask,
         target: 1,
     } as MavMessages.ManualControl)
+}
+
+
+
+export const setParameter = (paramId: string, paramValue: number, paramType: MavParamType) => {
+    return addMessageHeader({
+        type: MAVLinkType.PARAM_SET,
+        param_id: Array.from(paramId).map((c) => c.charCodeAt(0)),
+        param_value: paramValue,
+        param_type: paramType,
+        target_system: 1,
+        target_component: 1,
+    } as MavMessages.ParamSet)
+}
+
+export const setFullGain = () => {
+    // JS_GAIN_DEFAULT = 0.5 should be 1.0
+    // JS_GAIN_STEPS = 4 should be 1 to always use default gain
+    // JS_GAIN_MAX = 1.0 should be 1.0
+    // setParameter([gainId, 0], 1.0, MavParamType.MAV_PARAM_TYPE_REAL32);
+}
+
+
+export const setJoystickButtonMap = () => {
+
+    // setParameter([buttonMapId, 0], 0x0F, MavParamType.MAV_PARAM_TYPE_UINT8);
+
 }
 
 export const servoPositionControl = (servo: number, position: number, group: number) => {
@@ -220,6 +247,8 @@ export const servoPositionControl = (servo: number, position: number, group: num
         target_system: 1,
     } as MavMessages.SetActuatorControlTarget)
 }
+
+
 
 export const STATUSTEXT = {
     "message": {

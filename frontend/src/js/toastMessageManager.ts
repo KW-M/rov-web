@@ -1,6 +1,6 @@
 import { getDrawerStore, getToastStore, type ToastStore } from "@skeletonlabs/skeleton";
 import nStore, { type nStoreT } from "./shared/libraries/nStore";
-import {  sidebarExpanded } from "./globalContext";
+import { sidebarExpanded } from "./globalContext";
 
 export enum ToastSeverity {
     success = "success",
@@ -45,11 +45,11 @@ function randomUUID() {
     return Number(random).toString(32);
 }
 
-export const showToastMessage = (msg: string, duration: number = 2000, ignoreDuplicates:boolean = true, severity:ToastSeverity = ToastSeverity.info, callback: (() => void) | null = null) => {
+export const showToastMessage = (msg: string, duration: number = 2000, ignoreDuplicates: boolean = true, severity: ToastSeverity = ToastSeverity.info, callback: (() => void) | null = null) => {
     const existingToast = toastHistoryMap.get(msg);
     const UUID = existingToast ? existingToast.toastId : randomUUID();
     if (sidebarExpanded.get()) {
-       setToastHistory({
+        setToastHistory({
             msg: msg,
             severity: severity,
             messageRepeatCount: existingToast ? existingToast.messageRepeatCount + 1 : 1,
@@ -62,7 +62,7 @@ export const showToastMessage = (msg: string, duration: number = 2000, ignoreDup
         let toastId = toastTool.trigger({
             classes: `variant-filled-${severity} w-72`,
             message: msg,
-            timeout:duration,
+            timeout: duration,
             callback: ({ id, status }) => {
                 if (status == "closed") {
                     const existingToast = toastHistoryMap.get(msg)
@@ -92,4 +92,12 @@ export const showToastMessage = (msg: string, duration: number = 2000, ignoreDup
             messageRepeatCount: existingToast.messageRepeatCount + 1,
         });
     }
+}
+
+export const closeToastMessage = (msg: string) => {
+    const toast = toastHistoryMap.get(msg)
+    if (!toast) return;
+    toastTool.close(toast.toastId)
+    toast.closed = true;
+    toastHistoryMap.set(msg, toast)
 }

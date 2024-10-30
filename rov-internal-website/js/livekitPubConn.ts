@@ -1,6 +1,6 @@
 import { type LivekitConfig, LivekitBaseConnection } from "./shared/livekit/livekitBaseConn";
-import { LocalTrackPublication, RemoteParticipant, RoomEvent, Track, type TrackPublishOptions, type VideoCaptureOptions } from "livekit-client";
-import { log, logError, logInfo, logWarn } from "./shared/logging";
+import { LocalTrackPublication, MediaDeviceFailure, RemoteParticipant, RoomEvent, Track, type TrackPublishOptions, type VideoCaptureOptions } from "livekit-client";
+import { log, logDebug, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
 import { waitfor } from "./shared/util";
 import { getPublisherAccessToken } from "./shared/livekit/livekitTokens";
@@ -38,7 +38,6 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
             //     const clone = {
             //         ...this._roomConn["roomInfo"]
             //     }
-            //     console.log(clone)
             //     if (!this._roomConn.metadata?.length) this.createLivekitRoom();
             // })
             .on(RoomEvent.SignalConnected, () => {
@@ -54,6 +53,9 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.Reconnected, () => {
                 if (!this.isVideoActive()) this.enableCamera(true);
+                this.updateRoomMetadata();
+            })
+            .on(RoomEvent.ParticipantConnected, () => {
                 this.updateRoomMetadata();
             })
             .on(RoomEvent.DataReceived, (msg: Uint8Array, participant?: RemoteParticipant) => {
@@ -72,8 +74,11 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
                 logWarn('LK: Unsubscribed from track', pub.trackSid, " from participant: ", participant.identity, ' _THIS SHOULDNT HAPPEN on BACKEND_ ');
-            }).on(RoomEvent.ParticipantConnected, () => {
-                this.updateRoomMetadata();
+            })
+            .on(RoomEvent.MediaDevicesError, (e: Error) => {
+                const failure = MediaDeviceFailure.getFailure(e);
+                logError('LK: Media device failure', failure);
+                this._reconnect();
             })
     }
 
@@ -114,7 +119,6 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
                         },
                         audio: false
                     })
-                    console.log("LK: Created tracks: ", tracks)
                     for (const track of tracks) {
                         const pub = await this._roomConn.localParticipant.publishTrack(tracks[0], this._videoPublishOptions);
                         if (pub && track.kind === Track.Kind.Video) this.camTrack = pub;
@@ -136,28 +140,11 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
     isVideoActive() {
         if (!this.camTrack || !this.camTrack.videoTrack) return false;
         let videoPublication = this._roomConn.localParticipant.videoTrackPublications.get(this.camTrack.trackSid);
-        console.log("LK: Video Publication: ", videoPublication, " Enabled: ", videoPublication?.isEnabled);
+        logDebug("LK: Video Publication: ", videoPublication, " Enabled: ", videoPublication?.isEnabled);
         return videoPublication?.isEnabled;
     }
 
     async getVideoStats() {
-        // if (!this.camTrack || !this.camTrack.videoTrack || this.connectionState.get() != ConnectionStates.connected) return;
-        // const videoTrack = (this.camTrack.videoTrack as LocalVideoTrack);
-        // let statsArray = [{
-        //     bitrate: videoTrack.currentBitrate,
-        //     streamState: videoTrack.streamState,
-        //     simulcasted: this.camTrack.simulcasted,
-        //     codec: videoTrack.codec,
-        //     dimensions: this.camTrack.dimensions,
-        // }, this.camTrack?.trackInfo?.toJson()] as any[];
-        // const senderStats = await this.camTrack.videoTrack.getSenderStats();
-        // if (senderStats) statsArray = statsArray.concat(senderStats);
-        // const RTCStats = await this.camTrack.videoTrack.getRTCStatsReport();
-        // if (RTCStats) for (const stat of RTCStats.values()) {
-        //     statsArray.push(stat);
-        // }
-        // this.videoStats.set(statsArray);
-        // return statsArray;
         for (const stream of this._roomConn.localParticipant.videoTrackPublications.values()) {
             if (!stream || !stream.videoTrack) continue;
             const report = await stream.videoTrack.getRTCStatsReport()
@@ -169,15 +156,6 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
 
     getParticipantIds() {
         return [...this._roomConn.remoteParticipants.values()].map(p => p.identity);
-    }
-
-
-    async close() {
-        await super.close();
-    }
-
-    async _fail() {
-        await super._fail();
     }
 
     // ---- Admin Functions ----

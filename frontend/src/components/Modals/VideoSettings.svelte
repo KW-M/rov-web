@@ -10,7 +10,6 @@
       keepFullResLayer.set(options.simulcastLayers?.length !== 0);
       if (options.baseStream?.maxBitrate != undefined) maxBitrate.set(options.baseStream.maxBitrate);
       if (useSimplePeer.get() === false) {
-        console.log("setting lk video options", options.baseStream.height, options.simulcastLayers);
         if (options.baseStream?.height != undefined) size.set(options.baseStream.height);
         const sentCodec = options?.codec;
         const recievedCodec = frontendConnMngr.livekitVideoStats.get()?.recieverStats?.videoCodec;

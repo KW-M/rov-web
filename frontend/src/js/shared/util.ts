@@ -21,35 +21,55 @@ export function waitforCondition(condition: () => boolean, millisec: number = 0)
 }
 
 /**
- * wrapper function that takes an async function and keeps retrying with exponential backoff if the wrapped function throws an error (ie the internal promise rejects)
- * if the function fails after maxRetries, it throws an error to be handled by higher up functions.
+ * wrapper function that takes an async function or promise and keeps retrying it with exponentially longer delays
+ * until the promise resolves or a retry limit is reached.
+ * if the function fails after maxRetries, it throws an error with the last caught error to be handled by higher up functions.
  */
-export function asyncExpBackoff<F extends (...args: any[]) => Promise<any>>(fn: F, thisArg: any = null, maxRetries: number = 5, initialDelay: number = 1000, rate: number = 2): F {
-    return async function (...args: any[]) {
-        let error;
-        let retries = 0;
-        while (retries < maxRetries) {
-            try {
-                return await fn.apply(thisArg, args)
-            } catch (err) {
-                error = err;
-                logWarn("err:", error)
-                await waitfor(initialDelay * Math.pow(rate, retries));
-                retries++;
+export function asyncExpBackoff<F extends () => Promise<any>>(opts: { fn: F, maxRetries: number, initialDelay: number, exponent: number }): { promise: ReturnType<F>, cancel: () => void } {
+    const fn = opts.fn;
+    const maxRetries = opts.maxRetries ?? 3;
+    const initialDelay = opts.initialDelay ?? 100;
+    const exponent = opts.exponent ?? 2;
+    let cancel = false;
+    return {
+        promise: new Promise(async function (resolve, reject) {
+            let error: Error;
+            let retries = 0;
+            while (retries < maxRetries) {
+                try {
+                    const result = await fn();
+                    if (cancel) return reject(null);
+                    return resolve(result);
+                } catch (err: any) {
+                    logWarn("err:", error = err);
+                    if (cancel) {
+                        err.message += " - asyncExpBackoff() canceled"
+                        return reject(err);
+                    }
+                    await waitfor(initialDelay * Math.pow(exponent, retries));
+                    retries++;
+                }
             }
+            error.message += " - asyncExpBackoff() failed after " + retries + " retries"
+            reject(error);
+        }) as ReturnType<F>,
+        cancel: () => {
+            cancel = true;
         }
-        throw new Error("asyncExpBackoff() func failed after " + retries + " retries. Error: " + error)
-    } as F
+    }
 }
 
-export function changesSubscribe<V>(store: nStoreT<V>, callback: (value: V) => void) {
+export function changesSubscribe<V>(store: nStoreT<V>, callback: (value: V, prevValue: V) => void) {
     let gotInitalValueFlag = false;
+    let prevValue = store.get();
     const unSub = store.subscribe((value) => {
         if (gotInitalValueFlag == false) {
             gotInitalValueFlag = true;
+            prevValue = value;
             return;
         }
-        callback(value);
+        callback(value, prevValue);
+        prevValue = value;
     });
     return unSub;
 }
@@ -112,4 +132,23 @@ export function getHumanReadableId(number: number, offset: number = 0) {
     let adjective = adjectives[(numI + offsetI) % adjectivesLen]
     let noun = nouns[(numI * offsetI) % nounsLen]
     return adjective + "-" + noun
+}
+
+
+export const removeUndefinedNanNumbers = <O>(obj: O): O => {
+    for (const key in obj) {
+        if (obj[key] === undefined || (typeof obj[key] === 'number' && isNaN(obj[key]))) {
+            delete obj[key];
+        } else if (typeof obj[key] === 'object') {
+            removeUndefinedNanNumbers(obj[key]);
+        }
+    }
+    return obj;
+}
+/**
+ * Convert a number to binary representation as a string
+ * //https://stackoverflow.com/questions/9939760/how-do-i-convert-an-integer-to-binary-in-javascript
+ */
+export const dec2bin = (dec: number): string => {
+    return (dec | 0).toString(2).padStart(16, '0');
 }
