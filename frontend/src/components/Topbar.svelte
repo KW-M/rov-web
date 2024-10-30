@@ -163,8 +163,8 @@
   {/if}
 </nav>
 
-<div class="rounded-full w-1.5 h-1.5 absolute top-1 right-2 bg-green-500 opacity-30" aria-hidden="true" class:!opacity-100={$spState == ConnectionStates.connected} class:animate-pulse-full={$spState == ConnectionStates.connecting || $spState == ConnectionStates.reconnecting}></div>
-<div class="rounded-full w-1.5 h-1.5 absolute top-1 right-4 bg-orange-500 opacity-30" aria-hidden="true" class:!opacity-100={$lkState == ConnectionStates.connected} class:animate-pulse-full={$lkState == ConnectionStates.connecting || $lkState == ConnectionStates.reconnecting}></div>
+<div class="rounded-full w-1.5 h-1.5 absolute bottom-1 z-50 right-2 bg-teal-500 opacity-40" aria-hidden="true" class:!opacity-100={$spState == ConnectionStates.connected} class:animate-pulse-full={$spState == ConnectionStates.connecting || $spState == ConnectionStates.reconnecting}></div>
+<div class="rounded-full w-1.5 h-1.5 absolute bottom-1 z-50 right-4 bg-pink-500 opacity-40" aria-hidden="true" class:!opacity-100={$lkState == ConnectionStates.connected} class:animate-pulse-full={$lkState == ConnectionStates.connecting || $lkState == ConnectionStates.reconnecting}></div>
 
 {#if $fullscreenOpen}
   <button

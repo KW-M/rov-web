@@ -51,7 +51,7 @@
       if (!supportsCryptoApi()) {
         if (!window.isSecureContext || window.location.protocol !== "https:") {
           return modalConfirm("Cannot access password protected ROV", {
-            body: "<b>Non-secure web address detected</b><br/>For a better experience, please use the secure website. Password protected ROVs and game controllers will only work on the secure site.",
+            body: "<b>Non-secure web address detected</b><br/>For a better experience, please use the secure website (https). Password protected ROVs and game controllers will only work on the secure site.",
             modalClasses: "variant-filled-warning !bg-warning-500 w-fit max-w-xs px-6 py-5",
             buttonTextConfirm: "Go Secure",
             buttonTextCancel: "Cancel",

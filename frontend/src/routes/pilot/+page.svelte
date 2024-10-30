@@ -75,7 +75,7 @@
           ]}
         ></DropdownMenuPopup>
 
-        <div role="button" class="chip variant-filled-success rounded-full select-none" class:!bg-orange-500={!$autopilotArmed} on:pointerdown={() => (autopilotArmed.get() ? RovActions.disarm() : RovActions.takeControl())}>
+        <button disabled={!connected} class="btn btn-sm variant-filled-success select-none" class:!bg-orange-500={!$autopilotArmed} on:pointerdown={() => (autopilotArmed.get() ? RovActions.disarm() : RovActions.takeControl())}>
           {#if $autopilotArmed}
             <Play_arrow class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
             <b>ON</b>
@@ -83,7 +83,7 @@
             <Mode_fan_off class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
             <b>OFF</b>
           {/if}
-        </div>
+        </button>
       </svelte:fragment>
       <svelte:fragment slot="right">
         <!-- <span class="px-2">MavState: {MavStateNameMap[$autopilotMavState]}</span> -->

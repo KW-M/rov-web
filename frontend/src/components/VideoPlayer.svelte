@@ -37,19 +37,26 @@
 
   const updateVideoVisibility = () => {
     if (!videoContainerElem) return;
-    if (videoIsReady(simplePeerVideoStream)) {
-      logInfo("VideoPlayer: Stopping livekit video stream", livekitVideoStream.stream);
-      if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).stop();
-    } else {
-      logInfo("VideoPlayer: Starting livekit video stream", livekitVideoStream.stream);
-      if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).start();
-    }
+    const lkStream = livekitVideoStream.stream as RemoteTrack;
+    const lkStreamEnabled = lkStream && lkStream.mediaStreamTrack.enabled;
     if (videoIsReady(simplePeerVideoStream)) {
       currentVideoSource.set(VideoSource.SimplePeer);
+      if (lkStreamEnabled) {
+        logInfo("VideoPlayer: Stopping livekit video stream", livekitVideoStream.stream);
+        lkStream.stop();
+      }
     } else if (videoIsReady(livekitVideoStream)) {
       currentVideoSource.set(VideoSource.Livekit);
+      if (lkStream && !lkStreamEnabled) {
+        logInfo("VideoPlayer: Starting livekit video stream", livekitVideoStream.stream);
+        lkStream.start();
+      }
     } else {
       currentVideoSource.set(VideoSource.None);
+      if (lkStream && !lkStreamEnabled) {
+        logInfo("VideoPlayer: Starting livekit video stream", livekitVideoStream.stream);
+        lkStream.start();
+      }
     }
   };
 
@@ -111,7 +118,7 @@
       updateVideoVisibility();
     });
     spUnsub = frontendConnMngr.simplePeerConnection.remoteVideoStreams.subscribe((streams) => {
-      logDebug("spstreams", streams);
+      logWarn("SP: new streams", streams);
       const stream = streams.values().next().value as MediaStream | null;
       if (stream) {
         if (simplePeerVideoStream.streamId === stream.id) logWarn("SP: repeat stream ID!", stream.id);
@@ -214,7 +221,7 @@
       {/if}
     </button>
     {#if rovVizVisible}
-      <RovViz canvasClass="block absolute top-2 left-2 z-10 " useRovOrientationData={true}/>
+      <RovViz canvasClass="block absolute top-2 left-2 z-10 " useRovOrientationData={true} />
     {/if}
 
     <!-- <button
@@ -235,8 +242,8 @@
     <!-- use:resizeToFit={videoIsReady(livekitVideoStream)} -->
 
     <video
-      class="video-livestream lk-video w-full h-full rounded-2xl"
-      class:!visible={videoIsReady(livekitVideoStream) && (!videoIsReady(simplePeerVideoStream) || $pulseVizMode)}
+      class="video-livestream lk-video w-full h-full rounded-2xl border-pink-500 border-4"
+      class:!visible={!videoIsReady(simplePeerVideoStream) || $pulseVizMode}
       muted
       playsinline
       autoplay
@@ -258,7 +265,7 @@
     ></video>
 
     <video
-      class="video-livestream sp-video w-full h-full rounded-2xl"
+      class="video-livestream sp-video w-full h-full rounded-2xl border-teal-500 border-4"
       class:!visible={videoIsReady(simplePeerVideoStream)}
       class:opacity-50={$pulseVizMode}
       muted
@@ -317,20 +324,10 @@
     transform: translateX(-50%);
     left: 50%;
     top: 0;
-
-    border: 3px solid black;
     background: rgba(0, 0, 0, 0.55);
     padding: 0;
     visibility: hidden;
     max-width: 100%;
     max-height: 100%;
-  }
-
-  .video-livestream.lk-video {
-    border-color: orangered;
-  }
-
-  .video-livestream.sp-video {
-    border-color: limegreen;
   }
 </style>

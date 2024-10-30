@@ -2,32 +2,39 @@
   import nStore from "../../js/shared/libraries/nStore";
 
   export const onLivekitVideoOptionsChange = (options: LivekitVideoStatsResponse) => {
-    // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
-    // useLivekit.set(options.Enabled);
-    // if (options.Enabled) {
-    //   allowBkupCodec.set(options.AllowBackupCodec);
-    //   maxBitrate.set(options.BaseStream.MaxBitrate);
-    //   keepFullResLayer.set(options.SimulcastLayers?.length > 0);
-    //   if (!useSimplePeer.get()) {
-    //     size.set(options.BaseStream.Height);
-    //     codec.set(options.Codec);
-    //   }
-    // }
     lkSenderVideoStats.set(options.stats);
+    if (lastChangeTimestamp + 500 > unixTimeNow()) return;
+    useLivekit.set(options.enabled);
+    if (useLivekit.get() === true) {
+      allowBkupCodec.set(options.allowBackupCodec === true);
+      keepFullResLayer.set(options.simulcastLayers?.length !== 0);
+      if (options.baseStream?.maxBitrate != undefined) maxBitrate.set(options.baseStream.maxBitrate);
+      if (useSimplePeer.get() === false) {
+        console.log("setting lk video options", options.baseStream.height, options.simulcastLayers);
+        if (options.baseStream?.height != undefined) size.set(options.baseStream.height);
+        const sentCodec = options?.codec;
+        const recievedCodec = frontendConnMngr.livekitVideoStats.get()?.recieverStats?.videoCodec;
+        codec.set(recievedCodec ?? sentCodec ?? "unknown");
+      }
+    }
   };
 
   export const onSimplePeerVideoOptionsChange = (options: SimplePeerVideoStatsResponse) => {
-    // if (lastChangeTimestamp + 1000 > unixTimeNow()) return;
+    spSenderVideoStats.set(options.stats);
+    // if (lastChangeTimestamp + 1000 > unixTimeNow()) return; // ignore recent changes
     // const videoStream = frontendConnMngr.simplePeerConnection.remoteVideoStreams.get().values().next().value;
     // const enabled = videoStream && videoStream.getTracks().length > 0 && videoStream.getTracks()[0].enabled;
+    const enabled = frontendConnMngr.simplePeerConnection && frontendConnMngr.simplePeerConnection.connectionState.get() !== ConnectionStates.failed && frontendConnMngr.simplePeerConnection.connectionState.get() !== ConnectionStates.disconnectedOk;
     // const preferedMimetypes = frontendConnMngr.simplePeerConnection.getCodecPreferences();
-    // const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toUpperCase()) : [];
-    // useSimplePeer.set(enabled);
-    // if (enabled) {
-    //   size.set(options.BaseStream.Height);
-    //   codec.set(preferedCodecs && preferedCodecs.length > 0 ? preferedCodecs[0] : "unknown");
-    // }
-    spSenderVideoStats.set(options.stats);
+    // const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toLowerCase()) : [];
+    useSimplePeer.set(enabled);
+    if (useSimplePeer.get() === true) {
+      if (options.baseStream.height) size.set(options.baseStream.height);
+      const sentCodec = options?.codec;
+      const recievedCodec = frontendConnMngr.simplePeerVideoStats.get()?.recieverStats?.videoCodec;
+      const requestedCodec = frontendConnMngr.simplePeerConnection.getCodecPreferences()?.[0]?.split("/")[1]?.toLowerCase();
+      codec.set(recievedCodec ?? sentCodec ?? requestedCodec ?? "unknown");
+    }
   };
 
   const allowBkupCodec = nStore(false);
@@ -74,7 +81,7 @@
   const spRecieverVideoStats = frontendConnMngr.simplePeerVideoStats;
   const codecs = ["h264", "vp8", "vp9", "av1"];
   const sizes = {
-    180: {
+    360: {
       bitrate: {
         h264: 950_000,
         vp8: 750_000,
@@ -82,12 +89,12 @@
         av1: 550_000,
       },
     },
-    360: {
+    480: {
       bitrate: {
-        h264: 950_000,
-        vp8: 750_000,
-        vp9: 550_000,
-        av1: 550_000,
+        h264: 1_690_000,
+        vp8: 1_330_000,
+        vp9: 980_000,
+        av1: 980_000,
       },
     },
     540: {
@@ -283,15 +290,21 @@
       useTwitch.set(isLivestreamRecording);
     });
     const spStreamsUnsub = frontendConnMngr.simplePeerConnection.remoteVideoStreams.subscribe((streams) => {
-      if (streams.size > 0) onSpPlayoutDelayChange();
-      // const stream = streams.values().next().value;
-      // if (stream.getTracks().length > 0) {
-      //   const track = stream.getTracks()[0];
-      //   if (track.enabled) {
-      //     size.set(track.getSettings().height);
-      //     codec.set(track.getSettings().codec);
-      //   }
-      // }
+      if (streams.size !== 0) {
+        onSpPlayoutDelayChange();
+
+        // const stream = streams.values().next().value;
+        // if (stream.getTracks().length > 0) {
+        //   const track = stream.getTracks()[0];
+        //   if (track.enabled) {
+        //     size.set(track.getSettings().height);
+        //     codec.set(track.getSettings().codec);
+        //   }
+        // }
+        useSimplePeer.set(true);
+      } else {
+        useSimplePeer.set(false);
+      }
     });
     const lkStreamUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((tracks) => {
       if (tracks.size > 0) onLkPlayoutDelayChange();
@@ -315,8 +328,8 @@
   </button>
   <h3 class="h3 my-0.5 mb-6 text-left">Video Settings</h3>
 
-  <SlideToggle bind:checked={$useSimplePeer} name="Enable Direct Connection" active="bg-success-700" class="mb-6 mx-auto" on:change={() => onUseSimplePeerChange()}>Enable Direct Connection</SlideToggle>
-  <SlideToggle bind:checked={$useLivekit} name="Enable Direct Connection" active="bg-orange-600" class="mb-6 mx-auto" on:change={() => onUseLivekitChange()}>Enable Livekit Connection</SlideToggle>
+  <SlideToggle bind:checked={$useSimplePeer} name="Enable Direct Connection" active="bg-teal-700" class="mb-6 mx-auto" on:change={() => onUseSimplePeerChange()}>Enable Direct Connection</SlideToggle>
+  <SlideToggle bind:checked={$useLivekit} name="Enable Direct Connection" active="bg-pink-600" class="mb-6 mx-auto" on:change={() => onUseLivekitChange()}>Enable Livekit Connection</SlideToggle>
   {#if $useLivekit}
     <SlideToggle bind:checked={$useTwitch} disabled={!$useLivekit} name="Use Direct Connection" active="bg-red-700" class="mb-6 mx-auto" on:change={() => onUseTwitchChange()}>Record To Twitch</SlideToggle>
   {/if}
@@ -381,22 +394,22 @@
         <Accordion>
           {#if $spRecieverVideoStats}
             {@const stats = $spRecieverVideoStats}
-            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="reciever" name="Direct" class="border-token border-green-500 !bg-green-100" />
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="reciever" name="Direct" class="border-token border-teal-500 !bg-teal-100" />
           {/if}
           {#if $lkRecieverVideoStats}
             {@const stats = $lkRecieverVideoStats}
-            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="reciever" name="Livekit" class="border-token border-orange-500 !bg-orange-100" />
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="reciever" name="Livekit" class="border-token border-pink-500 !bg-pink-100" />
           {/if}
         </Accordion>
       {:else}
         <Accordion>
           {#if $spSenderVideoStats}
             {@const stats = $spSenderVideoStats}
-            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="sender" name="Direct" class="border-token border-green-500 !bg-green-100" />
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={SP_STATS_ACCORDION_ID} direction="sender" name="Direct" class="border-token border-teal-500 !bg-teal-100" />
           {/if}
           {#if $lkSenderVideoStats}
             {@const stats = $lkSenderVideoStats}
-            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="sender" name="Livekit" class="border-token border-orange-500 !bg-orange-100" />
+            <VideoStatsCard {stats} activeStore={statsActivePanel} activeId={LK_STATS_ACCORDION_ID} direction="sender" name="Livekit" class="border-token border-pink-500 !bg-pink-100" />
           {/if}
         </Accordion>
       {/if}

@@ -4,6 +4,7 @@
   import { default as nStore, type nStoreT } from "../js/shared/libraries/nStore";
   import { fade } from "svelte/transition";
   import { onDestroy } from "svelte";
+  import { logError } from "../js/shared/logging";
 
   export type TooltipOptions = {
     label: string;
@@ -26,9 +27,13 @@
   /** create a new tooltip with */
   export const addTooltip = (node: HTMLElement | SVGElement, opts: TooltipOptions) => {
     let { label, config } = opts;
-    let tooltipId;
+    const tooltipId = "TT-" + String(tooltipIndex++);
     tooltips.update((allTooltips) => {
-      tooltipId = "TT-" + String(tooltipIndex++);
+      if (allTooltips == undefined) allTooltips = new Map();
+      if (!tooltipId) {
+        logError("TOOLTIP ID UNDEFINED WHAT DA HECK?", allTooltips,tooltipId);
+        return allTooltips;
+      }
       config = Object.assign(
         {
           event: "hover",
@@ -58,7 +63,8 @@
     setTimeout(() => {
       const actions = popup(node, config);
       tooltips.update((allTooltips) => {
-        allTooltips.set(tooltipId, { ...allTooltips.get(tooltipId), ...actions });
+        const tooltip = allTooltips.get(tooltipId);
+        allTooltips.set(tooltipId, { ...tooltip, ...actions });
         return allTooltips;
       });
     }, 0);
@@ -69,7 +75,8 @@
       close: () => tooltips.get().get(tooltipId)?.close(),
       destroy: () => {
         tooltips.update((allTooltips) => {
-          allTooltips.get(tooltipId)?.destroy();
+          const tooltip = allTooltips.get(tooltipId);
+          tooltip.destroy();
           allTooltips.delete(tooltipId);
           return allTooltips;
         });
@@ -80,13 +87,16 @@
 
 <script lang="ts">
   onDestroy(() => {
-    tooltips.get().forEach((tooltip) => {
-      tooltip.destroy();
+    tooltips.update((tooltips) => {
+      tooltips.forEach((tooltip) => {
+        tooltip.destroy();
+      });
+      return new Map();
     });
   });
 </script>
 
-{#each $tooltips.values() as tooltip (tooltip.id)}
+{#each $tooltips.values() as tooltip, i (tooltip.id ?? i)}
   <div class="card px-4 py-2 opacity-95 font-bold max-w[40px] variant-glass-secondary border-token border-secondary-500 box-border z-50 pointer-events-none select-none" data-popup={tooltip.id}>
     {tooltip.label}
     <div class="arrow triangle bg-transparent border-secondary-500 pointer-events-none" />

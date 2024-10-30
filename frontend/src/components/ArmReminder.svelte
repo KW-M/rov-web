@@ -67,7 +67,7 @@
   });
 </script>
 
-<div class:opacity-100={visible} class="absolute left-1/2 bottom-1/2 z-50 opacity-0 -translate-x-1/2 -translate-y-1/2 border-0 border-surface-500 backdrop-blur-sm text-center whitespace-nowrap rounded-3xl max-h-full shadow-2xl overflow-hidden prose prose-invert transition-opacity pointer-events-none select-none">
+<div class:opacity-100={visible} class="absolute left-1/2 top-1/2 z-50 opacity-0 -translate-x-1/2 -translate-y-1/2 border-0 border-surface-500 backdrop-blur-sm text-center whitespace-nowrap rounded-3xl max-h-full shadow-2xl overflow-hidden prose prose-invert transition-opacity pointer-events-none select-none">
   {#if otherUserIsDriver && tryingToDrive}
     <div class="py-4 bg-yellow-500 m-0 px-6 text-black">
       <h2 class="h2 m-0 text-black">{$currentRovDriverId} is Driving</h2>

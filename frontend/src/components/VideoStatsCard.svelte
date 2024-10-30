@@ -61,7 +61,7 @@
           <b>Codecs</b>
           <div>
             {#each stats.senderLayerStats as senderStats}
-              <span class="text-right" use:addTooltip={{ label: senderStats.videoSdpFmtpLine || "?" }}>{senderStats.videoCodec || "?"} {senderStats.scalabilityMode} {senderStats.encoderImplementation}{senderStats.powerEfficientEncoder ? "[efficient]" : ""}</span><br />
+              <span class="text-right" use:addTooltip={{ label: senderStats.videoSdpFmtpLine || "?" }}>{senderStats.videoCodec || "?"} {senderStats.scalabilityMode || ""} {senderStats.encoderImplementation} {senderStats.powerEfficientEncoder ? "(low-power)" : ""}</span><br />
             {/each}
           </div>
         </div>

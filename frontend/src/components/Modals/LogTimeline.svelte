@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { log, logDebug, logError, logInfo, LogLevel, LogOrigin, logWarn, mainLogr } from "../../js/shared/logging";
-  import { getModalStore } from "@skeletonlabs/skeleton";
-  import { Close as CloseIcon, Save_alt as DownloadIcon, Cloud_sync as RefreshIcon, Leak_add as IceRestartIcon } from "svelte-google-materialdesign-icons";
+  import { getModalStore, SlideToggle } from "@skeletonlabs/skeleton";
+  import { Close as CloseIcon, Save_alt as DownloadIcon, Cloud_sync as RefreshIcon, Leak_add as IceRestartIcon, Delete_forever as ClearIcon } from "svelte-google-materialdesign-icons";
   import { fade } from "svelte/transition";
   import { frontendConnMngr } from "../../js/frontendConnManager";
   import { type RovAction } from "../../js/shared/protobufs/rov_actions";
+  import { debugModeOn } from "../../js/globalContext";
 
   // export let parent;
   const modalStore = getModalStore();
@@ -31,6 +32,11 @@
     a.click();
   };
 
+  const clearLogs = () => {
+    mainLogr.clearLogs();
+    logs = mainLogr.getLogs();
+  };
+
   onMount(() => {
     mainLogr.subscribe(() => {
       logs = mainLogr.getLogs();
@@ -54,6 +60,10 @@
       <DownloadIcon class="text-2xl pointer-events-none mr-2" tabindex="-1" variation="round" />
       Download Logs
     </button>
+    <button on:click={() => clearLogs()} class="btn bg-red-700">
+      <ClearIcon class="text-2xl pointer-events-none mr-2" tabindex="-1" variation="round" />
+      Clear Logs
+    </button>
     <!-- <div class="flex-1 self-stretch my-2 mx-6 border-r-2 border-white md:border-0"></div> -->
     <button
       class="btn variant-soft-secondary"
@@ -64,6 +74,7 @@
       <IceRestartIcon class="text-2xl pointer-events-none mr-2" tabindex="-1" variation="round" />
       Restart ICE
     </button>
+    <SlideToggle name="Debug Mode" size="lg" bind:checked={$debugModeOn}>Debug Mode {$debugModeOn ? "ON" : "OFF"}</SlideToggle>
   </nav>
   <div class="bg-slate-800/70 w-full flex-1 box-border flex flex-col-reverse overflow-scroll pb-20">
     <!-- <div class=""> -->

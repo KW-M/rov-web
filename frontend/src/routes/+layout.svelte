@@ -20,7 +20,7 @@
   import { type LogEntry, mainLogr } from "../js/shared/logging";
   import { currentServerTimeOffset, perfUnixTimeNow, unixTimeNow } from "../js/shared/time";
   import { getGpadCtrl } from "../js/gamepad";
-  import { debugPageModeActive, fullscreenOpen } from "../js/globalContext";
+  import { debugModeOn, fullscreenOpen } from "../js/globalContext";
   import { frontendStartupFlow } from "../js/startupFlow";
   import { URL_PARAMS } from "../js/frontendConsts";
 
@@ -71,17 +71,21 @@
   };
 
   onMount(() => {
-    debugPageModeActive.set(URL_PARAMS.DEBUG_MODE);
-    document.addEventListener("fullscreenchange", (e) => {
-      fullscreenOpen.set(document.fullscreenElement !== null);
-    });
-    window.addEventListener("beforeunload", () => {
-      frontendConnMngr.close();
-    });
+    debugModeOn.set(URL_PARAMS.DEBUG_MODE);
 
     // pull stored logs from local storage
     getStoredLogs();
-    if (debugPageModeActive.get()) storeLogs();
+
+    const fullscreenChange = () => {
+      fullscreenOpen.set(document.fullscreenElement !== null);
+    };
+
+    const beforeunload = () => {
+      frontendConnMngr.close();
+    };
+
+    document.addEventListener("fullscreenchange", fullscreenChange);
+    window.addEventListener("beforeunload", beforeunload);
 
     serverTimeCheckInterval = setInterval(checkServerTime, 2000);
     checkServerTime();
@@ -89,6 +93,10 @@
     // start app:
     frontendStartupFlow.start();
     RovActions.startRequiredMsgLoop();
+    return () => {
+      window.removeEventListener("beforeunload", beforeunload);
+      document.removeEventListener("fullscreenchange", fullscreenChange);
+    };
   });
 
   onDestroy(() => {
