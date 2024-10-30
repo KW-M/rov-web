@@ -65,11 +65,13 @@ export class SimplePeerConnection {
     // a queue of messages to be sent out over the data channel.
     _msgSendQueue: ArrayBufferLike[] = [];
     // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
-    _reconnectAttemptCount: number;
+    _reconnectAttemptCount: number = 0;
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
     _shouldReconnect: boolean;
     // flag used to signal that the connection is being stopped (to avoid injesting additional signalling messages durring this).
     _stopping: boolean = false;
+    // flag that indicates the start function has run to completion.
+    _startComplete: boolean = false;
     // flag used to track if this side is the initiator (user) or not.
     _initiator: boolean = false;
     // the unique id of this connection.
@@ -106,6 +108,7 @@ export class SimplePeerConnection {
     }
 
     start(autoReconnect: boolean = true, reconnectAttemptCount: number = 0, streams: MediaStream[] = []) {
+        this._startComplete = false;
         if (this._p) this.stop();
         this._stopping = false;
         this._shouldReconnect = autoReconnect;
@@ -214,11 +217,15 @@ export class SimplePeerConnection {
             this.connectionState.set(ConnectionStates.failed);
         })
 
-        this._processSignalMsgQueue();
+        setTimeout(() => {
+            this._startComplete = true;
+            this._processSignalMsgQueue();
+        }, 0)
     }
 
     stop() {
         this._stopping = true;
+        this._startComplete = false;
         this.resetConnectionStats();
         this.connectionState.set(ConnectionStates.disconnectedOk);
         // this.remoteVideoStreams.set(new Map());
@@ -390,7 +397,7 @@ export class SimplePeerConnection {
     }
 
     _processSignalMsgQueue() {
-        if (!this._p || this._stopping === true) return;
+        if (!this._p || this._stopping === true || this._startComplete === false) return;
         // console.log("SP: processing signal queue", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
         for (let i = 0; i < this._incomingSignalQueue.length; i++) {
             // console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
