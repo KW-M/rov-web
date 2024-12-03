@@ -2,13 +2,13 @@
   "name": "rov-web",
   "version": "0.0.1",
   "type": "module",
-  "packageManager": "pnpm@9.12.0",
+  "packageManager": "pnpm@9.14.4",
   "private": true,
   "scripts": {
     "dev": "pnpm run dev:frontend",
     "build": "pnpm run build:frontend && pnpm run build:internal;",
     "preview": "pnpm run preview:frontend;",
-    "dev:frontend": "cd frontend; vite dev --host",
+    "dev:frontend": "cd frontend; vite dev --host --force",
     "dev:internal": "cd rov-internal-website; vite dev --host",
     "build:frontend": "cd frontend; vite build",
     "build:internal": "cd rov-internal-website; vite build",
@@ -25,7 +25,7 @@
     "clean": "rm -r ./rov-internal-website/build; rm -r ./frontend/build; rm -r ./frontend/.svelte-kit; rm -rf ./node_modules; rm ./pnpm-lock.yaml",
     "run_py": "python3 rov-python/main.py --config-file  tooling/rasberry_pi_setup_scripts/new_config_files/rov-config.example.json",
     "copy_to_rov": "rsync -arvc --ignore-times --delete --exclude '.*' --exclude 'node_modules' --exclude '__pycache__'  ./ /Volumes/rovshared/rov-web/",
-    "pre_push": "pnpm run 'sveltekit:check' && pnpm run 'compile:proto' && pnpm run 'optimize:svgs' && pnpm run 'build'",
+    "pre_push": "pnpm install && pnpm run 'sveltekit:check' && pnpm run 'compile:proto' && pnpm run 'optimize:svgs' && pnpm run 'build'",
     "prepare": "husky"
   },
   "devDependencies": {

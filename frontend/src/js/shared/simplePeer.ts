@@ -399,17 +399,25 @@ export class SimplePeerConnection {
     _processSignalMsgQueue() {
         if (!this._p || this._stopping === true || this._startComplete === false) return;
         // console.log("SP: processing signal queue", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
-        for (let i = 0; i < this._incomingSignalQueue.length; i++) {
-            // console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
-            if (this._incomingSignalQueue.length === 0) return;
-            const signalIndex = this._incomingSignalQueue.findIndex((signal) => signal?.msgNum === this._consecutiveSignalMsgsProcessed);
-            if (signalIndex === -1) return;
-            const signal = this._incomingSignalQueue[signalIndex];
+        // for (let i = 0; i < this._incomingSignalQueue.length; i++) {
+        //     // console.log("SP: processing signal q msg", i, "/", this._incomingSignalQueue.length - 1, this._consecutiveSignalMsgsProcessed)
+        //     if (this._incomingSignalQueue.length === 0) return;
+        //     const signalIndex = this._incomingSignalQueue.findIndex((signal) => signal?.msgNum === this._consecutiveSignalMsgsProcessed);
+        //     if (signalIndex === -1) return;
+        //     const signal = this._incomingSignalQueue[signalIndex];
 
+        //     // here we know the signal is for the current connection and is the next consecutive message.
+        //     logInfo("SP: signal in", signal, signal.msgNum, this._consecutiveSignalMsgsProcessed, signal.connId, this._connectionId)
+        //     this._incomingSignalQueue.splice(signalIndex, 1);
+        //     i--;
+        //     this._p.signal(signal)
+        //     this._consecutiveSignalMsgsProcessed++;
+        // }
+
+        while (this._incomingSignalQueue.length != 0) {
+            const signal = this._incomingSignalQueue.shift();
             // here we know the signal is for the current connection and is the next consecutive message.
             logInfo("SP: signal in", signal, signal.msgNum, this._consecutiveSignalMsgsProcessed, signal.connId, this._connectionId)
-            this._incomingSignalQueue.splice(signalIndex, 1);
-            i--;
             this._p.signal(signal)
             this._consecutiveSignalMsgsProcessed++;
         }

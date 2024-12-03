@@ -31,7 +31,7 @@
     tooltips.update((allTooltips) => {
       if (allTooltips == undefined) allTooltips = new Map();
       if (!tooltipId) {
-        logError("TOOLTIP ID UNDEFINED WHAT DA HECK?", allTooltips,tooltipId);
+        logError("TOOLTIP ID UNDEFINED WHAT DA HECK?", allTooltips, tooltipId);
         return allTooltips;
       }
       config = Object.assign(
@@ -76,8 +76,10 @@
       destroy: () => {
         tooltips.update((allTooltips) => {
           const tooltip = allTooltips.get(tooltipId);
-          tooltip.destroy();
-          allTooltips.delete(tooltipId);
+          if (tooltip) {
+            tooltip.destroy();
+            allTooltips.delete(tooltipId);
+          }
           return allTooltips;
         });
       },

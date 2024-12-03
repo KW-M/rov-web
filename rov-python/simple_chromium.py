@@ -133,7 +133,7 @@ if __name__ == "__main__":
         "--disable-browser-side-navigation",
         "--disable-dev-shm-usage",
         "--disable-search-engine-choice-screen",
-        "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions",
+        "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions,IsolateOrigins,site-per-process",
         "--disable-hang-monitor",
         "--disable-popup-blocking",
         "--disable-prompt-on-repost",
@@ -141,6 +141,18 @@ if __name__ == "__main__":
         "--disable-sync",
         "--disable-notifications",
         "--dns-prefetch-disable",
+        # "--disable-stack-profiler",
+        # "--disable-system-font-check",
+        # "--disable-speech-api",
+        # # -- Reduce security features to allow for lower memory usage, see also above disable-features=IsolateOrigins,site-per-process ---
+        # "--disable-site-isolation-trials",
+        # "--disable-web-security",
+        # "--disable-gpu-sandbox",
+        # # -- GPU Things ---
+        # "--disable-webgl",
+        # "--disable-threaded-compositing",
+        # "--disable-frame-rate-limit",
+        #  "--window-size=800,600",
     ]
 
     # if vdisplay is not None and vdisplay.is_alive():
@@ -183,6 +195,12 @@ if __name__ == "__main__":
         chromium_args.append("--disable-accelerated-video-encode")
         chromium_args.append("--disable-accelerated-video-decode")
 
+    if os.environ.get("PRINT_PDF", "false").upper() == "TRUE":
+        chromium_args.append("--print-to-pdf=./website.pdf")
+
+    # add any extra chromium args from the environment:
+    chromium_args.extend(os.environ.get("EXTRA_CHROMIUM_ARGS", "").split(" "))
+
     # kill existing chromium processes just to make sure we are starting fresh:
     print("Killing all existing chromium processes:")
     subprocess.run(["killall", "Chromium"], check=False)
@@ -211,7 +229,8 @@ if __name__ == "__main__":
         RETURN_CODE = browser_process.wait()  # wait for the browser process to finish
         print("return_code=" + str(RETURN_CODE))
         # wait a sec in case the browser process is still shutting down or there is a crashing loop
-        sleep(1)
+        if RETURN_CODE != 0:
+            sleep(3)
         exit(RETURN_CODE)
     except KeyboardInterrupt:
         print("KeyboardInterrupt")

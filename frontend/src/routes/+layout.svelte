@@ -61,10 +61,11 @@
   // Check server time in case the user's clock is off
   let serverTimeCheckInterval: NodeJS.Timeout;
   const checkServerTime = () => {
-    const TWO_MINUTES = 12000; // ms
+    const TEN_MINUTES = 600_000; // ms
     const timeOffset = currentServerTimeOffset();
     if (timeOffset === null) return;
-    if (Math.abs(timeOffset) > TWO_MINUTES) {
+    if (Math.abs(timeOffset) > TEN_MINUTES) {
+      console.log("Client device - Server time offset is large:", timeOffset);
       showToastMessage(`<h4 class="h4 mb-1">The clock on this device is off</h4>Please set the date & time in your computer settings`, 15000, false, ToastSeverity.warning);
     }
     clearInterval(serverTimeCheckInterval);
