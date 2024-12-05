@@ -45,27 +45,27 @@ if is_mac:
 
 if __name__ == "__main__":
 
-    # pylint: disable=C0103
-    vdisplay = None
-    if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
-        from pyvirtualdisplay.display import Display
+    # # pylint: disable=C0103
+    # vdisplay = None
+    # if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
+    #     from pyvirtualdisplay.display import Display
 
-        size = tuple(
-            int(x) for x in os.environ.get("VIRTUAL_DISPLAY_SIZE", "800x600").split("x")
-        )
-        if len(size) != 2:
-            print("Invalid VIRTUAL_DISPLAY_SIZE use format WIDTHxHEIGHT")
-            size = (800, 600)
+    #     size = tuple(
+    #         int(x) for x in os.environ.get("VIRTUAL_DISPLAY_SIZE", "800x600").split("x")
+    #     )
+    #     if len(size) != 2:
+    #         print("Invalid VIRTUAL_DISPLAY_SIZE use format WIDTHxHEIGHT")
+    #         size = (800, 600)
 
-        # running a virtual display (xvfb) seems necessary to run
-        # graphical applications (chromium) in headless mode.
-        vdisplay = Display(
-            visible=False, backend="xvfb", size=(800, 600), color_depth=8
-        )
-        vdisplay.start()
-        if vdisplay.is_alive() is False:
-            print("Failed to start virtual display", vdisplay)
-            exit(1)
+    #     # running a virtual display (xvfb) seems necessary to run
+    #     # graphical applications (chromium) in headless mode.
+    #     vdisplay = Display(
+    #         visible=False, backend="xvfb", size=(800, 600), color_depth=8
+    #     )
+    #     vdisplay.start()
+    #     if vdisplay.is_alive() is False:
+    #         print("Failed to start virtual display", vdisplay)
+    #         exit(1)
 
     query_params = {
         "ROV_NAME": os.environ.get("ROV_NAME", "Default-ROV"),
@@ -87,73 +87,101 @@ if __name__ == "__main__":
     URL = os.environ.get("INTERNAL_WEBPAGE_URL", "http://localhost:8080/internal")
     URL += "?" + urlencode(query_params)
 
-    chromium_args = [
-        BROWSER_BINARY_PATH,
-        # ----- vital flags for headless mode: -----
-        "--headless=new",
-        "--user-data-dir=" + BROWSER_DATA_DIR,
-        "--auto-accept-camera-and-microphone-capture",
-        "--no-first-run",
-        # ----------- other flags: ----------------
-        "--auto-accept-this-tab-capture",
-        "--ash-no-nudges",
-        "--allow-pre-commit-input",
-        "--force-color-profile=srgb",
-        "--metrics-recording-only",
-        "--no-default-browser-check",
-        "--password-store=basic",
-        "--use-mock-keychain",
-        "--no-service-autorun",
-        "--hide-scrollbars",
-        "--mute-audio",
-        "--as-browser",  # run tests in main browser process
-        "--safebrowsing-disable-auto-update",
-        "--noerrdialogs",
-        "--metrics-recording-only",
-        "--allow-file-access",
-        "--allow-file-access-from-files=about:blank",
-        "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
-        "--enable-features=NetworkService,NetworkServiceInProcess",
-        # ---------- disable features: ------------
-        "--disable-extensions",
-        "--disable-translate",
-        "--disable-web-resources",
-        "--disable-component-update",
-        "--disable-field-trial-config",
-        "--disable-background-networking",
-        "--disable-zero-browsers-open-for-tests",
-        "--disable-background-timer-throttling",
-        "--disable-backgrounding-occluded-windows",
-        "--disable-back-forward-cache",
-        "--disable-chrome-browser-cloud-management"
-        "--disable-client-side-phishing-detection",
-        "--disable-component-extensions-with-background-pages",
-        "--disable-default-apps",
-        "--disable-drive-fs-for-testing",
-        "--disable-browser-side-navigation",
-        "--disable-dev-shm-usage",
-        "--disable-search-engine-choice-screen",
-        "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions,IsolateOrigins,site-per-process",
-        "--disable-hang-monitor",
-        "--disable-popup-blocking",
-        "--disable-prompt-on-repost",
-        "--disable-renderer-backgrounding",
-        "--disable-sync",
-        "--disable-notifications",
-        "--dns-prefetch-disable",
-        # "--disable-stack-profiler",
-        # "--disable-system-font-check",
-        # "--disable-speech-api",
-        # # -- Reduce security features to allow for lower memory usage, see also above disable-features=IsolateOrigins,site-per-process ---
-        # "--disable-site-isolation-trials",
-        # "--disable-web-security",
-        # "--disable-gpu-sandbox",
-        # # -- GPU Things ---
-        # "--disable-webgl",
-        # "--disable-threaded-compositing",
-        # "--disable-frame-rate-limit",
-        #  "--window-size=800,600",
-    ]
+    chromium_args = []
+
+    # add run-xvfb to run in a virtual display:
+    if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
+        chromium_args.append("xvfb-run")
+        extra_xvfb_args = os.environ.get("VIRTUAL_DISPLAY_ARGS", "").strip()
+        if extra_xvfb_args != "":
+            chromium_args.extend(extra_xvfb_args.split(" "))
+
+    chromium_args.extend(
+        [
+            BROWSER_BINARY_PATH,
+            # ----- vital flags for headless mode: -----
+            "--headless=new",
+            "--user-data-dir=" + BROWSER_DATA_DIR,
+            "--auto-accept-camera-and-microphone-capture",
+            "--auto-accept-this-tab-capture",
+            "--no-first-run",
+            # ----------- other flags: ----------------
+            "--ash-no-nudges",
+            "--allow-pre-commit-input",
+            "--force-color-profile=srgb",
+            "--metrics-recording-only",
+            "--no-default-browser-check",
+            "--password-store=basic",
+            "--use-mock-keychain",
+            "--no-service-autorun",
+            "--hide-scrollbars",
+            "--mute-audio",
+            "--as-browser",  # run tests in main browser process
+            "--safebrowsing-disable-auto-update",
+            "--noerrdialogs",
+            "--metrics-recording-only",
+            "--allow-file-access",
+            "--allow-file-access-from-files=about:blank",
+            "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+            "--enable-features=NetworkService,NetworkServiceInProcess",
+            # ---------- disable features: ------------
+            "--dns-prefetch-disable",
+            "--disable-extensions",
+            "--disable-translate",
+            "--disable-web-resources",
+            "--disable-component-update",
+            "--disable-field-trial-config",
+            "--disable-background-networking",
+            "--disable-zero-browsers-open-for-tests",
+            "--disable-background-timer-throttling",
+            "--disable-backgrounding-occluded-windows",
+            "--disable-back-forward-cache",
+            "--disable-chrome-browser-cloud-management"
+            "--disable-client-side-phishing-detection",
+            "--disable-component-extensions-with-background-pages",
+            "--disable-default-apps",
+            "--disable-drive-fs-for-testing",
+            "--disable-browser-side-navigation",
+            "--disable-dev-shm-usage",
+            "--disable-search-engine-choice-screen",
+            "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions,IsolateOrigins,site-per-process",
+            "--disable-hang-monitor",
+            "--disable-popup-blocking",
+            "--disable-prompt-on-repost",
+            "--disable-renderer-backgrounding",
+            "--disable-sync",
+            "--disable-notifications",
+            "--disable-system-font-check",
+            "--disable-speech-api",
+            # Other Chromium Flags that May be Useful:
+            # "--enable-automation",
+            # "--single-process", # not supported, may be harmful in modern chrome
+            # "--dom-automation",
+            # "--full-memory-crash-report",
+            # "--test-type=ui",
+            # "--remote-debugging-pipe", # use a file pipe instead of a network socket for remote debugging
+            # "--testing-channel=ChromeTestingInterface:1972.1",
+            # "--no-startup-window", # seems to break headless mode
+            # "--disable-gpu",
+            # "--disable-ipc-flooding-protection",
+            # "--disable-stack-profiler",
+            # # -- Reduce security features to allow for lower memory usage, see also above disable-features=IsolateOrigins,site-per-process ---
+            # "--disable-site-isolation-trials",
+            # "--disable-web-security",
+            # "--disable-gpu-sandbox",
+            # # -- GPU Things ---
+            # "--in-process-gpu",
+            # "--disable-webgl",
+            # "--disable-threaded-compositing",
+            # "--disable-frame-rate-limit",
+            # "--window-size=800,600",
+            # "--virtual-time-budget=60000",
+            ## -- Security Things --- Use with caution
+            # "--allow-running-insecure-content",
+            # "--ignore-certificate-errors",
+            # "--safebrowsing-disable-download-protection",
+        ]
+    )
 
     # if vdisplay is not None and vdisplay.is_alive():
     #     chromium_args.append("--display=" + str(vdisplay.new_display_var))
@@ -199,25 +227,31 @@ if __name__ == "__main__":
         chromium_args.append("--print-to-pdf=./website.pdf")
 
     # add any extra chromium args from the environment:
-    chromium_args.extend(os.environ.get("EXTRA_CHROMIUM_ARGS", "").split(" "))
+    chromium_args.extend(
+        [a for a in os.environ.get("EXTRA_CHROMIUM_ARGS", "").split(" ") if a != ""]
+    )
 
     # kill existing chromium processes just to make sure we are starting fresh:
     print("Killing all existing chromium processes:")
-    subprocess.run(["killall", "Chromium"], check=False)
+    subprocess.run(["killall", "Chromium", "xvfb"], check=False)
+    subprocess.run(["ps"], check=False)
 
     # launch chromium with the specified args:
     # add the URL to the end of the args list to open the webpage
     chromium_args.append(URL)
+
     environmentVars = {
         **os.environ,
         "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
     }
-    if vdisplay is not None and vdisplay.is_alive():
-        environmentVars["DISPLAY"] = vdisplay.new_display_var
+    # if vdisplay is not None and vdisplay.is_alive():
+    #     environmentVars["DISPLAY"] = vdisplay.new_display_var
+
     print("Environment Variables:")
     print(environmentVars)
     print("Running chromium:")
     print(" ".join(chromium_args))
+    # https://stackoverflow.com/questions/5772873/python-spawn-off-a-child-subprocess-detach-and-exit
     browser_process = subprocess.Popen(
         args=chromium_args,
         shell=False,
@@ -238,24 +272,6 @@ if __name__ == "__main__":
         raise e
     finally:
         browser_process.terminate()
-        subprocess.run(["killall", "Chromium"], check=False)
-        if vdisplay is not None:
-            vdisplay.stop()
-
-        # Other Chromium Flags that May be Useful:
-        # "--enable-automation",
-
-        # "--single-process",
-        # "--in-process-gpu",
-        # "--disable-web-security",
-        # "--allow-running-insecure-content",
-        # "--ignore-certificate-errors",
-        # "--safebrowsing-disable-download-protection",
-        # "--dom-automation",
-        # "--full-memory-crash-report",
-        # "--test-type=ui",
-        # "--remote-debugging-pipe", # use a file pipe instead of a network socket for remote debugging
-        # "--testing-channel=ChromeTestingInterface:1972.1",
-        # "--no-startup-window", # seems to break headless mode
-        # "--disable-gpu",
-        # "--disable-ipc-flooding-protection",
+        subprocess.run(["killall", "Chromium", "xvfb"], check=False)
+        # if vdisplay is not None:
+        #     vdisplay.stop()
