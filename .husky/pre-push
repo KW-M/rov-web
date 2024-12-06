@@ -1,1 +1,1 @@
-echo "run pre_push first: pnpm run pre_push" && exit 1
+echo "run pre_push first: pnpm run pre_push && git push --no-verify" && exit 1
