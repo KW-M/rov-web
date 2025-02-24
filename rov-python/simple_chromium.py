@@ -96,6 +96,11 @@ if __name__ == "__main__":
         if extra_xvfb_args != "":
             chromium_args.extend(extra_xvfb_args.split(" "))
 
+    #!CHROME GPU WORKS ON BOOKWORM WITH THIS !!!: EGL_PLATFORM=surfaceless MESA_VK_DEVICE_SELECT=14e4:be485fd3 /usr/bin/chromium-shell --headless=new --enable-features=VaapiVideoEncoder,VaapiVideoDecoder,UseOzonePlatform --ignore-gpu-blocklist --use-gl=angle --use-angle=gl-egl --test-type --no-sandbox --temp-profile --user-data-dir --disable-smooth-scrolling --disable-low-res-tiling --enable-low-end-device-mode --num-raster-threads=4 --profiler-timing=0 --disable-composited-antialiasing --enable-logging --remote-debugging-port=9224 --remote-debugging-address=0.0.0.0  https://austin-eng.com
+
+    # --flag-switches-begin --use-angle=metal --disable-features=FileSystemAccessAPI --flag-switches-end --component-updater=url-source=https://go-updater.brave.com/extensions
+    # EGL_PLATFORM=surfaceless MESA_VK_DEVICE_SELECT=14e4:be485fd3 /usr/bin/chromium-shell --headless=new --enable-features=Vulkan,VaapiVideoEncoder,VaapiVideoDecoder,UseOzonePlatform --use-vulkan=native --enable-logging --disable-vulkan-fallback-to-gl-for-testing   --ignore-gpu-blocklist --use-angle=vulkan --remote-debugging-port=9224 --remote-debugging-address=0.0.0.0  https://austin-eng.com/
+    # --ozone-platform=drm --ignore-gpu-blocklist --use-gl=angle --use-angle=gl-egl --disable-oop-rasterization --enable-features=Vulkan,UseSkiaRenderer,VaapiVideoEncoder,VaapiVideoDecoder
     chromium_args.extend(
         [
             BROWSER_BINARY_PATH,
@@ -105,7 +110,20 @@ if __name__ == "__main__":
             "--auto-accept-camera-and-microphone-capture",
             "--auto-accept-this-tab-capture",
             "--no-first-run",
+            # "--enable-gpu",  # https://chromium-review.googlesource.com/c/chromium/src/+/5731222/3/docs/gpu/using-gpu-hardware-in-headless-chrome.md#7
+            # "--ignore-gpu-blocklist",
+            # "--ozone-platform=dma"  # for linux to use gpu acceleration without a windowing/x11 server (use --ozone-latform=headless to disable gpu accel and display) https://chromium.googlesource.com/chromium/src.git/+/HEAD/docs/ozone_overview.md
+            "--use-gl=angle",
+            "--use-angle=gl-egl",  # https://issues.chromium.org/issues/40540071#comment61
+            # "--use-angle=vulkan",  # https://github.com/puppeteer/puppeteer/issues/8638
+            # https://github.com/m1k1o/neko/blob/c1360d3abcfea9104e355f90f5e353205f70f743/.docker/google-chrome/supervisord.nvidia.conf#L14-L15
+            "--disable-oop-rasterization",  # https://www.reddit.com/r/chrome/comments/rdxxnu/the_affect_of_outofprocess_rasterization_on/
+            # "--enable-features=NetworkService,NetworkServiceInProcess",
+            "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder",
             # ----------- other flags: ----------------
+            "--bwsi",  # chrome guest mode
+            "--kiosk",
+            "--noerrdialogs",
             "--ash-no-nudges",
             "--allow-pre-commit-input",
             "--force-color-profile=srgb",
@@ -123,7 +141,6 @@ if __name__ == "__main__":
             "--allow-file-access",
             "--allow-file-access-from-files=about:blank",
             "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
-            "--enable-features=NetworkService,NetworkServiceInProcess",
             # ---------- disable features: ------------
             "--dns-prefetch-disable",
             "--disable-extensions",
@@ -131,6 +148,7 @@ if __name__ == "__main__":
             "--disable-web-resources",
             "--disable-component-update",
             "--disable-field-trial-config",
+            "--disable-restore-session-state",
             "--disable-background-networking",
             "--disable-zero-browsers-open-for-tests",
             "--disable-background-timer-throttling",
@@ -144,7 +162,7 @@ if __name__ == "__main__":
             "--disable-browser-side-navigation",
             "--disable-dev-shm-usage",
             "--disable-search-engine-choice-screen",
-            "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions,IsolateOrigins,site-per-process",
+            "--disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,InterestFeedContentSuggestions,ConversionMeasurement,AttributionReportingCrossAppWeb,IsolateOrigins,site-per-process",
             "--disable-hang-monitor",
             "--disable-popup-blocking",
             "--disable-prompt-on-repost",
@@ -169,17 +187,21 @@ if __name__ == "__main__":
             # "--disable-site-isolation-trials",
             # "--disable-web-security",
             # "--disable-gpu-sandbox",
+            #   --disable-file-system
+            # "--disable-seccomp-filter-sandbox",  # maybe less severe alternative to --no-sandbox?
             # # -- GPU Things ---
             # "--in-process-gpu",
             # "--disable-webgl",
             # "--disable-threaded-compositing",
             # "--disable-frame-rate-limit",
+            "--disable-oop-rasterization",
             # "--window-size=800,600",
             # "--virtual-time-budget=60000",
             ## -- Security Things --- Use with caution
             # "--allow-running-insecure-content",
             # "--ignore-certificate-errors",
             # "--safebrowsing-disable-download-protection",
+            # --temp-profile --user-data-dir --disable-smooth-scrolling --disable-low-res-tiling --enable-low-end-device-mode --profiler-timing=0 --disable-composited-antialiasing
         ]
     )
 
@@ -243,6 +265,7 @@ if __name__ == "__main__":
     environmentVars = {
         **os.environ,
         "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+        "EGL_PLATFORM": "surfaceless",
     }
     # if vdisplay is not None and vdisplay.is_alive():
     #     environmentVars["DISPLAY"] = vdisplay.new_display_var
