@@ -5,21 +5,24 @@
   import { Close as CloseIcon, Save_alt as DownloadIcon, Cloud_sync as RefreshIcon, Leak_add as IceRestartIcon, Delete_forever as ClearIcon } from "svelte-google-materialdesign-icons";
   import { fade } from "svelte/transition";
   import { frontendConnMngr } from "../../js/frontendConnManager";
-  import { type RovAction } from "../../js/shared/protobufs/rov_actions";
+  import { RovAction } from "../../js/shared/protobufs/rov_actions";
   import { debugModeOn } from "../../js/globalContext";
+  import { frontendRovMsgHandler } from "../../js/rovMessageHandler";
 
   // export let parent;
   const modalStore = getModalStore();
   let logs = mainLogr.getLogs();
 
   const fetchRovLogs = async () => {
-    const response = await frontendConnMngr.sendMessageToRov({
-      body: {
-        oneofKind: "sendRovLogs",
-        sendRovLogs: {},
-      },
-    });
-    logDebug("fetchRovLogs Response=", response);
+    await frontendRovMsgHandler.sendRovMessage(
+      RovAction.create({
+        body: {
+          oneofKind: "sendRovLogs",
+          sendRovLogs: {},
+        },
+      }),
+      true
+    );
   };
 
   const downloadLogs = () => {

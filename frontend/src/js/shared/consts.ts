@@ -54,7 +54,7 @@ export const LIVEKIT_BACKEND_ROOM_CONFIG: RoomOptions = {
     adaptiveStream: false,
 
     // IMPORTANT: stops tracks when unpublishing - this is important for changing the camera resolution settings.
-    stopLocalTrackOnUnpublish: true,
+    stopLocalTrackOnUnpublish: false,
 
     // default capture settings
     videoCaptureDefaults: {

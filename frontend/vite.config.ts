@@ -18,7 +18,8 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	//purgeCss()
 	server: {
-		hmr: true,
+		hmr: false,
+		ws: false,
 	},
 	build: {
 		emptyOutDir: true,

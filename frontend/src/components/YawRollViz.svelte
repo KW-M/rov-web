@@ -3,7 +3,7 @@
   import fragmentShader from "../assets/shaders/AHRS_Sphere.glsl?raw";
   import * as twgl from "twgl.js";
   import { onMount } from "svelte";
-  import { getColors } from "../js/colorsVariety";
+  import { getColors } from "../js/util";
   import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging";
 
   let canvas: HTMLCanvasElement;

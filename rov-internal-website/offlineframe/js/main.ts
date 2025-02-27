@@ -1,3 +1,4 @@
+import { logInfo, log } from "../../js/shared/logging";
 import { receiveProxiedMsg, setSendProxyMessageCallback } from "../../js/shared/iframeWsProxy/iframeWsProxyReceiver";
 const iframe = document.createElement('iframe');
 const iframeHost = window.location.protocol.replace(":", "") + '://' + window.location.host;

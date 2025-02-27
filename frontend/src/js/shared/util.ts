@@ -85,15 +85,6 @@ export function oneShotSubscribe<V>(store: nStoreT<V>, callback: (value: V) => v
     return unSub;
 }
 
-
-export const appendLog = log
-// (...args: any[]) {
-//     log(...args)
-//     const txtElem = document.createElement('p');
-//     txtElem.innerText = args.map(arg => JSON.stringify(arg)).join(' | ');
-//     document.body.appendChild(txtElem)
-// }
-
 export function getWebsocketURL(urlEndpoint: string, forceSSL: boolean = false) {
     return urlEndpoint.replace("http", "ws"); // works with https:// too because wss:// is the https version
 }

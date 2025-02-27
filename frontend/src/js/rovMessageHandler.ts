@@ -11,26 +11,90 @@ import { URL_PARAMS } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
 import { onLivekitVideoOptionsChange, onSimplePeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
 import { unixTimeNow } from "./shared/time";
+import { SimpleMessageBroker } from "./shared/reliableMessageBroker";
+import { base64encode } from "@protobuf-ts/runtime";
 
 let lastTimeRecvdPong = NaN;
 
-type ReplyExchangeData = { callback: null | ((replyMsgData: RovResponse) => void), originalMsgData: RovAction };
+type ReplyExchangeData = { callback: null | ((replyMsgData: RovResponse) => void), originalMsgData: RovAction, reliable?: boolean };
 
 export class FrontendRovMsgHandlerClass {
     // replyContinuityCallbacks: keep track of functions to run when we get a reply to a message we sent with some ExchangeId
     // (index is the ExchangeId number of the sent message)
     replyContinuityCallbacks: ReplyExchangeData[] = [];
+    //
+    // reliableMessageBroker: SimpleMessageBroker<RovAction, RovResponse>;
 
-    handleRecivedMessage(msgBytes: ArrayBufferLike) {
+    constructor() {
+        // this.reliableMessageBroker = new SimpleMessageBroker<RovAction, RovResponse>({
+        //     initiator: true,
+        //     resendDelay: 1000,
+        //     sendMsgToTransport: (msg, counter) => {
+        //         // msg.resetCount = 0;
+        //         // msg.sequenceNum = counter;
+        //         frontendConnMngr.sendMessageToRov(msg, true);
+        //     },
+        //     processRecivedMsg: (msg) => this.handleRecivedMessage(msg)
+        // })
+    }
+
+    sendRovMessage(msg: RovAction, reliable: boolean = false, replyCallback: ((replyMsgData: RovResponse) => void) | null = null) {
+        if (frontendConnMngr.currentLivekitIdentity.get() === null) return;
+        if (!msg.exchangeId) msg.exchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random exchange id if none is provided
+        if (!this.replyContinuityCallbacks[msg.exchangeId]) this.replyContinuityCallbacks[msg.exchangeId] = { callback: replyCallback, originalMsgData: msg, reliable: reliable };
+        frontendConnMngr.sendMessageToRov(msg, reliable);
+        // if (reliable) {
+        //     this.reliableMessageBroker.send(msg);
+        // } else {
+        // frontendConnMngr.sendMessageToRov(msg, false);
+        // }
+    }
+
+    resendMessage(ExchangeId: number) {
+        const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
+        if (replyExchageData && replyExchageData.originalMsgData) {
+            logInfo("Resending message: ", replyExchageData.originalMsgData)
+            this.sendRovMessage(replyExchageData.originalMsgData, replyExchageData.reliable, replyExchageData.callback);
+        } else {
+            logWarn("resendMessage(): No message to resend for ExchangeId: ", ExchangeId)
+        }
+    }
+
+    runExchangeCallback(msgData: RovResponse, ExchangeId: number) {
+        const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
+        if (replyExchageData) {
+            replyExchageData.callback && replyExchageData.callback(msgData);
+            // remove the echange data since the exchange is done
+            const msgType = msgData.body.oneofKind;
+            if (msgType === "done" || msgType === "error")
+                delete this.replyContinuityCallbacks[ExchangeId]
+        }
+    }
+
+    processRecivedMessage(msgBytes: Uint8Array) {
         let rawData = new Uint8Array(msgBytes)
         if (!rawData || rawData.length === 0) return;
-        const msgData = RovResponse.fromBinary(rawData);
+        const msg = RovResponse.fromBinary(rawData);
+        // const reliable = msg.sequenceNum != 0;
+        // console.debug("RECIVED Message: ", msg, msg.sequenceNum);
+        this.handleRecivedMessage(msg);
+        // if (reliable) {
+        //     this.reliableMessageBroker.receive(msg, msg.sequenceNum);
+        // } else {
+        //     this.handleRecivedMessage(msg);
+        // }
+    }
+
+    handleRecivedMessage(msgData: RovResponse) {
         const msgBody = msgData.body;
         const ExchangeId = msgData.exchangeId;
         const msgType = msgBody.oneofKind;
-
+        console.debug("RECIVED Message: ", msgType, msgBody);
         this.runExchangeCallback(msgData, ExchangeId);
+        frontendConnMngr.simplePeerConnection.checkAliveness();
         switch (msgType) {
+            case "heartbeat":
+                return true;
             case "done":
                 return this.handleDoneMsgRecived(msgBody.done, ExchangeId);
             case "error":
@@ -138,7 +202,7 @@ export class FrontendRovMsgHandlerClass {
 
     handleMavlinkMessageRecived(msgData: MavlinkResponse, ExchangeId: number) {
         if (!msgData.message) return;
-        const mavMessage = DECODE_TXT(msgData.message)
+        const mavMessage = DECODE_TXT(msgData.message.buffer);
         try {
             const msg = JSON.parse(mavMessage);
             handleMavlinkMessage(msg);
@@ -177,32 +241,6 @@ export class FrontendRovMsgHandlerClass {
         onSimplePeerVideoOptionsChange(msgData);
     }
 
-    sendRovMessage(msg: RovAction, replyCallback: ((replyMsgData: RovResponse) => void) | null = null) {
-        if (frontendConnMngr.currentLivekitIdentity.get() === null) return;
-        if (!msg.exchangeId) msg.exchangeId = this.replyContinuityCallbacks.length + 1;//uuidV4().substring(0, 8); // generate a random exchange id if none is provided
-        if (!this.replyContinuityCallbacks[msg.exchangeId]) this.replyContinuityCallbacks[msg.exchangeId] = { callback: replyCallback, originalMsgData: msg };
-        frontendConnMngr.sendMessageToRov(msg, false);
-    }
 
-    resendMessage(ExchangeId: number) {
-        const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
-        if (replyExchageData && replyExchageData.originalMsgData) {
-            logInfo("Resending message: ", replyExchageData.originalMsgData)
-            this.sendRovMessage(replyExchageData.originalMsgData, replyExchageData.callback);
-        } else {
-            logWarn("resendMessage(): No message to resend for ExchangeId: ", ExchangeId)
-        }
-    }
-
-    runExchangeCallback(msgData: RovResponse, ExchangeId: number) {
-        const replyExchageData = this.replyContinuityCallbacks[ExchangeId];
-        if (replyExchageData) {
-            replyExchageData.callback && replyExchageData.callback(msgData);
-            // remove the echange data since the exchange is done
-            const msgType = msgData.body.oneofKind;
-            if (msgType === "done" || msgType === "error")
-                delete this.replyContinuityCallbacks[ExchangeId]
-        }
-    }
 }
 export const frontendRovMsgHandler = new FrontendRovMsgHandlerClass();

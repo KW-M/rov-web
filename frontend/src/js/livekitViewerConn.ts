@@ -3,7 +3,6 @@ import { type LivekitConfig, LivekitBaseConnection } from "./shared/livekit/live
 import { DisconnectReason, type RemoteParticipant, type RemoteTrack, type RemoteTrackPublication, type RemoteVideoTrack, RoomEvent, Track } from "livekit-client";
 import { log, logDebug, logError, logInfo, logWarn } from "./shared/logging";
 import { ConnectionStates } from "./shared/consts";
-import { appendLog } from "./shared/util";
 import { takenLivekitUsernames } from "./globalContext";
 import { RtpRecieverStatsParser } from "./shared/videoStatsParser";
 import { unixTimeNow } from "./shared/time";
@@ -99,11 +98,11 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
                 if (!participant) return logWarn("LK: Ignoring received data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
                 if (participant.identity !== this._rovRoomName) return; // Ignore messages that come from participants other than the ROV
                 const senderId = participant.identity;
-                // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
+                // log(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = unixTimeNow();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
-                    msg: msg
+                    msgBytes: msg
                 })
             })
             .on(RoomEvent.Connected, () => {
@@ -131,15 +130,16 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
                 if (track.kind !== Track.Kind.Video) return logWarn('LK: Subscribed to unknown track kind: ', track.kind, track.source);
-                const knownRemoteTracks = this.remoteVideoTracks.get()
-                if (knownRemoteTracks.has(track.source)) {
-                    if (knownRemoteTracks.get(track.source) == track) return; // already subscribed to this track
-                    logWarn("LK: already subscribed to video track " + track.source + ", unsubscribing from old track")
-                    knownRemoteTracks.get(track.source)?.stop();
-                }
-                appendLog('LK: subscribed to video', track.source);
-                knownRemoteTracks.set(track.source, track)
-                this.remoteVideoTracks.set(knownRemoteTracks)
+                this.remoteVideoTracks.update((knownRemoteTracks) => {
+                    if (knownRemoteTracks.has(track.source)) {
+                        if (knownRemoteTracks.get(track.source) == track) return; // already subscribed to this track
+                        logWarn("LK: already subscribed to video track " + track.source + ", unsubscribing from old track")
+                        knownRemoteTracks.get(track.source)?.stop();
+                    }
+                    log('LK: subscribed to video', track.source);
+                    knownRemoteTracks.set(track.source, track)
+                    return knownRemoteTracks
+                })
                 track.on('upstreamPaused', () => {
                     log('LK: video upstream paused')
                 })
@@ -153,10 +153,11 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.TrackUnsubscribed, (_, pub, participant) => {
                 log('LK: Unsubscribed from track', pub.source, pub.trackSid, " from participant: ", participant.identity);
-                this.remoteVideoTracks.update((knownRemoteTracks) => {
-                    knownRemoteTracks.delete(pub.source)
-                    return knownRemoteTracks
-                })
+                // Avoi Removing tracks BECAUSE Causes Race condition With Livekit
+                // this.remoteVideoTracks.update((knownRemoteTracks) => {
+                //     knownRemoteTracks.delete(pub.source)
+                //     return knownRemoteTracks
+                // })
             })
             .on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
                 if (reason === DisconnectReason.DUPLICATE_IDENTITY) {
@@ -167,7 +168,7 @@ export class LivekitViewerConnection extends LivekitBaseConnection {
                 }
             })
             .on(RoomEvent.RecordingStatusChanged, (isRecording) => {
-                appendLog('LK: RecordingStatusChanged ', isRecording);
+                log('LK: RecordingStatusChanged ', isRecording);
                 this.isLivestreamRecording.set(isRecording);
             })
     }

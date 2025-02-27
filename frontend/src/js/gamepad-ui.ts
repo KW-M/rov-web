@@ -1,6 +1,7 @@
 import { GAME_CONTROLLER_BUTTON_CONFIG, ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './frontendConsts';
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
-import { type ButtonConfig, CenterTransformOrigin, GamepadApiWrapper, gamepadButtonType, gamepadDirection, GamepadDisplay, type GamepadDisplayButton, type GamepadDisplayJoystick, type GamepadDisplayVariableButton, GamepadEmulator, type JoystickConfig, type VariableButtonConfig } from 'virtual-gamepad-lib';
+import { GamepadApiWrapper, gamepadDirection, GamepadDisplay, GamepadEmulator, setupPresetInteractiveGamepad } from 'virtual-gamepad-lib';
+
 import { addTooltip, type TooltipOptions } from '../components/HelpTooltips.svelte';
 import { tutorialModeActive } from './globalContext';
 
@@ -21,8 +22,27 @@ export class GamepadUi {
         this.gpadEmulator = gpadEmulator;
         this.gpadHtmlContainer = GPAD_HTML_CONTAINER;
         this.gpadButtonHighlightElements = ONSCREEN_GPAD_BUTTON_LABELS.map((btnLabel) => document.getElementById(btnLabel + "_highlight"));
-        this.setupGamepadDisplay(0, GPAD_HTML_CONTAINER);
+        // this.setupGamepadDisplay(0, GPAD_HTML_CONTAINER);
         this.setupEmulatedGamepadInput(0, GPAD_HTML_CONTAINER);
+        const { gpadDisplay } = setupPresetInteractiveGamepad(GPAD_HTML_CONTAINER, {
+            AllowDpadDiagonals: false,
+            ClickableJoysticks: true,
+            VariableTriggers: true,
+            EmulatedGamepadOverlayMode: true,
+            GpadApiWrapper: gpadApiWrapper,
+            GpadEmulator: gpadEmulator,
+            JoystickDragDistance: 30,
+            TriggerDragDistance: 50,
+            EmulatedGamepadIndex: 0,
+            GpadDisplayConfig: {
+                gamepadIndex: 0,
+            }
+            // GpadDisplayConfig: {
+            //     sticks: [{}]
+            // }
+        });
+        this.gpadDisplay = gpadDisplay;
+
         this.addHelpTooltips(GPAD_HTML_CONTAINER, tooltipDelay);
         gpadApiWrapper.onGamepadButtonChange(this.handleButtonChange);
     }
@@ -195,111 +215,82 @@ export class GamepadUi {
 
 
 
-    /** Setup the display buttons & axes of the onscreen gamepad to react to the state of the gamepad from the browser gamepad api (uses the gamepadApiWrapper) */
-    setupGamepadDisplay(gpadIndex: number, GPAD_HTML_CONTAINER: HTMLElement) {
-        // Set the transform origins of the display joysticks to their centers:
-        GPAD_HTML_CONTAINER.querySelectorAll("#stick_right, #stick_left").forEach((element) => {
-            CenterTransformOrigin(element as SVGGraphicsElement); // useful if you want to visually transform the joystick with rotation and scaling
-            // CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
-        });
+    // /** Setup the display buttons & axes of the onscreen gamepad to react to the state of the gamepad from the browser gamepad api (uses the gamepadApiWrapper) */
+    // setupGamepadDisplay(gpadIndex: number, GPAD_HTML_CONTAINER: HTMLElement) {
+    //     // Set the transform origins of the display joysticks to their centers:
+    //     GPAD_HTML_CONTAINER.querySelectorAll("#stick_right, #stick_left").forEach((element) => {
+    //         CenterTransformOrigin(element as SVGGraphicsElement); // useful if you want to visually transform the joystick with rotation and scaling
+    //         // CenterTransformOriginDebug(element as SVGGraphicsElement); // show debug bounding boxes used in this feature.
+    //     });
 
-        /* ----- SETUP BUTTON DISPLAY ----- */
-        const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name) => {
-            if (name.includes("trigger")) {
-                // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
-                return {
-                    type: gamepadButtonType.variable,
-                    highlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_highlight"),
-                    buttonElement: GPAD_HTML_CONTAINER.querySelector("#" + name),
-                    direction: gamepadDirection.down,
-                    directionHighlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_direction_highlight"),
-                    movementRange: 10,
-                } as GamepadDisplayVariableButton;
-                // return null
+    //     /* ----- SETUP BUTTON DISPLAY ----- */
+    //     const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name) => {
+    //         if (name.includes("trigger")) {
+    //             // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
+    //             return {
+    //                 type: gamepadButtonType.variable,
+    //                 highlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_highlight"),
+    //                 buttonElement: GPAD_HTML_CONTAINER.querySelector("#" + name),
+    //                 direction: gamepadDirection.down,
+    //                 directionHighlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_direction_highlight"),
+    //                 movementRange: 10,
+    //             } as GamepadDisplayVariableButton;
+    //             // return null
 
-            } else {
-                // all other buttons are simply on (pressed) or off (not pressed).
-                return {
-                    type: gamepadButtonType.onOff,
-                    highlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_highlight"),
-                } as GamepadDisplayButton;
-            }
-        });
+    //         } else {
+    //             // all other buttons are simply on (pressed) or off (not pressed).
+    //             return {
+    //                 type: gamepadButtonType.onOff,
+    //                 highlight: GPAD_HTML_CONTAINER.querySelector("#" + name + "_highlight"),
+    //             } as GamepadDisplayButton;
+    //         }
+    //     });
 
-        /* ----- SETUP JOYSTICK DISPLAY ----- */
-        const joysticks = [
-            {
-                joystickElement: GPAD_HTML_CONTAINER.querySelector("#stick_left"),
-                xAxisIndex: 0,
-                yAxisIndex: 1,
-                movementRange: 10,
-                // highlights: {
-                //     [gamepadDirection.up]: GPAD_HTML_CONTAINER.querySelector("#l_stick_up_direction_highlight"),
-                //     [gamepadDirection.down]: GPAD_HTML_CONTAINER.querySelector("#l_stick_down_direction_highlight"),
-                //     [gamepadDirection.left]: GPAD_HTML_CONTAINER.querySelector("#l_stick_left_direction_highlight"),
-                //     [gamepadDirection.right]: GPAD_HTML_CONTAINER.querySelector("#l_stick_right_direction_highlight"),
-                // },
-            },
-            {
-                joystickElement: GPAD_HTML_CONTAINER.querySelector("#stick_right"),
-                xAxisIndex: 2,
-                yAxisIndex: 3,
-                movementRange: 10,
-                // highlights: {
-                //     [gamepadDirection.up]: GPAD_HTML_CONTAINER.querySelector("#r_stick_up_direction_highlight"),
-                //     [gamepadDirection.down]: GPAD_HTML_CONTAINER.querySelector("#r_stick_down_direction_highlight"),
-                //     [gamepadDirection.left]: GPAD_HTML_CONTAINER.querySelector("#r_stick_left_direction_highlight"),
-                //     [gamepadDirection.right]: GPAD_HTML_CONTAINER.querySelector("#r_stick_right_direction_highlight"),
-                // },
-            },
-        ] as GamepadDisplayJoystick[];
-        // create the gamepad display class instance and pass the config
-        this.gpadDisplay = new GamepadDisplay(
-            {
-                gamepadIndex: gpadIndex,
-                pressedHighlightClass: "pressed",
-                touchedHighlightClass: "touched",
-                moveDirectionHighlightClass: "moved",
-                buttons: buttons,
-                sticks: joysticks,
-            },
-            this.gpadApiWrapper // we can pass our existing instance of the gpadApiWrapper to the gamepad display so that it can use it to update the gamepad state efficiently.
-        );
-    }
+    //     /* ----- SETUP JOYSTICK DISPLAY ----- */
+    //     const joysticks = [
+    //         {
+    //             joystickElement: GPAD_HTML_CONTAINER.querySelector("#stick_left"),
+    //             xAxisIndex: 0,
+    //             yAxisIndex: 1,
+    //             movementRange: 10,
+    //             // highlights: {
+    //             //     [gamepadDirection.up]: GPAD_HTML_CONTAINER.querySelector("#l_stick_up_direction_highlight"),
+    //             //     [gamepadDirection.down]: GPAD_HTML_CONTAINER.querySelector("#l_stick_down_direction_highlight"),
+    //             //     [gamepadDirection.left]: GPAD_HTML_CONTAINER.querySelector("#l_stick_left_direction_highlight"),
+    //             //     [gamepadDirection.right]: GPAD_HTML_CONTAINER.querySelector("#l_stick_right_direction_highlight"),
+    //             // },
+    //         },
+    //         {
+    //             joystickElement: GPAD_HTML_CONTAINER.querySelector("#stick_right"),
+    //             xAxisIndex: 2,
+    //             yAxisIndex: 3,
+    //             movementRange: 10,
+    //             // highlights: {
+    //             //     [gamepadDirection.up]: GPAD_HTML_CONTAINER.querySelector("#r_stick_up_direction_highlight"),
+    //             //     [gamepadDirection.down]: GPAD_HTML_CONTAINER.querySelector("#r_stick_down_direction_highlight"),
+    //             //     [gamepadDirection.left]: GPAD_HTML_CONTAINER.querySelector("#r_stick_left_direction_highlight"),
+    //             //     [gamepadDirection.right]: GPAD_HTML_CONTAINER.querySelector("#r_stick_right_direction_highlight"),
+    //             // },
+    //         },
+    //     ] as GamepadDisplayJoystick[];
+    //     // create the gamepad display class instance and pass the config
+    //     this.gpadDisplay = new GamepadDisplay(
+    //         {
+    //             gamepadIndex: gpadIndex,
+    //             pressedHighlightClass: "pressed",
+    //             touchedHighlightClass: "touched",
+    //             moveDirectionHighlightClass: "moved",
+    //             buttons: buttons,
+    //             sticks: joysticks,
+    //         },
+    //         this.gpadApiWrapper // we can pass our existing instance of the gpadApiWrapper to the gamepad display so that it can use it to update the gamepad state efficiently.
+    //     );
+    // }
 
     /** Setup the touch targets & input parameters for translating onscreen events into events for the emulated gamepad (part of the emulated gamepad module) */
     setupEmulatedGamepadInput(gpadIndex: number, GPAD_HTML_CONTAINER: HTMLElement) {
-        /* ----- SETUP BUTTON INPUTS ----- */
-        const emulatorButtonConfigs = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
-            if (name.includes("trigger")) {
-                // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
-                return {
-                    type: gamepadButtonType.variable,
-                    buttonIndex: i,
-                    tapTarget: GPAD_HTML_CONTAINER.querySelector("#" + name + "_touch_target"),
-                    dragDistance: 50,
-                    lockTargetWhilePressed: true,
-                    directions: {
-                        [gamepadDirection.up]: false,
-                        [gamepadDirection.down]: true,
-                        [gamepadDirection.left]: false,
-                        [gamepadDirection.right]: false,
-                    },
-                } as VariableButtonConfig;
-            }
-            else {
-                return {
-                    type: gamepadButtonType.onOff,
-                    buttonIndex: i,
-                    lockTargetWhilePressed: name.includes("stick"),
-                    tapTarget: GPAD_HTML_CONTAINER.querySelector("#" + name + "_touch_target"),
-                } as ButtonConfig;
-            }
-        });
-        this.gpadEmulator.AddDisplayButtonEventListeners(gpadIndex, emulatorButtonConfigs);
-
-        /* ----- SETUP JOYSTICK INPUTS ----- */
-        this.gpadEmulator.AddDisplayJoystickEventListeners(gpadIndex, [
+        /* ----- SETUP Extra JOYSTICK INPUTS ----- */
+        this.gpadEmulator.AddJoystickTouchEventListeners(gpadIndex, [
             {
                 tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-left"),
                 dragDistance: 30,
@@ -315,32 +306,6 @@ export class GamepadUi {
             },
             {
                 tapTarget: GPAD_HTML_CONTAINER.querySelector("#gamepad-joystick-touch-area-right"),
-                dragDistance: 30,
-                xAxisIndex: 2,
-                yAxisIndex: 3,
-                lockTargetWhilePressed: true,
-                directions: {
-                    [gamepadDirection.up]: true,
-                    [gamepadDirection.down]: true,
-                    [gamepadDirection.left]: true,
-                    [gamepadDirection.right]: true,
-                },
-            },
-            {
-                tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_left_touch_target"),
-                dragDistance: 30,
-                xAxisIndex: 0,
-                yAxisIndex: 1,
-                lockTargetWhilePressed: true,
-                directions: {
-                    [gamepadDirection.up]: true,
-                    [gamepadDirection.down]: true,
-                    [gamepadDirection.left]: true,
-                    [gamepadDirection.right]: true,
-                },
-            },
-            {
-                tapTarget: GPAD_HTML_CONTAINER.querySelector("#stick_button_right_touch_target"),
                 dragDistance: 30,
                 xAxisIndex: 2,
                 yAxisIndex: 3,

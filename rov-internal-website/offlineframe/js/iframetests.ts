@@ -80,6 +80,6 @@ function iframeURLChange(iframe, callback) {
 }
 
 // Usage:
-iframeURLChange(iframe, function (newURL) {
-    log("URL changed:", newURL);
-});
+// iframeURLChange(iframe, function (newURL) {
+//     log("URL changed:", newURL);
+// });

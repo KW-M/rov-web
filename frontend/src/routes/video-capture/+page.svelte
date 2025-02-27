@@ -1,7 +1,4 @@
 <script lang="ts">
-  /// <reference types="../../js/globals.d.ts" />
-  import type * as baaaaaa from "../../js/globals.d.ts";
-
   import { onDestroy } from "svelte";
   import { Camera_alt, Video_camera_back } from "svelte-google-materialdesign-icons";
   import Topbar from "../../components/Topbar.svelte";

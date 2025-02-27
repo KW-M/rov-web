@@ -11,8 +11,7 @@ import { armButtonPressed, rovDrivingVector, throttleGain, tutorialModeActive } 
 import { openTestDriveTutModal, modalConfirm, modalScrollingText } from "../components/Modals/modals";
 import { autopilotArmed, autopilotMode } from "./vehicleStats";
 import { unixTimeNow } from "./shared/time";
-import type { RovAction, RovResponse } from "./shared/protobufs/rov_actions";
-import { changesSubscribe, dec2bin } from "./shared/util";
+import { RovAction, type RovResponse } from "./shared/protobufs/rov_actions";
 
 const BTN_A = standardGpadButtonMap.A
 const BTN_B = standardGpadButtonMap.B
@@ -122,8 +121,8 @@ class RovActionsClass {
 
     // ==== Helpers =====
 
-    sendActionAndWaitForDone(msgData: RovAction, callback: (response: RovResponse) => void) {
-        frontendRovMsgHandler.sendRovMessage(msgData, (response: RovResponse) => {
+    sendActionAndWaitForDone(msgData: RovAction, reliable: boolean, callback: (response: RovResponse) => void) {
+        frontendRovMsgHandler.sendRovMessage(msgData, reliable, (response: RovResponse) => {
             const responseType = response.body.oneofKind;
             if (callback && (responseType === "done" || responseType === "error" || responseType === "continuedOutput")) {
                 callback(response);
@@ -137,11 +136,13 @@ class RovActionsClass {
             if (frontendConnMngr.connectionState.get() !== ConnectionStates.connected) return;
             const now = unixTimeNow();
             if (now - this.lastPingTime > PING_INTERVAL) {
-                frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "ping", ping: { time: BigInt(now) } } }, null);
+                frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "ping", ping: { time: now } } }), true, null);
+
+                console.log("pinging")
                 this.lastPingTime = now;
             }
             if (now - this.lastMovementTime > MOVE_MSG_TIMEOUT) {
-                frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "move", move: this.lastMove } }, null);
+                frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "move", move: this.lastMove } }), false, null);
                 this.lastMovementTime = now;
             }
         }, 10))
@@ -171,20 +172,20 @@ class RovActionsClass {
     takeControl() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         // autopilotArmed.set(true); // proactively display the autopilot armed status
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "takeControl", takeControl: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "takeControl", takeControl: {} } }), true, null);
     }
 
     /** disarm the rov, this will stop all motors and prevent any movement */
     disarm() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
         // autopilotArmed.set(false); // proactively display the autopilot armed status
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "disarm", disarm: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "disarm", disarm: {} } }), true, null);
     }
 
     setFlightMode(mode: FlightMode) {
         autopilotMode.set(mode);
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "setAutopilotMode", setAutopilotMode: { mode: mode } } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "setAutopilotMode", setAutopilotMode: { mode: mode } } }), true, null);
     }
 
     moveRov(velocityX, velocityY, velocityZ, angularVelocityYaw, btnBitmask: number = -1) {
@@ -197,7 +198,7 @@ class RovActionsClass {
         this.lastMove = rovDrivingVector.get();
         this.lastMovementTime = unixTimeNow();
         if (tutorialModeActive.get()) return; // don't send commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "move", move: { velocityX, velocityY, velocityZ, angularVelocityYaw, buttonBitmask } } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "move", move: { velocityX, velocityY, velocityZ, angularVelocityYaw, buttonBitmask } } }), false, null);
     }
 
     sendButtonsToRov(buttons: boolean[]) {
@@ -219,36 +220,36 @@ class RovActionsClass {
         this.lastMove.buttonBitmask = buttonBitmask;
         this.lastMovementTime = unixTimeNow();
         if (tutorialModeActive.get()) return; // don't send commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "move", move: { velocityX, velocityY, velocityZ, angularVelocityYaw, buttonBitmask } } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "move", move: { velocityX, velocityY, velocityZ, angularVelocityYaw, buttonBitmask } } }), true, null);
     }
 
     refreshAllSensorData() {
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "refreshAllSensors", refreshAllSensors: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "refreshAllSensors", refreshAllSensors: {} } }), true, null);
     }
 
     moveClawToPosition(position: number) {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "moveClaw", moveClaw: { value: position } } })
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "moveClaw", moveClaw: { value: position } } }), false, null);
     }
 
     toggleLights() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "toggleLights", toggleLights: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "toggleLights", toggleLights: {} } }), true, null);
     }
 
     takePhoto() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "takePhoto", takePhoto: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "takePhoto", takePhoto: {} } }), false, null);
     }
 
     startVideoRecording() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "startVideoRec", startVideoRec: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "startVideoRec", startVideoRec: {} } }), true, null);
     }
 
     stopVideoRecording() {
         if (tutorialModeActive.get()) return; // don't send button commands in tutorial mode
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "stopVideoRec", stopVideoRec: {} } }, null);
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "stopVideoRec", stopVideoRec: {} } }), true, null);
     }
 
     shutdownRov = () => {
@@ -256,7 +257,7 @@ class RovActionsClass {
             response: (r) => {
                 if (!r) return;
                 showToastMessage("Sending Shutdown Request...", 2000, false, ToastSeverity.info)
-                this.sendActionAndWaitForDone({ body: { oneofKind: "shutdownRov", shutdownRov: {} } }, (msgData) => {
+                this.sendActionAndWaitForDone(RovAction.create({ body: { oneofKind: "shutdownRov", shutdownRov: {} } }), true, (msgData) => {
                     if (msgData.body.oneofKind === "error") {
                         showToastMessage("ROV Shutdown Error: " + msgData.body.error.message, 5000, false, ToastSeverity.error)
                     } else if (msgData.body.oneofKind === "done") {
@@ -274,7 +275,7 @@ class RovActionsClass {
             response: (r) => {
                 if (!r) return;
                 showToastMessage("Sending Reboot Request...", 2000, false, ToastSeverity.info);
-                this.sendActionAndWaitForDone({ body: { oneofKind: "rebootRov", rebootRov: {} } }, (msgData) => {
+                this.sendActionAndWaitForDone(RovAction.create({ body: { oneofKind: "rebootRov", rebootRov: {} } }), true, (msgData) => {
                     if (msgData.body.oneofKind === "error") {
                         showToastMessage("ROV Reboot Error: " + msgData.body.error.message, 5000, false, ToastSeverity.error)
                     } else if (msgData.body.oneofKind === "done") {
@@ -293,7 +294,7 @@ class RovActionsClass {
             response: (r) => {
                 if (!r) return;
                 let responseHandler = this.showCommandOutputPopup("Restarting ROV Services", "Sending Service Restart Request (Please Wait)...\n", "\n\nDone.");
-                frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "restartRovServices", restartRovServices: {} } }, responseHandler)
+                frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "restartRovServices", restartRovServices: {} } }), true, responseHandler)
             }
         })
     }
@@ -301,12 +302,12 @@ class RovActionsClass {
 
     getRovStatusReport = () => {
         let responseHandler = this.showCommandOutputPopup("ROV Status Report", "Sending Status Request (Please Wait)...\n", "\n\nDone.");
-        frontendRovMsgHandler.sendRovMessage({ body: { oneofKind: "rovStatusReport", rovStatusReport: {} } }, responseHandler)
+        frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "rovStatusReport", rovStatusReport: {} } }), true, responseHandler)
     }
 
     enableRovWifi = () => {
         showToastMessage("Sending Enable Wifi Command...", 2000, false, ToastSeverity.info)
-        this.sendActionAndWaitForDone({ body: { oneofKind: "enableWifi", enableWifi: {} } }, (msgData) => {
+        this.sendActionAndWaitForDone(RovAction.create({ body: { oneofKind: "enableWifi", enableWifi: {} } }), true, (msgData) => {
             if (msgData.body.oneofKind === "error") {
                 showToastMessage("Enable Wifi Error: " + msgData.body.error.message, 8000, false, ToastSeverity.error)
             } else if (msgData.body.oneofKind === "done") {
@@ -321,7 +322,7 @@ class RovActionsClass {
             response: (r) => {
                 if (!r) return;
                 showToastMessage("Sending Disable Wifi Command...", 2000, false, ToastSeverity.info)
-                this.sendActionAndWaitForDone({ body: { oneofKind: "disableWifi", disableWifi: {} } }, (msgData) => {
+                this.sendActionAndWaitForDone(RovAction.create({ body: { oneofKind: "disableWifi", disableWifi: {} } }), true, (msgData) => {
                     if (msgData.body.oneofKind === "error") {
                         showToastMessage("Disable Wifi Error: " + msgData.body.error.message, 8000, false, ToastSeverity.error)
                     } else if (msgData.body.oneofKind === "done") {

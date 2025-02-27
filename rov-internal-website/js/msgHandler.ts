@@ -33,9 +33,9 @@ function setAutopilotArmed(armed: boolean, force: boolean = true) {
 }
 
 function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
-
     const msgBody = msgProto.body
     const msgType = msgBody.oneofKind
+    // console.debug("RECIVED Message: ", msgType, msgBody);
     switch (msgType) {
 
         // PING Message - Respond with PONG
@@ -52,6 +52,7 @@ function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
         // SIMPLEPEER SIGNAL Message - Pass it to the internalConnManager
         case "simplePeerSignal":
             const signal = msgBody.simplePeerSignal.message;
+            console.log("Got signal from ", senderId, " with signal: ", signal);
             internalConnManager.ingestSimplePeerSignalMsg(senderId, signal);
             return true;
 
@@ -263,21 +264,16 @@ function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
 /**
     Intended to handle messages coming FROM Livekit/The Internet
 */
-export function backendHandleWebrtcMsgRcvd(senderId: string, msgBytes: ArrayBufferLike) {
-    let data = new Uint8Array(msgBytes)
-    if (!data || data.length === 0) return;
+export function backendHandleWebrtcMsgRcvd(senderId: string, msg: RovAction) {
+    if (handleInternalWebpageActions(senderId, msg)) return;
 
-    // Decode the protobuf object from bytes
-    const msgProto = RovAction.fromBinary(data)
-    if (handleInternalWebpageActions(senderId, msgProto)) return;
+    // // Stuff the protobuff object with metadata
+    // msg.backendMetadata = msg.backendMetadata || ActionBackendMetadata.create();
+    // msg.backendMetadata.fromUserId = senderId
+    // const newMessage = RovAction.toBinary(msg)
 
-    // Stuff the protobuff object with metadata
-    msgProto.backendMetadata = msgProto.backendMetadata || ActionBackendMetadata.create();
-    msgProto.backendMetadata.fromUserId = senderId
-    const newMessage = RovAction.toBinary(msgProto)
-
-    // Send the re-packaged up message bytes to the iROV python via webSocketRelay
-    if (iRovWebSocketRelay.isConnected) iRovWebSocketRelay.sendMessage(newMessage)
+    // // Send the re-packaged up message bytes to the iROV python via webSocketRelay
+    // if (iRovWebSocketRelay.isConnected) iRovWebSocketRelay.sendMessage(newMessage)
 }
 
 

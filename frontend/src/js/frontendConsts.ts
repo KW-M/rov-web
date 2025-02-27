@@ -1,4 +1,4 @@
-import { standardGpadButtonMap, type wrapperButtonConfig } from "virtual-gamepad-lib";
+import { PRESET_SVG_GPAD_BTN_IDS, PRESET_SVG_GPAD_BTN_TAP_TARGET_IDS, standardGpadButtonMap, type wrapperButtonConfig } from "virtual-gamepad-lib";
 import type { PopupSettings } from "../components/Popup/types";
 import { SECONDS_IN_DAY, SIMPLEPEER_BASE_CONFIG } from "./shared/consts";
 import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from "./shared/urlParameters";
@@ -83,7 +83,7 @@ export const GPAD_STANDARD_BUTTON_INDEX_TO_MAVLINK_INDEX = {
     [standardGpadButtonMap.DPadDown]: 12,
     [standardGpadButtonMap.DPadLeft]: 13,
     [standardGpadButtonMap.DPadRight]: 14,
-    [standardGpadButtonMap.Xbox]: 5,
+    [standardGpadButtonMap.Vendor]: 5,
 }
 
 
@@ -110,25 +110,26 @@ export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
 ];
 
 
-export const ONSCREEN_GPAD_BUTTON_LABELS = [
-    "button_1",
-    "button_2",
-    "button_3",
-    "button_4",
-    "shoulder_button_front_left",
-    "shoulder_button_front_right",
-    "shoulder_trigger_back_left",
-    "shoulder_trigger_back_right",
-    "select_button",
-    "start_button",
-    "stick_button_left",
-    "stick_button_right",
-    "d_pad_up",
-    "d_pad_down",
-    "d_pad_left",
-    "d_pad_right",
-    /* "vendor" */ // generally not available to browsers because it is used by OS vendors (eg: Xbox Game Bar, Steam HUD).
-];
+export const ONSCREEN_GPAD_BUTTON_LABELS = PRESET_SVG_GPAD_BTN_IDS
+// [
+//     "button_1",
+//     "button_2",
+//     "button_3",
+//     "button_4",
+//     "shoulder_button_front_left",
+//     "shoulder_button_front_right",
+//     "shoulder_trigger_back_left",
+//     "shoulder_trigger_back_right",
+//     "select_button",
+//     "start_button",
+//     "stick_button_left",
+//     "stick_button_right",
+//     "d_pad_up",
+//     "d_pad_down",
+//     "d_pad_left",
+//     "d_pad_right",
+//     /* "vendor" */ // generally not available to browsers because it is used by OS vendors (eg: Xbox Game Bar, Steam HUD).
+// ];
 
 
 export const ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS = "touched", ONSCREEN_GPAD_BUTTON_PRESSED_CLASS = "pressed";

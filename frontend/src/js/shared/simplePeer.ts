@@ -1,7 +1,6 @@
 import { ConnectionStates, DECODE_TXT, ENCODE_TXT } from './consts';
-import type { nStoreT } from './libraries/nStore';
 import nStore from './libraries/nStore';
-import SimplePeer from '@thaunknown/simple-peer/index.js';
+import SimplePeer from '@thaunknown/simple-peer/full.js';
 import type SimplePeerT from 'simple-peer';
 import { log, logDebug, logInfo, logWarn, logError } from "./logging"
 import { waitfor } from './util';
@@ -25,12 +24,12 @@ interface SimplePeerError {
     code: SimplePeerErrorCodes
 }
 
-type VideoStatsPrevState = {
-    bytesSent: number,
-    framesSent: number,
-    packetsSent: number,
-    timestamp: number,
-}
+// type VideoStatsPrevState = {
+//     bytesSent: number,
+//     framesSent: number,
+//     packetsSent: number,
+//     timestamp: number,
+// }
 
 
 type SignalData = SimplePeerT.SignalData & {
@@ -63,7 +62,7 @@ export class SimplePeerConnection {
     _consecutiveSignalMsgsProcessed: number = 0;
 
     // a queue of messages to be sent out over the data channel.
-    _msgSendQueue: ArrayBufferLike[] = [];
+    _msgSendQueue: Uint8Array[] = [];
     // how many times we have attempted to reconnect to the livekit server after a disconnect (resets on successful reconnect)
     _reconnectAttemptCount: number = 0;
     // flag used durring shutdown/cleanup to stop it from automatically reconnecting
@@ -80,6 +79,8 @@ export class SimplePeerConnection {
     _signalMsgSendCounter: number = 0;
     // keeps track of how many signaling messages have been recived.
     _signalMsgRecivedCounter: number = 0;
+    // keeps track of the last timestamp of a recived signaling message
+    _lastSignalMsgRecivedTimestamp: number = 0;
     // keeps track of the stats
     _videoStatsParser: RtpStatsParser = new RtpStatsParser();
 
@@ -140,9 +141,9 @@ export class SimplePeerConnection {
         this._p.on('connect', () => {
             // wait for 'connect' event before using the data channel
             logInfo("SP: Connected!")
-            // this._emptySendMsgQueue();
             this._reconnectAttemptCount = 0;
             this.connectionState.set(ConnectionStates.connected);
+            this._emptySendMsgQueue();
         })
 
         this._p.on('data', data => {
@@ -195,6 +196,7 @@ export class SimplePeerConnection {
             this._shouldReconnect = false;
 
             // this.currentVideoStream.set(null);
+            // TODO: wait for no recent messages before attempting to reconnect.
             // if (this._shouldReconnect) {
             //     this.connectionState.set(ConnectionStates.reconnecting);
             //     this._reconnectAttemptCount++;
@@ -250,6 +252,16 @@ export class SimplePeerConnection {
         logDebug("SP Restart2", this._spConfig)
         this.start(this._shouldReconnect, this._reconnectAttemptCount);
         if (signalingMsg) this.ingestSignalingMsg(signalingMsg);
+    }
+
+    checkAliveness() {
+        if (!this._initiator) return;
+        if (!this._shouldReconnect) return;
+        if (this._stopping) return;
+        if (this._lastSignalMsgRecivedTimestamp === undefined) return;
+        if (this._lastSignalMsgRecivedTimestamp - unixTimeNow() < 2000) return;
+        if (!this._p) return this.restart();
+        if (this.connectionState.get() !== ConnectionStates.connected && !this._p.isIceRestartInProgress()) return this.restartIce();
     }
 
 
@@ -369,6 +381,7 @@ export class SimplePeerConnection {
     }
 
     ingestSignalingMsg(signalMsg: string) {
+        this._lastSignalMsgRecivedTimestamp = unixTimeNow();
         try {
             const signal = JSON.parse(signalMsg) as SignalData;
             if (signal.msgNum === undefined || signal.connId === undefined) {
@@ -391,9 +404,9 @@ export class SimplePeerConnection {
         this._processSignalMsgQueue();
     }
 
-    sendMessage(data: ArrayBufferLike) {
+    sendMessage(data: Uint8Array) {
         this._msgSendQueue.push(data)
-        this._emptyMsgQueue();
+        this._emptySendMsgQueue();
     }
 
     _processSignalMsgQueue() {
@@ -423,11 +436,11 @@ export class SimplePeerConnection {
         }
     }
 
-    _emptyMsgQueue() {
+    _emptySendMsgQueue() {
         if (!this._p || !this._p.connected) return false;
         const len = this._msgSendQueue.length
         while (this._msgSendQueue.length > 0) {
-            const msg = this._msgSendQueue.shift() as ArrayBufferLike;
+            const msg = this._msgSendQueue.shift() as Uint8Array;
             try {
                 this._p.send(msg);
             } catch (err) {

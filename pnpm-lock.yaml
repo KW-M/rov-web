@@ -24,11 +24,14 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       livekit-client:
-        specifier: ^2.5.5
-        version: 2.5.5
+        specifier: ^2.9.4
+        version: 2.9.4
       livekit-server-sdk:
-        specifier: ^2.6.2
-        version: 2.6.2
+        specifier: ^2.10.1
+        version: 2.10.1
+      svgo:
+        specifier: ^3.3.2
+        version: 3.3.2
       three:
         specifier: ^0.169.0
         version: 0.169.0
@@ -39,8 +42,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       virtual-gamepad-lib:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.1
+        version: 0.3.1(svgo@3.3.2)
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -99,9 +102,6 @@ importers:
       svelte-preprocess:
         specifier: ^6.0.3
         version: 6.0.3(postcss-load-config@6.0.1(jiti@2.0.0)(postcss@8.4.47)(yaml@2.5.1))(postcss@8.4.47)(svelte@4.2.19)(typescript@5.6.2)
-      svgo:
-        specifier: ^3.3.2
-        version: 3.3.2
       tailwindcss:
         specifier: ^3.4.13
         version: 3.4.13
@@ -346,11 +346,14 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@livekit/protocol@1.22.0':
-    resolution: {integrity: sha512-KYOfVAz38YFRsmEzeDgzoaHZJhMZEkeZQlzr9xIjczWR9SeEaYNU6+IDcZRlrYcpWl6Almgt/OhXcQn+nkrDGw==}
+  '@livekit/mutex@1.1.1':
+    resolution: {integrity: sha512-EsshAucklmpuUAfkABPxJNhzj9v2sG7JuzFDL4ML1oJQSV14sqrpTYnsaOudMAw9yOaW53NU3QQTlUQoRs4czw==}
 
-  '@livekit/protocol@1.23.0':
-    resolution: {integrity: sha512-Hh83moW437mWhiyRgoDMedJ/s/rCTfe3ACSaIJ3n2NlVaq/+BTuB/yH7a6alM1NEkGBSmgrEHxabDfozVUlgYg==}
+  '@livekit/protocol@1.33.0':
+    resolution: {integrity: sha512-361mBlFgI3nvn8oSQIL38gDUBGbOSwsEOqPgX0c1Jwz75/sD/TTvPeAM4zAz6OrV5Q4vI4Ruswecnyv5SG4oig==}
+
+  '@livekit/protocol@1.34.0':
+    resolution: {integrity: sha512-bU7pCLAMRVTVZb1KSxA46q55bhOc4iATrY/gccy2/oX1D57tiZEI+8wGRWHeDwBb0UwnABu6JXzC4tTFkdsaOg==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1029,8 +1032,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  domutils@3.1.0:
-    resolution: {integrity: sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==}
+  domutils@3.2.2:
+    resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -1399,12 +1402,12 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  livekit-client@2.5.5:
-    resolution: {integrity: sha512-RLGUEZBwBEjZFa3ROd8Aj+SwTmTKqRKOpH5pWGVg7nfLgTy5Kx4NNVML3HHAM6fP7lAwuuNz9TdrNM81++WdCg==}
+  livekit-client@2.9.4:
+    resolution: {integrity: sha512-BwFHocyNrthIHUAHY3/mch7lCQAjY7bSGedLT7iHJBWc+YYZ7EIU4+JAVJd6R2Mho1iBVqUaNuwzfg7RVksNSw==}
 
-  livekit-server-sdk@2.6.2:
-    resolution: {integrity: sha512-3fFzHu7sAynUaUFTCKtRP9lgQCU0Qe/x7XA99GpT1ro7fTy1ZVzaWq34WcXEyUGBBMFxG19LlSIAQBcGZVStWQ==}
-    engines: {node: '>=19'}
+  livekit-server-sdk@2.10.1:
+    resolution: {integrity: sha512-rzWCZzMFWa+Fl3Vp4kQwoOLcbvMvQEqe4WXl3XDp4u7R/Rg7TY3MZ4JcHv5mvIawqAJ81hR6x23C7+QWteI/dQ==}
+    engines: {node: '>=18'}
 
   loader-runner@4.3.0:
     resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==}
@@ -1846,8 +1849,8 @@ packages:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
     engines: {node: '>= 10.13.0'}
 
-  sdp-transform@2.14.2:
-    resolution: {integrity: sha512-icY6jVao7MfKCieyo1AyxFYm1baiM+fA00qW/KrNNVlkxHAd34riEKuEkUe4bBb3gJwLJZM+xT60Yj1QL8rHiA==}
+  sdp-transform@2.15.0:
+    resolution: {integrity: sha512-KrOH82c/W+GYQ0LHqtr3caRpM3ITglq3ljGUIb8LTki7ByacJZ9z+piSGiwZDsRyhQbYBOBJgr2k6X4BZXi3Kw==}
     hasBin: true
 
   sdp@3.2.0:
@@ -2120,6 +2123,9 @@ packages:
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
   tty-browserify@0.0.1:
     resolution: {integrity: sha512-C3TaO7K81YvjCgQH9Q1S3R3P3BtN3RIM8n+OvX4il1K1zgE8ZhI0op7kClgkxtutIE8hQrcrHBXvIheqKUUCxw==}
 
@@ -2181,8 +2187,10 @@ packages:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
     hasBin: true
 
-  virtual-gamepad-lib@0.2.0:
-    resolution: {integrity: sha512-2spKokms2/+DyoQJL22pDO+goB1mNF6xs3O7jDkJ1TTFNXLEnSxkumNov85xxikxh0vndT474I22wXzXBoZapA==}
+  virtual-gamepad-lib@0.3.1:
+    resolution: {integrity: sha512-0IKBBVQxueEvPI/RhCPczXy2zf5Pbju7edzh1HhEVSGrgT4PUhbhVERWGeyljGAiTXDAv4KO8aZjZdmF22ve1Q==}
+    peerDependencies:
+      svgo: ^3.3.2
 
   vite-plugin-node-polyfills@0.22.0:
     resolution: {integrity: sha512-F+G3LjiGbG8QpbH9bZ//GSBr9i1InSTkaulfUHFa9jkLqVGORFBoqc2A/Yu5Mmh1kNAbiAeKeK+6aaQUf3x0JA==}
@@ -2499,11 +2507,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@livekit/protocol@1.22.0':
+  '@livekit/mutex@1.1.1': {}
+
+  '@livekit/protocol@1.33.0':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
-  '@livekit/protocol@1.23.0':
+  '@livekit/protocol@1.34.0':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
 
@@ -3174,13 +3184,13 @@ snapshots:
       boolbase: 1.0.0
       css-what: 6.1.0
       domhandler: 5.0.3
-      domutils: 3.1.0
+      domutils: 3.2.2
       nth-check: 2.1.1
 
   css-tree@2.2.1:
     dependencies:
       mdn-data: 2.0.28
-      source-map-js: 1.2.0
+      source-map-js: 1.2.1
 
   css-tree@2.3.1:
     dependencies:
@@ -3260,7 +3270,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  domutils@3.1.0:
+  domutils@3.2.2:
     dependencies:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
@@ -3604,20 +3614,22 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  livekit-client@2.5.5:
+  livekit-client@2.9.4:
     dependencies:
-      '@livekit/protocol': 1.22.0
+      '@livekit/mutex': 1.1.1
+      '@livekit/protocol': 1.33.0
       events: 3.3.0
       loglevel: 1.9.2
-      sdp-transform: 2.14.2
+      sdp-transform: 2.15.0
       ts-debounce: 4.0.0
-      tslib: 2.7.0
+      tslib: 2.8.1
       typed-emitter: 2.1.0
       webrtc-adapter: 9.0.1
 
-  livekit-server-sdk@2.6.2:
+  livekit-server-sdk@2.10.1:
     dependencies:
-      '@livekit/protocol': 1.23.0
+      '@bufbuild/protobuf': 1.10.0
+      '@livekit/protocol': 1.34.0
       camelcase-keys: 9.1.3
       jose: 5.9.3
 
@@ -4062,7 +4074,7 @@ snapshots:
 
   rxjs@7.8.1:
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
     optional: true
 
   sade@1.8.1:
@@ -4079,7 +4091,7 @@ snapshots:
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
 
-  sdp-transform@2.14.2: {}
+  sdp-transform@2.15.0: {}
 
   sdp@3.2.0: {}
 
@@ -4274,7 +4286,7 @@ snapshots:
       css-tree: 2.3.1
       css-what: 6.1.0
       csso: 5.0.5
-      picocolors: 1.0.1
+      picocolors: 1.1.0
 
   tailwindcss@3.4.13:
     dependencies:
@@ -4381,6 +4393,8 @@ snapshots:
 
   tslib@2.7.0: {}
 
+  tslib@2.8.1: {}
+
   tty-browserify@0.0.1: {}
 
   tunnel-agent@0.6.0:
@@ -4438,7 +4452,9 @@ snapshots:
 
   uuid@10.0.0: {}
 
-  virtual-gamepad-lib@0.2.0: {}
+  virtual-gamepad-lib@0.3.1(svgo@3.3.2):
+    dependencies:
+      svgo: 3.3.2
 
   vite-plugin-node-polyfills@0.22.0(rollup@4.22.5)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.0)):
     dependencies:

@@ -41,18 +41,18 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
             //     if (!this._roomConn.metadata?.length) this.createLivekitRoom();
             // })
             .on(RoomEvent.SignalConnected, () => {
-                if (!this.isVideoActive()) this.enableCamera(true);
+                if (!this.isVideoActive()) this.enableCamera();
                 if (!this._roomConn.metadata) this.createLivekitRoom();
             })
             .on(RoomEvent.Reconnecting, () => {
                 if (!this._roomConn.metadata) this.createLivekitRoom();
             })
             .on(RoomEvent.Connected, () => {
-                if (!this.isVideoActive()) this.enableCamera(true);
+                if (!this.isVideoActive()) this.enableCamera();
                 this.updateRoomMetadata();
             })
             .on(RoomEvent.Reconnected, () => {
-                if (!this.isVideoActive()) this.enableCamera(true);
+                if (!this.isVideoActive()) this.enableCamera();
                 this.updateRoomMetadata();
             })
             .on(RoomEvent.ParticipantConnected, () => {
@@ -60,13 +60,13 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
             })
             .on(RoomEvent.DataReceived, (msg: Uint8Array, participant?: RemoteParticipant) => {
                 if (!participant) return logWarn("LK: Ignoring received data message with no participant. This can happen when the message is sent before connection completes or if the message comes from the server: ", msg);
-                const senderId = participant.identity;
-                const senderSID = participant.sid;
-                // appendLog(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
+                const senderId = participant?.identity;
+                // const senderSID = participant.sid;
+                // log(`LK: Got dataReceived from ${senderId} (${senderSID}) via ${this.config.hostUrl}|${this._roomConn.name}`);
                 this.lastMsgRecivedTimestamp = unixTimeNow();
                 this.latestRecivedDataMessage.set({
                     senderId: senderId,
-                    msg: msg
+                    msgBytes: msg
                 })
             })
             .on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
@@ -93,55 +93,85 @@ export class LivekitPublisherConnection extends LivekitBaseConnection {
         await super.start(rovRoomName, pubAccessToken);
     }
 
-    async enableCamera(enabled: boolean, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
+    async enableCamera(captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
         if (!this._roomConn) throw new Error("LK: Can't enable camera, room not initialized");
 
         this._videoCaptureOptions = captureOptions || this._videoCaptureOptions || this.config.roomConfig.videoCaptureDefaults;
         this._videoPublishOptions = publishOptions || this._videoPublishOptions || this.config.roomConfig.publishDefaults;
 
+
+
+        const videoPub = this._roomConn.localParticipant.getTrackPublication(Track.Source.Camera);
+        if (captureOptions && videoPub) {
+            log("LK: Camera track restarting with options: ", captureOptions, publishOptions, videoPub);
+            if (videoPub) {
+                const videoTrack = videoPub.videoTrack;
+                if (publishOptions) {
+                    await this._roomConn.localParticipant.unpublishTrack(videoTrack, false);
+                    await videoTrack.restartTrack(this._videoCaptureOptions);
+                    await videoTrack.restartTrack(this._videoCaptureOptions);// TODO: remove this line when livekit bug is fixed
+                    await this._roomConn.localParticipant.publishTrack(videoTrack, this._videoPublishOptions);
+                } else {
+                    await videoTrack.restartTrack(this._videoCaptureOptions);
+                    await videoTrack.restartTrack(this._videoCaptureOptions); // TODO: remove this line when livekit bug is fixed
+                }
+            }
+        }
+        await this._roomConn.localParticipant.setCameraEnabled(true, this._videoCaptureOptions, this._videoPublishOptions);
+        // if (!this._roomConn.localParticipant.isCameraEnabled) {
+        //     const videoPub = await this._roomConn.localParticipant.setCameraEnabled(true, this._videoCaptureOptions, this._videoPublishOptions);
+        //     if (!videoPub || !videoPub.videoTrack) return logError("LK: Can't enable camera, no video publication returned");
+        //     this.camTrack = videoPub;
+        // }
+
+
         // this._roomConn.localParticipant.setMicrophoneEnabled(enabled);
 
         // disable all existing video tracks
-        for (const [name, vidPub] of this._roomConn.localParticipant.videoTrackPublications) {
-            log("LK: Unpublishing video track: ", name, vidPub)
-            if (vidPub?.videoTrack) {
-                this._roomConn.localParticipant.unpublishTrack(vidPub.videoTrack, true);
-            }
-        }
-        if (enabled) {
-            while (true) {
-                try {
-                    if (this.connectionState.get() === ConnectionStates.failed) return logWarn("LK: Can't enable camera, room connection failed");
-                    const tracks = await this._roomConn.localParticipant.createTracks({
-                        video: {
-                            resolution: this._videoCaptureOptions.resolution,
-                            facingMode: this._videoCaptureOptions.facingMode
-                        },
-                        audio: false
-                    })
-                    for (const track of tracks) {
-                        const pub = await this._roomConn.localParticipant.publishTrack(tracks[0], this._videoPublishOptions);
-                        if (pub && track.kind === Track.Kind.Video) this.camTrack = pub;
-                    }
-                    if (this.camTrack) return logInfo("LK: Camera enabled", enabled, this._videoCaptureOptions, this._videoPublishOptions);
-                } catch (e) {
-                    logError(e.message);
-                }
-                await waitfor(1000);
-            }
-        } else {
-            this.camTrack?.videoTrack?.stop();
-            this.camTrack?.audioTrack?.stop();
+        // for (const [name, vidPub] of this._roomConn.localParticipant.videoTrackPublications) {
+        //     log("LK: Unpublishing video track: ", name, vidPub)
+        //     if (vidPub?.videoTrack) {
+        //         this._roomConn.localParticipant.unpublishTrack(vidPub.videoTrack, true);
+        //     }
+        // }
+        // while (true) {
+        //     try {
+        //         if (this.connectionState.get() === ConnectionStates.failed) return logWarn("LK: Can't enable camera, room connection failed");
+        //         const tracks = await this._roomConn.localParticipant..createTracks({
+        //             video: {
+        //                 resolution: this._videoCaptureOptions.resolution,
+        //                 facingMode: this._videoCaptureOptions.facingMode
+        //             },
+        //             audio: false
+        //         })
+        //         for (const track of tracks) {
+        //             const pub = await this._roomConn.localParticipant.publishTrack(tracks[0], this._videoPublishOptions);
+        //             if (pub && track.kind === Track.Kind.Video) this.camTrack = pub;
+        //             pub.videoTrack.restartTrack()
+        //         }
+        //         if (this.camTrack) return logInfo("LK: Camera enabled", enabled, this._videoCaptureOptions, this._videoPublishOptions);
+        //     } catch (e) {
+        //         logError(e.message);
+        //     }
+        //     await waitfor(1000);
+        // }
+    }
+
+    async disableCamera() {
+        if (this.camTrack) {
+            this.camTrack.videoTrack.stop();
+            this.camTrack.audioTrack.stop();
             this.camTrack = undefined;
-            logInfo("LK: Camera disabled", enabled);
         }
+        await this._roomConn.localParticipant.setCameraEnabled(false);
     }
 
     isVideoActive() {
-        if (!this.camTrack || !this.camTrack.videoTrack) return false;
-        let videoPublication = this._roomConn.localParticipant.videoTrackPublications.get(this.camTrack.trackSid);
-        logDebug("LK: Video Publication: ", videoPublication, " Enabled: ", videoPublication?.isEnabled);
-        return videoPublication?.isEnabled;
+        // if (!this.camTrack || !this.camTrack.videoTrack) return false;
+        // let videoPublication = this._roomConn.localParticipant.videoTrackPublications.get(this.camTrack.trackSid);
+        // logDebug("LK: Video Publication: ", videoPublication, " Enabled: ", videoPublication?.isEnabled);
+        // return videoPublication?.isEnabled;
+        return this._roomConn.localParticipant.isCameraEnabled;
     }
 
     async getVideoStats() {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getColors } from "../js/colorsVariety";
+  import { getColors } from "../js/util";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import { displayNum } from "../js/util";
 

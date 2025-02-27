@@ -24,14 +24,19 @@
   import { frontendStartupFlow } from "../js/startupFlow";
   import { URL_PARAMS } from "../js/frontendConsts";
 
+  // DISABLE VITE HOT MOUDLE RELOADING:
+  if (import.meta.hot) {
+    import.meta.hot.accept(() => import.meta.hot.invalidate());
+    // import.meta.hot.on("vite:beforeFullReload", () => {
+    //   throw "(skipping full reload)";
+    // });
+  }
+
   initializeStores();
   setupToasts();
   const MODAL_COMPONENTS = setupModals();
   storePopup.set({ computePosition, autoUpdate, autoPlacement, flip, shift, offset, arrow });
   $: isRolePage = !$page.error && $page.route.id !== "/";
-
-  // DISABLE VITE HOT MOUDLE RELOADING:
-  if (import.meta.hot) import.meta.hot.accept(() => import.meta.hot?.invalidate());
 
   // Store logs in local storage
   let logStoringInterval: NodeJS.Timeout;
@@ -61,7 +66,7 @@
   // Check server time in case the user's clock is off
   let serverTimeCheckInterval: NodeJS.Timeout;
   const checkServerTime = () => {
-    const TEN_MINUTES = 600_000; // ms
+    const TEN_MINUTES = 600_000; // in ms
     const timeOffset = currentServerTimeOffset();
     if (timeOffset === null) return;
     if (Math.abs(timeOffset) > TEN_MINUTES) {
@@ -82,7 +87,8 @@
     };
 
     const beforeunload = () => {
-      frontendConnMngr.close();
+      //TODO uncomment
+      // frontendConnMngr.close();
     };
 
     document.addEventListener("fullscreenchange", fullscreenChange);

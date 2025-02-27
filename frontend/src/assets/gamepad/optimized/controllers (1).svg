@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="rnt_Layer_1" version="1.1" viewBox="0 0 612 792">
+    <defs>
+        <style>
+            .rnt_st1{fill:#ed1c24}
+        </style>
+    </defs>
+    <rect width="216" height="216" x="72" y="72" class="red-square outside-group rnt_st1" rx="12" ry="12"/>
+    <rect width="216" height="216" x="72" y="504" class="red-square outside-group rnt_st1" rx="12" ry="12"/>
+    <g>
+        <circle id="green_circle" cx="468" cy="468" r="108" style="fill:#8dc63f" class="in-group1"/>
+        <circle id="yellow_circle" cx="432" cy="396" r="108" style="fill:#fff200" class="in-group1"/>
+    </g>
+</svg>

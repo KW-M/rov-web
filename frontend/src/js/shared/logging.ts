@@ -53,11 +53,11 @@ export class Logger {
         console.log("Logger initialized", this.rootURL)
 
         // Only Chrome & Opera have an error attribute on the event.
-        if (globalThis.window) window.addEventListener("error", (e: ErrorEvent) => {
-            if (!e) return;
-            const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
-            this.addLog(LogLevel.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
-        });
+        // if (globalThis.window) window.addEventListener("error", (e: ErrorEvent) => {
+        //     if (!e) return;
+        //     const args = [e.error ? e.error : "", e.message, e.filename + ":" + e.lineno + ":" + e.colno];
+        //     this.addLog(LogLevel.Error, args, [], LogKind.CONSOLE, this.defaultLogOrigin);
+        // });
     }
 
     subscribe(subscriber: () => void) {

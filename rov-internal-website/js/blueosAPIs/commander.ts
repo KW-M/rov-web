@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { log, logDebug, logError, logInfo, LogLevel, LogOrigin, logWarn, mainLogr } from "../shared/logging";
 import { URL_PARAMS } from '../constsInternal'
 const API_PATH = '/commander/v1.0'
 

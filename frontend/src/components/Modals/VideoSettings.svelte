@@ -7,7 +7,7 @@
     useLivekit.set(options.enabled);
     if (useLivekit.get() === true) {
       allowBkupCodec.set(options.allowBackupCodec === true);
-      keepFullResLayer.set(options.simulcastLayers?.length !== 0);
+      // keepFullResLayer.set(options.simulcastLayers?.length !== 0);
       if (options.baseStream?.maxBitrate != undefined) maxBitrate.set(options.baseStream.maxBitrate);
       if (useSimplePeer.get() === false) {
         if (options.baseStream?.height != undefined) size.set(options.baseStream.height);
@@ -67,7 +67,8 @@
   import { logDebug } from "../../js/shared/logging";
   import { unixTimeNow } from "../../js/shared/time";
   import { browser } from "$app/environment";
-  import type { LivekitVideoStatsResponse, RovAction, SimplePeerVideoStatsResponse, VideoStreamOptions } from "../../js/shared/protobufs/rov_actions";
+  import { RovAction, type LivekitVideoStatsResponse, type SimplePeerVideoStatsResponse, type VideoStreamOptions } from "../../js/shared/protobufs/rov_actions";
+  import { frontendRovMsgHandler } from "../../js/rovMessageHandler";
 
   const LK_STATS_ACCORDION_ID = "lk_stats_accordion";
   const SP_STATS_ACCORDION_ID = "sp_stats_accordion";
@@ -80,6 +81,22 @@
   const spRecieverVideoStats = frontendConnMngr.simplePeerVideoStats;
   const codecs = ["h264", "vp8", "vp9", "av1"];
   const sizes = {
+    90: {
+      bitrate: {
+        h264: 950_000,
+        vp8: 750_000,
+        vp9: 550_000,
+        av1: 550_000,
+      },
+    },
+    180: {
+      bitrate: {
+        h264: 950_000,
+        vp8: 750_000,
+        vp9: 550_000,
+        av1: 550_000,
+      },
+    },
     360: {
       bitrate: {
         h264: 950_000,
@@ -144,15 +161,15 @@
 
   const sendTwitchLivestreamChange = () => {
     logCurrentState("Sending twitch video change. current state:");
-    frontendConnMngr.sendMessageToRov(
-      {
+    frontendRovMsgHandler.sendRovMessage(
+      RovAction.create({
         body: {
           oneofKind: "setLivestreamingEnabled",
           setLivestreamingEnabled: {
             enabled: useTwitch.get(),
           },
         },
-      },
+      }),
       true
     );
   };
@@ -169,19 +186,21 @@
       fps: 60,
     };
 
-    frontendConnMngr.sendMessageToRov(
-      {
+    frontendRovMsgHandler.sendRovMessage(
+      RovAction.create({
         body: {
           oneofKind: "setLivekitVideoOptions",
           setLivekitVideoOptions: {
             enabled: useLivekit.get(),
             allowBackupCodec: allowBkupCodec.get(),
             codec: codec.get(),
-            baseStream: keepFullResLayer.get() ? undefined : baseStream,
-            simulcastLayers: keepFullResLayer.get() ? [baseStream] : [],
+            baseStream: baseStream,
+            simulcastLayers: [],
+            // baseStream: keepFullResLayer.get() ? undefined : baseStream,
+            // simulcastLayers: keepFullResLayer.get() ? [baseStream] : [],
           },
         },
-      },
+      }),
       true
     );
   };
@@ -193,8 +212,8 @@
 
     const mimeType = `video/${codec.get().toLowerCase()}`;
     frontendConnMngr.setSimplePeerCodec(mimeType);
-    frontendConnMngr.sendMessageToRov(
-      {
+    frontendRovMsgHandler.sendRovMessage(
+      RovAction.create({
         body: {
           oneofKind: "setSimplePeerVideoOptions",
           setSimplePeerVideoOptions: {
@@ -209,7 +228,7 @@
             },
           },
         },
-      },
+      }),
       true
     );
   };
@@ -340,9 +359,9 @@
       <RadioItem bind:group={$size} name="video size" value={parseInt(s)} label={s + "p"} on:change={onSizeChange} regionLabel="flex-grow-0">{s + "p"}</RadioItem>
     {/each}
   </RadioGroup>
-  {#if $useLivekit}
+  <!-- {#if $useLivekit}
     <SlideToggle bind:checked={$keepFullResLayer} disabled={!$useLivekit} name="Keep Full Resolution Layer" active="bg-primary-700" class="my-2" on:change={() => sendLivekitChange()}>Keep A Full Resolution Layer</SlideToggle>
-  {/if}
+  {/if} -->
 
   <label class="h4 font-bold mt-8 mb-2" for="codec_radio_group">Codec</label>
   <RadioGroup id="codec_radio_group" display="flex flex-wrap max-w-full items-center  justify-center" rounded="rounded-3xl">

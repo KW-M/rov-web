@@ -20,13 +20,19 @@
         Link</a> |
 
 
-    <button id=" show_recent_logs_btn">Show Recent Logs</button>
+
     <button onclick="window.getLongTermStarterAccessToken()">getLongTermStarterAccessToken</button>
     <button onclick="window.getLongTermTestRoomAccessToken()">getLongTermTestRoomAccessToken</button>
     <br />
-    <video id="preview_video" autoplay playsinline controls muted width="640" height="360"></video>
+
+    <input type="checkbox" id="show_video_preview_checkbox" name="Show Camera Preview" />
+    <label for="show_video_preview_checkbox">Show Camera Preview</label>
+    <br />
+    <video id="video_preview" style="display: none;" autoplay playsinline controls muted width="640"
+        height="360"></video>
+
     <!-- <a href="#">Download Recent Logs</a> -->
-    <h4>Recent Logs</h4>
+    <h4>Recent Logs <button id=" show_recent_logs_btn">Show Recent Logs</button></h4>
     <div id="recent_logs" style="width: 100%; max-height: 50em; white-space: pre;"></div>
     <h4>Video Stats</h4>
     <div id="video_stats" style="width: 100%; max-height: 50em; white-space: pre;"></div>

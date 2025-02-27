@@ -25,7 +25,7 @@ export interface msgQueueItem {
 
 interface LivekitMessageDetails {
     senderId: string
-    msg: Uint8Array
+    msgBytes: Uint8Array
 }
 
 export interface LivekitConfig {
@@ -244,7 +244,7 @@ export class LivekitBaseConnection {
         this._shouldReconnect = false;
         this.connectionState.set(ConnectionStates.disconnectedOk)
         if (this._roomConn) {
-            logInfo("LK: Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
+            logWarn("LK: Closing Livekit Connection: ", this._rovRoomName, this.config.hostUrl);
             this._roomConn.disconnect(true);
         }
     }

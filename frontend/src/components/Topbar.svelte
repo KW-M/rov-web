@@ -16,8 +16,8 @@
   import { ConnectionStates } from "../js/shared/consts";
   import { browser } from "$app/environment";
   $: role = $page.route.id.split("/").pop();
-  const spState = frontendConnMngr.simplePeerConnection.connectionState;
-  const lkState = frontendConnMngr.livekitConnection.connectionState;
+  const spState = frontendConnMngr.simplePeerConnection?.connectionState;
+  const lkState = frontendConnMngr.livekitConnection?.connectionState;
 
   let _hovered = false;
   let hovered = false;

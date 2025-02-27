@@ -1,9 +1,12 @@
 {
     "name": "Rov-Web",
-    "description": "Control your BlueROV2 over the internet from any web browser!",
-    "icon": "mdi-controller",
-    "company": "Oceans and Robotics",
     "version": "1.0.0",
+    "company": "Oceans and Robotics Inc.",
+    "description": "Control a Blue-ROV2 over the internet from any web browser!",
+    "icon": "mdi-controller",
     "webpage": "http://github.com/kw-m/rov-web",
-    "api": ""
+    "api": "http://github.com/kw-m/rov-web",
+    "works_in_relative_paths": true,
+    "avoid_iframes": true,
+    "new_page": true
 }

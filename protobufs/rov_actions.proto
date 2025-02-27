@@ -249,9 +249,10 @@ message ActionBackendMetadata {
 // wrapper message for anything sent by a pilot/spectator to the rov (aka an "action").
 message RovAction {
     // Metadata set by backend webpage before the message is forwarded to the python code.
-    optional ActionBackendMetadata BackendMetadata = 1;
+    // optional ActionBackendMetadata BackendMetadata = 1;
+    // int32 SequenceNum = 1;
     // IF Present, it MUST BE UNIQUE! Message exchange id (used to match up action requests and responses and prevent duplicate messages from being processed)
-    optional int32 ExchangeId = 2;
+    int32 ExchangeId = 2;
     // The body / content of the action
     oneof Body {
         // ping
@@ -303,6 +304,11 @@ message RovAction {
         // set_livestreaming_enabled
         SetLivestreamingEnabledAction SetLivestreamingEnabled = 27;
     }
+
+    //
+    // int32 SequenceNum = 30;
+    //
+    // int32 ResetCount = 30;
 }
 
 // sent to a specific client when an action is received by the rov and COMPLETES successfully.
@@ -435,6 +441,10 @@ message SimplePeerVideoStatsResponse {
     VideoBaseStats stats = 4;
 }
 
+message HearbeatResponse {
+    // No data needed
+}
+
 message ResponseBackendMetadata {
     // The identiies of the livekit user/clients to sent this response to.
     // !!!! If empty, the message will be sent to ALL clients.
@@ -447,7 +457,8 @@ message ResponseBackendMetadata {
 message RovResponse {
     // Metadata sent by the python code to the backend webpage to tell it how to send the message.
     // !!!! This field WILL be erased before the message is forwarded from the backend website to the livekit users.
-    optional ResponseBackendMetadata BackendMetadata = 1; // optional
+    // optional ResponseBackendMetadata BackendMetadata = 1; // optional
+    // int32 SequenceNum = 1;
     // Response exchange id (used to match up action requests and responses)
     optional int32 ExchangeId = 2;
     // The body / content of the response
@@ -486,5 +497,12 @@ message RovResponse {
         LogMessageResponse LogMessage = 20;
         LivekitVideoStatsResponse LivekitVideoStats = 21;
         SimplePeerVideoStatsResponse SimplePeerVideoStats = 22;
+        HearbeatResponse Heartbeat = 23;
     }
+
+
+    //
+    // int32 SequenceNum = 30;
+    //
+    // int32 ResetCount = 30;
 }

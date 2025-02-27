@@ -100,7 +100,7 @@
     lkUnsub = frontendConnMngr.livekitConnection.remoteVideoTracks.subscribe((streams) => {
       const stream = streams.values().next().value as RemoteTrack;
       if (livekitVideoStream.stream && (livekitVideoStream.stream as RemoteTrack).detach !== undefined && livekitVideoStream.videoElem && (livekitVideoStream.stream as RemoteTrack).attachedElements.includes(livekitVideoStream.videoElem)) {
-        log("LK: Video replace - Detaching existing video element", Object.assign({}, livekitVideoStream.stream), Object.assign({}, stream));
+        logWarn("LK: Video replace - Detaching existing video element", Object.assign({}, livekitVideoStream.stream), Object.assign({}, stream));
         (livekitVideoStream.stream as RemoteTrack).detach(livekitVideoStream.videoElem);
       }
       if (stream) {

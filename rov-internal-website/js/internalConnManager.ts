@@ -8,8 +8,10 @@ import type { TrackPublishOptions, VideoCaptureOptions, VideoSenderStats } from 
 import { LivekitPublisherConnection } from './livekitPubConn';
 import nStore from './shared/libraries/nStore';
 import { type ComputedRtpStats } from './shared/videoStatsParser';
-import { LivekitVideoStatsResponse, ResponseBackendMetadata, RovResponse, SimplePeerVideoStatsResponse } from './shared/protobufs/rov_actions';
+import { LivekitVideoStatsResponse, ResponseBackendMetadata, RovAction, RovResponse, SimplePeerVideoStatsResponse } from './shared/protobufs/rov_actions';
 import { twitchStream } from './twitchStream';
+import { SimpleMessageBroker } from './shared/reliableMessageBroker';
+import { base64encode } from '@protobuf-ts/runtime';
 
 export interface InternalLivekitSetupOptions {
     RovName: string,
@@ -26,6 +28,7 @@ export interface InternalLivekitSetupOptions {
  */
 class InternalConnectionManager {
     private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
+    private _reliableMessageBrokers: Map<string, SimpleMessageBroker<RovResponse, RovAction>> = new Map();
     private _simplePeerConnections: Map<string, SimplePeerConnection> = new Map();
     private _simplePeerCameraStream: MediaStream | null = null;
 
@@ -41,6 +44,9 @@ class InternalConnectionManager {
     // interval id for checking video stats loop
     _videoStatsIntervalId: NodeJS.Timeout | null = null;
 
+    // video element for displaying the preview video stream for debugging simple peer camera stream
+    _debugVideoElement: HTMLVideoElement | null = null;
+
     constructor() {
         // Initlize (but don't start) the cloud livekit connection:
         this._cloudLivekitConnection.init({
@@ -53,7 +59,17 @@ class InternalConnectionManager {
         })
         changesSubscribe(this._cloudLivekitConnection.latestRecivedDataMessage, (msgObj) => {
             if (!msgObj) return;
-            const { senderId, msg } = msgObj;
+            const { senderId, msgBytes } = msgObj;
+            let data = new Uint8Array(msgBytes);
+            if (!data || data.length === 0) return;
+            const msg = RovAction.fromBinary(new Uint8Array(data));
+            // let reliableMessageBroker = this.getReliableMessageBroker(senderId);
+            // let reliableMsg = msg.sequenceNum != 0;
+            // if (reliableMsg) {
+            //     reliableMessageBroker.receive(msg, msg.sequenceNum);
+            // } else {
+            // backendHandleWebrtcMsgRcvd(senderId, msg)
+            // }
             backendHandleWebrtcMsgRcvd(senderId, msg)
         })
         changesSubscribe(this._cloudLivekitConnection.participantConnectionEvents, (evt) => {
@@ -89,9 +105,9 @@ class InternalConnectionManager {
         this._cancelGetUserMedia = cancel;
         promise.then((stream) => {
             logDebug("SP: Camera Stream Initialized: ", Object.assign({}, stream), stream, stream.active)
+            if (this._debugVideoElement) this._debugVideoElement.srcObject = stream;
             this._simplePeerCameraStream = stream;
             this._cancelGetUserMedia = null;
-            this.setPreviewVideoElement(this._simplePeerCameraStream);
             this._simplePeerConnections.forEach((spConn) => {
                 spConn.changeMediaStream(stream);
             })
@@ -145,18 +161,19 @@ class InternalConnectionManager {
         this._videoStatsIntervalId = setInterval(() => {
             if (this._simplePeerCameraStream?.active !== true && this._cancelGetUserMedia === null) this.initSimplepeerCameraStream();
             this.sendVideoStatsUpdate()
+            this.sendMessage(RovResponse.create({ body: { oneofKind: 'heartbeat', heartbeat: {} } }), true, [])
         }, 1000)
     }
 
     public async sendVideoStatsUpdate() {
         const lkStats = await this._cloudLivekitConnection.getVideoStats().catch((e) => { logWarn("LK: Error getting RTP video stats: ", e); return { allStats: [String(e)] } as ComputedRtpStats }) as ComputedRtpStats;
 
-        this.sendMessage({
+        this.sendMessage(RovResponse.create({
             body: {
                 oneofKind: "livekitVideoStats",
                 livekitVideoStats: LivekitVideoStatsResponse.create({
-                    enabled: !!this._cloudLivekitConnection.camTrack && this._cloudLivekitConnection._roomConn?.localParticipant.videoTrackPublications.size > 0,
-                    allowBackupCodec: !!this._cloudLivekitConnection._videoPublishOptions?.backupCodec,
+                    enabled: this._cloudLivekitConnection.isVideoActive() && this._cloudLivekitConnection._roomConn?.localParticipant.videoTrackPublications.size > 0,
+                    allowBackupCodec: !!(this._cloudLivekitConnection._videoPublishOptions?.backupCodec),
                     baseStream: {
                         width: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.width ?? 0,
                         height: this._cloudLivekitConnection._videoCaptureOptions?.resolution?.height ?? 0,
@@ -175,18 +192,18 @@ class InternalConnectionManager {
                     stats: { ...lkStats }
                 })
             }
-        }, false, []).catch((e) => logWarn("LK: Error sending video stats update: ", e))
+        }), false, []).catch((e) => logWarn("LK: Error sending video stats update: ", e))
         const spCameraOpts = this.simplePeerCameraOptions.get();
         for (const [userId, spConn] of this._simplePeerConnections) {
             if (!spConn || spConn.connectionState.get() !== ConnectionStates.connected) continue;
             const enabled = spConn && !([ConnectionStates.disconnectedOk, ConnectionStates.failed].includes(spConn.connectionState.get()));
             const spStats = await spConn.getStats().catch((e) => { logWarn("SP: Error getting rtc video stats for user " + userId + ":", e); return {} as ComputedRtpStats });
-            this.sendMessage({
+            this.sendMessage(RovResponse.create({
                 body: {
                     oneofKind: "simplePeerVideoStats",
                     simplePeerVideoStats: SimplePeerVideoStatsResponse.create({
                         enabled: enabled,
-                        codec: spStats.senderLayerStats[0]?.videoCodec || "unknown",
+                        codec: spStats?.senderLayerStats[0]?.videoCodec || "unknown",
                         baseStream: {
                             width: Number((spCameraOpts.video as MediaTrackConstraints)?.width),
                             height: Number((spCameraOpts.video as MediaTrackConstraints)?.height),
@@ -196,12 +213,13 @@ class InternalConnectionManager {
                         stats: { ...spStats }
                     })
                 }
-            }, false, [userId]).catch((e) => logWarn("SP: Error sending video stats update to user " + userId + ":", e))
+            }), false, [userId]).catch((e) => logWarn("SP: Error sending video stats update to user " + userId + ":", e))
         }
     }
 
     public setLivekitVideoOptions(enabled: boolean, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
-        this._cloudLivekitConnection.enableCamera(enabled, captureOptions, publishOptions);
+        if (enabled) this._cloudLivekitConnection.enableCamera(captureOptions, publishOptions);
+        else this._cloudLivekitConnection.disableCamera();
     }
 
     createSimplePeer(userId: string, firstSignalMsg?: string) {
@@ -217,31 +235,32 @@ class InternalConnectionManager {
         const spConn = new SimplePeerConnection(SIMPLEPEER_BASE_CONFIG, streams);
         this._simplePeerConnections.set(userId, spConn);
         if (firstSignalMsg) spConn.ingestSignalingMsg(firstSignalMsg);
-        changesSubscribe(spConn.latestRecivedDataMessage, (msg) => {
-            if (msg) backendHandleWebrtcMsgRcvd(userId, msg)
+        changesSubscribe(spConn.latestRecivedDataMessage, (msgBytes) => {
+            if (!msgBytes || msgBytes.length === 0) return;
+            backendHandleWebrtcMsgRcvd(userId, RovAction.fromBinary(new Uint8Array(msgBytes)));
         })
         changesSubscribe(spConn.outgoingSignalingMessages, (msg) => {
-            this.sendMessage({ body: { oneofKind: "simplePeerSignal", simplePeerSignal: { message: msg ?? "" } } }, true, [userId])
+            this.sendMessage(RovResponse.create({ body: { oneofKind: "simplePeerSignal", simplePeerSignal: { message: msg ?? "" } } }), true, [userId])
         })
         changesSubscribe(spConn.connectionState, (state) => {
             log("SP: Connection State Changed for " + userId + ":", state)
             if (state === ConnectionStates.disconnectedOk || state === ConnectionStates.failed) {
-                this.sendMessage({
+                this.sendMessage(RovResponse.create({
                     body: {
                         oneofKind: "simplePeerVideoStats",
                         simplePeerVideoStats: SimplePeerVideoStatsResponse.create({
                             enabled: false,
                         })
                     }
-                }, false, [userId]).catch((e) => logWarn("SP: Error sending sp diabled update to user " + userId + ":", e))
+                }), false, [userId]).catch((e) => logWarn("SP: Error sending sp diabled update to user " + userId + ":", e))
             }
         })
         return spConn;
     }
 
-    public setPreviewVideoElement(stream: MediaStream) {
-        const videoElement = document.getElementById("preview_video") as HTMLVideoElement;
-        if (videoElement) videoElement.srcObject = stream;
+    public setDebugVideoElement(videoElem: HTMLVideoElement | null) {
+        this._debugVideoElement = videoElem;
+        if (videoElem) videoElem.srcObject = this._simplePeerCameraStream || null;
     }
 
     public async setSimplePeerVideoOptions(enabled: boolean, userId: string, captureOptions?: VideoCaptureOptions, publishOptions?: TrackPublishOptions) {
@@ -278,20 +297,32 @@ class InternalConnectionManager {
         }
     }
 
-    public async sendMessage(msg: RovResponse, reliable: boolean, toUserIds: string[]) {
-        if (!msg) return false;
-        if (this._cloudLivekitConnection.connectionState.get() !== ConnectionStates.connected) {
+    public async _sendMsgRaw(msg: RovResponse, reliable: boolean, toUserIds: string[]) {
+        const msgBytes = RovResponse.toBinary(msg)
+        console.debug("Sending Message: ", msg, msg.body.oneofKind, toUserIds);
+        if (this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected) {
+            // Send the message via the cloud livekit connection (for simplicity we don't use simplePeer for sending messages to pilot & other users)
+            await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
+            return true;
+        } else {
+            // Otherwise return false indicating the message was not sent
             if (URL_PARAMS.DEBUG_MODE) logDebug("LK: Message Not Sent, Livekit Not Connected",);
             return false;
         }
+    }
 
-        if (URL_PARAMS.DEBUG_MODE) logDebug("LK/SP: " + (toUserIds.length == 0 ? "Broadcasting msg " : "Sending msg to [" + toUserIds.join(", ") + "]") + (reliable ? "reliably" : "unreliably") + ":", RovResponse.toJson(msg));
-        msg.backendMetadata = ResponseBackendMetadata.create({}); // Strip out backend metadata if present
-        const msgBytes = RovResponse.toBinary(msg)
-
-        // Send the message via the cloud livekit connection (for simplicity we don't use simplePeer for sending messages to pilot etc..)
-        await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
-        return true;
+    public async sendMessage(msg: RovResponse, reliable: boolean, toUserIds: string[]) {
+        if (!msg) return false;
+        return this._sendMsgRaw(msg, reliable, toUserIds);
+        // if (reliable) {
+        //     toUserIds = toUserIds ?? this._cloudLivekitConnection.getParticipantIds()
+        //     for (const userId of toUserIds) {
+        //         this.getReliableMessageBroker(userId).send(msg);
+        //     }
+        //     return true;
+        // } else {
+        //     return this._sendMsgRaw(msg, reliable, toUserIds);
+        // }
     }
 
     public async stop() {

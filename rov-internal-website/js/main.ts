@@ -1,3 +1,4 @@
+/// <reference path="./globals.d.ts" />
 import { internalConnManager } from "./internalConnManager"
 import { iRovWebSocketRelay } from "./websocketRelay";
 import { twitchStream } from "./twitchStream";
@@ -16,8 +17,12 @@ import { DataTransportMethod, RovResponse } from "./shared/protobufs/rov_actions
 
 /// ------- DEBUGGING STUFF: -----------
 // DISABLE VITE HOT MOUDLE RELOADING:
-// @ts-ignore (Ignore TS error for this line)
-if (import.meta.hot) import.meta.hot.accept(() => import.meta.hot.invalidate())
+if (import.meta.hot) {
+    // import.meta.hot.accept(() => import.meta.hot.invalidate())
+    import.meta.hot.on('vite:beforeFullReload', () => {
+        throw '(skipping full reload)';
+    });
+}
 
 mainLogr.defaultLogOrigin = LogOrigin.ROV;
 if (URL_PARAMS.SEND_LOGS) mainLogr.sendLogsAllowed = true;
@@ -65,27 +70,27 @@ if (URL_PARAMS.TWITCH_STREAM_KEY !== "None") {
 }
 
 // // Start Backend/Python Websocket Communication
-if (URL_PARAMS.PYTHON_WEBSOCKET_PORT != 0) {
-    iRovWebSocketRelay.start("ws://localhost:" + URL_PARAMS.PYTHON_WEBSOCKET_PORT, (msgBytes: Uint8Array | string) => {
-        /*Callback to handle messages being received from the iROV python*/
+// if (URL_PARAMS.PYTHON_WEBSOCKET_PORT != 0) {
+//     iRovWebSocketRelay.start("ws://localhost:" + URL_PARAMS.PYTHON_WEBSOCKET_PORT, (msgBytes: Uint8Array | string) => {
+//         /*Callback to handle messages being received from the iROV python*/
 
 
-        // Decode protobuf object from bytes
-        if (msgBytes.length === 0) return;
-        const msgProto = RovResponse.fromBinary(msgBytes as Uint8Array)
+//         // Decode protobuf object from bytes
+//         if (msgBytes.length === 0) return;
+//         const msgProto = RovResponse.fromBinary(msgBytes as Uint8Array)
 
-        // Extract metadata from protobuf object
-        if (!msgProto.backendMetadata) return logError("No BackendMetadata in message from iROV", RovResponse.toJson(msgProto));
-        const targetUserIds = msgProto.backendMetadata.targetUserIds
-        const transportMethod = msgProto.backendMetadata.transportMethod
-        const isReliable = transportMethod === DataTransportMethod.LivekitReliable
+//         // Extract metadata from protobuf object
+//         // if (!msgProto.backendMetadata) return logError("No BackendMetadata in message from iROV", RovResponse.toJson(msgProto));
+//         // const targetUserIds = msgProto.backendMetadata.targetUserIds
+//         // const transportMethod = msgProto.backendMetadata.transportMethod
+//         // const isReliable = transportMethod === DataTransportMethod.LivekitReliable
 
-        // Send message on using livekit:
-        internalConnManager.sendMessage(msgProto, isReliable, targetUserIds || [])
-    });
-} else {
-    logInfo("No PYTHON_WEBSOCKET_PORT url parameter set, skipping python websocket!")
-}
+//         // Send message on using livekit:
+//         // internalConnManager.sendMessage(msgProto, isReliable, targetUserIds || [])
+//     });
+// } else {
+//     logInfo("No PYTHON_WEBSOCKET_PORT url parameter set, skipping python websocket!")
+// }
 
 
 // Start Mavlink2Rest Websocket Communication with the blue os apis
@@ -141,6 +146,22 @@ if (URL_PARAMS.BLUEOS_APIS_ENDPOINT) {
 } else {
     logInfo("No BLUEOS_APIS_ENDPOINT url parameter set, skipping mavlink & system info monitoring!")
 }
+
+
+// Video Preview for Debugging Camera
+document.getElementById("show_video_preview_checkbox").addEventListener("change", (e) => {
+    const show = (e.target as HTMLInputElement).checked
+    if (show) {
+        const video = document.getElementById("video_preview") as HTMLVideoElement
+        internalConnManager.setDebugVideoElement(video)
+        video.style.display = "block"
+        video.play()
+    } else {
+        const video = document.getElementById("video_preview") as HTMLVideoElement
+        video.srcObject = null;
+        video.style.display = "none"
+    }
+})
 
 
 window.addEventListener("beforeunload", () => {

@@ -10,7 +10,7 @@ import { frontendRovMsgHandler } from "./rovMessageHandler";
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
 import { type Room } from "livekit-server-sdk";
 import { type ComputedRtpStats } from "./shared/videoStatsParser";
-import { RovAction } from "./shared/protobufs/rov_actions";
+import { RovAction, RovResponse } from "./shared/protobufs/rov_actions";
 import { debugModeOn } from "./globalContext";
 
 export interface LivekitRoomInfo {
@@ -43,25 +43,27 @@ export class FrontendConnectionManager {
     _cleanupFuncs: { [key: string]: () => void } = {};
 
     constructor() {
+        this._addCleanupFunc(changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
+            const { senderId, msgBytes } = msgInfo;
+            if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not the rov)
+            frontendRovMsgHandler.processRecivedMessage(msgBytes)
+        }))
+
+
         this.simplePeerConnection = new SimplePeerConnection(SIMPLEPEER_PILOT_CONFIG);
-        this._cleanupFuncs['lkOnData'] = changesSubscribe(this.livekitConnection.latestRecivedDataMessage, (msgInfo) => {
-            const { senderId, msg } = msgInfo;
-            if (senderId != this.livekitConnection.getRoomName()) return; // ignore messages from other participants (not rov)
-            frontendRovMsgHandler.handleRecivedMessage(msg)
-        })
-        this._cleanupFuncs['spOnData'] = changesSubscribe(this.simplePeerConnection.latestRecivedDataMessage, (msg) => {
-            frontendRovMsgHandler.handleRecivedMessage(msg)
-        })
-        this._cleanupFuncs['outSignal'] = changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (msg) => {
-            this.sendMessageToRov({
+        this._addCleanupFunc(changesSubscribe(this.simplePeerConnection.latestRecivedDataMessage, (msgBytes) => {
+            frontendRovMsgHandler.processRecivedMessage(msgBytes)
+        }))
+        this._addCleanupFunc(changesSubscribe(this.simplePeerConnection.outgoingSignalingMessages, (signalStr) => {
+            frontendRovMsgHandler.sendRovMessage(RovAction.create({
                 body: {
                     oneofKind: "simplePeerSignal",
                     simplePeerSignal: {
-                        message: msg
+                        message: signalStr
                     }
                 }
-            }, true)
-        })
+            }), true)
+        }))
         this.startVideoStatsCollection();
     }
 
@@ -93,9 +95,12 @@ export class FrontendConnectionManager {
     }
 
     onConnectedActions() {
-        // await this.startSimplePeerConnection();
+        log("Connected to ROV", this.livekitConnection._roomConn.name, this.livekitConnection._roomConn.isRecording, this.livekitConnection._roomConn.remoteParticipants.keys())
         showToastMessage(`Connected to ROV ${this.livekitConnection._roomConn.name}!`, 2000, false, ToastSeverity.success)
-        // this.startSimplePeerConnection();
+        setTimeout(() => {
+            log("Starting simplepeer after onConnectedActions: remote participants=", this.livekitConnection._roomConn.remoteParticipants.keys())
+            this.startSimplePeerConnection();
+        }, 1000)
     }
 
     onReconnectActions() {
@@ -121,8 +126,9 @@ export class FrontendConnectionManager {
      * this.connectionState. This is useful for the frontend to know if the connection is connected, connecting, disconnected, etc.
      */
     async _keepTrackOfConnectionState() {
-        if (this._cleanupFuncs['livekitConnState']) this._cleanupFuncs['livekitConnState']()
-        const unsubA = changesSubscribe(this.livekitConnection.connectionState, (livekitState, prevLivekitState) => {
+        this._runCleanupFunc('livekitConnState')
+        this._runCleanupFunc('simplepeerConnState')
+        this._addCleanupFunc(changesSubscribe(this.livekitConnection.connectionState, (livekitState, prevLivekitState) => {
             if (this.simplePeerConnection && this.simplePeerConnection.connectionState.get() === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
             } else if (livekitState === ConnectionStates.connected) {
@@ -138,16 +144,14 @@ export class FrontendConnectionManager {
             }
 
             if (livekitState === ConnectionStates.connected && prevLivekitState === ConnectionStates.reconnecting) this.onReconnectActions();
-
-        })
-        const unsubB = changesSubscribe(this.simplePeerConnection.connectionState, (simplePeerState) => {
+        }), 'livekitConnState')
+        this._addCleanupFunc(changesSubscribe(this.simplePeerConnection.connectionState, (simplePeerState) => {
             if (this.livekitConnection && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
                 this.connectionState.set(ConnectionStates.connected)
             } else {
                 this.connectionState.set(simplePeerState)
             }
-        })
-        this._cleanupFuncs['livekitConnState'] = () => { unsubA(); unsubB() }
+        }), 'simplepeerConnState')
     }
 
     /**
@@ -244,12 +248,14 @@ export class FrontendConnectionManager {
         if (!this.livekitConnection) throw new Error("sendMessageToRov() called before livekitConnection was initilized")
         const msgBytes = RovAction.toBinary(msg)
         const rovUserId = this.livekitConnection._rovRoomName;
-        if (debugModeOn.get()) logDebug("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", msg, `(${msgBytes.byteLength} bytes) LK: ${this.livekitConnection.connectionState.get()} SP: ${this.simplePeerConnection.connectionState.get()}`);
+        if (debugModeOn.get()) logDebug("Sending Message to ", rovUserId, reliable ? "reliably" : "unreliably", ":", `(${msgBytes.byteLength} bytes) LK: ${this.livekitConnection.connectionState.get()} SP: ${this.simplePeerConnection.connectionState.get()}`, msg);
         if (reliable && this.livekitConnection.connectionState.get() === ConnectionStates.connected) {
             await this.livekitConnection.sendMessage(msgBytes, reliable, [rovUserId]);
-        } else if (this.simplePeerConnection && this.simplePeerConnection.connectionState.get() === ConnectionStates.connected) {
-            await this.simplePeerConnection.sendMessage(msgBytes);
-        } else {
+        }
+        // else if (this.simplePeerConnection && this.simplePeerConnection.connectionState.get() === ConnectionStates.connected) {
+        //     await this.simplePeerConnection.sendMessage(msgBytes);
+        // }
+        else {
             await this.livekitConnection.sendMessage(msgBytes, false, [rovUserId]);
         }
     }
@@ -260,6 +266,20 @@ export class FrontendConnectionManager {
         if (this.simplePeerConnection) this.simplePeerConnection.stop();
         if (this._videoStatsIntervalId) clearInterval(this._videoStatsIntervalId);
         for (const key in this._cleanupFuncs) this._cleanupFuncs[key]();
+        this._cleanupFuncs = {};
+    }
+
+    _addCleanupFunc(func: () => void, key?: string) {
+        key = key ?? Math.random().toString(36).substring(7);
+        this._cleanupFuncs[key] = func;
+        return key;
+    }
+
+    _runCleanupFunc(key: string) {
+        if (this._cleanupFuncs[key]) {
+            this._cleanupFuncs[key]();
+            delete this._cleanupFuncs[key];
+        }
     }
 }
 

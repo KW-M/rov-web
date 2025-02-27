@@ -1,6 +1,7 @@
 <script lang="ts">
   import GamepadLeftSvg from "../assets/gamepad/optimized/display-gamepad-left.svg?raw";
   import GamepadRightSvg from "../assets/gamepad/optimized/display-gamepad-right.svg?raw";
+  import "virtual-gamepad-lib/gamepad_assets/base.css";
 
   import { onDestroy, onMount } from "svelte";
   import { fade } from "svelte/transition";
@@ -74,9 +75,6 @@
 </div>
 
 <style lang="postcss">
-  /* ********* Onscreen Gamepad Related ********* */
-  /* *********  Gamepad Display Related ********* */
-
   .gamepad-joystick-touch-area {
     position: absolute;
     bottom: 0;
