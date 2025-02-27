@@ -89,7 +89,7 @@ export async function decrypt(encryptedText: string, saltText: string, ivText: s
             name: "AES-GCM",
             iv: iv
         }, key, encryptedBytes);
-        return DECODE_TXT(decryptedBytes);
+        return DECODE_TXT(new Uint8Array(decryptedBytes));
     } catch (e) {
         logWarn("Failed to decrypt", e);
     }

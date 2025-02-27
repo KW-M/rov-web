@@ -5,8 +5,8 @@ import { DECODE_TXT, ENCODE_TXT } from "../consts";
 const openHttpConnections: { [key: string]: Promise<Response> } = {}
 const openWebsocketConnections: { [key: string]: WebSocket } = {}
 
-let sendProxyMessageCallback: (rawMsg: ArrayBufferLike) => void;
-export function setSendProxyMessageCallback(callback: (data: ArrayBufferLike) => void) {
+let sendProxyMessageCallback: (rawMsg: Uint8Array) => void;
+export function setSendProxyMessageCallback(callback: (data: Uint8Array) => void) {
     sendProxyMessageCallback = callback;
 }
 
@@ -32,7 +32,7 @@ function openWebsocket(url: string) {
     return ws;
 }
 
-function sendWebsocketMsg(url: string, data: ArrayBufferLike) {
+function sendWebsocketMsg(url: string, data: Uint8Array) {
     let ws = openWebsocketConnections[url];
     if (!ws) ws = openWebsocket(url)
     if (ws.readyState !== WebSocket.OPEN) {
@@ -61,7 +61,7 @@ function sendHttpRequest(url: string, fetchOptions: object) {
     });
 }
 
-export function receiveProxiedMsg(rawMsg: ArrayBufferLike) {
+export function receiveProxiedMsg(rawMsg: Uint8Array) {
     const proxiedMsg = JSON.parse(DECODE_TXT(rawMsg)) as proxyInterchangeFormat;
     log("Received Proxy Message", proxiedMsg)
     if (proxiedMsg.type === proxyMessageTypes.openWebsocket) {

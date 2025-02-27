@@ -392,6 +392,12 @@ export class SimplePeerConnection {
                 this._connectionId = signal.connId;
                 this._incomingSignalQueue = [];
                 if (this._spConfig && !this._initiator) return this.restart(signal.connId, signalMsg);
+                // TODO: TEST THIS
+                // this._incomingSignalQueue = [signal];
+                // if (this._spConfig && !this._initiator) {
+                //     this.start(this._shouldReconnect, this._reconnectAttemptCount);
+                //     this.ingestSignalingMsg(signalMsg);
+                // }
             } else if (signal.connId < this._connectionId) {
                 logWarn("SP: Ignoring Signal Message For Old connid (connId mismatch)!", signal.connId, this._connectionId);
                 return;

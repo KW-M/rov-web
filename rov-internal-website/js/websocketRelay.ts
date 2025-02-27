@@ -79,7 +79,7 @@ export class WebSocketRelay {
             if (this.isRunning) this.queueConnect()
         });
 
-        this.socket.addEventListener("message", (msgEvent: MessageEvent<string | ArrayBufferLike>) => {
+        this.socket.addEventListener("message", (msgEvent: MessageEvent<string | Uint8Array>) => {
             if (!this.msgReceivedFn) return logError("No msgReceivedFn defined for WebSocketRelay");
             if (typeof msgEvent.data === "string") this.msgReceivedFn(msgEvent.data as string)
             else if (msgEvent.data instanceof ArrayBuffer) this.msgReceivedFn(new Uint8Array(msgEvent.data as ArrayBuffer))

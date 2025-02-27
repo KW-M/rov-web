@@ -36,7 +36,7 @@ export function enableIframeWebsocketProxying() {
     })
 }
 
-function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProxyMessageCallback: (data: ArrayBufferLike) => void) {
+function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProxyMessageCallback: (data: Uint8Array) => void) {
     const proxiedWsObjects: { [key: string]: WebSocket } = {};
 
     // Monkey Patch the native websocket object
@@ -89,7 +89,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
         if (sendProxyMessageCallback) sendProxyMessageCallback(ENCODE_TXT(JSON.stringify(proxiedMsg)))
     }
 
-    function sendDataThruProxy(url: string, data: ArrayBufferLike) {
+    function sendDataThruProxy(url: string, data: Uint8Array) {
         const binary = new Uint8Array(data)
         const proxiedMsg = {
             type: proxyMessageTypes.socketMsg,
@@ -100,7 +100,7 @@ function startWebsocketProxying(isProxiedUrl: (url: string) => boolean, sendProx
         if (sendProxyMessageCallback) sendProxyMessageCallback(ENCODE_TXT(JSON.stringify(proxiedMsg)))
     }
 
-    return function receiveProxiedMsg(rawMsg: ArrayBufferLike) {
+    return function receiveProxiedMsg(rawMsg: Uint8Array) {
         const proxiedMsg = JSON.parse(DECODE_TXT(rawMsg)) as proxyInterchangeFormat;
         if (proxiedMsg.type === proxyMessageTypes.socketMsg) {
             const ws = proxiedWsObjects[proxiedMsg.url]

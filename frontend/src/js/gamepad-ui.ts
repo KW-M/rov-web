@@ -1,6 +1,6 @@
-import { GAME_CONTROLLER_BUTTON_CONFIG, ONSCREEN_GPAD_BUTTON_LABELS, ONSCREEN_GPAD_BUTTON_PRESSED_CLASS, ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS } from './frontendConsts';
+import { GAME_CONTROLLER_BUTTON_CONFIG } from './frontendConsts';
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
-import { GamepadApiWrapper, gamepadDirection, GamepadDisplay, GamepadEmulator, setupPresetInteractiveGamepad } from 'virtual-gamepad-lib';
+import { GamepadApiWrapper, gamepadDirection, GamepadDisplay, GamepadEmulator, PRESET_SVG_GPAD_BTN_IDS, setupPresetInteractiveGamepad } from 'virtual-gamepad-lib';
 
 import { addTooltip, type TooltipOptions } from '../components/HelpTooltips.svelte';
 import { tutorialModeActive } from './globalContext';
@@ -21,7 +21,7 @@ export class GamepadUi {
         this.gpadApiWrapper = gpadApiWrapper;
         this.gpadEmulator = gpadEmulator;
         this.gpadHtmlContainer = GPAD_HTML_CONTAINER;
-        this.gpadButtonHighlightElements = ONSCREEN_GPAD_BUTTON_LABELS.map((btnLabel) => document.getElementById(btnLabel + "_highlight"));
+        this.gpadButtonHighlightElements = PRESET_SVG_GPAD_BTN_IDS.map((btnLabel) => document.getElementById(btnLabel + "_highlight"));
         // this.setupGamepadDisplay(0, GPAD_HTML_CONTAINER);
         this.setupEmulatedGamepadInput(0, GPAD_HTML_CONTAINER);
         const { gpadDisplay } = setupPresetInteractiveGamepad(GPAD_HTML_CONTAINER, {
@@ -49,7 +49,7 @@ export class GamepadUi {
 
 
     addHelpTooltips(GPAD_HTML_CONTAINER: HTMLElement, tooltipDelay: number) {
-        this.tooltips = ONSCREEN_GPAD_BUTTON_LABELS.map((name, i) => {
+        this.tooltips = PRESET_SVG_GPAD_BTN_IDS.map((name, i) => {
             const elem = GPAD_HTML_CONTAINER.querySelector(`#${name}_touch_target`) as SVGElement | HTMLElement;
             if (elem) return addTooltip(elem, {
                 label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel,
@@ -224,7 +224,7 @@ export class GamepadUi {
     //     });
 
     //     /* ----- SETUP BUTTON DISPLAY ----- */
-    //     const buttons = ONSCREEN_GPAD_BUTTON_LABELS.map((name) => {
+    //     const buttons = PRESET_SVG_GPAD_BTN_IDS.map((name) => {
     //         if (name.includes("trigger")) {
     //             // trigger buttons usually take variable pressure so can be represented by a variable button that is dragged down.
     //             return {

@@ -137,8 +137,6 @@ class RovActionsClass {
             const now = unixTimeNow();
             if (now - this.lastPingTime > PING_INTERVAL) {
                 frontendRovMsgHandler.sendRovMessage(RovAction.create({ body: { oneofKind: "ping", ping: { time: now } } }), true, null);
-
-                console.log("pinging")
                 this.lastPingTime = now;
             }
             if (now - this.lastMovementTime > MOVE_MSG_TIMEOUT) {

@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-type socketMsgDataTypes = string | ArrayBufferLike | Blob | ArrayBufferView
+type socketMsgDataTypes = string | Uint8Array | Blob | ArrayBufferView
 
 // Mutable MessageEvent.
 // Subclasses MessageEvent and makes data, origin and other MessageEvent properites mutatble.

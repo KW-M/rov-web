@@ -110,7 +110,7 @@ export const GAME_CONTROLLER_BUTTON_CONFIG: GpadBtnConfig[] = [
 ];
 
 
-export const ONSCREEN_GPAD_BUTTON_LABELS = PRESET_SVG_GPAD_BTN_IDS
+// export const ONSCREEN_GPAD_BUTTON_LABELS = PRESET_SVG_GPAD_BTN_IDS
 // [
 //     "button_1",
 //     "button_2",
@@ -132,4 +132,4 @@ export const ONSCREEN_GPAD_BUTTON_LABELS = PRESET_SVG_GPAD_BTN_IDS
 // ];
 
 
-export const ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS = "touched", ONSCREEN_GPAD_BUTTON_PRESSED_CLASS = "pressed";
+// export const ONSCREEN_GPAD_BUTTON_TOUCHED_CLASS = "touched", ONSCREEN_GPAD_BUTTON_PRESSED_CLASS = "pressed";

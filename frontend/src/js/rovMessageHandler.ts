@@ -88,7 +88,7 @@ export class FrontendRovMsgHandlerClass {
         const msgBody = msgData.body;
         const ExchangeId = msgData.exchangeId;
         const msgType = msgBody.oneofKind;
-        console.debug("RECIVED Message: ", msgType, msgBody);
+        // console.debug("RECIVED Message: ", msgType, msgBody);
         this.runExchangeCallback(msgData, ExchangeId);
         frontendConnMngr.simplePeerConnection.checkAliveness();
         switch (msgType) {
@@ -201,7 +201,9 @@ export class FrontendRovMsgHandlerClass {
 
     handleMavlinkMessageRecived(msgData: MavlinkResponse, ExchangeId: number) {
         if (!msgData.message) return;
-        const mavMessage = DECODE_TXT(msgData.message.buffer);
+        let mavMessage = DECODE_TXT(msgData.message);
+        // TODO: Hack why is this needed?
+        while (!mavMessage.startsWith("{")) mavMessage = mavMessage.substring(1);
         try {
             const msg = JSON.parse(mavMessage);
             handleMavlinkMessage(msg);

@@ -1,5 +1,4 @@
 
-import { ONSCREEN_GPAD_BUTTON_LABELS } from './frontendConsts';
 import { GamepadApiWrapper, GamepadEmulator, DEFAULT_GPAD_AXIS_COUNT, DEFAULT_GPAD_BUTTON_COUNT, type buttonChangeDetails, type EGamepad, standardGpadButtonMap } from "virtual-gamepad-lib";
 import { GAME_CONTROLLER_BUTTON_CONFIG } from "./frontendConsts";
 import { throttle } from "./util";

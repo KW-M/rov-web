@@ -28,7 +28,7 @@
     // const preferedCodecs = preferedMimetypes ? preferedMimetypes.map((mimeType) => mimeType.split("/")[1].toLowerCase()) : [];
     useSimplePeer.set(enabled);
     if (useSimplePeer.get() === true) {
-      if (options.baseStream.height) size.set(options.baseStream.height);
+      if (options.baseStream?.height) size.set(options.baseStream.height);
       const sentCodec = options?.codec;
       const recievedCodec = frontendConnMngr.simplePeerVideoStats.get()?.recieverStats?.videoCodec;
       const requestedCodec = frontendConnMngr.simplePeerConnection.getCodecPreferences()?.[0]?.split("/")[1]?.toLowerCase();

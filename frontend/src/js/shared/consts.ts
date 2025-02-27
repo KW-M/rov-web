@@ -14,7 +14,7 @@ export enum ConnectionStates {
 const TE = new TextEncoder();
 export const ENCODE_TXT = (txt: string) => TE.encode(txt)
 const TD = new TextDecoder();
-export const DECODE_TXT = (data: ArrayBufferLike) => TD.decode(data)
+export const DECODE_TXT = (data: Uint8Array) => TD.decode(data)
 
 export const ENCRYPTED_AUTH_TOKEN_PREFIX = "AUTHTOKEN:";
 
