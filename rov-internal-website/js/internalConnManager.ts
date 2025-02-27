@@ -10,7 +10,7 @@ import nStore from './shared/libraries/nStore';
 import { type ComputedRtpStats } from './shared/videoStatsParser';
 import { LivekitVideoStatsResponse, ResponseBackendMetadata, RovAction, RovResponse, SimplePeerVideoStatsResponse } from './shared/protobufs/rov_actions';
 import { twitchStream } from './twitchStream';
-import { SimpleMessageBroker } from './shared/reliableMessageBroker';
+// import { SimpleMessageBroker } from './shared/reliableMessageBroker';
 import { base64encode } from '@protobuf-ts/runtime';
 
 export interface InternalLivekitSetupOptions {
@@ -28,7 +28,7 @@ export interface InternalLivekitSetupOptions {
  */
 class InternalConnectionManager {
     private _cloudLivekitConnection: LivekitPublisherConnection = new LivekitPublisherConnection();
-    private _reliableMessageBrokers: Map<string, SimpleMessageBroker<RovResponse, RovAction>> = new Map();
+    // private _reliableMessageBrokers: Map<string, SimpleMessageBroker<RovResponse, RovAction>> = new Map();
     private _simplePeerConnections: Map<string, SimplePeerConnection> = new Map();
     private _simplePeerCameraStream: MediaStream | null = null;
 

@@ -11,7 +11,6 @@ import { URL_PARAMS } from "./frontendConsts";
 import { log, logDebug, logInfo, logWarn, logError, mainLogr } from "./shared/logging"
 import { onLivekitVideoOptionsChange, onSimplePeerVideoOptionsChange } from "../components/Modals/VideoSettings.svelte";
 import { unixTimeNow } from "./shared/time";
-import { SimpleMessageBroker } from "./shared/reliableMessageBroker";
 import { base64encode } from "@protobuf-ts/runtime";
 
 let lastTimeRecvdPong = NaN;
