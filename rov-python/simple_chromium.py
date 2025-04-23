@@ -1,6 +1,6 @@
-import os
-import subprocess
-import sys
+from os import environ, path, getcwd
+from subprocess import Popen, run
+from sys import platform
 import tempfile
 from time import sleep
 from urllib.parse import urlencode
@@ -11,8 +11,8 @@ from urllib.parse import urlencode
 # FAKE_STREAM_ENABLED=false
 # DISABLE_WEBRTC_ENCRYPTION=false
 # VIRTUAL_DISPLAY_ENABLED=true
-# CHROMIUM_DEBUGING_ADDRESS=host.docker.internal
-# CHROMIUM_DEBUGING_PORT=9222
+# BROWSER_DEBUGING_ADDRESS=host.docker.internal
+# BROWSER_DEBUGING_PORT=9224
 
 # INTERNAL_WEBPAGE_URL=http://localhost:8080/internal
 # ROV_NAME=Default-ROV
@@ -31,27 +31,30 @@ LOG_PATH = "/home/pi/chromedriver.log"
 WEBRTC_LOG_PATH = "/home/pi/chromium_webrtc.log"
 BROWSER_DATA_DIR = tempfile.mkdtemp()
 BROWSER_BINARY_PATH = r"/usr/bin/chromium-shell"
-CHROMIUM_DEBUGING_ADDRESS = os.environ.get("CHROMIUM_DEBUGING_ADDRESS", None)
-CHROMIUM_DEBUGING_PORT = os.environ.get("CHROMIUM_DEBUGING_PORT", None)
+BROWSER_DEBUGING_ADDRESS = environ.get("BROWSER_DEBUGING_ADDRESS", None)
+BROWSER_DEBUGING_PORT = environ.get("BROWSER_DEBUGING_PORT", None)
 
-print("sys.platform = " + sys.platform)
-is_linux = sys.platform.startswith("linux")
-is_mac = sys.platform.startswith("darwin")
+is_linux = platform.startswith("linux")
+is_mac = platform.startswith("darwin")
 
 if is_mac:
-    LOG_PATH = os.path.expanduser("~/Downloads/chromedriver.log")
-    WEBRTC_LOG_PATH = os.path.expanduser("~/Downloads/chromium_webrtc.log")
+    LOG_PATH = path.expanduser("~/Downloads/chromedriver.log")
+    WEBRTC_LOG_PATH = path.expanduser("~/Downloads/chromium_webrtc.log")
     BROWSER_BINARY_PATH = r"/Applications/Chromium.app/Contents/MacOS/Chromium"
 
-if __name__ == "__main__":
+
+def run_chromium():
+    """
+    Run the Chromium browser with the specified arguments and environment variables.
+    """
 
     # # pylint: disable=C0103
     # vdisplay = None
-    # if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
+    # if is_linux and environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
     #     from pyvirtualdisplay.display import Display
 
     #     size = tuple(
-    #         int(x) for x in os.environ.get("VIRTUAL_DISPLAY_SIZE", "800x600").split("x")
+    #         int(x) for x in environ.get("VIRTUAL_DISPLAY_SIZE", "800x600").split("x")
     #     )
     #     if len(size) != 2:
     #         print("Invalid VIRTUAL_DISPLAY_SIZE use format WIDTHxHEIGHT")
@@ -68,35 +71,35 @@ if __name__ == "__main__":
     #         exit(1)
 
     query_params = {
-        "ROV_NAME": os.environ.get("ROV_NAME", "Default-ROV"),
-        "ROV_CONTROL_PASSWORD": os.environ.get("ROV_CONTROL_PASSWORD", ""),
-        "DEBUG_MODE": os.environ.get("DEBUG_MODE", "false").upper() == "TRUE",
-        "SEND_LOGS": os.environ.get("SEND_LOGS", "true").upper() == "TRUE",
-        "BLUEOS_APIS_ENDPOINT": os.environ.get(
+        "ROV_NAME": environ.get("ROV_NAME", "Default-ROV"),
+        "ROV_CONTROL_PASSWORD": environ.get("ROV_CONTROL_PASSWORD", ""),
+        "DEBUG_MODE": environ.get("DEBUG_MODE", "false").upper() == "TRUE",
+        "SEND_LOGS": environ.get("SEND_LOGS", "true").upper() == "TRUE",
+        "BLUEOS_APIS_ENDPOINT": environ.get(
             "BLUEOS_APIS_ENDPOINT", "http://host.docker.internal"
         ),
-        "PYTHON_WEBSOCKET_PORT": os.environ.get("PYTHON_WEBSOCKET_PORT", 0),
-        "LIVEKIT_CLOUD_URL": os.environ.get(
+        "PYTHON_WEBSOCKET_PORT": environ.get("PYTHON_WEBSOCKET_PORT", 0),
+        "LIVEKIT_CLOUD_URL": environ.get(
             "LIVEKIT_CLOUD_URL", "https://rov-web.livekit.cloud"
         ),
-        "LIVEKIT_API_KEY": os.environ.get("LIVEKIT_API_KEY", ""),
-        "LIVEKIT_SECRET_KEY": os.environ.get("LIVEKIT_SECRET_KEY", ""),
-        "TWITCH_STREAM_KEY": os.environ.get("TWITCH_STREAM_KEY", ""),
+        "LIVEKIT_API_KEY": environ.get("LIVEKIT_API_KEY", ""),
+        "LIVEKIT_SECRET_KEY": environ.get("LIVEKIT_SECRET_KEY", ""),
+        "TWITCH_STREAM_KEY": environ.get("TWITCH_STREAM_KEY", ""),
     }
     # add query string to url from query_params dict using url encoding:
-    URL = os.environ.get("INTERNAL_WEBPAGE_URL", "http://localhost:8080/internal")
+    URL = environ.get("INTERNAL_WEBPAGE_URL", "http://localhost:8080/internal")
     URL += "?" + urlencode(query_params)
 
-    chromium_args = []
+    browser_args = []
 
     # add run-xvfb to run in a virtual display:
-    if is_linux and os.environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
-        chromium_args.append("xvfb-run")
-        extra_xvfb_args = os.environ.get("VIRTUAL_DISPLAY_ARGS", "").strip()
+    if is_linux and environ.get("VIRTUAL_DISPLAY_ENABLED", "TRUE").upper() == "TRUE":
+        browser_args.append("xvfb-run")
+        extra_xvfb_args = environ.get("VIRTUAL_DISPLAY_ARGS", "").strip()
         if extra_xvfb_args != "":
-            chromium_args.extend(extra_xvfb_args.split(" "))
+            browser_args.extend(extra_xvfb_args.split(" "))
 
-    chromium_args.extend(
+    browser_args.extend(
         [
             BROWSER_BINARY_PATH,
             # ----- vital flags for headless mode: -----
@@ -184,79 +187,83 @@ if __name__ == "__main__":
     )
 
     # if vdisplay is not None and vdisplay.is_alive():
-    #     chromium_args.append("--display=" + str(vdisplay.new_display_var))
+    #     browser_args.append("--display=" + str(vdisplay.new_display_var))
 
-    if CHROMIUM_DEBUGING_PORT is not None:
-        chromium_args.append("--remote-debugging-port=" + str(CHROMIUM_DEBUGING_PORT))
+    if BROWSER_DEBUGING_PORT is not None:
+        browser_args.append("--remote-debugging-port=" + str(BROWSER_DEBUGING_PORT))
 
-    if CHROMIUM_DEBUGING_ADDRESS is not None:
-        chromium_args.append(
-            "--remote-debugging-address=" + str(CHROMIUM_DEBUGING_ADDRESS)
+    if BROWSER_DEBUGING_ADDRESS is not None:
+        browser_args.append(
+            "--remote-debugging-address=" + str(BROWSER_DEBUGING_ADDRESS)
         )
 
-    if os.environ.get("BROWSER_LOGGING_ENABLED", "false").upper() == "TRUE":
-        chromium_args.append("--webrtc-event-logging=" + WEBRTC_LOG_PATH)
-        chromium_args.append("--enable-logging")
-        chromium_args.append("--log-level=2")
-        chromium_args.append("--v=2")
+    if environ.get("BROWSER_LOGGING_ENABLED", "false").upper() == "TRUE":
+        browser_args.append("--webrtc-event-logging=" + WEBRTC_LOG_PATH)
+        browser_args.append("--enable-logging")
+        browser_args.append("--log-level=2")
+        browser_args.append("--v=2")
 
-    if os.environ.get("FAKE_STREAM_ENABLED", "false").upper() == "TRUE":
-        chromium_args.append("--use-fake-device-for-media-stream")
+    if environ.get("FAKE_STREAM_ENABLED", "false").upper() == "TRUE":
+        browser_args.append("--use-fake-device-for-media-stream")
 
-    if os.environ.get("DISABLE_WEBRTC_ENCRYPTION", "false").upper() == "TRUE":
+    if environ.get("DISABLE_WEBRTC_ENCRYPTION", "false").upper() == "TRUE":
         # WARNING: seems to break webrtc connections
-        chromium_args.append("--disable-webrtc-encryption")
+        browser_args.append("--disable-webrtc-encryption")
 
-    if os.environ.get("DISABLE_CHROMIUM_SANDBOX", "false").upper() == "TRUE":
+    if environ.get("DISABLE_CHROMIUM_SANDBOX", "false").upper() == "TRUE":
         # may be necessary to disable the sandbox for root docker containers
-        chromium_args.append("--no-sandbox")
+        browser_args.append("--no-sandbox")
 
-    if os.environ.get("DISABLE_CHROMIUM_CRASHPAD", "true").upper() == "TRUE":
-        chromium_args.append("--disable-breakpad")
-        chromium_args.append("--disable-crash-reporter")
-        chromium_args.append("--disable-crashpad-for-testing")
+    if environ.get("DISABLE_CHROMIUM_CRASHPAD", "true").upper() == "TRUE":
+        browser_args.append("--disable-breakpad")
+        browser_args.append("--disable-crash-reporter")
+        browser_args.append("--disable-crashpad-for-testing")
 
-    if os.environ.get("DISABLE_GPU", "false").upper() == "TRUE":
-        chromium_args.append("--disable-gpu")
+    if environ.get("DISABLE_GPU", "false").upper() == "TRUE":
+        browser_args.append("--disable-gpu")
 
-    if os.environ.get("DISABLE_WEBRTC_HW_ENCODING", "false").upper() == "TRUE":
-        chromium_args.append("--disable-accelerated-video-encode")
-        chromium_args.append("--disable-accelerated-video-decode")
+    if environ.get("DISABLE_WEBRTC_HW_ENCODING", "false").upper() == "TRUE":
+        browser_args.append("--disable-accelerated-video-encode")
+        browser_args.append("--disable-accelerated-video-decode")
 
-    if os.environ.get("PRINT_PDF", "false").upper() == "TRUE":
-        chromium_args.append("--print-to-pdf=./website.pdf")
+    if environ.get("PRINT_PDF", "false").upper() == "TRUE":
+        browser_args.append("--print-to-pdf=./website.pdf")
 
     # add any extra chromium args from the environment:
-    chromium_args.extend(
-        [a for a in os.environ.get("EXTRA_CHROMIUM_ARGS", "").split(" ") if a != ""]
+    browser_args.extend(
+        [a for a in environ.get("EXTRA_browser_args", "").split(" ") if a != ""]
     )
 
     # kill existing chromium processes just to make sure we are starting fresh:
     print("Killing all existing chromium processes:")
-    subprocess.run(["killall", "Chromium", "xvfb"], check=False)
-    subprocess.run(["ps"], check=False)
+    run(["killall", "Chromium", "xvfb", "firefox"], check=False)
 
     # launch chromium with the specified args:
     # add the URL to the end of the args list to open the webpage
-    chromium_args.append(URL)
+    browser_args.append(URL)
 
-    environmentVars = {
-        **os.environ,
+    env_vars = {
+        **environ,
         "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
     }
     # if vdisplay is not None and vdisplay.is_alive():
     #     environmentVars["DISPLAY"] = vdisplay.new_display_var
 
-    print("Environment Variables:")
-    print(environmentVars)
-    print("Running chromium:")
-    print(" ".join(chromium_args))
+    if environ.get("DEBUG_ENVIRONMENT", "false").lower() == "true":
+        print("sys.platform = " + platform)
+        print("Running Processes (ps aux):")
+        run(["ps", "aux"], check=False)
+        print("\nEnvironment Variables:")
+        print(env_vars)
+        print("\nRunning Browser:")
+        print(" ".join(browser_args) + "\n")
+
     # https://stackoverflow.com/questions/5772873/python-spawn-off-a-child-subprocess-detach-and-exit
-    browser_process = subprocess.Popen(
-        args=chromium_args,
+    browser_process = Popen(
+        args=browser_args,
         shell=False,
-        env=environmentVars,
-        cwd=os.getcwd(),
+        env=env_vars,
+        cwd=getcwd(),
     )
 
     try:
@@ -272,6 +279,6 @@ if __name__ == "__main__":
         raise e
     finally:
         browser_process.terminate()
-        subprocess.run(["killall", "Chromium", "xvfb"], check=False)
+        run(["killall", "Chromium", "xvfb"], check=False)
         # if vdisplay is not None:
         #     vdisplay.stop()

@@ -7,7 +7,7 @@ cd /etc/nginx/ && ln -sbfFv /rov-web/rov-tooling/config-files/nginx.conf nginx.c
 
 # Create pi user:
 groupadd pi --gid 1000 || true
-useradd --uid 1000 --gid 1000 --groups nginx,video,audio,users --home /home/pi --create-home --shell /bin/bash --comment "pi user for running our ROV code and compatibility with raspberry pi defaults"  pi
+useradd --uid 1000 --gid 1000 --groups nginx,video,audio,users --home /home/pi --create-home --shell /bin/bash --comment "pi user for running ROV code as a non-root user and compatibility with raspberry pi defaults"  pi
 
 # ---- Setup ownership and permissions -----
 chown -R pi:pi /rov-web

@@ -1,3 +1,5 @@
+# This script helps to set up samba on the Raspberry Pi for file sharing.
+# It is useful mostly for debugging and development purposes to get files on & off of the raspberry pi.
 sudo apt-get install -y samba samba-common-bin
 mkdir /home/pi/shared
 # samba config:

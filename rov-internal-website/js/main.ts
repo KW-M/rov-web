@@ -26,9 +26,13 @@ if (import.meta.hot) {
 
 mainLogr.defaultLogOrigin = LogOrigin.ROV;
 if (URL_PARAMS.SEND_LOGS) mainLogr.sendLogsAllowed = true;
-const showLogsBtn = document.getElementById("show_recent_logs_btn")
-const logsDiv = document.getElementById("recent_logs")
-if (showLogsBtn && logsDiv) showLogsBtn.addEventListener("click", () => mainLogr.printRecentLogs(logsDiv))
+
+window.addEventListener("load", () => {
+    const showLogsBtn = document.getElementById("show_recent_logs_btn")
+    const logsDiv = document.getElementById("recent_logs")
+    if (showLogsBtn && logsDiv) showLogsBtn.addEventListener("click", () => console.warn(mainLogr.printRecentLogs(logsDiv)))
+})
+
 
 Object.assign(window, {
     "getLongTermStarterAccessToken": () => {
