@@ -9,8 +9,10 @@ COPY ./rov-python/requirements.txt /rov-web/rov-python/requirements.txt
 COPY ./rov-tooling/container-setup-scripts/setup-container-pkgs.sh /rov-web/rov-tooling/container-setup-scripts/setup-container-pkgs.sh
 RUN chmod +x /rov-web/rov-tooling/container-setup-scripts/setup-container-pkgs.sh && \
     /rov-web/rov-tooling/container-setup-scripts/setup-container-pkgs.sh
-ENV VIRTUAL_ENV /env                     # activating python environment
-ENV PATH /env/bin:$PATH                  # activating python environment
+
+# Configure Python Virtual Environment Variables
+ENV VIRTUAL_ENV=/env
+ENV PATH=/env/bin:$PATH
 
 # Copy Files:
 COPY ./frontend/build /rov-web/frontend/build
@@ -23,6 +25,10 @@ RUN chmod +x /rov-web/rov-tooling/container-setup-scripts/* && \
     chmod +x /rov-web/rov-tooling/container-runtime-scripts/* && \
     /rov-web/rov-tooling/container-setup-scripts/setup-container-config.sh
 
-EXPOSE 8080/tcp # local copy of internal website is served on port 8080
-EXPOSE 9224/tcp # exposed browser debugging port if enabled by setting BROWSER_DEBUGGING_PORT=9224
+# local copy of internal website is served on port 8080
+EXPOSE 8080/tcp
+# exposed browser debugging port if enabled by setting BROWSER_DEBUGGING_PORT=9224
+EXPOSE 9224/tcp
+
+# supervisord will manage the components of the container and so is the main process
 ENTRYPOINT ["supervisord", "-c", "/rov-web/rov-tooling/config-files/supervisord.conf"]
