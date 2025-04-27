@@ -16,7 +16,7 @@ importers:
         version: 2.9.4
       '@thaunknown/simple-peer':
         specifier: github:KW-M/simple-peer
-        version: https://codeload.github.com/KW-M/simple-peer/tar.gz/7440aeec6a5d242642b7774e0f440ae18533bccd
+        version: git+https://git@github.com:KW-M/simple-peer.git#7440aeec6a5d242642b7774e0f440ae18533bccd
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -533,8 +533,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
-  '@thaunknown/simple-peer@https://codeload.github.com/KW-M/simple-peer/tar.gz/7440aeec6a5d242642b7774e0f440ae18533bccd':
-    resolution: {tarball: https://codeload.github.com/KW-M/simple-peer/tar.gz/7440aeec6a5d242642b7774e0f440ae18533bccd}
+  '@thaunknown/simple-peer@git+https://git@github.com:KW-M/simple-peer.git#7440aeec6a5d242642b7774e0f440ae18533bccd':
+    resolution: {commit: 7440aeec6a5d242642b7774e0f440ae18533bccd, repo: git@github.com:KW-M/simple-peer.git, type: git}
     version: 10.0.10
 
   '@trysound/sax@0.2.0':
@@ -922,8 +922,8 @@ packages:
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
-  cross-spawn@7.0.3:
-    resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
+  cross-spawn@7.0.6:
+    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
   crypto-browserify@3.12.0:
@@ -2681,7 +2681,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.13
 
-  '@thaunknown/simple-peer@https://codeload.github.com/KW-M/simple-peer/tar.gz/7440aeec6a5d242642b7774e0f440ae18533bccd':
+  '@thaunknown/simple-peer@git+https://git@github.com:KW-M/simple-peer.git#7440aeec6a5d242642b7774e0f440ae18533bccd':
     dependencies:
       debug: 4.3.6
       err-code: 3.0.1
@@ -3159,7 +3159,7 @@ snapshots:
 
   create-require@1.1.1: {}
 
-  cross-spawn@7.0.3:
+  cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
       shebang-command: 2.0.0
@@ -3416,7 +3416,7 @@ snapshots:
 
   foreground-child@3.3.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
   form-data@4.0.0:
