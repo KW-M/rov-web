@@ -68,7 +68,7 @@
     "three": "^0.169.0",
     "twgl.js": "^5.5.4",
     "uuid": "^10.0.0",
-    "virtual-gamepad-lib": "^0.3.2",
+    "virtual-gamepad-lib": "^0.3.3",
     "ws": "^8.18.0"
   },
   "pnpm": {}
