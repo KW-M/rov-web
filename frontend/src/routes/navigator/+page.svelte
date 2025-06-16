@@ -37,7 +37,7 @@
 
   <video class="w-full" muted loop controls playsinline>
     <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
+    This browser does not support the video tag.
   </video>
 
   <svelte:fragment slot="pageFooter"><h4 class="h4 p-6">Pretend this is video from ROV...</h4></svelte:fragment>

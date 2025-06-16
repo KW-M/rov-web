@@ -10,7 +10,7 @@
   import RovViz from "./3dScene/rovViz.svelte";
   import { Hide_source, Navigation, Video_settings } from "svelte-google-materialdesign-icons";
   import { getDrawerStore } from "@skeletonlabs/skeleton";
-  import { pulseVizMode } from "./Modals/VideoSettings.svelte";
+  import { videoQualityComparisonMode } from "./Modals/VideoSettings.svelte";
   import { browser } from "$app/environment";
 
   interface VideoStreamData {
@@ -29,7 +29,7 @@
 
   const drawerStore = getDrawerStore();
   const videoIsReady = (videoData: VideoStreamData) => !!(videoData.playable && videoData.stream != null);
-  $: if ($pulseVizMode) {
+  $: if ($videoQualityComparisonMode) {
     if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).start();
   } else if (videoIsReady(simplePeerVideoStream)) {
     if (livekitVideoStream.stream) (livekitVideoStream.stream as RemoteTrack).stop();
@@ -207,8 +207,8 @@
           width: "w-96",
         });
       }}
-      on:mouseenter={() => pulseVizMode.set(true)}
-      on:mouseleave={() => pulseVizMode.set(false)}
+      on:mouseenter={() => videoQualityComparisonMode.set(true)}
+      on:mouseleave={() => videoQualityComparisonMode.set(false)}
     >
       <Video_settings class="block text-2xl pointer-events-none" tabindex="-1" variation="round" />
     </button>
@@ -243,7 +243,7 @@
 
     <video
       class="video-livestream lk-video w-full h-full rounded-2xl border-pink-500 border-4"
-      class:!visible={!videoIsReady(simplePeerVideoStream) || $pulseVizMode}
+      class:!visible={!videoIsReady(simplePeerVideoStream) || $videoQualityComparisonMode}
       muted
       playsinline
       autoplay
@@ -267,7 +267,7 @@
     <video
       class="video-livestream sp-video w-full h-full rounded-2xl border-teal-500 border-4"
       class:!visible={videoIsReady(simplePeerVideoStream)}
-      class:opacity-50={$pulseVizMode}
+      class:half-clip={$videoQualityComparisonMode}
       muted
       playsinline
       autoplay
@@ -306,6 +306,10 @@
     right: 0;
     top: 1rem;
     bottom: 0;
+  }
+
+  .half-clip {
+    clip-path: inset(0 0 0 50%);
   }
 
   /* .hd-video-btn {

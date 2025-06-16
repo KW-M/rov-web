@@ -1,6 +1,6 @@
 import { GAME_CONTROLLER_BUTTON_CONFIG } from './frontendConsts';
 import { log, logDebug, logInfo, logWarn, logError } from "../js/shared/logging"
-import { GamepadApiWrapper, gamepadDirection, GamepadDisplay, GamepadEmulator, PRESET_SVG_GPAD_BTN_IDS, setupPresetInteractiveGamepad } from 'virtual-gamepad-lib';
+import { GamepadApiWrapper, gamepadDirection, type GamepadDisplay, GamepadEmulator, PRESET_SVG_GPAD_BTN_IDS, setupPresetInteractiveGamepad } from 'virtual-gamepad-lib';
 
 import { addTooltip, type TooltipOptions } from '../components/HelpTooltips.svelte';
 import { tutorialModeActive } from './globalContext';
@@ -50,7 +50,7 @@ export class GamepadUi {
 
     addHelpTooltips(GPAD_HTML_CONTAINER: HTMLElement, tooltipDelay: number) {
         this.tooltips = PRESET_SVG_GPAD_BTN_IDS.map((name, i) => {
-            const elem = GPAD_HTML_CONTAINER.querySelector(`#${name}_touch_target`) as SVGElement | HTMLElement;
+            const elem = GPAD_HTML_CONTAINER.querySelector(`#${name}_tap_target`) as SVGElement | HTMLElement;
             if (elem) return addTooltip(elem, {
                 label: GAME_CONTROLLER_BUTTON_CONFIG[i].helpLabel,
                 config: {

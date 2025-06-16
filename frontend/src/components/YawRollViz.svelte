@@ -40,7 +40,7 @@
   onMount(() => {
     gl = canvas.getContext("webgl");
     if (!gl) {
-      logWarn("Unable to initialize WebGL. Your browser or machine may not support it.");
+      logWarn("Unable to initialize WebGL. This browser or machine may not support it.");
       return;
     }
     programInfo = twgl.createProgramInfo(gl, [vertexShader, fragmentShader]);

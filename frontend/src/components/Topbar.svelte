@@ -138,13 +138,13 @@
       autoReset={true}
       options={[
         { value: "logs", label: "Debug Logs", icon: Logo_dev, action: openLogsTimelineModal },
-        {
-          value: "test-connection",
-          label: "Check Connection",
-          icon: Wifi_find,
-          action: openConnectionCheckModal,
-          // action: () => (window.location.href = "https://livekit.io/webrtc/browser-test"),
-        },
+        // {
+        //   value: "test-connection",
+        //   label: "Check Connection",
+        //   icon: Wifi_find,
+        //   action: openConnectionCheckModal,
+        //   // action: () => (window.location.href = "https://livekit.io/webrtc/browser-test"),
+        // },
         { value: "tutorial", label: "Tutorial", icon: Info, action: openTestDriveTutModal },
       ]}
     ></DropdownMenuPopup>

@@ -49,7 +49,7 @@
   const useTwitch = nStore(false);
   const spSenderVideoStats = nStore<ComputedRtpStats | null>(null);
   const lkSenderVideoStats = nStore<ComputedRtpStats | null>(null);
-  export const pulseVizMode = nStore(false);
+  export const videoQualityComparisonMode = nStore(false);
   let lastChangeTimestamp = 0;
 </script>
 
@@ -382,7 +382,7 @@
     </RangeSlider>
     <SlideToggle bind:checked={$updateBitrateWithResolution} name="Update" size="sm" active="bg-primary-700" class="mt-2 mx-auto">Update With Resolution + Codec</SlideToggle>
   {/if}
-  <div on:mouseenter={() => pulseVizMode.set(true)} on:mouseleave={() => pulseVizMode.set(false)} role="cell" tabindex="-1">
+  <div on:mouseenter={() => videoQualityComparisonMode.set(true)} on:mouseleave={() => videoQualityComparisonMode.set(false)} role="cell" tabindex="-1">
     {#if $useSimplePeer}
       <RangeSlider id="playout_delay_slider" class="mt-8" name="Playout Delay slider" min={0} max={4} step={0.01} bind:value={$spPlayoutDelay} on:change={() => onSpPlayoutDelayChange()}>
         <div class="flex justify-between items-center">

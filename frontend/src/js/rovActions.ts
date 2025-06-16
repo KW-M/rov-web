@@ -23,7 +23,7 @@ const BTN_RB = standardGpadButtonMap.RShoulder
 const BTN_LB = standardGpadButtonMap.LShoulder
 const BTN_LSTICK = standardGpadButtonMap.LStick
 const BTN_RSTICK = standardGpadButtonMap.RStick
-const BTN_HELP = standardGpadButtonMap.Start
+const BTN_HELP = standardGpadButtonMap.Back
 
 class RovActionsClass {
 

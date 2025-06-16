@@ -380,3 +380,6 @@ user_pref("layout.spellcheckDefault", 0);
 // user_pref("browser.startup.homepage_override.buildID", "");
 // user_pref("browser.startup.homepage_override.torbrowser.version", "");
 // user_pref("browser.uitour.enabled", false);
+user_pref('media.webrtc.camera.allow-pipewire', false);
+user_pref("toolkit.startup.always_use_safe_mode", true);
+//FIREFOX_EXTRA_USER_PREFS= user_pref('toolkit.startup.always_use_safe_mode', true);

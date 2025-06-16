@@ -6,6 +6,7 @@
   import InfoNoticeBlock from "../components/NoticeBlocks/InfoNoticeBlock.svelte";
   import PlayArrow from "svelte-google-materialdesign-icons/Play_arrow.svelte";
   import WifiFind from "svelte-google-materialdesign-icons/Wifi_find.svelte";
+  import HelpTooltips from "../components/HelpTooltips.svelte";
 
   let role = "pilot";
   let fileInput;
@@ -83,3 +84,4 @@
   <button class="btn btn-icon absolute bottom-2 left-2 opacity-50" on:click={() => fileInput.click()}><Logo_dev class="text-2xl pointer-events-none"></Logo_dev></button>
   <input type="file" bind:this={fileInput} class="hidden" accept=".json" on:change={handleLogsFileChosen} />
 </div>
+<HelpTooltips />

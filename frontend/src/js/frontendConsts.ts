@@ -1,4 +1,4 @@
-import { PRESET_SVG_GPAD_BTN_IDS, PRESET_SVG_GPAD_BTN_TAP_TARGET_IDS, standardGpadButtonMap, type wrapperButtonConfig } from "virtual-gamepad-lib";
+import { standardGpadButtonMap, type wrapperButtonConfig } from "virtual-gamepad-lib";
 import type { PopupSettings } from "../components/Popup/types";
 import { SECONDS_IN_DAY, SIMPLEPEER_BASE_CONFIG } from "./shared/consts";
 import { getBooleanQueryParam, getIntegerQueryParam, getStringQueryParam } from "./shared/urlParameters";

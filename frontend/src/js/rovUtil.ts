@@ -176,7 +176,7 @@ export function scanForRovIp() {
 // //       " src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" >`;
 // //       if (!popup.open) {
 // //         alert(
-// //           "Please allow popups in your browser, and don't close the popups. Then try scanning again."
+// //           "Please allow popups in this browser, and don't close the popups. Then try scanning again."
 // //         );
 // //         return reject();
 // //       }
