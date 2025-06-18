@@ -155,7 +155,7 @@ export class GamepadController {
                 this.gpadEmulator.PressButton(EMULATED_GPAD_INDEX, KEYMAP[lowercaseKey], value, touched);
             }
 
-            // else console.debug("KEY NOT MAPPED: ", `"${lowercaseKey}"`);
+            // else logDebug("KEY NOT MAPPED: ", `"${lowercaseKey}"`);
         }
         window.onkeydown = (e) => handleKeyEvent(true, e);
         window.onkeyup = (e) => handleKeyEvent(false, e);

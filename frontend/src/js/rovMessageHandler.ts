@@ -75,7 +75,7 @@ export class FrontendRovMsgHandlerClass {
         if (!rawData || rawData.length === 0) return;
         const msg = RovResponse.fromBinary(rawData);
         // const reliable = msg.sequenceNum != 0;
-        // console.debug("RECIVED Message: ", msg, msg.sequenceNum);
+        // logDebug("RECIVED Message: ", msg, msg.sequenceNum);
         this.handleRecivedMessage(msg);
         // if (reliable) {
         //     this.reliableMessageBroker.receive(msg, msg.sequenceNum);
@@ -88,7 +88,7 @@ export class FrontendRovMsgHandlerClass {
         const msgBody = msgData.body;
         const ExchangeId = msgData.exchangeId;
         const msgType = msgBody.oneofKind;
-        // console.debug("RECIVED Message: ", msgType, msgBody);
+        // logDebug("RECIVED Message: ", msgType, msgBody);
         this.runExchangeCallback(msgData, ExchangeId);
         frontendConnMngr.simplePeerConnection.checkAliveness();
         switch (msgType) {

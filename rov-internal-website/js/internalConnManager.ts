@@ -299,10 +299,11 @@ class InternalConnectionManager {
 
     public async _sendMsgRaw(msg: RovResponse, reliable: boolean, toUserIds: string[]) {
         const msgBytes = RovResponse.toBinary(msg)
-        console.debug("Sending Message: ", msg, msg.body.oneofKind, toUserIds);
+
         if (this._cloudLivekitConnection.connectionState.get() === ConnectionStates.connected) {
             // Send the message via the cloud livekit connection (for simplicity we don't use simplePeer for sending messages to pilot & other users)
             await this._cloudLivekitConnection.sendMessage(msgBytes, reliable, toUserIds);
+            if (URL_PARAMS.DEBUG_MODE) logDebug("LK: SENT MSG: ", msg, msg.body.oneofKind, toUserIds);
             return true;
         } else {
             // Otherwise return false indicating the message was not sent

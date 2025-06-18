@@ -35,7 +35,7 @@ function setAutopilotArmed(armed: boolean, force: boolean = true) {
 function handleInternalWebpageActions(senderId: string, msgProto: RovAction) {
     const msgBody = msgProto.body
     const msgType = msgBody.oneofKind
-    // console.debug("RECIVED Message: ", msgType, msgBody);
+    // logDebug("RECIVED Message: ", msgType, msgBody);
     switch (msgType) {
 
         // PING Message - Respond with PONG
