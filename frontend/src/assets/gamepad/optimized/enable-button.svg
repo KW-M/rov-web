@@ -2,8 +2,8 @@
     <g>
         <circle cx="15.85" cy="15.855" r="11.806" style="fill:#00ff04;fill-opacity:.5"/>
         <circle cx="14.99" cy="15.007" r="10.945" style="fill:#00ff04;stroke:#000;stroke-width:1.72px"/>
-        <path d="m11.749 9.686 8.564 5.327-8.553 5.314V9.686z" style="fill:none;stroke:#000;stroke-width:1.67px;stroke-linejoin:round"/>
-        <g>
+        <path d="m11.749 9.686 8.564 5.327-8.553 5.314V9.686z" style="fill:none;stroke:#000;stroke-width:1.67px;stroke-linejoin:round" id="go_icon" class="go-icon"/>
+        <g id="stop_icon" class="stop-icon">
             <path d="m11.345 11.35 7.72 7.731" style="fill:none;stroke:#000;stroke-width:1.72px;stroke-linecap:round;stroke-linejoin:round"/>
             <path d="m11.345 19.081 7.72-7.731" style="fill:none;stroke:#000;stroke-width:1.72px;stroke-linecap:round;stroke-linejoin:round"/>
         </g>
